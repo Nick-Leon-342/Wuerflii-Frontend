@@ -14,3 +14,39 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+:root {
+    --kniffel-bg-color:
+}
+
+
+
+.btn {
+    width: 25vw;
+    height: 25vh;
+    color: black;
+    font-size: 100px;
+    border-radius: 25px;
+    margin: 10px;
+    padding: 10px 50px;
+    background-color: #00FF00;
+    border-color: black;
+    outline: none;
+}
+
+.btn:hover {
+    background-color: #16df26;
+}
+
+.randomPersonPickerInterface {
+    background-color: gray;
+    border-radius: 25px;
+    padding: 10px;
+}
+
+.randomPersonPickerApplication {
+    background-color: #A9A9A9;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px 20px rgb(100, 100, 100);
+}
