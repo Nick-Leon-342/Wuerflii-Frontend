@@ -60,17 +60,47 @@ body {
 .listElement {
     display: flex;
     justify-content: space-between;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.listElement:hover {
+    background-color: #C8C8C8;
 }
 
 .nameOfPerson {
+    margin-top: 4px;
     margin-left: 5px;
+    color: white;
 }
 
 .xBtn {
+    display: block;
     margin-right: 5px;
+    margin-left: 5px;
+    border-radius: 50px;
+    background-color: gray;
+    color: white;
+    padding: 2px 5px;
+    opacity: 0;
+    outline: none;
 }
 
+.xBtn:hover {
+    background-color: #AFAFAF;
+}
 
+.xBtn:active {
+    transform: scale(0.9);
+}
+
+.listElement:hover .xBtn {
+    opacity: 1;
+}
+
+.listElement:hover .nameOfPerson {
+    color: black;
+}
 
 
 
