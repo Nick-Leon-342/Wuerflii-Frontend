@@ -16,14 +16,15 @@
         <br>
     
         <div class="randomPersonPickerInterface">
-            <input type="text" id="input">
-            <br>
-            <ol id="list"></ol>
+
+            <input class="input" type="text" id="input" onkeypress="inputKeyPressed(event)">
+            <button class="btn" id="add">Add</button>
+
+            <dl id="list"></dl>
+
+            <button class="btn" id="pickAPerson">Pick a person</button>
+
         </div>
-    
-        
-        
-        <button class="btn" id="add">Add</button>
 
     </div>
 
