@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kniffel</title>
+    <link href="../style.css" rel="stylesheet">
+    <script defer src="kniffel.js"></script>
+</head>
+<body>
+
+    <div class="application">
+        <a href="../index.html"><button class="btn">Back</button></a>
+
+        <button class="btn" onclick="addColumn('upperTable', 'bottomTable', 'lightblue')">Add Column</button>
+
+        <div class="interface" id="enterPlayerAndColumnCountInterface">
+            <label>Players</label>
+            <input id="players" class="input" type="number" min="0"></input>
+            <br>
+            <label>Columns</label>
+            <input id="columns" class="input" type="number" min="0"></input>
+            <br>
+            <button class="btn" onclick="play()">Play!</button>
+        </div>
+
+        <div class="interface" id="kniffelInterface">
+
+            <table id="upperTable" class="table">
+                
+                <tr id="nurEinserZählen">
+                    <th>Bild...</th>
+                    <th>Nur Einser<br>zählen</th>
+                </tr>
+
+                <tr id="nurZweierZählen">
+                    <th>Bild...</th>
+                    <th>Nur Zweier<br>zählen</th>
+                </tr>
+
+                <tr id="nurDreierZählen">
+                    <th>Bild...</th>
+                    <th>Nur Dreier<br>zählen</th>
+                </tr>
+
+                <tr id="nurViererZählen">
+                    <th>Bild...</th>
+                    <th>Nur Vierer<br>zählen</th>
+                </tr>
+
+                <tr id="nurFünferZählen">
+                    <th>Bild...</th>
+                    <th>Nur Fünfer<br>zählen</th>
+                </tr>
+
+                <tr id="nurSechserZählen">
+                    <th>Bild...</th>
+                    <th>Nur Sechser<br>zählen</th>
+                </tr>
+
+                <tr id="gesamt">
+                    <th>gesamt</th>
+                    <th>--></th>
+                </tr>
+
+                <tr id="bonusBei63OderMehr">
+                    <th>Bonus bei 63<br>oder mehr</th>
+                    <th>plus 35</th>
+                </tr>
+
+                <tr id="gesamtObererTeil">
+                    <th>gesamt<br>oberer Teil</th>
+                    <th>--></th>
+                </tr>
+
+            </table>
+
+
+
+            <table id="bottomTable" class="table">
+                
+                <tr id="dreierpasch">
+                    <th>Dreiferpasch</th>
+                    <th>alle Augen<br>zählen</th>
+                </tr>
+
+                <tr id="viererpasch">
+                    <th>Viererpasch</th>
+                    <th>alle Augen<br>zählen</th>
+                </tr>
+
+                <tr id="full-house">
+                    <th>Full-House</th>
+                    <th>25<br>Punkte</th>
+                </tr>
+
+                <tr id="kleineStraße">
+                    <th>Kleine Straße</th>
+                    <th>30<br>Punkte</th>
+                </tr>
+
+                <tr id="großeStraße">
+                    <th>Große Straße</th>
+                    <th>40<br>Punkte</th>
+                </tr>
+
+                <tr id="kniffel">
+                    <th>Kniffel</th>
+                    <th>50<br>Punkte</th>
+                </tr>
+
+                <tr id="chance">
+                    <th>Chance</th>
+                    <th>alle Augen<br>zählen</th>
+                </tr>
+
+                <tr id="gesamtUntererTeil">
+                    <th>gesamt<br>unterer Teil</th>
+                    <th>--></th>
+                </tr>
+
+                <tr id="gesamtObererTeil">
+                    <th>gesamt<br>oberer Teil</th>
+                    <th>--></th>
+                </tr>
+
+                <tr id="endsumme">
+                    <th>Endsumme</th>
+                    <th>--></th>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    
+</body>
+</html>
