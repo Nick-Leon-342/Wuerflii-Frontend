@@ -12,16 +12,20 @@
     <div class="application">
         <a href="../index.html"><button class="btn">Back</button></a>
 
-        <button class="btn" onclick="addColumn('upperTable', 'bottomTable', 'lightblue')">Add Column</button>
-
         <div class="interface" id="enterPlayerAndColumnCountInterface">
-            <label>Players</label>
-            <input id="players" class="input" type="number" min="0"></input>
+            <div class="enterPlayerAndColumnCountInterface-container">
+                <label id="label-players">Players</label>
+                <input id="players" class="input" type="number" min="0"></input>
+            </div>
             <br>
-            <label>Columns</label>
-            <input id="columns" class="input" type="number" min="0"></input>
+            <div class="enterPlayerAndColumnCountInterface-container">
+                <label>Columns</label>
+                <input id="columns" class="input" type="number" min="0"></input>
+            </div>
             <br>
-            <button class="btn" onclick="play()">Play!</button>
+            <div class="play-container">
+                <button class="btn" onclick="play()">Play!</button>
+            </div>
         </div>
 
         <div class="interface" id="kniffelInterface">
@@ -110,8 +114,8 @@
                 </tr>
 
                 <tr id="chance">
-                    <th>Chance</th>
-                    <th>alle Augen<br>zählen</th>
+                    <th class="kniffelHeadElement">Chance</th>
+                    <th class="kniffelHeadElement">alle Augen<br>zählen</th>
                 </tr>
 
                 <tr id="gesamtUntererTeil">
@@ -130,6 +134,14 @@
                 </tr>
 
             </table>
+
+            <table id="playerTable" class="table">
+                <tr id="playerSum">
+                    <th>Spieler gesamt</th>
+                </tr>
+            </table>
+
+            <button onclick="finishGame()" class="btn">Finish game</button>
 
         </div>
 
