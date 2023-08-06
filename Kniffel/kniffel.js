@@ -8,7 +8,6 @@ const bottomTableID = "bottomTable";
 const playerTableID = "playerTable";
 const upperTable = document.getElementById(upperTableID);
 const bottomTable = document.getElementById(bottomTableID);
-let playerTable;
 
 
 
@@ -64,8 +63,6 @@ function play() {
 
     }
 
-    console.log(players);
-
     deleteSessionStorage();
 
     document.getElementById("enterNamesInterface").style.display = "none";
@@ -76,7 +73,6 @@ function play() {
     sessionStorage.setItem(sessionStorageSubstring + "players", JSON.stringify(players));
     sessionStorage.setItem(sessionStorageSubstring + "columns", columns);
     initSessionStorageTables();
-    playerTable = document.getElementById(playerTable);
 
 }
 
@@ -121,7 +117,9 @@ function addEnterNamesAndSelectColorElement(i) {
 function addColumnToPlayerTable(i) {
 
     const playerTable = document.getElementById(playerTableID);
-    const width = columns * upperTable.rows[0].cells[2].offsetWidth;
+    const width = sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") ? sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") : columns * upperTable.rows[0].cells[2].offsetWidth;
+    sessionStorage.setItem(sessionStorageSubstring + "offsetWidth", width);
+    console.log(columns + " " + document.getElementById(upperTableID).stringify + " " + width);
 
     const nameTD = document.createElement("td");
     const nameTDLabel = document.createElement("label");
@@ -210,7 +208,7 @@ function finishGame() {
 
         let sum = 0;
         for(let c = 0; columns > c; c++) {sum += Number(bottomTableLabels[c + columns * i + placol * 2].textContent);}
-        playerTableLabels[i * 2 + 1].textContent = sum;
+        playerTableLabels[players.length + i].textContent = sum;
 
     }
 
