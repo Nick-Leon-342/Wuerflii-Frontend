@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kniffel</title>
-    <link href="../style.css" rel="stylesheet">
+    <link href="kniffel.css" rel="stylesheet">
     <script defer src="kniffel.js"></script>
 </head>
 <body>
@@ -24,41 +24,79 @@
             </div>
             <br>
             <div class="play-container">
-                <button class="btn" onclick="play()">Play!</button>
+                <button class="btn" onclick="next()">Weiter</button>
             </div>
         </div>
 
+        <div class="interface" id="enterNamesInterface">
+            <dl id="enterNamesList"></dl>
+            <div class="play-container"><button class="btn" onclick="play()">Los!</button></div>
+        </div>
+
         <div class="interface" id="kniffelInterface">
+            
+            <table id="playerTable" class="table">
+                <tr id="kniffelPlayer">
+                    <th>Spieler</th>
+                </tr>
+                <tr id="playerSum">
+                    <th>Spieler gesamt</th>
+                </tr>
+            </table>
 
             <table id="upperTable" class="table">
                 
                 <tr id="nurEinserZählen">
-                    <th>Bild...</th>
+                    <th>
+                        <img class="kniffelImage" src="./pics/1.png">
+                        <img class="kniffelImage" src="./pics/1.png">
+                        <img class="kniffelImage" src="./pics/1.png">
+                    </th>
                     <th>Nur Einser<br>zählen</th>
                 </tr>
 
                 <tr id="nurZweierZählen">
-                    <th>Bild...</th>
+                    <th>
+                        <img class="kniffelImage" src="./pics/2.png">
+                        <img class="kniffelImage" src="./pics/2.png">
+                        <img class="kniffelImage" src="./pics/2.png">
+                    </th>
                     <th>Nur Zweier<br>zählen</th>
                 </tr>
 
                 <tr id="nurDreierZählen">
-                    <th>Bild...</th>
+                    <th>
+                        <img class="kniffelImage" src="./pics/3.png">
+                        <img class="kniffelImage" src="./pics/3.png">
+                        <img class="kniffelImage" src="./pics/3.png">
+                    </th>
                     <th>Nur Dreier<br>zählen</th>
                 </tr>
 
                 <tr id="nurViererZählen">
-                    <th>Bild...</th>
+                    <th>
+                        <img class="kniffelImage" src="./pics/4.png">
+                        <img class="kniffelImage" src="./pics/4.png">
+                        <img class="kniffelImage" src="./pics/4.png">
+                    </th>
                     <th>Nur Vierer<br>zählen</th>
                 </tr>
 
                 <tr id="nurFünferZählen">
-                    <th>Bild...</th>
+                    <th>
+                        <img class="kniffelImage" src="./pics/5.png">
+                        <img class="kniffelImage" src="./pics/5.png">
+                        <img class="kniffelImage" src="./pics/5.png">
+                    </th>
                     <th>Nur Fünfer<br>zählen</th>
                 </tr>
 
                 <tr id="nurSechserZählen">
-                    <th>Bild...</th>
+                    <th>
+                        <img class="kniffelImage" src="./pics/6.png">
+                        <img class="kniffelImage" src="./pics/6.png">
+                        <img class="kniffelImage" src="./pics/6.png">
+                    </th>
                     <th>Nur Sechser<br>zählen</th>
                 </tr>
 
@@ -133,12 +171,6 @@
                     <th>--></th>
                 </tr>
 
-            </table>
-
-            <table id="playerTable" class="table">
-                <tr id="playerSum">
-                    <th>Spieler gesamt</th>
-                </tr>
             </table>
 
             <button onclick="finishGame()" class="btn">Finish game</button>
