@@ -293,8 +293,16 @@ function loadTablesHelp(inputs, ID) {
     }
 }
 
-function deleteSessionStorage() {
+
+
+
+
+//__________________________________________________NewGame__________________________________________________
+
+function newGame() {
 
     sessionStorage.clear();
+    window.location.reload();
+
 
 }
