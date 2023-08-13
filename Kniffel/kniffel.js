@@ -13,7 +13,7 @@ const bottomTable = document.getElementById(bottomTableID);
 
 //__________________________________________________Check SessionStorage before displaying__________________________________________________
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
 
     if(sessionStorage.getItem(sessionStorageSubstring + "players")) {
 
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById("kniffelInterface").style.display = "block";
         document.getElementById("kniffelApplication").style.display = "block";
+        resizeEvent();
 
     }else{
         document.getElementById("enterPlayerAndColumnCountInterface").style.display = "block";
@@ -63,7 +64,7 @@ function play() {
 
     }
 
-    deleteSessionStorage();
+    sessionStorage.clear();
 
     document.getElementById("enterNamesInterface").style.display = "none";
     document.getElementById("kniffelInterface").style.display = "block";
@@ -73,6 +74,7 @@ function play() {
     sessionStorage.setItem(sessionStorageSubstring + "players", JSON.stringify(players));
     sessionStorage.setItem(sessionStorageSubstring + "columns", columns);
     initSessionStorageTables();
+    resizeEvent();
 
 }
 
@@ -305,4 +307,26 @@ function newGame() {
     window.location.reload();
 
 
+}
+
+
+
+
+
+
+
+window.addEventListener("resize", resizeEvent);
+
+function resizeEvent() {
+    const kA = document.getElementById("kniffelApplication");
+    const body = document.body;
+    console.log(this.window.innerWidth + " und " + kniffelApplication.offsetWidth);
+
+    if (kA.offsetWidth > this.window.innerWidth) {
+        body.style.justifyContent = "left";
+        kA.style.borderRadius = "0px";
+    } else {
+        body.style.justifyContent = "center";
+        kA.style.borderRadius = "20px";
+    }
 }
