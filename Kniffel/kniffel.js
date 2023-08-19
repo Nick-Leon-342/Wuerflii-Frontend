@@ -2,10 +2,15 @@
 
 let players = [];
 let columns;
+const gameAttributes = [];
+const gameSessionList = [];
+
+const gameSessionNamesString = "gameSessionNames";
 const sessionStorageSubstring = "kniffelSession_";
 const upperTableID = "upperTable";
 const bottomTableID = "bottomTable";
 const playerTableID = "playerTable";
+
 const upperTable = document.getElementById(upperTableID);
 const bottomTable = document.getElementById(bottomTableID);
 
@@ -28,8 +33,10 @@ document.addEventListener("DOMContentLoaded", function() {
         resizeEvent();
 
     }else{
+
         document.getElementById("enterPlayerAndColumnCountInterface").style.display = "block";
         document.getElementById("kniffelApplication").style.display = "block";
+
     }
 
 }, false);
@@ -40,16 +47,36 @@ document.addEventListener("DOMContentLoaded", function() {
 
 //__________________________________________________After player and column input__________________________________________________
 
-function next() {
+function nextEnterPAC() {
 
     let players = document.getElementById("players").value;
     columns = document.getElementById("columns").value;
 
-    if(isNaN(players) || isNaN(columns) || players == 0 || columns == 0) {return}
+    if(isNaN(players) || isNaN(columns) || players == 0 || columns == 0) {return;}
 
     for(let i = 0; players > i; i++){addEnterNamesAndSelectColorElement(i);}
     document.getElementById("enterPlayerAndColumnCountInterface").style.display = "none";
     document.getElementById("enterNamesInterface").style.display = "block";
+
+}
+
+function nextSelectKG() {
+    document.getElementById("chooseKniffelGameList").innerHTML += "<dt class='listElement'><div class='nameOfPerson'>" + input.value + "</div><button class='xBtn'>X</button></dt>";
+}
+
+function switchEnterAndSelect(a) {
+
+    const enter = document.getElementById("enterPlayerAndColumnCountInterface");
+    const select = document.getElementById("selectExistingKniffelGame");
+
+    if(Boolean(a)) {
+        enter.style.display = "none";
+        select.style.display = "block";
+        loadAllGames();
+    } else {
+        enter.style.display = "block";
+        select.style.display = "none";
+    }
 
 }
 
@@ -200,7 +227,7 @@ function inputEvent(element) {
 
 //__________________________________________________Calculating and endgame__________________________________________________
 
-function finishGame() {
+function calculateScores() {
 
     const playerTableLabels = document.getElementById(playerTableID).querySelectorAll("label");
     const placol = players.length * columns;
@@ -299,6 +326,125 @@ function loadTablesHelp(inputs, ID) {
 
 
 
+//__________________________________________________LocalStorage__________________________________________________
+
+function saveResults() {
+
+    calculateScores();
+
+    if(players.length >= 2) {
+
+        const gameSessionNames = [];
+        if(localStorage.getItem(gameSessionNamesString) != null) {gameSessionNames = localStorage.getItem(gameSessionNamesString);}
+        gameSessionNames.push("savedGame-" + gameSessionNames.length);
+
+
+        const playerTableLabels = document.getElementById(playerTableID).querySelectorAll("label");
+        let winnerIndex = [0]; //It's possible that multiple players have the same score, therefore an array
+    
+        for(let i = 1; players.length > i; i++) {
+            if(playerTableLabels[i].textContent != null) {
+                if(playerTableLabels[i].textContent > playerTableLabels[winnerIndex[0]].textContent) {
+                    winnerIndex.length = 0;
+                    winnerIndex.push(i)
+                } else if (playerTableLabels[i].textContent == playerTableLabels[winnerIndex[0]].textContent) {
+                    winnerIndex.push(i);
+                }
+            }
+        }
+        
+        if(gameAttributes.length == 0) {
+
+            for(let i = 0; players.length > i; i++) {
+                if(winnerIndex.includes(i)) {
+                    gameAttributes.push(1);
+                } else {
+                    gameAttributes.push(0);
+                }
+            }
+    
+            gameAttributes.push(columns);
+            gameAttributes.push(new Date().toLocaleDateString());
+            gameAttributes.push("savedGame-" + gameSessionNames.length);
+
+        } else {
+
+            for(let i = 0; players.length > i; i++) {
+                if(winnerIndex.includes(i)) {
+                    gameAttributes[i]++;
+                }
+            }
+
+        }
+
+        players.push(JSON.stringify(gameAttributes));
+    
+        localStorage.setItem("gameSessionNames", JSON.stringify(gameSessionNames));
+        localStorage.setItem(gameSessionNames[gameSessionNames.length - 1], JSON.stringify(players));
+
+    }
+
+}
+
+function loadAllGames() {
+
+    const gameSessionNames = JSON.parse(localStorage.getItem(gameSessionNamesString));
+    document.getElementById("chooseKniffelGameList").innerHTML = "";
+
+    for(let i = 0; gameSessionNames.length > i; i++) {
+        const tmp = JSON.parse(localStorage.getItem(gameSessionNames[i]));
+        gameSessionList.push([...tmp]);
+        const element = tmp;                                    //Player-Name-List of current element
+        const elementAttributes = JSON.parse(element.pop());    //Attributes of current element
+
+        let elementPlayersNames = "";
+        for(let i = 0; element.length > i; i++) {elementPlayersNames = elementPlayersNames.concat(element[i] + ((i+1) == element.length ? "" : " vs "));}
+        const elementDate = elementAttributes[elementAttributes.length - 2];
+
+        document.getElementById("chooseKniffelGameList").innerHTML += "<dt class='listElement' gameSessionIndex='" + i + "'>" + 
+            "<label class='listElement-label'>" + elementPlayersNames + "</label>" + 
+            "<div class='listElement-container'>" + 
+            "<label class='listElement-label'>" + elementDate + "</label><button class='deleteGameButton'>X</button>" + 
+            "</div>" + 
+            "</dt>";
+    }
+
+}
+
+function initGameSession(gs) {
+
+    gameAttributes = gs.pop();
+    players = gs;
+
+
+}
+
+function initListTestData() {
+
+    const s_0 = "savedGame-0";
+    const s_1 = "savedGame-1";
+
+    const p_0 = ["Eins", "Zwei", "Drei", "Vier", "Fünf"];
+    const p_1 = ["Ölf", "Zwölf", "Drölf"];
+
+    const a_0 = ["Eins_Wins", "Zwei_Wins", "Drei_Wins", "Vier_Wins", "Fünf_Wins", 2, "19/10/2004", s_0];
+    const a_1 = ["Ölf_Wins", "Zwölf_Wins", "Drölf_Wins", 5, "31/12/2000", s_1];
+
+    p_0.push(JSON.stringify(a_0));
+    p_1.push(JSON.stringify(a_1));
+
+    const n = [s_0, s_1];
+
+    localStorage.setItem(gameSessionNamesString, JSON.stringify(n));
+    localStorage.setItem(s_0, JSON.stringify(p_0));
+    localStorage.setItem(s_1, JSON.stringify(p_1));
+
+}
+
+
+
+
+
 //__________________________________________________NewGame__________________________________________________
 
 function newGame() {
@@ -320,13 +466,29 @@ window.addEventListener("resize", resizeEvent);
 function resizeEvent() {
     const kA = document.getElementById("kniffelApplication");
     const body = document.body;
-    console.log(this.window.innerWidth + " und " + kniffelApplication.offsetWidth);
 
-    if (kA.offsetWidth > this.window.innerWidth) {
+    if (kA.offsetWidth >= this.window.innerWidth) {
         body.style.justifyContent = "left";
         kA.style.borderRadius = "0px";
+        kA.style.marginTop = "10px";
+        kA.style.marginBottom = "10px";
     } else {
         body.style.justifyContent = "center";
         kA.style.borderRadius = "20px";
+        kA.style.marginTop = "0px";
+        kA.style.marginBottom = "0px";
     }
 }
+
+document.getElementById("chooseKniffelGameList").addEventListener("click", function(event) {
+    
+    const target = event.target;
+    if(target.tagName !== "BUTTON") {
+        
+        const clickedElement = target.closest("dt");
+        const gsn = clickedElement.getAttribute("gameSessionIndex");
+        initGameSession([...gameSessionList[gsn]]);
+
+    }
+
+});

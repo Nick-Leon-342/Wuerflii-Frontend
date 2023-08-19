@@ -1,0 +1,22 @@
+
+
+players =    [player_0, player_1, player_2, player_3]
+
+player = {
+    name:  Alfred
+    color: green
+    wins:  13
+}
+
+attributes = ["lastPlayedDate", "beginOfSessionDate", "sessionName"]
+results =    [resultElement_0, resultElement_1, resultElement_2, resultElement_3, resultElement_4, resultElement_5, resultElement_6, ...]
+
+resultElement = {
+    player_0_points: 712
+    player_1_points: 689
+    player_2_points: 744
+    player_3_points: 765
+    gamePlayed:      31/02/1999
+}
+
+

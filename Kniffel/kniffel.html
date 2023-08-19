@@ -10,7 +10,7 @@
 <body>
 
     <div id="kniffelApplication" class="application">
-        <a href="../index.html"><button class="btn">Back</button></a>
+        <a href="../index.html"><button class="btn">Home</button></a>
 
         <div class="interface" id="enterPlayerAndColumnCountInterface">
             <div class="enterPlayerAndColumnCountInterface-container">
@@ -24,7 +24,16 @@
             </div>
             <br>
             <div class="play-container">
-                <button class="btn" onclick="next()">Weiter</button>
+                <button class="btn" onclick="switchEnterAndSelect(true)">Lade Spiel</button>
+                <button class="btn" onclick="nextEnterPAC()">Weiter</button>
+            </div>
+        </div>
+
+        <div class="interface" id="selectExistingKniffelGame">
+            <dl id="chooseKniffelGameList"></dl>
+            
+            <div class="play-container">
+                <button class="btn" onclick="switchEnterAndSelect(false)">Erstelle Partie</button>
             </div>
         </div>
 
@@ -173,9 +182,9 @@
 
             </table>
 
-            <button onclick="finishGame()" class="btn">Spiel beenden</button>
+            <button onclick="calculateScores()" class="btn">Endwerte berechnen</button>
             <button onclick="newGame()" class="btn">Neues Spiel</button>
-            <button onclick="" class="btn"></button>
+            <button onclick="saveResults()" class="btn">Spiel beenden</button>
 
         </div>
 

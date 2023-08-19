@@ -186,6 +186,68 @@ input[type="color"] {
 
 
 
+#selectExistingKniffelGame {
+    display: none;
+}
+
+.listElement {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.listElement:hover {
+    background-color: #A9A9A9;
+}
+
+.listElement:hover .listElement-label {
+    color: black;
+}
+
+.listElement:hover .deleteGameButton {
+    opacity: 1;
+}
+
+.listElement-container {
+    display: flex;
+    margin-right: 0px;
+    margin-left: 20px;
+    justify-content: space-between;
+}
+
+.listElement-label {
+    margin-top: 4px;
+    margin-left: 5px;
+    color: white;
+}
+
+.deleteGameButton {
+    display: block;
+    margin-right: 5px;
+    margin-left: 15px;
+    border-radius: 50px;
+    background-color: gray;
+    color: white;
+    padding: 2px 5px;
+    opacity: 0;
+    outline: none;
+}
+
+.deleteGameButton:hover {
+    background-color: #AFAFAF;
+}
+
+.deleteGameButton:active {
+    transform: scale(0.9);
+}
+
+
+
+
+
+
+
 
 
 
