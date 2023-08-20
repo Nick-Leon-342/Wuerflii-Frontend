@@ -1,11 +1,15 @@
 
 
 let players = [];
-let columns;
-const gameAttributes = [];
+let gameAttributes;
 const gameSessionList = [];
 
-const gameSessionNamesString = "gameSessionNames";
+const localSession_NamesList_String = "gameSessionNames";
+const gameSession_Name_Substring = "gameSession_";
+const players_Substring = "_players";
+const gameAttributes_Substring = "_gameAttributes";
+const finalScore_Substring = "_finalScore";
+
 const sessionStorageSubstring = "kniffelSession_";
 const upperTableID = "upperTable";
 const bottomTableID = "bottomTable";
@@ -23,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if(sessionStorage.getItem(sessionStorageSubstring + "players")) {
 
         players = JSON.parse(sessionStorage.getItem(sessionStorageSubstring + "players"));
-        columns = sessionStorage.getItem(sessionStorageSubstring + "columns");
+        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorageSubstring + "gameAttributes"));
 
         createTables();
         loadTables();
@@ -50,9 +54,9 @@ document.addEventListener("DOMContentLoaded", function() {
 function nextEnterPAC() {
 
     let players = document.getElementById("players").value;
-    columns = document.getElementById("columns").value;
+    gameAttributes = createGameAttributes(document.getElementById("columns").value);
 
-    if(isNaN(players) || isNaN(columns) || players == 0 || columns == 0) {return;}
+    if(isNaN(players) || isNaN(gameAttributes.Columns) || players == 0 || gameAttributes.Columns == 0) {return;}
 
     for(let i = 0; players > i; i++){addEnterNamesAndSelectColorElement(i);}
     document.getElementById("enterPlayerAndColumnCountInterface").style.display = "none";
@@ -84,11 +88,7 @@ function play() {
     
     const enterNamesElement = document.getElementsByClassName("enterNamesElement");
     for(const element of enterNamesElement) {
-        const name = element.querySelector(".input").value;
-        const color = element.querySelector(".colorbox").value;
-        const player = {name: name, color: color};
-        players.push(player);
-
+        players.push(createPlayer(element.querySelector(".input").value, element.querySelector(".colorbox").value));
     }
 
     sessionStorage.clear();
@@ -99,7 +99,7 @@ function play() {
     createTables();
 
     sessionStorage.setItem(sessionStorageSubstring + "players", JSON.stringify(players));
-    sessionStorage.setItem(sessionStorageSubstring + "columns", columns);
+    sessionStorage.setItem(sessionStorageSubstring + "gameAttributes", JSON.stringify(gameAttributes));
     initSessionStorageTables();
     resizeEvent();
 
@@ -107,10 +107,12 @@ function play() {
 
 function createTables() {
 
+    let columns = gameAttributes.Columns;
+
     for(let p = 0; p < players.length; p++) {
         for(let c = 0; c < columns; c++) {
-            addColumnToTable(c + p * columns, upperTableID, players[p].color);
-            addColumnToTable(c + p * columns, bottomTableID, players[p].color);
+            addColumnToTable(c + p * columns, upperTableID, players[p].Color);
+            addColumnToTable(c + p * columns, bottomTableID, players[p].Color);
         }
         addColumnToPlayerTable(p);
     }
@@ -146,23 +148,20 @@ function addEnterNamesAndSelectColorElement(i) {
 function addColumnToPlayerTable(i) {
 
     const playerTable = document.getElementById(playerTableID);
-    const width = sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") ? sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") : columns * upperTable.rows[0].cells[2].offsetWidth;
+    const width = sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") ? sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") : gameAttributes.Columns * upperTable.rows[0].cells[2].offsetWidth;
     sessionStorage.setItem(sessionStorageSubstring + "offsetWidth", width);
-    console.log(columns + " " + document.getElementById(upperTableID).stringify + " " + width);
 
     const nameTD = document.createElement("td");
-    const nameTDLabel = document.createElement("label");
     nameTD.classList.add("playerSumElement");
-    nameTD.textContent = players[i].name;
-    nameTD.style.color = players[i].color;
+    nameTD.textContent = players[i].Name;
+    nameTD.style.color = players[i].Color;
     nameTD.style.width = width + "px";
-    nameTD.appendChild(nameTDLabel);
     playerTable.querySelectorAll("tr")[0].appendChild(nameTD);
 
     const sumTD = document.createElement("td");
     const sumTDLabel = document.createElement("label");
     sumTD.classList.add("playerSumElement");
-    sumTD.style.color = players[i].color;
+    sumTD.style.color = players[i].Color;
     sumTD.style.width = width + "px";
     sumTD.appendChild(sumTDLabel);
     playerTable.querySelectorAll("tr")[1].appendChild(sumTD);
@@ -207,7 +206,7 @@ function inputEvent(element) {
     const column = Number(element.getAttribute("data-column"));
     const row = Number(element.getAttribute("data-row"));
     const inputs = (tableID == upperTableID ? upperTable : bottomTable).querySelectorAll("input");
-    const placol = players.length * columns;
+    const placol = players.length * gameAttributes.Columns;
 
     saveElement(tableID, element.value, column, row);
 
@@ -227,40 +226,24 @@ function inputEvent(element) {
 
 //__________________________________________________Calculating and endgame__________________________________________________
 
-function calculateScores() {
-
-    const playerTableLabels = document.getElementById(playerTableID).querySelectorAll("label");
-    const placol = players.length * columns;
-    const bottomTableLabels = bottomTable.querySelectorAll("label");
-    
-    for(let i = 0; players.length > i; i++) {
-
-        let sum = 0;
-        for(let c = 0; columns > c; c++) {sum += Number(bottomTableLabels[c + columns * i + placol * 2].textContent);}
-        playerTableLabels[players.length + i].textContent = sum;
-
-    }
-
-}
-
 function calculateColumn(upper, column) {
 
     const inputs = (Boolean(upper) ? upperTable : bottomTable).querySelectorAll("input");
     const upperLabels = upperTable.querySelectorAll("label");
     const bottomLabels = bottomTable.querySelectorAll("label");
-    const placol = players.length * columns;
+    const placol = players.length * gameAttributes.Columns;
     let sum = 0;
     
     for(let i = 0; inputs.length/placol > i; i++) {
         sum = sum + Number(inputs[column + i*placol].value);
     }
 
-    if(Boolean(upper)) {calculateUpperColumn(inputs, upperLabels, bottomLabels, column, placol, sum);
-    }else{calculateBottomColumn(inputs, bottomLabels, column, placol, sum);}
+    if(Boolean(upper)) {calculateUpperColumn(upperLabels, bottomLabels, column, placol, sum);
+    }else{calculateBottomColumn(bottomLabels, column, placol, sum);}
 
 }
 
-function calculateUpperColumn(inputs, upperLabels, bottomLabels, column, placol, sum) {
+function calculateUpperColumn(upperLabels, bottomLabels, column, placol, sum) {
 
     upperLabels[column].textContent = sum;
     upperLabels[column + placol].textContent = sum < 63 ? "-" : 35;
@@ -271,15 +254,34 @@ function calculateUpperColumn(inputs, upperLabels, bottomLabels, column, placol,
         ? ""
         : Number(bottomLabels[column + placol].textContent) + Number(bottomLabels[column].textContent);
 
+    calculateScores(bottomLabels, placol);
+
 }
 
-function calculateBottomColumn(inputs, bottomLabels, column, placol, sum) {
+function calculateBottomColumn(bottomLabels, column, placol, sum) {
 
     bottomLabels[column].textContent = sum;
     bottomLabels[column + placol * 2].textContent = 
         bottomLabels[column + placol].textContent == "" 
         ? ""
         : Number(bottomLabels[column + placol].textContent) + Number(bottomLabels[column].textContent);
+
+    calculateScores(bottomLabels, placol);
+
+}
+
+function calculateScores(bottomLabels, placol) {
+
+    const playerTableLabels = document.getElementById(playerTableID).querySelectorAll("label");
+    const columns = gameAttributes.Columns;
+    
+    for(let i = 0; players.length > i; i++) {
+
+        let sum = 0;
+        for(let c = 0; columns > c; c++) {sum += Number(bottomLabels[c + columns * i + placol * 2].textContent);}
+        playerTableLabels[i].textContent = sum;
+
+    }
 
 }
 
@@ -290,6 +292,8 @@ function calculateBottomColumn(inputs, bottomLabels, column, placol, sum) {
 //__________________________________________________SessionStorage__________________________________________________
 
 function initSessionStorageTables() {
+
+    let columns = gameAttributes.Columns;
 
     for(let c = 0; columns * players.length > c; c++) {for(let r = 0; 6 > r; r++) {
         sessionStorage.setItem(sessionStorageSubstring + upperTableID + "_" + r + "." + c, "");
@@ -315,7 +319,7 @@ function loadTables() {
 }
 
 function loadTablesHelp(inputs, ID) {
-    const placol = columns * players.length;
+    const placol = gameAttributes.Columns * players.length;
     for(let i = 0; inputs.length > i; i++) {
         inputs[i].value = sessionStorage.getItem(sessionStorageSubstring + ID + "_" + ~~(i/placol) + "." + i%placol);
         inputEvent(inputs[i]);
@@ -330,81 +334,94 @@ function loadTablesHelp(inputs, ID) {
 
 function saveResults() {
 
-    calculateScores();
-
     if(players.length >= 2) {
 
-        const gameSessionNames = [];
-        if(localStorage.getItem(gameSessionNamesString) != null) {gameSessionNames = localStorage.getItem(gameSessionNamesString);}
-        gameSessionNames.push("savedGame-" + gameSessionNames.length);
+        //____________________GameSessionNames____________________
+        const gameSessionNames = localStorage.getItem(localSession_NamesList_String) != null ? JSON.parse(localStorage.getItem(localSession_NamesList_String)) : [];
+        const nameForSession = findANameForSession(gameSessionNames);
+        localStorage.setItem(localSession_NamesList_String, JSON.stringify(gameSessionNames));
 
 
-        const playerTableLabels = document.getElementById(playerTableID).querySelectorAll("label");
+        //____________________Players____________________
+        const nameForSession_players = nameForSession + players_Substring;
+        const tmp_playerScores = document.getElementById(playerTableID).querySelectorAll("label");
+        const playerScores = [];
+        for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent);}
+
         let winnerIndex = [0]; //It's possible that multiple players have the same score, therefore an array
     
         for(let i = 1; players.length > i; i++) {
-            if(playerTableLabels[i].textContent != null) {
-                if(playerTableLabels[i].textContent > playerTableLabels[winnerIndex[0]].textContent) {
+            if(playerScores[i] != null) {
+                if(playerScores[i] > playerScores[winnerIndex[0]]) {
                     winnerIndex.length = 0;
                     winnerIndex.push(i)
-                } else if (playerTableLabels[i].textContent == playerTableLabels[winnerIndex[0]].textContent) {
+                } else if (playerScores[i] == playerScores[winnerIndex[0]]) {
                     winnerIndex.push(i);
                 }
             }
         }
         
-        if(gameAttributes.length == 0) {
+        for(const i of winnerIndex) {players[i].Wins++;}
 
-            for(let i = 0; players.length > i; i++) {
-                if(winnerIndex.includes(i)) {
-                    gameAttributes.push(1);
-                } else {
-                    gameAttributes.push(0);
-                }
-            }
-    
-            gameAttributes.push(columns);
-            gameAttributes.push(new Date().toLocaleDateString());
-            gameAttributes.push("savedGame-" + gameSessionNames.length);
+        localStorage.setItem(nameForSession_players, JSON.stringify(players));
 
-        } else {
 
-            for(let i = 0; players.length > i; i++) {
-                if(winnerIndex.includes(i)) {
-                    gameAttributes[i]++;
-                }
-            }
+        //____________________GameAttributes____________________
+        const nameForSession_gameAttributes = nameForSession + gameAttributes_Substring;
+        gameAttributes.LastPlayed = new Date().toLocaleDateString;
+        localStorage.setItem(nameForSession_gameAttributes, JSON.stringify(gameAttributes));
 
-        }
 
-        players.push(JSON.stringify(gameAttributes));
-    
-        localStorage.setItem("gameSessionNames", JSON.stringify(gameSessionNames));
-        localStorage.setItem(gameSessionNames[gameSessionNames.length - 1], JSON.stringify(players));
+        //____________________FinalScore____________________
+        const nameForSession_finalScore = nameForSession + finalScore_Substring;
+        const finalScore = createFinalScoreElement(playerScores);
+        const finalScoreList = localStorage.getItem(nameForSession_finalScore) != null ? JSON.parse(localStorage.getItem(nameForSession_finalScore)) : [];
+        finalScoreList.push(finalScore);
+        localStorage.setItem(nameForSession_finalScore, JSON.stringify(finalScoreList));
 
+    }
+
+}
+
+function findANameForSession(gameSessionNames) {
+
+    if(gameAttributes.SessionName == "") {
+
+        let sessionName = gameSession_Name_Substring;
+        let i = 0;
+        while(gameSessionNames.includes(sessionName + i)) {i++;}
+        sessionName = sessionName + i;
+        gameSessionNames.push(sessionName);
+        gameAttributes.SessionName = sessionName;
+        sessionStorage.setItem(sessionStorageSubstring + "gameAttributes", JSON.stringify(gameAttributes));
+        return sessionName;
+
+    } else {
+        return gameAttributes.SessionName;
     }
 
 }
 
 function loadAllGames() {
 
-    const gameSessionNames = JSON.parse(localStorage.getItem(gameSessionNamesString));
+    const gameSessionNames = JSON.parse(localStorage.getItem(localSession_NamesList_String));
+    gameSessionList.length = 0;
     document.getElementById("chooseKniffelGameList").innerHTML = "";
 
     for(let i = 0; gameSessionNames.length > i; i++) {
-        const tmp = JSON.parse(localStorage.getItem(gameSessionNames[i]));
-        gameSessionList.push([...tmp]);
-        const element = tmp;                                    //Player-Name-List of current element
-        const elementAttributes = JSON.parse(element.pop());    //Attributes of current element
+
+        const players = JSON.parse(localStorage.getItem(gameSessionNames + players_Substring));
+        const gameAttributes = JSON.parse(localStorage.getItem(gameSessionNames + gameAttributes_Substring));
+        const tmp = [players, gameAttributes];
+        gameSessionList.push(tmp);
 
         let elementPlayersNames = "";
-        for(let i = 0; element.length > i; i++) {elementPlayersNames = elementPlayersNames.concat(element[i] + ((i+1) == element.length ? "" : " vs "));}
-        const elementDate = elementAttributes[elementAttributes.length - 2];
+        for(let i = 0; element.length > i; i++) {elementPlayersNames = elementPlayersNames.concat(players[i].Name + ((i+1) == players.length ? "" : " vs "));}
 
         document.getElementById("chooseKniffelGameList").innerHTML += "<dt class='listElement' gameSessionIndex='" + i + "'>" + 
             "<label class='listElement-label'>" + elementPlayersNames + "</label>" + 
             "<div class='listElement-container'>" + 
-            "<label class='listElement-label'>" + elementDate + "</label><button class='deleteGameButton'>X</button>" + 
+            "<label class='listElement-label'>${gameAttributes.CreatedDate}</label><button class='deleteGameButton'>X</button>" + 
             "</div>" + 
             "</dt>";
     }
@@ -438,6 +455,37 @@ function initListTestData() {
     localStorage.setItem(gameSessionNamesString, JSON.stringify(n));
     localStorage.setItem(s_0, JSON.stringify(p_0));
     localStorage.setItem(s_1, JSON.stringify(p_1));
+
+}
+
+function createPlayer(name, color) {
+    return {
+        Name: name,
+        Color: color,
+        Wins: 0
+    };
+}
+
+function createGameAttributes(columns) {
+    return {
+        Columns: columns,
+        LastPlayed: new Date().toLocaleDateString(),
+        CreatedDate: new Date().toLocaleDateString(),
+        SessionName: ""
+    };
+}
+
+function createFinalScoreElement(scoreList) {
+
+    const finalScore = {
+        gamePlayed: new Date().toLocaleDateString()
+    };
+
+    for(let i = 0; i < players.length; i++) {
+        finalScore[players[i].Name] = scoreList[i];
+    }
+
+    return finalScore;
 
 }
 
