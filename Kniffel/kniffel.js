@@ -91,9 +91,15 @@ function play() {
         players.push(createPlayer(element.querySelector(".input").value, element.querySelector(".colorbox").value));
     }
 
-    sessionStorage.clear();
 
     document.getElementById("enterNamesInterface").style.display = "none";
+    initGame();
+
+}
+
+function initGame() {
+
+    sessionStorage.clear();
     document.getElementById("kniffelInterface").style.display = "block";
 
     createTables();
@@ -332,7 +338,16 @@ function loadTablesHelp(inputs, ID) {
 
 //__________________________________________________LocalStorage__________________________________________________
 
-function saveResults() {
+function saveResults() {if(!Boolean(sessionStorage.getItem("alreadySaved"))) {
+
+    const tmp = document.getElementById(bottomTableID).querySelectorAll("label");
+    for(const element of tmp) {
+        const e = element.textContent;
+        if(e == "" || e == 0) {
+            window.alert("Bitte alle Werte eingeben und keine Buchstaben!");
+            return;
+        }
+    }
 
     if(players.length >= 2) {
 
@@ -379,9 +394,13 @@ function saveResults() {
         finalScoreList.push(finalScore);
         localStorage.setItem(nameForSession_finalScore, JSON.stringify(finalScoreList));
 
+
+
+        sessionStorage.setItem("alreadySaved", true);
+
     }
 
-}
+}}
 
 function findANameForSession(gameSessionNames) {
 
@@ -416,12 +435,13 @@ function loadAllGames() {
         gameSessionList.push(tmp);
 
         let elementPlayersNames = "";
-        for(let i = 0; element.length > i; i++) {elementPlayersNames = elementPlayersNames.concat(players[i].Name + ((i+1) == players.length ? "" : " vs "));}
+        for(let i = 0; players.length > i; i++) {elementPlayersNames = elementPlayersNames.concat(players[i].Name + ((i+1) == players.length ? "" : " vs "));}
 
         document.getElementById("chooseKniffelGameList").innerHTML += "<dt class='listElement' gameSessionIndex='" + i + "'>" + 
             "<label class='listElement-label'>" + elementPlayersNames + "</label>" + 
             "<div class='listElement-container'>" + 
-            "<label class='listElement-label'>${gameAttributes.CreatedDate}</label><button class='deleteGameButton'>X</button>" + 
+            "<label class='listElement-label'>" + gameAttributes.CreatedDate + "</label>" + 
+            "<button class='deleteGameButton' gameSessionName='" + gameAttributes.SessionName + "'>X</button>" + 
             "</div>" + 
             "</dt>";
     }
@@ -430,9 +450,11 @@ function loadAllGames() {
 
 function initGameSession(gs) {
 
-    gameAttributes = gs.pop();
-    players = gs;
+    players = gs[0];
+    gameAttributes = gs[1];
 
+    document.getElementById("selectExistingKniffelGame").style.display = "none";
+    initGame();
 
 }
 
@@ -534,9 +556,37 @@ document.getElementById("chooseKniffelGameList").addEventListener("click", funct
     if(target.tagName !== "BUTTON") {
         
         const clickedElement = target.closest("dt");
-        const gsn = clickedElement.getAttribute("gameSessionIndex");
-        initGameSession([...gameSessionList[gsn]]);
+        const gs = [...gameSessionList[clickedElement.getAttribute("gameSessionIndex")]];
+        gameSessionList.length = 0;
+        initGameSession(gs);
+
+    } else {
+        
+        if (window.confirm("Bist du sicher, dass du diese Session löschen möchtest?")) {
+            
+            const gameSessionName = target.getAttribute("gameSessionName");
+            const gsn_players = gameSessionName + players_Substring;
+            const gsn_gameAttributes = gameSessionName + gameAttributes_Substring;
+            const gsn_finalScore = gameSessionName + finalScore_Substring;
+    
+            
+            //____________________GameSessionNames____________________
+            const gameSessionNames = localStorage.getItem(localSession_NamesList_String) != null ? JSON.parse(localStorage.getItem(localSession_NamesList_String)) : [];
+            gameSessionNames.splice(gameSessionNames.indexOf(gameSessionName), 1);
+            localStorage.setItem(localSession_NamesList_String, JSON.stringify(gameSessionNames));
+    
+            localStorage.removeItem(gsn_players);
+            localStorage.removeItem(gsn_gameAttributes);
+            localStorage.removeItem(gsn_finalScore);
+    
+            loadAllGames();
+
+        }
 
     }
 
 });
+
+
+
+
