@@ -452,8 +452,14 @@ function initGameSession(gs) {
 
     players = gs[0];
     gameAttributes = gs[1];
+    const gsn_finalScore = gameAttributes.SessionName + finalScore_Substring;
+    const finalScores = JSON.parse(localStorage.getItem(gsn_finalScore));
 
     document.getElementById("selectExistingKniffelGame").style.display = "none";
+    document.getElementById("sessionPreview").style.display = "block";
+
+
+
     initGame();
 
 }
