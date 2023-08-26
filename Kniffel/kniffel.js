@@ -58,6 +58,7 @@ function nextEnterPAC() {
 
     if(isNaN(players) || isNaN(gameAttributes.Columns) || players == 0 || gameAttributes.Columns == 0) {return;}
 
+    document.getElementById("enterNamesList").innerHTML = "";
     for(let i = 0; players > i; i++){addEnterNamesAndSelectColorElement(i);}
     document.getElementById("enterPlayerAndColumnCountInterface").style.display = "none";
     document.getElementById("enterNamesInterface").style.display = "block";
@@ -91,14 +92,14 @@ function play() {
         players.push(createPlayer(element.querySelector(".input").value, element.querySelector(".colorbox").value));
     }
 
-
-    document.getElementById("enterNamesInterface").style.display = "none";
     initGame();
 
 }
 
 function initGame() {
 
+    document.getElementById("enterNamesInterface").style.display = "none";
+    document.getElementById("sessionPreview").style.display = "none";
     sessionStorage.clear();
     document.getElementById("kniffelInterface").style.display = "block";
 
@@ -429,8 +430,8 @@ function loadAllGames() {
 
     for(let i = 0; gameSessionNames.length > i; i++) {
 
-        const players = JSON.parse(localStorage.getItem(gameSessionNames + players_Substring));
-        const gameAttributes = JSON.parse(localStorage.getItem(gameSessionNames + gameAttributes_Substring));
+        const players = JSON.parse(localStorage.getItem(gameSessionNames[i] + players_Substring));
+        const gameAttributes = JSON.parse(localStorage.getItem(gameSessionNames[i] + gameAttributes_Substring));
         const tmp = [players, gameAttributes];
         gameSessionList.push(tmp);
 
@@ -446,6 +447,8 @@ function loadAllGames() {
             "</dt>";
     }
 
+    resizeEvent();
+
 }
 
 function initGameSession(gs) {
@@ -459,30 +462,55 @@ function initGameSession(gs) {
     document.getElementById("sessionPreview").style.display = "block";
 
 
+    //____________________WinCountPreview____________________
+    const winCountPreview_Players = document.getElementById("winCountPreview_Players");
+    const winCountPreview_Wins = document.getElementById("winCountPreview_Wins");
+    winCountPreview_Players.innerHTML = "<th>Spieler</th>";
+    winCountPreview_Wins.innerHTML = "<th>Gewonnen</th>";
 
-    initGame();
+    for(const player of players) {
 
-}
+        const element_player = document.createElement("th");
+        element_player.textContent = player.Name;
+        winCountPreview_Players.appendChild(element_player);
 
-function initListTestData() {
+        const element_wins = document.createElement("th");
+        element_wins.textContent = player.Wins;
+        winCountPreview_Wins.appendChild(element_wins);
 
-    const s_0 = "savedGame-0";
-    const s_1 = "savedGame-1";
+    }
 
-    const p_0 = ["Eins", "Zwei", "Drei", "Vier", "Fünf"];
-    const p_1 = ["Ölf", "Zwölf", "Drölf"];
 
-    const a_0 = ["Eins_Wins", "Zwei_Wins", "Drei_Wins", "Vier_Wins", "Fünf_Wins", 2, "19/10/2004", s_0];
-    const a_1 = ["Ölf_Wins", "Zwölf_Wins", "Drölf_Wins", 5, "31/12/2000", s_1];
+    //____________________FinalScoresPreview____________________
+    const finalScorePreview = document.getElementById("finalScorePreview");
+    finalScorePreview.innerHTML = "";
 
-    p_0.push(JSON.stringify(a_0));
-    p_1.push(JSON.stringify(a_1));
+    for(const finalScore of finalScores) {
 
-    const n = [s_0, s_1];
+        const row = document.createElement("tr");
+        const element_date = document.createElement("th");
+        element_date.textContent = finalScore.gamePlayed;
+        row.appendChild(element_date);
 
-    localStorage.setItem(gameSessionNamesString, JSON.stringify(n));
-    localStorage.setItem(s_0, JSON.stringify(p_0));
-    localStorage.setItem(s_1, JSON.stringify(p_1));
+        for(const player of players) {
+
+            const element_playerCount = document.createElement("th");
+            element_playerCount.textContent = finalScore[player.Name];
+            row.appendChild(element_playerCount);
+
+        }
+
+        finalScorePreview.appendChild(row);
+
+    }
+
+    const up = winCountPreview_Players.querySelectorAll("th");
+    const bottom = finalScorePreview.querySelectorAll("th");
+    for(let i = 0; up.length > i; i++) {
+        const width = window.getComputedStyle(up[i]).width;
+        up[i].style.minWidth = width;
+        bottom[i].style.minWidth = width;
+    }
 
 }
 
@@ -517,6 +545,82 @@ function createFinalScoreElement(scoreList) {
 
 }
 
+function initializeTestDataLocalStorage() {
+
+    const playerAmount = Math.random() * (10 - 2) + 2;
+
+    for(let i = 0; playerAmount > i; i++) {
+        const playerLength = Math.random() * (10 - 2) + 2;
+        for(let p = 0; playerLength > p; p++) {
+            players.push(createPlayer("player_" + p, p%2 ? "white" : "green"));
+        }
+        gameAttributes = createGameAttributes(2);
+        
+
+        //____________________GameSessionNames____________________
+        const gameSessionNames = localStorage.getItem(localSession_NamesList_String) != null ? JSON.parse(localStorage.getItem(localSession_NamesList_String)) : [];
+        const nameForSession = findANameForSession(gameSessionNames);
+        localStorage.setItem(localSession_NamesList_String, JSON.stringify(gameSessionNames));
+
+
+        //____________________Players____________________
+        const nameForSession_players = nameForSession + players_Substring;
+        const playerScores = [];
+        for(let i = 0; players.length > i; i++) {playerScores.push(~~(Math.random() * (900 - 600) + 600));}
+
+        let winnerIndex = [0]; //It's possible that multiple players have the same score, therefore an array
+    
+        for(let i = 1; players.length > i; i++) {
+            if(playerScores[i] != null) {
+                if(playerScores[i] > playerScores[winnerIndex[0]]) {
+                    winnerIndex.length = 0;
+                    winnerIndex.push(i)
+                } else if (playerScores[i] == playerScores[winnerIndex[0]]) {
+                    winnerIndex.push(i);
+                }
+            }
+        }
+        
+        for(const i of winnerIndex) {players[i].Wins++;}
+
+        localStorage.setItem(nameForSession_players, JSON.stringify(players));
+
+
+        //____________________GameAttributes____________________
+        const nameForSession_gameAttributes = nameForSession + gameAttributes_Substring;
+        gameAttributes.LastPlayed = new Date().toLocaleDateString;
+        localStorage.setItem(nameForSession_gameAttributes, JSON.stringify(gameAttributes));
+
+
+        //____________________FinalScore____________________
+        const nameForSession_finalScore = nameForSession + finalScore_Substring;
+        const finalScore = createFinalScoreElement(playerScores);
+        const finalScoreList = localStorage.getItem(nameForSession_finalScore) != null ? JSON.parse(localStorage.getItem(nameForSession_finalScore)) : [];
+        finalScoreList.push(finalScore);
+        localStorage.setItem(nameForSession_finalScore, JSON.stringify(finalScoreList));
+
+        players.length = 0;
+        gameAttributes = null;
+    }
+
+
+}
+
+function backToSelectSession() {
+
+    document.getElementById("sessionPreview").style.display = "none";
+    document.getElementById("selectExistingKniffelGame").style.display = "block";
+    loadAllGames();
+
+}
+
+function backToEnterPAC() {
+
+    document.getElementById("enterNamesInterface").style.display = "none";
+    document.getElementById("enterPlayerAndColumnCountInterface").style.display = "block";
+
+}
+
 
 
 
@@ -537,13 +641,14 @@ function newGame() {
 
 
 
+
 window.addEventListener("resize", resizeEvent);
 
 function resizeEvent() {
     const kA = document.getElementById("kniffelApplication");
     const body = document.body;
 
-    if (kA.offsetWidth >= this.window.innerWidth) {
+    if(kA.offsetWidth >= this.window.innerWidth) {
         body.style.justifyContent = "left";
         kA.style.borderRadius = "0px";
         kA.style.marginTop = "10px";
@@ -553,6 +658,12 @@ function resizeEvent() {
         kA.style.borderRadius = "20px";
         kA.style.marginTop = "0px";
         kA.style.marginBottom = "0px";
+    }
+
+    if(kA.offsetHeight >= this.window.innerHeight) {
+        body.style.height = "100%";
+    } else {
+        body.style.height = "100vh";
     }
 }
 
