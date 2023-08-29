@@ -32,9 +32,8 @@ function play() {
 }
 
 
-function backToEnterPAC() {
+function backToEnterNameAndColumnCount() {
 
-    document.getElementById("enterNamesInterface").style.display = "none";
-    document.getElementById("enterPlayerAndColumnCountInterface").style.display = "block";
+    window.location.href = "../kniffel.html";
 
 }

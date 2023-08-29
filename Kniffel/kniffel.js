@@ -4,16 +4,6 @@ let players = [];
 let gameAttributes;
 const gameSessionList = [];
 
-const localSession_NamesList_String = "gameSessionNames";
-const gameSession_Name_Substring = "gameSession_";
-const players_Substring = "_players";
-const gameAttributes_Substring = "_gameAttributes";
-const finalScore_Substring = "_finalScore";
-
-const sessionStorageSubstring = "kniffelSession_";
-const upperTableID = "upperTable";
-const bottomTableID = "bottomTable";
-const playerTableID = "playerTable";
 
 const upperTable = document.getElementById(upperTableID);
 const bottomTable = document.getElementById(bottomTableID);
@@ -51,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 //__________________________________________________After player and column input__________________________________________________
 
-function nextEnterPAC() {
+function next() {
 
     let players = document.getElementById("players").value;
     gameAttributes = createGameAttributes(document.getElementById("columns").value);
@@ -65,19 +55,9 @@ function nextEnterPAC() {
 
 }
 
-function switchEnterAndSelect(a) {
+function switchToSelectSession() {
 
-    const enter = document.getElementById("enterPlayerAndColumnCountInterface");
-    const select = document.getElementById("selectExistingKniffelGame");
-
-    if(Boolean(a)) {
-        enter.style.display = "none";
-        select.style.display = "block";
-        loadAllGames();
-    } else {
-        enter.style.display = "block";
-        select.style.display = "none";
-    }
+    window.location.href = "./selectSession/selectSession.html";
 
 }
 
@@ -150,25 +130,6 @@ function saveResults() {if(!Boolean(sessionStorage.getItem("alreadySaved"))) {
     }
 
 }}
-
-function findANameForSession(gameSessionNames) {
-
-    if(gameAttributes.SessionName == "") {
-
-        let sessionName = gameSession_Name_Substring;
-        let i = 0;
-        while(gameSessionNames.includes(sessionName + i)) {i++;}
-        sessionName = sessionName + i;
-        gameSessionNames.push(sessionName);
-        gameAttributes.SessionName = sessionName;
-        sessionStorage.setItem(sessionStorageSubstring + "gameAttributes", JSON.stringify(gameAttributes));
-        return sessionName;
-
-    } else {
-        return gameAttributes.SessionName;
-    }
-
-}
 
 function createPlayer(name, color) {
     return {

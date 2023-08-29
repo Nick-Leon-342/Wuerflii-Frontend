@@ -1,8 +1,20 @@
 
 
-function nextSelectKG() {
-    document.getElementById("chooseKniffelGameList").innerHTML += "<dt class='listElement'><div class='nameOfPerson'>" + input.value + "</div><button class='xBtn'>X</button></dt>";
+//__________________________________________________Load all sessions when site is loaded__________________________________________________
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    //loadAllSessions();
+
+}, false);
+
+function switchToEnterNameAndColumnCount() {
+
+    window.location.href = "../kniffel.html";
+
 }
+
+
 
 
 
@@ -45,7 +57,7 @@ document.getElementById("chooseKniffelGameList").addEventListener("click", funct
 
 
 
-function loadAllGames() {
+function loadAllSessions() {
 
     const gameSessionNames = JSON.parse(localStorage.getItem(localSession_NamesList_String));
     gameSessionList.length = 0;

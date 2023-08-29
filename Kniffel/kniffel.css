@@ -60,15 +60,15 @@ body {
 
 
 #kniffelApplication {
-    display: none;
+    
 }
 
 #kniffelInterface {
-    display: none;
+    
 }
 
 #enterPlayerAndColumnCountInterface {
-    display: none;
+    
 }
 
 .table {
@@ -149,7 +149,7 @@ body {
 
 
 #enterNamesInterface {
-    display: none;
+    
 }
 
 #enterNamesList {
@@ -188,7 +188,7 @@ input[type="color"] {
 
 
 #selectExistingKniffelGame {
-    display: none;
+    
 }
 
 .listElement {
@@ -248,7 +248,7 @@ input[type="color"] {
 
 
 #sessionPreview {
-    display: none;
+    
 }
 
 #winCountPreview th {

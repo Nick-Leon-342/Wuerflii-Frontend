@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kniffel</title>
     <link href="../kniffel.css" rel="stylesheet">
+    <script defer src="../centralStuff.js"></script>
     <script defer src="selectSession.js"></script>
-    <script defer src="../resize.js"></script>
 </head>
 <body>
 
     <div id="kniffelApplication" class="application">
         <a href="../../index.html"><button class="btn">Home</button></a>
-        <button class="btn" onclick="initializeTestDataLocalStorage()">Init</button>
 
         <div class="interface" id="selectExistingKniffelGame">
             <dl id="chooseKniffelGameList"></dl>
             
             <div class="play-container">
-                <button class="btn" onclick="switchEnterAndSelect(false)">Erstelle Partie</button>
+                <button class="btn" onclick="switchToEnterNameAndColumnCount()">Erstelle Partie</button>
             </div>
         </div>
 
