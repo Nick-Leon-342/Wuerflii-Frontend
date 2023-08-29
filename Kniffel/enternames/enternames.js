@@ -1,5 +1,21 @@
 
 
+//__________________________________________________Check SessionStorage before displaying__________________________________________________
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    let playercount = sessionStorage.getItem(sessionStorage_players);
+    gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+
+    document.getElementById("enterNamesList").innerHTML = "";
+    for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i);}
+
+}, false);
+
+
+
+
+
 function addEnterNamesAndSelectColorElement(i) {
 
     const enterNamesList = document.getElementById("enterNamesList");
@@ -20,6 +36,10 @@ function addEnterNamesAndSelectColorElement(i) {
 
 }
 
+
+
+
+
 function play() {
     
     const enterNamesElement = document.getElementsByClassName("enterNamesElement");
@@ -27,13 +47,17 @@ function play() {
         players.push(createPlayer(element.querySelector(".input").value, element.querySelector(".colorbox").value));
     }
 
-    initGame();
+    sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
 
 }
 
 
+
+
+
 function backToEnterNameAndColumnCount() {
 
+    clearSessionStorage();
     window.location.href = "../kniffel.html";
 
 }

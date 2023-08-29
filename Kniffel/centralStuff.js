@@ -1,5 +1,15 @@
 
 
+let players = [];
+let gameAttributes;
+const gameSessionList = [];
+
+
+
+
+
+//____________________IDs____________________
+
 const id_upperTable                         = "upperTable";
 const id_bottomTable                        = "bottomTable";
 const id_playerTable                        = "playerTable";
@@ -16,11 +26,11 @@ const substring_gameSession                 = "gameSession_";
 
 //____________________SessionStorage____________________
 
-const substring_sessionstorage              = "kniffel_sessionStorage_";
-const sessionStorage_players                = substring_sessionstorage + substring_players;
-const sessionStorage_gameAttributes         = substring_sessionstorage + substring_gameAttributes;
-const sessionStorage_upperTable_substring   = substring_sessionstorage + id_upperTable + "_";
-const sessionStorage_bottomTable_substring  = substring_sessionstorage + id_bottomTable + "_";
+const substring_sessionStorage              = "kniffel_sessionStorage_";
+const sessionStorage_players                = substring_sessionStorage + substring_players;
+const sessionStorage_gameAttributes         = substring_sessionStorage + substring_gameAttributes;
+const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + "_";
+const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + "_";
 
 
 //____________________LocalStorage____________________
@@ -31,6 +41,7 @@ const localStorage_players                  = "";
 const localStorage_gameAttributes           = "";
 const localStorage_finalScores              = "";
 const localStorage_sessionNameList          = substring_localStorage + "sessionNameList";
+
 
 
 
@@ -60,7 +71,24 @@ function setLocalStorageStrings(gameSessionNames) {
 
 }
 
+function clearSessionStorage() {
 
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key.includes(substring_sessionStorage)) {sessionStorage.removeItem(key);}
+    }
+
+}
+
+function clearLocalStorage() {
+
+}
+
+
+
+
+
+//____________________Resize-Event____________________
 
 window.addEventListener("resize", resizeEvent);
 

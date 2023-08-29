@@ -1,5 +1,26 @@
 
 
+const upperTable  = document.getElementById(id_upperTable);
+const bottomTable = document.getElementById(id_bottomTable);
+
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    if(sessionStorage.getItem(sessionStorage_players)) {
+
+        players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
+        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+
+        createTables();
+        loadTables();
+
+        resizeEvent();
+
+    }
+
+}, false);
+
+
 
 function initGame() {
 

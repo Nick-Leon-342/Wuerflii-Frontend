@@ -1,35 +1,19 @@
 
 
-let players = [];
-let gameAttributes;
-const gameSessionList = [];
-
-
-const upperTable = document.getElementById(upperTableID);
-const bottomTable = document.getElementById(bottomTableID);
-
-
-
 //__________________________________________________Check SessionStorage before displaying__________________________________________________
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    if(sessionStorage.getItem(sessionStorageSubstring + "players")) {
+    if(sessionStorage.getItem(sessionStorage_players)) {
 
-        players = JSON.parse(sessionStorage.getItem(sessionStorageSubstring + "players"));
-        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorageSubstring + "gameAttributes"));
+        players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
+        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
 
-        createTables();
-        loadTables();
-
-        document.getElementById("kniffelInterface").style.display = "block";
-        document.getElementById("kniffelApplication").style.display = "block";
-        resizeEvent();
-
-    }else{
-
-        document.getElementById("enterPlayerAndColumnCountInterface").style.display = "block";
-        document.getElementById("kniffelApplication").style.display = "block";
+        if(players.isNaN) {
+            window.location.href = "./game/game.html";
+        } else {
+            window.location.href = "./enternames/enternames.html";
+        }
 
     }
 
@@ -43,21 +27,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function next() {
 
-    let players = document.getElementById("players").value;
+    const playercount = document.getElementById("players").value;
     gameAttributes = createGameAttributes(document.getElementById("columns").value);
 
-    if(isNaN(players) || isNaN(gameAttributes.Columns) || players == 0 || gameAttributes.Columns == 0) {return;}
+    if(isNaN(playercount) || isNaN(gameAttributes.Columns) || playercount == 0 || gameAttributes.Columns == 0) {return;}
 
-    document.getElementById("enterNamesList").innerHTML = "";
-    for(let i = 0; players > i; i++){addEnterNamesAndSelectColorElement(i);}
-    document.getElementById("enterPlayerAndColumnCountInterface").style.display = "none";
-    document.getElementById("enterNamesInterface").style.display = "block";
+    sessionStorage.setItem(sessionStorage_players, playercount);
+    sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gameAttributes));
+
+    window.location.href = "./enternames/enternames.html";
 
 }
 
 function switchToSelectSession() {
 
-    window.location.href = "./selectSession/selectSession.html";
+    window.location.href = "./selectsession/selectsession.html";
 
 }
 
