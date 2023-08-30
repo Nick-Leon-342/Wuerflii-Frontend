@@ -4,11 +4,22 @@
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    let playercount = sessionStorage.getItem(sessionStorage_players);
-    gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+    const playercount = sessionStorage.getItem(sessionStorage_players);
 
-    document.getElementById("enterNamesList").innerHTML = "";
-    for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i);}
+    if(playercount) {
+
+        if(JSON.parse(playercount).isNaN) {
+            window.location.href = "../game/game.html";
+        } 
+
+        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+
+        document.getElementById("enterNamesList").innerHTML = "";
+        for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i);}
+
+    } else {
+        window.location.href = "../kniffel.html";
+    }
 
 }, false);
 
@@ -43,11 +54,14 @@ function addEnterNamesAndSelectColorElement(i) {
 function play() {
     
     const enterNamesElement = document.getElementsByClassName("enterNamesElement");
+    players.length = 0;
     for(const element of enterNamesElement) {
         players.push(createPlayer(element.querySelector(".input").value, element.querySelector(".colorbox").value));
     }
 
     sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
+
+    window.location.href = "../game/game.html";
 
 }
 

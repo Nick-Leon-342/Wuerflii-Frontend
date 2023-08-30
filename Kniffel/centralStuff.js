@@ -21,6 +21,8 @@ const substring_players                     = "players";
 const substring_gameAttributes              = "gameAttributes";
 const substring_finalScore                  = "finalScore";
 
+const substring_offsetWidth                 = "offsetWidth";
+
 const substring_gameSession                 = "gameSession_";
 
 
@@ -29,6 +31,9 @@ const substring_gameSession                 = "gameSession_";
 const substring_sessionStorage              = "kniffel_sessionStorage_";
 const sessionStorage_players                = substring_sessionStorage + substring_players;
 const sessionStorage_gameAttributes         = substring_sessionStorage + substring_gameAttributes;
+
+const sessionStorage_offsetWidth            = substring_sessionStorage + substring_offsetWidth;
+
 const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + "_";
 const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + "_";
 
@@ -40,7 +45,7 @@ const localStorage_defaultSring             = substring_localStorage + substring
 const localStorage_players                  = "";
 const localStorage_gameAttributes           = "";
 const localStorage_finalScores              = "";
-const localStorage_sessionNameList          = substring_localStorage + "sessionNameList";
+const localStorage_sessionName_List         = substring_localStorage + "sessionName_List";
 
 
 
@@ -73,9 +78,14 @@ function setLocalStorageStrings(gameSessionNames) {
 
 function clearSessionStorage() {
 
-    for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key.includes(substring_sessionStorage)) {sessionStorage.removeItem(key);}
+    const sessionStorage_Keys = [];
+
+    for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i));}
+    
+    for(const key of sessionStorage_Keys) {
+        if (key.includes(substring_sessionStorage)) {
+            sessionStorage.removeItem(key);
+        }
     }
 
 }
@@ -88,7 +98,44 @@ function clearLocalStorage() {
 
 
 
-//____________________Resize-Event____________________
+//____________________CreateObjects____________________
+
+function createPlayer(name, color) {
+    return {
+        Name: name,
+        Color: color,
+        Wins: 0
+    };
+}
+
+function createGameAttributes(columns) {
+    return {
+        Columns: columns,
+        LastPlayed: new Date().toLocaleDateString(),
+        CreatedDate: new Date().toLocaleDateString(),
+        SessionName: ""
+    };
+}
+
+function createFinalScoreElement(scoreList) {
+
+    const finalScore = {
+        gamePlayed: new Date().toLocaleDateString()
+    };
+
+    for(let i = 0; i < players.length; i++) {
+        finalScore[players[i].Name] = scoreList[i];
+    }
+
+    return finalScore;
+
+}
+
+
+
+
+
+//____________________ResizeEvent____________________
 
 window.addEventListener("resize", resizeEvent);
 

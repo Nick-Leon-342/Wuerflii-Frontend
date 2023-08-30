@@ -6,9 +6,15 @@ const bottomTable = document.getElementById(id_bottomTable);
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    if(sessionStorage.getItem(sessionStorage_players)) {
+    const playercount = sessionStorage.getItem(sessionStorage_players);
 
-        players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
+    if(playercount) {
+
+        players = JSON.parse(playercount);
+        if(players.isNaN) {
+            window.location.href = "../enternames/enternames.html";
+        }
+
         gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
 
         createTables();
@@ -16,23 +22,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
         resizeEvent();
 
+    } else {
+        window.location.href = "../kniffel.html";
     }
 
 }, false);
 
 
 
+
+
 function initGame() {
 
-    document.getElementById("enterNamesInterface").style.display = "none";
-    document.getElementById("sessionPreview").style.display = "none";
     sessionStorage.clear();
-    document.getElementById("kniffelInterface").style.display = "block";
 
     createTables();
 
-    sessionStorage.setItem(sessionStorageSubstring + "players", JSON.stringify(players));
-    sessionStorage.setItem(sessionStorageSubstring + "gameAttributes", JSON.stringify(gameAttributes));
+    sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
+    sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gameAttributes));
     initSessionStorageTables();
     resizeEvent();
 
@@ -40,12 +47,10 @@ function initGame() {
 
 function createTables() {
 
-    let columns = gameAttributes.Columns;
-
     for(let p = 0; p < players.length; p++) {
-        for(let c = 0; c < columns; c++) {
-            addColumnToTable(c + p * columns, upperTableID, players[p].Color);
-            addColumnToTable(c + p * columns, bottomTableID, players[p].Color);
+        for(let c = 0; c < gameAttributes.Columns; c++) {
+            addColumnToTable(c + p * gameAttributes.Columns, id_upperTable, players[p].Color);
+            addColumnToTable(c + p * gameAttributes.Columns, id_bottomTable, players[p].Color);
         }
         addColumnToPlayerTable(p);
     }
@@ -53,13 +58,16 @@ function createTables() {
 }
 
 
+
+
+
 //__________________________________________________For generating Kniffel table__________________________________________________
 
 function addColumnToPlayerTable(i) {
 
-    const playerTable = document.getElementById(playerTableID);
-    const width = sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") ? sessionStorage.getItem(sessionStorageSubstring + "offsetWidth") : gameAttributes.Columns * upperTable.rows[0].cells[2].offsetWidth;
-    sessionStorage.setItem(sessionStorageSubstring + "offsetWidth", width);
+    const playerTable = document.getElementById(id_playerTable);
+    const width = sessionStorage.getItem(sessionStorage_offsetWidth) ? sessionStorage.getItem(sessionStorage_offsetWidth) : gameAttributes.Columns * upperTable.rows[0].cells[2].offsetWidth;
+    sessionStorage.setItem(sessionStorage_offsetWidth, width);
 
     const nameTD = document.createElement("td");
     nameTD.classList.add("playerSumElement");
@@ -115,7 +123,7 @@ function inputEvent(element) {
     const tableID = element.getAttribute("data-tableid");
     const column = Number(element.getAttribute("data-column"));
     const row = Number(element.getAttribute("data-row"));
-    const inputs = (tableID == upperTableID ? upperTable : bottomTable).querySelectorAll("input");
+    const inputs = (tableID == id_upperTable ? upperTable : bottomTable).querySelectorAll("input");
     const placol = players.length * gameAttributes.Columns;
 
     saveElement(tableID, element.value, column, row);
@@ -126,7 +134,7 @@ function inputEvent(element) {
         }
     }
 
-    calculateColumn(tableID == upperTableID, column);
+    calculateColumn(tableID == id_upperTable, column);
     
 }
 
@@ -182,13 +190,12 @@ function calculateBottomColumn(bottomLabels, column, placol, sum) {
 
 function calculateScores(bottomLabels, placol) {
 
-    const playerTableLabels = document.getElementById(playerTableID).querySelectorAll("label");
-    const columns = gameAttributes.Columns;
+    const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll("label");
     
     for(let i = 0; players.length > i; i++) {
 
         let sum = 0;
-        for(let c = 0; columns > c; c++) {sum += Number(bottomLabels[c + columns * i + placol * 2].textContent);}
+        for(let c = 0; gameAttributes.Columns > c; c++) {sum += Number(bottomLabels[c + gameAttributes.Columns * i + placol * 2].textContent);}
         playerTableLabels[i].textContent = sum;
 
     }
@@ -207,46 +214,111 @@ function initSessionStorageTables() {
     let columns = gameAttributes.Columns;
 
     for(let c = 0; columns * players.length > c; c++) {for(let r = 0; 6 > r; r++) {
-        sessionStorage.setItem(sessionStorageSubstring + upperTableID + "_" + r + "." + c, "");
+        sessionStorage.setItem(sessionStorage_upperTable_substring + r + "." + c, "");
     }}
 
     for(let c = 0; columns * players > c; c++) {for(let r = 0; 6 > r; r++) {
-        sessionStorage.setItem(sessionStorageSubstring + bottomTableID + "_" + r + "." + c, "");
+        sessionStorage.setItem(sessionStorage_bottomTable_substring + r + "." + c, "");
     }}
 
 }
 
 function saveElement(tableID, value, column, row) {
 
-    sessionStorage.setItem(sessionStorageSubstring + tableID + "_" + row + "." + column, value);
+    sessionStorage.setItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + "." + column, value);
 
 }
   
 function loadTables() {
 
-    loadTablesHelp(upperTable.querySelectorAll("input"), upperTableID);
-    loadTablesHelp(bottomTable.querySelectorAll("input"), bottomTableID);
+    loadTablesHelp(upperTable.querySelectorAll("input"), id_upperTable);
+    loadTablesHelp(bottomTable.querySelectorAll("input"), id_bottomTable);
     
 }
 
-function loadTablesHelp(inputs, ID) {
+function loadTablesHelp(inputs, tableID) {
+
     const placol = gameAttributes.Columns * players.length;
+
     for(let i = 0; inputs.length > i; i++) {
-        inputs[i].value = sessionStorage.getItem(sessionStorageSubstring + ID + "_" + ~~(i/placol) + "." + i%placol);
+        inputs[i].value = sessionStorage.getItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + "." + i%placol);
         inputEvent(inputs[i]);
     }
+
 }
 
 
 
+
+
+
+function saveResults() {if(!Boolean(sessionStorage.getItem("alreadySaved"))) {
+
+    const tmp = document.getElementById(id_bottomTable).querySelectorAll("label");
+    for(const element of tmp) {
+        const e = element.textContent;
+        if(e == "" || e == 0) {
+            window.alert("Bitte alle Werte eingeben und keine Buchstaben!");
+            return;
+        }
+    }
+
+    if(players.length >= 2) {
+
+        //____________________GameSessionNames____________________
+        const gameSessionNames = localStorage.getItem(localStorage_sessionName_List) != null ? JSON.parse(localStorage.getItem(localStorage_sessionName_List)) : [];
+        setLocalStorageStrings(gameSessionNames);
+        localStorage.setItem(localStorage_sessionName_List, JSON.stringify(gameSessionNames));
+
+
+        //____________________Players____________________
+        const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll("label");
+        const playerScores = [];
+        for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent);}
+
+        let winnerIndex = [0]; //It's possible that multiple players have the same score, therefore an array
+    
+        for(let i = 1; players.length > i; i++) {
+            if(playerScores[i] != null) {
+                if(playerScores[i] > playerScores[winnerIndex[0]]) {
+                    winnerIndex.length = 0;
+                    winnerIndex.push(i)
+                } else if (playerScores[i] == playerScores[winnerIndex[0]]) {
+                    winnerIndex.push(i);
+                }
+            }
+        }
+        
+        for(const i of winnerIndex) {players[i].Wins++;}
+
+        localStorage.setItem(localStorage_players, JSON.stringify(players));
+
+
+        //____________________GameAttributes____________________
+        gameAttributes.LastPlayed = new Date().toLocaleDateString;
+        localStorage.setItem(localStorage_gameAttributes, JSON.stringify(gameAttributes));
+
+
+        //____________________FinalScore____________________
+        const finalScore = createFinalScoreElement(playerScores);
+        const finalScoreList = localStorage.getItem(localStorage_finalScores) != null ? JSON.parse(localStorage.getItem(localStorage_finalScores)) : [];
+        finalScoreList.push(finalScore);
+        localStorage.setItem(localStorage_finalScores, JSON.stringify(finalScoreList));
+
+
+
+        sessionStorage.setItem("alreadySaved", true);
+
+    }
+
+}}
 
 //__________________________________________________NewGame__________________________________________________
 
 function newGame() {
 
-    sessionStorage.clear();
-    window.location.reload();
-
+    clearSessionStorage();
+    window.location.href = "../kniffel.html";
 
 }
 
