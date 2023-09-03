@@ -5,6 +5,7 @@ const bottomTable = document.getElementById(id_bottomTable);
 
 
 document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("application").style.display = "block";
 
     const playercount = sessionStorage.getItem(sessionStorage_players);
 
@@ -111,14 +112,16 @@ function addRowToTable(column, tableID, rows, input, color, i) {
     element.setAttribute("data-tableid", tableID);
     element.setAttribute("data-column", column);
     element.setAttribute("data-row", i);
-    element.onblur = function(){inputEvent(element)};
+    element.onblur = function(){onblurEvent(element)};
     td.style.backgroundColor = color;
     td.appendChild(element);
     rows[i].appendChild(td);
 
+    element.addEventListener("input", function() {inputEvent(element);});
+
 }
 
-function inputEvent(element) {
+function onblurEvent(element) {
 
     const tableID = element.getAttribute("data-tableid");
     const column = Number(element.getAttribute("data-column"));
@@ -136,6 +139,14 @@ function inputEvent(element) {
 
     calculateColumn(tableID == id_upperTable, column);
     
+}
+
+function inputEvent(element) {
+
+    if (isNaN(parseFloat(element.value)) || !isFinite(element.value) || element.value.length > 2) {
+        element.value = element.value.slice(0, -1);
+    }
+
 }
 
 
@@ -242,7 +253,7 @@ function loadTablesHelp(inputs, tableID) {
 
     for(let i = 0; inputs.length > i; i++) {
         inputs[i].value = sessionStorage.getItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + "." + i%placol);
-        inputEvent(inputs[i]);
+        onblurEvent(inputs[i]);
     }
 
 }
@@ -252,7 +263,11 @@ function loadTablesHelp(inputs, tableID) {
 
 
 
-function saveResults() {if(!Boolean(sessionStorage.getItem("alreadySaved"))) {
+function saveResults() {
+
+    const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll("label");
+    for(let i = 0; players.length > i; i++) {if(playerTableLabels[i].textContent == "") {return;}}
+
 
     const tmp = document.getElementById(id_bottomTable).querySelectorAll("label");
     for(const element of tmp) {
@@ -263,6 +278,7 @@ function saveResults() {if(!Boolean(sessionStorage.getItem("alreadySaved"))) {
         }
     }
 
+    
     if(players.length >= 2) {
 
         //____________________GameSessionNames____________________
@@ -311,7 +327,7 @@ function saveResults() {if(!Boolean(sessionStorage.getItem("alreadySaved"))) {
 
     }
 
-}}
+}
 
 //__________________________________________________NewGame__________________________________________________
 
@@ -321,5 +337,6 @@ function newGame() {
     window.location.href = "../kniffel.html";
 
 }
+
 
 

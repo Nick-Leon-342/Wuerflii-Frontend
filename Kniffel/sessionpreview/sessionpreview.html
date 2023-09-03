@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kniffel</title>
     <link href="../kniffel.css" rel="stylesheet">
+    <link href="sessionpreview.css" rel="stylesheet">
     <script defer src="../centralStuff.js"></script>
     <script defer src="sessionpreview.js"></script>
 </head>
 <body>
 
-    <div id="kniffelApplication" class="application">
-        <a href="../../index.html"><button class="btn">Startseit</button></a>
+    <div id="application">
+        <a href="../../index.html"><button class="button">Startseite</button></a>
 
-        <div class="interface" id="sessionPreview">
+        <div class="interface">
             <table id="winCountPreview" class="table">
                 <tr id="winCountPreview_Players"></tr>
                 <tr id="winCountPreview_Wins"></tr>
@@ -21,9 +22,9 @@
 
             <table id="finalScorePreview" class="table"></table>
             
-            <div class="play-container">
-                <button class="btn" onclick="backToSelectSession()">Zurück</button>
-                <button class="btn" onclick="initGame()">Los geht's!</button>
+            <div class="button-container">
+                <button class="button" onclick="backToSelectSession()">Zurück</button>
+                <button class="button" onclick="play()">Los geht's!</button>
             </div>
         </div>
 

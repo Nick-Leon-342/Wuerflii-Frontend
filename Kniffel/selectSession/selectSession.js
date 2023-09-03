@@ -4,7 +4,8 @@
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    //loadAllSessions();
+    loadAllSessions();
+    document.getElementById("application").style.display = "block";
 
 }, false);
 
@@ -17,35 +18,35 @@ function switchToEnterNameAndColumnCount() {
 
 
 
-
 document.getElementById("chooseKniffelGameList").addEventListener("click", function(event) {
     
     const target = event.target;
     if(target.tagName !== "BUTTON") {
         
         const clickedElement = target.closest("dt");
-        const gs = [...gameSessionList[clickedElement.getAttribute("gameSessionIndex")]];
+        const gs = gameSessionList[clickedElement.getAttribute("gameSessionIndex")];
+        sessionStorage.setItem(sessionStorage_players, JSON.stringify(gs.Players));
+        sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gs.GameAttributes));
         gameSessionList.length = 0;
-        initGameSession(gs);
+
+        window.location.href = "../sessionpreview/sessionpreview.html";
 
     } else {
         
         if (window.confirm("Bist du sicher, dass du diese Session löschen möchtest?")) {
             
-            const gameSessionName = target.getAttribute("gameSessionName");
-            const gsn_players = gameSessionName + players_Substring;
-            const gsn_gameAttributes = gameSessionName + gameAttributes_Substring;
-            const gsn_finalScore = gameSessionName + finalScore_Substring;
+            const sessionName = target.getAttribute("gameSessionName");
+            setTmpLocalStorageString(sessionName);
     
             
             //____________________GameSessionNames____________________
-            const gameSessionNames = localStorage.getItem(localSession_NamesList_String) != null ? JSON.parse(localStorage.getItem(localSession_NamesList_String)) : [];
+            const gameSessionNames = localStorage.getItem(localStorage_sessionName_List) != null ? JSON.parse(localStorage.getItem(localStorage_sessionName_List)) : [];
             gameSessionNames.splice(gameSessionNames.indexOf(gameSessionName), 1);
-            localStorage.setItem(localSession_NamesList_String, JSON.stringify(gameSessionNames));
+            localStorage.setItem(localStorage_sessionName_List, JSON.stringify(gameSessionNames));
     
-            localStorage.removeItem(gsn_players);
-            localStorage.removeItem(gsn_gameAttributes);
-            localStorage.removeItem(gsn_finalScore);
+            localStorage.removeItem(localStorage_players);
+            localStorage.removeItem(localStorage_gameAttributes);
+            localStorage.removeItem(localStorage_finalScores);
     
             loadAllGames();
 
@@ -59,15 +60,15 @@ document.getElementById("chooseKniffelGameList").addEventListener("click", funct
 
 function loadAllSessions() {
 
-    const gameSessionNames = JSON.parse(localStorage.getItem(localSession_NamesList_String));
+    const gameSessionNames = JSON.parse(localStorage.getItem(localStorage_sessionName_List));
     gameSessionList.length = 0;
     document.getElementById("chooseKniffelGameList").innerHTML = "";
 
     for(let i = 0; gameSessionNames.length > i; i++) {
 
-        const players = JSON.parse(localStorage.getItem(gameSessionNames[i] + players_Substring));
-        const gameAttributes = JSON.parse(localStorage.getItem(gameSessionNames[i] + gameAttributes_Substring));
-        const tmp = [players, gameAttributes];
+        const players = JSON.parse(localStorage.getItem(gameSessionNames[i] + "_" + substring_players));
+        const gameAttributes = JSON.parse(localStorage.getItem(gameSessionNames[i] + "_" + substring_gameAttributes));
+        const tmp = {Players: players, GameAttributes: gameAttributes};
         gameSessionList.push(tmp);
 
         let elementPlayersNames = "";

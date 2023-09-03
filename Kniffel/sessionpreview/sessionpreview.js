@@ -1,16 +1,27 @@
 
 
+document.addEventListener("DOMContentLoaded", function() {
 
-function initGameSession(gs) {
+    document.getElementById("application").style.display = "block";
+    players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
+    gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
 
-    players = gs[0];
-    gameAttributes = gs[1];
-    const gsn_finalScore = gameAttributes.SessionName + finalScore_Substring;
-    const finalScores = JSON.parse(localStorage.getItem(gsn_finalScore));
+    setTmpLocalStorageString(gameAttributes.SessionName);
 
-    document.getElementById("selectExistingKniffelGame").style.display = "none";
-    document.getElementById("sessionPreview").style.display = "block";
+    finalScores = JSON.parse(localStorage.getItem(localStorage_finalScores));
 
+    initSession();
+    
+
+}, false);
+
+let finalScores;
+
+
+
+
+
+function initSession() {
 
     //____________________WinCountPreview____________________
     const winCountPreview_Players = document.getElementById("winCountPreview_Players");
@@ -35,17 +46,18 @@ function initGameSession(gs) {
     const finalScorePreview = document.getElementById("finalScorePreview");
     finalScorePreview.innerHTML = "";
 
-    for(const finalScore of finalScores) {
+    for(let f = 0; finalScores.length > f; f++) {
 
         const row = document.createElement("tr");
+        row.setAttribute("index", f);
         const element_date = document.createElement("th");
-        element_date.textContent = finalScore.gamePlayed;
+        element_date.textContent = finalScores[f].gamePlayed;
         row.appendChild(element_date);
 
         for(const player of players) {
 
             const element_playerCount = document.createElement("th");
-            element_playerCount.textContent = finalScore[player.Name];
+            element_playerCount.textContent = finalScores[f][player.Name];
             row.appendChild(element_playerCount);
 
         }
@@ -64,11 +76,20 @@ function initGameSession(gs) {
 
 }
 
+
+
+
+
 function backToSelectSession() {
 
-    document.getElementById("sessionPreview").style.display = "none";
-    document.getElementById("selectExistingKniffelGame").style.display = "block";
-    loadAllGames();
+    clearSessionStorage();
+    window.location.href = "../selectsession/selectsession.html";
+
+}
+
+function play() {
+
+    window.location.href = "../game/game.html";
 
 }
 

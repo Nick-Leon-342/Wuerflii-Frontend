@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kniffel</title>
     <link href="../kniffel.css" rel="stylesheet">
+    <link href="enternames.css" rel="stylesheet">
     <script defer src="../centralStuff.js"></script>
     <script defer src="enternames.js"></script>
 </head>
 <body>
 
-    <div id="kniffelApplication" class="application">
-        <a href="../../index.html"><button class="btn">Home</button></a>
+    <div id="application">
+        <a href="../../index.html"><button class="button">Home</button></a>
 
-        <div class="interface" id="enterNamesInterface">
+        <div class="interface">
             <dl id="enterNamesList"></dl>
-            <div class="play-container">
-                <button class="btn" onclick="backToEnterNameAndColumnCount()">Zurück</button>
-                <button class="btn" onclick="play()">Los!</button>
+            <div class="button-container">
+                <button class="button" onclick="backToEnterNameAndColumnCount()">Zurück</button>
+                <button class="button" onclick="play()">Los!</button>
             </div>
         </div>
 

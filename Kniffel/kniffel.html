@@ -10,24 +10,24 @@
 </head>
 <body>
 
-    <div id="kniffelApplication" class="application">
-        <a href="../index.html"><button class="btn">Home</button></a>
-        <button class="btn" onclick="initializeTestDataLocalStorage()">Init</button>
+    <div id="application">
+        <a href="../index.html"><button class="button">Home</button></a>
+        <button class="button" onclick="initializeTestDataLocalStorage()">Init</button>
 
-        <div class="interface" id="enterPlayerAndColumnCountInterface">
-            <div class="enterPlayerAndColumnCountInterface-container">
-                <label id="label-players">Players</label>
+        <div class="interface">
+            <div class="input-container">
+                <label>Players</label>
                 <input id="players" class="input" type="number" min="0"></input>
             </div>
             <br>
-            <div class="enterPlayerAndColumnCountInterface-container">
+            <div class="input-container">
                 <label>Columns</label>
                 <input id="columns" class="input" type="number" min="0"></input>
             </div>
             <br>
-            <div class="play-container">
-                <button class="btn" onclick="switchToSelectSession()">Lade Spiel</button>
-                <button class="btn" onclick="next()">Weiter</button>
+            <div class="button-container">
+                <button class="button" onclick="switchToSelectSession()">Lade Spiel</button>
+                <button class="button" onclick="next()">Weiter</button>
             </div>
         </div>
         

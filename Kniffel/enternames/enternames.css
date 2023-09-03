@@ -1,0 +1,25 @@
+
+
+#enterNamesList {
+    justify-self: center;
+}
+
+.enterNamesElement {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.colorbox {
+    width: 35px;
+    height: 35px;
+}
+
+input[type="color"] {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}

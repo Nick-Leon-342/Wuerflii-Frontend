@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kniffel</title>
     <link href="../kniffel.css" rel="stylesheet">
+    <link href="game.css" rel="stylesheet">
     <script defer src="../centralStuff.js"></script>
     <script defer src="game.js"></script>
 </head>
 <body>
 
-    <div id="kniffelApplication" class="application">
-        <a href="../../index.html"><button class="btn">Home</button></a>
+    <div id="application">
+        <a href="../../index.html"><button class="button">Home</button></a>
 
-        <div class="interface" id="kniffelInterface">
+        <div class="interface">
             
             <table id="playerTable" class="table">
                 <tr id="kniffelPlayer">
@@ -23,6 +24,8 @@
                     <th>Spieler gesamt</th>
                 </tr>
             </table>
+
+
 
             <table id="upperTable" class="table upperTable">
                 
@@ -153,8 +156,10 @@
 
             </table>
 
-            <button onclick="newGame()" class="btn">Neues Spiel</button>
-            <button onclick="saveResults()" class="btn">Spiel beenden</button>
+
+
+            <button onclick="newGame()" class="button">Neues Spiel</button>
+            <button onclick="saveResults()" class="button">Spiel beenden</button>
 
         </div>
 

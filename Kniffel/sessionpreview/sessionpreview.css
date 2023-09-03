@@ -1,0 +1,23 @@
+
+
+#winCountPreview th {
+    padding: 5px;
+}
+
+#winCountPreview th:nth-child(1) {
+    width: 100px;
+}
+
+#finalScorePreview th {
+    padding: 5px;
+}
+
+#finalScorePreview th:nth-child(1) {
+    width: 100px;
+}
+
+#finalScorePreview {
+    display: block;
+    max-height: 250px;
+    overflow-y: scroll;
+}

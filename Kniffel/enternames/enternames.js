@@ -3,6 +3,7 @@
 //__________________________________________________Check SessionStorage before displaying__________________________________________________
 
 document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("application").style.display = "block";
 
     const playercount = sessionStorage.getItem(sessionStorage_players);
 
