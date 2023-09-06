@@ -55,3 +55,15 @@
 .deleteGameButton:active {
     transform: scale(0.9);
 }
+
+
+
+
+
+#nothingInListMessage {
+
+}
+
+#nothingInListMessage label {
+    font-size: 25px;
+}

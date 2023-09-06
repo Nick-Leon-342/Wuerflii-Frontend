@@ -3,11 +3,53 @@
 //__________________________________________________Load all sessions when site is loaded__________________________________________________
 
 document.addEventListener("DOMContentLoaded", function() {
-
-    loadAllSessions();
     document.getElementById("application").style.display = "block";
 
+    if(isTest()) {
+
+        initTestData();
+
+    }else {
+
+        try {
+            loadAllSessions();
+        } catch(err) {
+            nothingInList = true;
+            loadError();
+        }
+
+    }    
+
 }, false);
+
+let nothingInList = false;
+
+
+
+
+
+function initTestData() {
+
+    const list = document.getElementById("sessionList");
+    list.innerHTML = "";
+
+    for(let i = 0; 3 > i; i++) {
+
+        list.innerHTML += "<dt class='listElement'>" + 
+            "<label class='listElement-label'>Player_0 vs Player_1 vs Player_2</label>" + 
+            "<div class='listElement-container'>" + 
+            "<label class='listElement-label'>02/11/2000</label>" + 
+            "<button class='deleteGameButton'>X</button>" + 
+            "</div>" + 
+            "</dt>";
+
+    }
+
+}
+
+
+
+
 
 function switchToEnterNameAndColumnCount() {
 
@@ -18,7 +60,7 @@ function switchToEnterNameAndColumnCount() {
 
 
 
-document.getElementById("chooseKniffelGameList").addEventListener("click", function(event) {
+document.getElementById("sessionList").addEventListener("click", function(event) {if(!nothingInList) {
     
     const target = event.target;
     if(target.tagName !== "BUTTON") {
@@ -41,20 +83,22 @@ document.getElementById("chooseKniffelGameList").addEventListener("click", funct
             
             //____________________GameSessionNames____________________
             const gameSessionNames = localStorage.getItem(localStorage_sessionName_List) != null ? JSON.parse(localStorage.getItem(localStorage_sessionName_List)) : [];
-            gameSessionNames.splice(gameSessionNames.indexOf(gameSessionName), 1);
+            gameSessionNames.splice(gameSessionNames.indexOf(sessionName), 1);
             localStorage.setItem(localStorage_sessionName_List, JSON.stringify(gameSessionNames));
     
             localStorage.removeItem(localStorage_players);
             localStorage.removeItem(localStorage_gameAttributes);
             localStorage.removeItem(localStorage_finalScores);
     
-            loadAllGames();
+            loadAllSessions();
 
         }
 
     }
 
-});
+}});
+
+
 
 
 
@@ -62,7 +106,8 @@ function loadAllSessions() {
 
     const gameSessionNames = JSON.parse(localStorage.getItem(localStorage_sessionName_List));
     gameSessionList.length = 0;
-    document.getElementById("chooseKniffelGameList").innerHTML = "";
+    const list = document.getElementById("sessionList");
+    list.innerHTML = "";
 
     for(let i = 0; gameSessionNames.length > i; i++) {
 
@@ -74,7 +119,7 @@ function loadAllSessions() {
         let elementPlayersNames = "";
         for(let i = 0; players.length > i; i++) {elementPlayersNames = elementPlayersNames.concat(players[i].Name + ((i+1) == players.length ? "" : " vs "));}
 
-        document.getElementById("chooseKniffelGameList").innerHTML += "<dt class='listElement' gameSessionIndex='" + i + "'>" + 
+        list.innerHTML += "<dt class='listElement' gameSessionIndex='" + i + "'>" + 
             "<label class='listElement-label'>" + elementPlayersNames + "</label>" + 
             "<div class='listElement-container'>" + 
             "<label class='listElement-label'>" + gameAttributes.CreatedDate + "</label>" + 
@@ -84,5 +129,24 @@ function loadAllSessions() {
     }
 
     resizeEvent();
+
+}
+
+
+
+
+
+function loadError() {
+
+    const message = "Es gibt noch keine Partie!";
+
+    const list = document.getElementById("sessionList");
+    list.innerHTML = "<dt id='nothingInListMessage'>" + 
+        "<label class='label'>" +
+        message +
+        "</label>" + 
+        "</dt>"
+
+
 
 }

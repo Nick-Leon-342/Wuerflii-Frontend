@@ -5,24 +5,47 @@
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("application").style.display = "block";
 
-    const playercount = sessionStorage.getItem(sessionStorage_players);
+    if(isTest()) {
 
-    if(playercount) {
+        initTestData();
 
-        if(JSON.parse(playercount).isNaN) {
-            window.location.href = "../game/game.html";
-        } 
+    }else {
 
-        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+        const playercount = sessionStorage.getItem(sessionStorage_players);
 
-        document.getElementById("enterNamesList").innerHTML = "";
-        for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i);}
+        if(playercount) {
 
-    } else {
-        window.location.href = "../kniffel.html";
+            if(JSON.parse(playercount).isNaN) {
+                window.location.href = "../game/game.html";
+            } 
+
+            gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+
+            document.getElementById("enterNamesList").innerHTML = "";
+            for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i);}
+            if(document.getElementById("enterNamesList").innerHTML == "") {window.location.href = "../kniffel.html";}
+
+        } else {
+            window.location.href = "../kniffel.html";
+        }
+
     }
 
+
+
 }, false);
+
+
+
+
+
+function initTestData() {
+
+    for(let i = 0; 5 > i; i++) {
+        addEnterNamesAndSelectColorElement(i);
+    }
+
+}
 
 
 

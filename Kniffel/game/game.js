@@ -7,27 +7,55 @@ const bottomTable = document.getElementById(id_bottomTable);
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("application").style.display = "block";
 
-    const playercount = sessionStorage.getItem(sessionStorage_players);
+    if(isTest()) {
 
-    if(playercount) {
+        initTestData();
 
-        players = JSON.parse(playercount);
-        if(players.isNaN) {
-            window.location.href = "../enternames/enternames.html";
+    }else {
+
+        const playercount = sessionStorage.getItem(sessionStorage_players);
+
+        if(playercount) {
+
+            players = JSON.parse(playercount);
+            if(players.isNaN) {
+                window.location.href = "../enternames/enternames.html";
+            }
+
+            gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+
+            createTables();
+            loadTables();
+
+            resizeEvent();
+
+        } else {
+            window.location.href = "../kniffel.html";
         }
 
-        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
-
-        createTables();
-        loadTables();
-
-        resizeEvent();
-
-    } else {
-        window.location.href = "../kniffel.html";
     }
 
 }, false);
+
+
+
+
+
+function initTestData() {
+
+    let p_0 = createPlayer("Player_0", "lightblue");
+    let p_1 = createPlayer("Player_1", "white");
+    let p_2 = createPlayer("Player_2", "lightgray");
+    
+    players.push(p_0);
+    players.push(p_1);
+    players.push(p_2);
+
+    gameAttributes = createGameAttributes(2);
+
+    createTables();
+
+}
 
 
 
@@ -307,7 +335,10 @@ function saveResults() {
         
         for(const i of winnerIndex) {players[i].Wins++;}
 
+        sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex));
+
         localStorage.setItem(localStorage_players, JSON.stringify(players));
+        sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
 
 
         //____________________GameAttributes____________________
@@ -321,10 +352,10 @@ function saveResults() {
         finalScoreList.push(finalScore);
         localStorage.setItem(localStorage_finalScores, JSON.stringify(finalScoreList));
 
+        window.location.href = "../endscreen/endscreen.html";
 
-
-        sessionStorage.setItem("alreadySaved", true);
-
+    } else {
+        window.location.href = "../kniffel.html";
     }
 
 }

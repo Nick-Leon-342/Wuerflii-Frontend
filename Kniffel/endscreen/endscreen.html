@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kniffel</title>
     <link href="../kniffel.css" rel="stylesheet">
+    <link href="endscreen.css" rel="stylesheet">
     <script defer src="../centralStuff.js"></script>
-    <script defer src="../kniffel.js"></script>
+    <script defer src="endscreen.js"></script>
 </head>
 <body>
 
-    <div id="kniffelApplication" class="application">
-        <a href="../index.html"><button class="btn">Startseite</button></a>
+    <div id="application">
+        <a href="../index.html"><button class="button">Startseite</button></a>
 
-        <div class="interface" id="enterPlayerAndColumnCountInterface">
-            
-            
-            <div class="play-container">
-                <button class="btn" onclick="ok()">Ok</button>
+        <div class="interface">
+            <label id="winner"></label>
+
+            <table id="wins-table" class="table">
+                <tr id="players"></tr>
+                <tr id="wins"></tr>
+            </table>
+
+            <div class="button-container">
+                <button class="button" onclick="ok()">Ok</button>
             </div>
         </div>
         

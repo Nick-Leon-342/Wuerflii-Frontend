@@ -22,6 +22,7 @@ const substring_gameAttributes              = "gameAttributes";
 const substring_finalScore                  = "finalScore";
 
 const substring_offsetWidth                 = "offsetWidth";
+const substring_winner                      = "winner";
 
 const substring_gameSession                 = "gameSession_";
 
@@ -33,6 +34,7 @@ const sessionStorage_players                = substring_sessionStorage + substri
 const sessionStorage_gameAttributes         = substring_sessionStorage + substring_gameAttributes;
 
 const sessionStorage_offsetWidth            = substring_sessionStorage + substring_offsetWidth;
+const sessionStorage_winner                 = substring_sessionStorage + substring_winner;
 
 const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + "_";
 const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + "_";
@@ -246,4 +248,12 @@ function resizeEvent() {
     } else {
         body.style.height = "100vh";
     }
+}
+
+
+
+
+function isTest() {
+    const parameter = new URLSearchParams(window.location.search).get("test");
+    return parameter == "true";
 }

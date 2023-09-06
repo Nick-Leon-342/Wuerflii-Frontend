@@ -6,7 +6,7 @@
 }
 
 body {
-    margin: auto;
+    margin: 0;
     padding: 0;
     display: flex;
     width: 100%;
@@ -81,6 +81,18 @@ body {
     padding: 5px;
 }
 
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: -10px;
+}
+
+.input-container label {
+    margin-top: 7px;
+    margin-right: 15px;
+    color: white;
+}
+
 
 
 
@@ -97,18 +109,6 @@ body {
     border: 2px solid black;
     text-align: center;
     height: 50px;
-}
-
-.input-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: -10px;
-}
-
-.input-container label {
-    margin-top: 7px;
-    margin-right: 15px;
-    color: white;
 }
 
 
