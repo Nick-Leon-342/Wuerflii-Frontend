@@ -228,6 +228,7 @@ function createFinalScoreElement(scoreList) {
 window.addEventListener("resize", resizeEvent);
 
 function resizeEvent() {
+
     const kA = document.getElementById("application");
     const body = document.body;
 
@@ -248,6 +249,7 @@ function resizeEvent() {
     } else {
         body.style.height = "100vh";
     }
+    
 }
 
 

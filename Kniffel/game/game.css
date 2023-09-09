@@ -4,16 +4,12 @@
     width: 26px;
 }
 
-.upperTable th:nth-child(1),
-.upperTable th:nth-child(2),
 .upperTable td:nth-child(1),
 .upperTable td:nth-child(2),
-.bottomTable th:nth-child(1),
-.bottomTable th:nth-child(2),
 .bottomTable td:nth-child(1),
 .bottomTable td:nth-child(2) {
-    min-width: 110px;
     width: 110px;
+    font-weight: bold;
 }
 
 #playerSum {
@@ -21,11 +17,13 @@
     margin: 5px;
 }
 
-#playerSum th:nth-child(1) {
+#kniffelPlayer td:nth-child(1),
+#playerSum td:nth-child(1) {
     width: 220px;
+    font-weight: bold;
 }
 
-#playerSum th, #playerSum td {
+#playerSum td {
     border: 2px solid black;
     text-align: center;
     height: 50px;

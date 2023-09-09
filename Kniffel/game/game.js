@@ -44,14 +44,14 @@ document.addEventListener("DOMContentLoaded", function() {
 function initTestData() {
 
     let p_0 = createPlayer("Player_0", "lightblue");
-    let p_1 = createPlayer("Player_1", "white");
-    let p_2 = createPlayer("Player_2", "lightgray");
+    let p_1 = createPlayer("P_1", "white");
+    let p_2 = createPlayer("ThisIsPlayer_2", "lightgray");
     
     players.push(p_0);
     players.push(p_1);
     players.push(p_2);
 
-    gameAttributes = createGameAttributes(2);
+    gameAttributes = createGameAttributes(3);
 
     createTables();
 
@@ -102,7 +102,8 @@ function addColumnToPlayerTable(i) {
     nameTD.classList.add("playerSumElement");
     nameTD.textContent = players[i].Name;
     nameTD.style.color = players[i].Color;
-    nameTD.style.width = width + "px";
+    nameTD.style.maxWidth = width + "px";
+    nameTD.style.overflow = "hidden";
     playerTable.querySelectorAll("tr")[0].appendChild(nameTD);
 
     const sumTD = document.createElement("td");
@@ -110,9 +111,9 @@ function addColumnToPlayerTable(i) {
     sumTD.classList.add("playerSumElement");
     sumTD.style.color = players[i].Color;
     sumTD.style.width = width + "px";
+    sumTD.style.overflow = "hidden";
     sumTD.appendChild(sumTDLabel);
     playerTable.querySelectorAll("tr")[1].appendChild(sumTD);
-
 
 }
 
@@ -247,20 +248,6 @@ function calculateScores(bottomLabels, placol) {
 
 
 //__________________________________________________SessionStorage__________________________________________________
-
-function initSessionStorageTables() {
-
-    let columns = gameAttributes.Columns;
-
-    for(let c = 0; columns * players.length > c; c++) {for(let r = 0; 6 > r; r++) {
-        sessionStorage.setItem(sessionStorage_upperTable_substring + r + "." + c, "");
-    }}
-
-    for(let c = 0; columns * players > c; c++) {for(let r = 0; 6 > r; r++) {
-        sessionStorage.setItem(sessionStorage_bottomTable_substring + r + "." + c, "");
-    }}
-
-}
 
 function saveElement(tableID, value, column, row) {
 

@@ -1,19 +1,17 @@
 
 
-#winCountPreview th {
+#winCountPreview td {
     padding: 5px;
 }
 
-#winCountPreview th:nth-child(1) {
-    width: 100px;
+#winCountPreview td,
+#finalScorePreview td {
+    font-weight: bold;
 }
 
-#finalScorePreview th {
-    padding: 5px;
-}
-
-#finalScorePreview th:nth-child(1) {
-    width: 100px;
+#winCountPreview td:nth-child(1),
+#finalScorePreview td:nth-child(1) {
+    width: 115px;
 }
 
 #finalScorePreview {
