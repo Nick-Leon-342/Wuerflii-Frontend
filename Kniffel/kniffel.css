@@ -21,6 +21,7 @@ body {
 
 
 /* ____________________Application____________________ */
+
 #application {
     background-color: #A9A9A9;
     padding: 10px;
@@ -34,6 +35,7 @@ body {
 
 
 /* ____________________Interface____________________ */
+
 .interface {
     background-color: gray;
     border-radius: 15px;
@@ -45,6 +47,7 @@ body {
 
 
 /* ____________________Button____________________ */
+
 .button {
     color: black;
     font-size: 20px;
@@ -75,6 +78,7 @@ body {
 
 
 /* ____________________Input____________________ */
+
 .input {
     background-color: #A9A9A9;
     border-radius: 5px;
@@ -98,11 +102,11 @@ body {
 
 
 /* ____________________Table____________________ */
+
 .table {
     table-layout: fixed;
     border-collapse: collapse;
     margin: 5px;
-    table-layout: fixed;
 }
 
 .table th, table td {

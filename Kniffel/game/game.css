@@ -8,7 +8,7 @@
 .upperTable td:nth-child(2),
 .bottomTable td:nth-child(1),
 .bottomTable td:nth-child(2) {
-    width: 110px;
+    min-width: 110px;
     font-weight: bold;
 }
 
@@ -18,7 +18,8 @@
 }
 
 #kniffelPlayer td:nth-child(1),
-#playerSum td:nth-child(1) {
+#playerSum td:nth-child(1),
+#gnadenwurf td:nth-child(1) {
     width: 220px;
     font-weight: bold;
 }
@@ -38,3 +39,10 @@
     font-size: 20px;
 }
 
+.highlighted {
+    color: white;
+}
+
+.checkbox {
+    
+}

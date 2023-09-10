@@ -35,6 +35,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }
 
+    playerTable.querySelectorAll(".checkbox").forEach(function(element) {
+        element.addEventListener("change", function() {
+    
+            const checks = [];
+            for(let i = 0; players.length > i; i++) {
+                checks.push(playerTable.querySelectorAll("tr")[2].querySelectorAll(".checkbox")[i].checked);
+            }
+            sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(checks));
+    
+        });
+    });
+
 }, false);
 
 
@@ -115,6 +127,14 @@ function addColumnToPlayerTable(i) {
     sumTD.appendChild(sumTDLabel);
     playerTable.querySelectorAll("tr")[1].appendChild(sumTD);
 
+    const gnadenwurfTD = document.createElement("td");
+    const box = document.createElement("input");
+    box.classList.add("checkbox");
+    box.type = "checkbox";
+    box.setAttribute = i;
+    gnadenwurfTD.appendChild(box);
+    playerTable.querySelectorAll("tr")[2].appendChild(gnadenwurfTD);
+
 }
 
 function addColumnToTable(column, tableID, color) {
@@ -141,12 +161,14 @@ function addRowToTable(column, tableID, rows, input, color, i) {
     element.setAttribute("data-tableid", tableID);
     element.setAttribute("data-column", column);
     element.setAttribute("data-row", i);
-    element.onblur = function(){onblurEvent(element)};
+    element.onblur = function() {onblurEvent(element)};
+    element.oninput = function() {inputEvent(element)};
     td.style.backgroundColor = color;
     td.appendChild(element);
     rows[i].appendChild(td);
 
-    element.addEventListener("input", function() {inputEvent(element);});
+    element.addEventListener("focus", function() {focusEvent(element)});
+    element.addEventListener("focusout", function() {focusEvent(element)});
 
 }
 
@@ -175,6 +197,35 @@ function inputEvent(element) {
     if (isNaN(parseFloat(element.value)) || !isFinite(element.value) || element.value.length > 2) {
         element.value = element.value.slice(0, -1);
     }
+
+}
+
+function focusEvent(element) {
+
+    const h = "highlighted";
+
+    const r = element.closest("tr");
+    if(r.classList.contains(h)) {
+        r.classList.remove(h);
+    } else {
+        r.classList.add(h);
+    }
+
+    const u = document.getElementById(id_upperTable).rows;
+    for(const e of u) {
+        if(e != r) {e.classList.remove(h);}
+    }
+
+    const b = document.getElementById(id_bottomTable).rows;
+    for(const e of b) {
+        if(e != r) {e.classList.remove(h);}
+    }
+
+    
+
+}
+
+function loadIcon(i) {
 
 }
 
@@ -257,6 +308,12 @@ function saveElement(tableID, value, column, row) {
   
 function loadTables() {
 
+    const checks = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf));
+    if(checks) {
+        for(let i = 0; checks.length > i; i++) {
+            playerTable.querySelectorAll("tr")[2].querySelectorAll(".checkbox")[i].checked = checks[i];
+        }
+    }
     loadTablesHelp(upperTable.querySelectorAll("input"), id_upperTable);
     loadTablesHelp(bottomTable.querySelectorAll("input"), id_bottomTable);
     
@@ -338,6 +395,8 @@ function saveResults() {
         const finalScoreList = localStorage.getItem(localStorage_finalScores) != null ? JSON.parse(localStorage.getItem(localStorage_finalScores)) : [];
         finalScoreList.push(finalScore);
         localStorage.setItem(localStorage_finalScores, JSON.stringify(finalScoreList));
+
+        clearSessionStorageTables();
 
         window.location.href = "../endscreen/endscreen.html";
 

@@ -21,6 +21,7 @@ const substring_players                     = "players";
 const substring_gameAttributes              = "gameAttributes";
 const substring_finalScore                  = "finalScore";
 
+const substring_gnadenwurf                  = "gnadenwurf";
 const substring_offsetWidth                 = "offsetWidth";
 const substring_winner                      = "winner";
 
@@ -33,6 +34,7 @@ const substring_sessionStorage              = "kniffel_sessionStorage_";
 const sessionStorage_players                = substring_sessionStorage + substring_players;
 const sessionStorage_gameAttributes         = substring_sessionStorage + substring_gameAttributes;
 
+const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf;
 const sessionStorage_offsetWidth            = substring_sessionStorage + substring_offsetWidth;
 const sessionStorage_winner                 = substring_sessionStorage + substring_winner;
 
@@ -164,14 +166,27 @@ function setPlayersGameAttributesFinalScoresString() {
 
 }
 
-function clearSessionStorage() {
+
+
+
+
+//____________________ClearStorage____________________
+
+function clearSessionStorage() {cSS(substring_sessionStorage);}
+
+function clearSessionStorageTables() {
+    cSS(sessionStorage_upperTable_substring);
+    cSS(sessionStorage_bottomTable_substring);
+}
+
+function cSS(substring) {
 
     const sessionStorage_Keys = [];
 
     for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i));}
     
     for(const key of sessionStorage_Keys) {
-        if (key.includes(substring_sessionStorage)) {
+        if (key.includes(substring)) {
             sessionStorage.removeItem(key);
         }
     }
@@ -256,6 +271,8 @@ function resizeEvent() {
 
 
 function isTest() {
+
     const parameter = new URLSearchParams(window.location.search).get("test");
     return parameter == "true";
+
 }

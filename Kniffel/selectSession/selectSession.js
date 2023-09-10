@@ -11,11 +11,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }else {
 
-        try {
-            loadAllSessions();
-        } catch(err) {
-            nothingInList = true;
-            loadError();
+        players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
+
+        if(!players) {
+
+            try {
+                loadAllSessions();
+            } catch(err) {
+                nothingInList = true;
+                loadError();
+            }
+
+        } else if(players.isNaN) {
+
+            window.location.href = "../";
+
+        } else {
+
+            window.location.href = "../enternames/enternames.html";
+
         }
 
     }    
@@ -146,7 +160,5 @@ function loadError() {
         message +
         "</label>" + 
         "</dt>"
-
-
 
 }
