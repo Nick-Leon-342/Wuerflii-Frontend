@@ -3,6 +3,8 @@
 const upperTable  = document.getElementById(id_upperTable);
 const bottomTable = document.getElementById(id_bottomTable);
 
+let columnsSum = [];
+
 
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("application").style.display = "block";
@@ -90,8 +92,10 @@ function createTables() {
 
     for(let p = 0; p < players.length; p++) {
         for(let c = 0; c < gameAttributes.Columns; c++) {
-            addColumnToTable(c + p * gameAttributes.Columns, id_upperTable, players[p].Color);
-            addColumnToTable(c + p * gameAttributes.Columns, id_bottomTable, players[p].Color);
+            const columnCount = c + p * gameAttributes.Columns;
+            addColumnToTable(columnCount, id_upperTable, players[p].Color);
+            addColumnToTable(columnCount, id_bottomTable, players[p].Color);
+            columnsSum.push({Upper: 0, Bottom: 0, All: 0});
         }
         addColumnToPlayerTable(p);
     }
@@ -174,21 +178,20 @@ function addRowToTable(column, tableID, rows, input, color, i) {
 
 function onblurEvent(element) {
 
-    const tableID = element.getAttribute("data-tableid");
+    const id = element.getAttribute("data-tableid");
     const column = Number(element.getAttribute("data-column"));
-    const row = Number(element.getAttribute("data-row"));
-    const inputs = (tableID == id_upperTable ? upperTable : bottomTable).querySelectorAll("input");
-    const placol = players.length * gameAttributes.Columns;
 
-    saveElement(tableID, element.value, column, row);
+    saveElement(
+        id, 
+        element.value, 
+        column, 
+        Number(element.getAttribute("data-row")));
 
-    for(let i = 0; inputs.length/placol > i; i++) {
-        if(!Boolean(inputs[column + i*placol].value) || isNaN(inputs[column + i*placol].value)) {
-            return;
-        }
+    if(id == id_upperTable) {
+        calculateUpperColumn(column);
+    } else {
+        calculateBottomColumn(column);
     }
-
-    calculateColumn(tableID == id_upperTable, column);
     
 }
 
@@ -235,58 +238,111 @@ function loadIcon(i) {
 
 //__________________________________________________Calculating and endgame__________________________________________________
 
-function calculateColumn(upper, column) {
+function calculateUpperColumn(columnIndex) {
 
-    const inputs = (Boolean(upper) ? upperTable : bottomTable).querySelectorAll("input");
-    const upperLabels = upperTable.querySelectorAll("label");
-    const bottomLabels = bottomTable.querySelectorAll("label");
-    const placol = players.length * gameAttributes.Columns;
+    const column = upperTable.querySelectorAll(`[data-column="${columnIndex}"]`);
+
+    let columnCompleted = true;
     let sum = 0;
-    
-    for(let i = 0; inputs.length/placol > i; i++) {
-        sum = sum + Number(inputs[column + i*placol].value);
+
+    for(let i = 0; 6 > i; i++) {
+
+        const n = column[i].value;
+        if(n == "") {
+            columnCompleted = false;
+        } else {
+            sum += Number(n);
+        }
+
     }
 
-    if(Boolean(upper)) {calculateUpperColumn(upperLabels, bottomLabels, column, placol, sum);
-    }else{calculateBottomColumn(bottomLabels, column, placol, sum);}
+    const bottomLabels = bottomTable.querySelectorAll(`label[data-column="${columnIndex}"]`);
+    column[6].textContent = sum;
+    if(Boolean(columnCompleted)) {
+
+        sum = sum >= 63 ? sum + 35 : sum;
+        column[7].textContent = sum >= 63 ? 35 : "-";
+        column[8].textContent = sum;
+        
+        bottomLabels[1].textContent = sum;
+        
+    } else {
+
+        column[7].textContent = "";
+        column[8].textContent = "";
+        bottomLabels[1].textContent = "";
+
+    }
+
+    calculateBottomLabels(columnIndex, bottomLabels);
+    columnsSum[columnIndex].Upper = sum;
+    calculateScores();
 
 }
 
-function calculateUpperColumn(upperLabels, bottomLabels, column, placol, sum) {
+function calculateBottomColumn(columnIndex) {
 
-    upperLabels[column].textContent = sum;
-    upperLabels[column + placol].textContent = sum < 63 ? "-" : 35;
-    upperLabels[column + placol * 2].textContent = sum < 63 ? sum : sum + 35;
-    bottomLabels[column + placol].textContent = sum < 63 ? sum : sum + 35;
-    bottomLabels[column + placol * 2].textContent = 
-        bottomLabels[column].textContent == "" 
-        ? ""
-        : Number(bottomLabels[column + placol].textContent) + Number(bottomLabels[column].textContent);
+    const column = bottomTable.querySelectorAll(`[data-column="${columnIndex}"]`);
 
-    calculateScores(bottomLabels, placol);
+    let columnCompleted = true;
+    let sum = 0;
+
+    for(let i = 0; 7 > i; i++) {
+
+        const n = column[i].value;
+        if(n == "") {
+            columnCompleted = false;
+        } else {
+            sum += Number(n);
+        }
+
+    }
+
+    if(Boolean(columnCompleted)) {
+
+        column[7].textContent = sum;
+        
+    } else {
+
+        column[7].textContent = "";
+        column[9].textContent = "";
+
+    }
+
+    calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[data-column="${columnIndex}"]`));
+    columnsSum[columnIndex].Bottom = sum;
+    calculateScores();
 
 }
 
-function calculateBottomColumn(bottomLabels, column, placol, sum) {
+function calculateBottomLabels(columnIndex, bottomLabels) {
 
-    bottomLabels[column].textContent = sum;
-    bottomLabels[column + placol * 2].textContent = 
-        bottomLabels[column + placol].textContent == "" 
-        ? ""
-        : Number(bottomLabels[column + placol].textContent) + Number(bottomLabels[column].textContent);
+    const up = Number(bottomLabels[0].textContent);
+    const bottom = Number(bottomLabels[1].textContent);
+    const sum = up + bottom;
 
-    calculateScores(bottomLabels, placol);
+    bottomLabels[2].textContent = up != 0 && bottom != 0 ? sum : "";
+    columnsSum[columnIndex].All = Number(bottomLabels[2].textContent);
 
 }
 
-function calculateScores(bottomLabels, placol) {
+function calculateScores() {
 
     const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll("label");
     
     for(let i = 0; players.length > i; i++) {
 
         let sum = 0;
-        for(let c = 0; gameAttributes.Columns > c; c++) {sum += Number(bottomLabels[c + gameAttributes.Columns * i + placol * 2].textContent);}
+        for(let c = 0; gameAttributes.Columns > c; c++) {
+
+            const column = columnsSum[c + i * gameAttributes.Columns];
+            if(column.All != 0) {
+                sum += column.All;
+            } else {
+                sum += column.Upper + column.Bottom;
+            }
+
+        }
         playerTableLabels[i].textContent = sum;
 
     }
@@ -337,19 +393,12 @@ function loadTablesHelp(inputs, tableID) {
 
 function saveResults() {
 
-    const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll("label");
-    for(let i = 0; players.length > i; i++) {if(playerTableLabels[i].textContent == "") {return;}}
-
-
-    const tmp = document.getElementById(id_bottomTable).querySelectorAll("label");
-    for(const element of tmp) {
-        const e = element.textContent;
-        if(e == "" || e == 0) {
-            window.alert("Bitte alle Werte eingeben und keine Buchstaben!");
+    for(const element of columnsSum) {
+        if(element.All == 0) {
+            window.alert("Bitte alle Werte eingeben!");
             return;
         }
     }
-
     
     if(players.length >= 2) {
 
