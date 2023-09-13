@@ -24,12 +24,6 @@
     font-weight: bold;
 }
 
-#playerSum td {
-    border: 2px solid black;
-    text-align: center;
-    height: 50px;
-}
-
 .kniffelInput {
     border: none;
     height: 40px;
