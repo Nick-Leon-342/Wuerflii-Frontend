@@ -16,6 +16,6 @@
 
 #finalScorePreview {
     display: block;
-    max-height: 250px;
+    max-height: 252px;
     overflow-y: scroll;
 }

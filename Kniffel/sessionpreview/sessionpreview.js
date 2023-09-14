@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
         initSession();
 
+
+
     }
 
     resizeTable();
@@ -101,6 +103,8 @@ function initSession() {
         finalScorePreview.appendChild(row);
 
     }
+
+    console.log(finalScorePreview.querySelectorAll("tr")[0].offsetHeight);
 
 }
 

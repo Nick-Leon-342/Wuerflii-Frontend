@@ -93,9 +93,9 @@ function initWinner(winnerIndexList) {
 
     } else {
 
-        let winners = `${players[winnerIndexList[0]]} `;
+        let winners = `'${players[winnerIndexList[0]].Name}' `;
         for(let i = 1; winnerIndexList.length > i; i++) {
-            const p = players[winnerIndexList[i]].Name;
+            const p = `'${players[winnerIndexList[i]].Name}'`;
             if((i + 1) == winnerIndexList.length) {
                 winners += ` und ${p}`;
             } else {
