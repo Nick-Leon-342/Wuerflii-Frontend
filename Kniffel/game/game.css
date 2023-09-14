@@ -37,6 +37,14 @@
     color: white;
 }
 
+.highlighted rect {
+    stroke: white;
+}
+
+.highlighted ellipse {
+    fill: white;
+}
+
 .checkbox {
     
 }
