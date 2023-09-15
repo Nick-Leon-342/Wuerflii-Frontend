@@ -117,7 +117,7 @@ function addColumnToPlayerTable(i) {
     const nameTD = document.createElement("td");
     nameTD.classList.add("playerSumElement");
     nameTD.textContent = players[i].Name;
-    nameTD.style.color = players[i].Color;
+    nameTD.style.color = "white";
     nameTD.style.maxWidth = width + "px";
     nameTD.style.overflow = "hidden";
     playerTable.querySelectorAll("tr")[0].appendChild(nameTD);
@@ -125,7 +125,7 @@ function addColumnToPlayerTable(i) {
     const sumTD = document.createElement("td");
     const sumTDLabel = document.createElement("label");
     sumTD.classList.add("playerSumElement");
-    sumTD.style.color = players[i].Color;
+    sumTD.style.color = "white";
     sumTD.style.width = width + "px";
     sumTD.style.overflow = "hidden";
     sumTD.appendChild(sumTDLabel);
