@@ -15,7 +15,9 @@ const id_bottomTable                        = "bottomTable";
 const id_playerTable                        = "playerTable";
 
 
-//____________________LocalStorage____________________
+//____________________Substrings____________________
+
+const substring_socketID                    = "socketID";
 
 const substring_players                     = "players";
 const substring_gameAttributes              = "gameAttributes";
@@ -29,6 +31,8 @@ const substring_gameSession                 = "gameSession_";
 
 
 //____________________SessionStorage____________________
+
+const sessionStorage_socketID               = substring_sessionStorage + substring_socketID;
 
 const substring_sessionStorage              = "kniffel_sessionStorage_";
 const sessionStorage_players                = substring_sessionStorage + substring_players;
