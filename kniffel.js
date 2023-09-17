@@ -4,19 +4,6 @@
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    if(sessionStorage.getItem(sessionStorage_players)) {
-
-        players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
-        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
-
-        if(players.isNaN) {
-            window.location.href = "./game/game.html";
-        } else {
-            window.location.href = "./enternames/enternames.html";
-        }
-
-    }
-
     document.getElementById("application").style.display = "block";
 
 }, false);
