@@ -4,7 +4,11 @@
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    document.getElementById("application").style.display = "block";
+    if(sessionStorage.getItem(sessionStorage_user) && sessionStorage.getItem(sessionStorage_token)) {
+        document.getElementById("application").style.display = "block";
+    } else {
+        window.location.href = "registration/registration.html";
+    }
 
 }, false);
 

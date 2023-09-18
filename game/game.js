@@ -172,7 +172,7 @@ function addRowToTable(column, tableID, rows, input, color, i) {
     rows[i].appendChild(td);
 
     element.addEventListener("focus", function() {focusEvent(element)});
-    element.addEventListener("focusout", function() {focusEvent(element)});
+    element.addEventListener("blur", function() {removeFocusEvent(element)});
 
 }
 
@@ -208,11 +208,17 @@ function focusEvent(element) {
     const h = "highlighted";
 
     const r = element.closest("tr");
-    if(r.classList.contains(h)) {
-        r.classList.remove(h);
-    } else {
+    if(!r.classList.contains(h)) {
         r.classList.add(h);
     }
+
+    removeFocusEvent(r);
+
+}
+
+function removeFocusEvent(r) {
+
+    const h = "highlighted";
 
     const u = document.getElementById(id_upperTable).rows;
     for(const e of u) {
@@ -223,12 +229,6 @@ function focusEvent(element) {
     for(const e of b) {
         if(e != r) {e.classList.remove(h);}
     }
-
-    
-
-}
-
-function loadIcon(i) {
 
 }
 

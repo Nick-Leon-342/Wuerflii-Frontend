@@ -1,0 +1,1 @@
+[{"Name":"1","Password":"1","Token":9077979335,"SessionNames_List":[],"Players_List":[],"GameAttributes_List":[],"FinalScores_List":[]},{"Name":"2","Password":"2","Token":9210808730,"SessionNames_List":[],"Players_List":[],"GameAttributes_List":[],"FinalScores_List":[]}]

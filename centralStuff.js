@@ -2,7 +2,6 @@
 
 let players = [];
 let gameAttributes;
-const gameSessionList = [];
 
 
 
@@ -58,11 +57,16 @@ function clearSessionStorage() {
     for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i));}
     
     for(const key of sessionStorage_Keys) {
-        if (key.includes(substring_sessionStorage)) {
+        if (key.includes(substring_sessionStorage) && key != sessionStorage_user && key != sessionStorage_token) {
             sessionStorage.removeItem(key);
         }
     }
 
+}
+
+function clearSessionStorageUserAndToken() {
+    sessionStorage.removeItem(sessionStorage_user);
+    sessionStorage.removeItem(sessionStorage_token);
 }
 
 function clearSessionStorageTables() {

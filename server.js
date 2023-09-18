@@ -1,7 +1,33 @@
 
 
-const list = [];
+let list = [];
 
+
+//____________________Save____________________
+
+const fs = require("fs");
+
+fs.readFile("data.txt", "utf-8", (err, data) => {
+
+    if(err) {console.log(err);} else {
+        list = JSON.parse(data);
+    }
+
+});
+
+function save() {
+
+    fs.writeFile("data.txt", JSON.stringify(list), (err) => {
+        if(err) {console.log(err);}
+    });
+
+}
+
+
+
+
+
+//____________________Socket____________________
 
 const io = require("socket.io")(3000, {
     cors: {
@@ -17,6 +43,7 @@ io.on("connection", socket => {
         const tmpUser = registration(user.Name, user.Password);
         list.push(tmpUser);
         socket.emit("registration", {Name: tmpUser.Name, Token: tmpUser.Token});
+        save();
 
     })
 
@@ -25,6 +52,22 @@ io.on("connection", socket => {
         
         const tmpUser = login(user.Name, user.Password);
         socket.emit("login", tmpUser !== "" ? {Name: tmpUser.Name, Token: tmpUser.Token} : "Error");
+        save();
+
+    })
+
+
+    socket.on("loadSessions", user => {
+
+        const tmpUser = getUser(user.Name, user.Token);
+
+        if(tmpUser != null) {
+            if(tmpUser.SessionNames_List.length != 0) {
+                socket.emit("loadSessions", {SessionNames_List: tmpUser.SessionNames_List, GameAttributes_List: tmpUser.GameAttributes_List, Players_List: tmpUser.Players_List});
+            } else {
+                socket.emit("loadSessions", null);
+            }
+        }
 
     })
 
@@ -37,6 +80,7 @@ function registration(name, password) {
         Password: password,
         Token: generateToken(),
         SessionNames_List: [],
+        Players_List: [],
         GameAttributes_List: [],
         FinalScores_List: []
     };
@@ -72,6 +116,9 @@ function getUser(name, token) {
     }
 
 }
+
+
+
 
 
 
