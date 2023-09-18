@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 }, false);
 
-const socket = io("http://192.168.178.41:3000");
+const socket = io(ip);
 
 
 
@@ -30,10 +30,10 @@ function next() {
 socket.on("login", data => {
 
     if(data != "Error") {
-
+        
         sessionStorage.setItem(sessionStorage_user, data.Name);
         sessionStorage.setItem(sessionStorage_token, data.Token);
-    
+        
         window.location.href = "../kniffel.html";
 
     } else {

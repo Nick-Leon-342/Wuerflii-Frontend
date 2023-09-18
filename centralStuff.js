@@ -3,6 +3,8 @@
 let players = [];
 let gameAttributes;
 
+const ip = "http://192.168.178.41:3000";
+
 
 
 //____________________IDs____________________
@@ -52,15 +54,7 @@ const sessionStorage_token                  = substring_sessionStorage + substri
 
 function clearSessionStorage() {
 
-    const sessionStorage_Keys = [];
-
-    for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i));}
-    
-    for(const key of sessionStorage_Keys) {
-        if (key.includes(substring_sessionStorage) && key != sessionStorage_user && key != sessionStorage_token) {
-            sessionStorage.removeItem(key);
-        }
-    }
+    cSS(substring_sessionStorage);
 
 }
 
@@ -70,8 +64,24 @@ function clearSessionStorageUserAndToken() {
 }
 
 function clearSessionStorageTables() {
+
     cSS(sessionStorage_upperTable_substring);
     cSS(sessionStorage_bottomTable_substring);
+
+}
+
+function cSS(substring) {
+
+    const sessionStorage_Keys = [];
+
+    for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i));}
+    
+    for(const key of sessionStorage_Keys) {
+        if (key.includes(substring) && key != sessionStorage_user && key != sessionStorage_token) {
+            sessionStorage.removeItem(key);
+        }
+    }
+
 }
 
 

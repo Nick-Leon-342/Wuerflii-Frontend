@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 }, false);
 
-const socket = io("http://192.168.178.41:3000");
+const socket = io(ip);
 
 
 

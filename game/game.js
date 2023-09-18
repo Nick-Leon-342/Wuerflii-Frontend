@@ -5,6 +5,9 @@ const bottomTable = document.getElementById(id_bottomTable);
 
 let columnsSum = [];
 
+const socket = io(ip);
+const user = {Name: sessionStorage.getItem(sessionStorage_user), Token: sessionStorage.getItem(sessionStorage_token)};
+
 
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("application").style.display = "block";
@@ -389,7 +392,12 @@ function loadTablesHelp(inputs, tableID) {
 
 
 
+//____________________SaveResults____________________
+/* 
 
+If it's a new game the client requests a sessionname from the server.
+
+*/
 
 function saveResults() {
 
@@ -402,56 +410,67 @@ function saveResults() {
     
     if(players.length >= 2) {
 
-        //____________________GameSessionNames____________________
-        const gameSessionNames = localStorage.getItem(localStorage_sessionName_List) != null ? JSON.parse(localStorage.getItem(localStorage_sessionName_List)) : [];
-        setLocalStorageStrings(gameSessionNames);
-        localStorage.setItem(localStorage_sessionName_List, JSON.stringify(gameSessionNames));
-
-
-        //____________________Players____________________
-        const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll("label");
-        const playerScores = [];
-        for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent);}
-
-        let winnerIndex = [0]; //It's possible that multiple players have the same score, therefore an array
-    
-        for(let i = 1; players.length > i; i++) {
-            if(playerScores[i] != null) {
-                if(playerScores[i] > playerScores[winnerIndex[0]]) {
-                    winnerIndex.length = 0;
-                    winnerIndex.push(i)
-                } else if (playerScores[i] == playerScores[winnerIndex[0]]) {
-                    winnerIndex.push(i);
-                }
-            }
+        if(gameAttributes.SessionName == "") {
+            socket.emit("sessionNameRequest", user);
+        } else {
+            sendResults();
         }
-        
-        for(const i of winnerIndex) {players[i].Wins++;}
-
-        sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex));
-
-        localStorage.setItem(localStorage_players, JSON.stringify(players));
-        sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
-
-
-        //____________________GameAttributes____________________
-        gameAttributes.LastPlayed = new Date().toLocaleDateString;
-        localStorage.setItem(localStorage_gameAttributes, JSON.stringify(gameAttributes));
-
-
-        //____________________FinalScore____________________
-        const finalScore = createFinalScoreElement(playerScores);
-        const finalScoreList = localStorage.getItem(localStorage_finalScores) != null ? JSON.parse(localStorage.getItem(localStorage_finalScores)) : [];
-        finalScoreList.push(finalScore);
-        localStorage.setItem(localStorage_finalScores, JSON.stringify(finalScoreList));
-
-        clearSessionStorageTables();
-
-        window.location.href = "../endscreen/endscreen.html";
 
     } else {
         window.location.href = "../kniffel.html";
     }
+
+}
+
+socket.on("sessionNameRequest", data => {
+
+    gameAttributes.SessionName = data;
+    sendResults();
+
+})
+
+function sendResults() {
+
+    //____________________Players____________________
+    const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll("label");
+    const playerScores = [];
+    for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent);}
+
+    let winnerIndex = [0]; //It's possible that multiple players have the same score, therefore an array
+
+    for(let i = 1; players.length > i; i++) {
+        if(playerScores[i] != null) {
+            if(playerScores[i] > playerScores[winnerIndex[0]]) {
+                winnerIndex.length = 0;
+                winnerIndex.push(i)
+            } else if (playerScores[i] == playerScores[winnerIndex[0]]) {
+                winnerIndex.push(i);
+            }
+        }
+    }
+
+    for(const i of winnerIndex) {players[i].Wins++;}
+
+    sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex));
+    sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
+
+
+    //____________________GameAttributes____________________
+    gameAttributes.LastPlayed = new Date().toLocaleDateString("de-DE");
+
+
+    //____________________FinalScore____________________
+    const finalScores = createFinalScoreElement(playerScores);
+
+    
+    socket.emit("saveResults", {User: user, Players: players, GameAttributes: gameAttributes, FinalScores: finalScores}, (ack) => {
+
+        console.log("Nachricht empfangen:", ack);
+
+    });
+
+    clearSessionStorageTables();
+    window.location.href = "../endscreen/endscreen.html";
 
 }
 

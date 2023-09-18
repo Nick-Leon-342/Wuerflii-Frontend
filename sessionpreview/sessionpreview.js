@@ -1,34 +1,39 @@
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("application").style.display = "block";
 
     if(isTest()) {
 
 
+        resizeTable();
 
     } else {
 
         players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
         gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
-    
-        setTmpLocalStorageString(gameAttributes.SessionName);
-    
-        finalScores = JSON.parse(localStorage.getItem(localStorage_finalScores));
-    
-        initSession();
 
-
+        socket.emit("finalScoresRequest", {Name: sessionStorage.getItem(sessionStorage_user), Token: sessionStorage.getItem(sessionStorage_token), SessionName: gameAttributes.SessionName}); 
 
     }
-
-    resizeTable();
 
 }, false);
 
 let finalScores;
 
+const socket = io(ip);
 
+
+
+
+socket.on("finalScoresRequest", data => {
+    document.getElementById("application").style.display = "block";
+
+    finalScores = data;
+
+    initSession();
+    resizeTable();
+
+})
 
 
 function resizeTable() {
@@ -103,8 +108,6 @@ function initSession() {
         finalScorePreview.appendChild(row);
 
     }
-
-    console.log(finalScorePreview.querySelectorAll("tr")[0].offsetHeight);
 
 }
 

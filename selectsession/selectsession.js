@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", function() {
             loadError();
         }
 
-    }    
+    }
 
 }, false);
 
-const socket = io("http://192.168.178.41:3000");
+const socket = io(ip);
 
 let nothingInList = false;
 
@@ -71,10 +71,9 @@ document.getElementById("sessionList").addEventListener("click", function(event)
     if(target.tagName !== "BUTTON") {
         
         const clickedElement = target.closest("dt");
-        const gs = gameSessionList[clickedElement.getAttribute("gameSessionIndex")];
-        sessionStorage.setItem(sessionStorage_players, JSON.stringify(gs.Players));
-        sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gs.GameAttributes));
-        gameSessionList.length = 0;
+        const index = clickedElement.getAttribute("gameSessionIndex");
+        sessionStorage.setItem(sessionStorage_players, JSON.stringify(players_list[index]));
+        sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gameAttributes_list[index]));
 
         window.location.href = "../sessionpreview/sessionpreview.html";
 
@@ -122,8 +121,6 @@ socket.on("loadSessions", data => {
         const sessionNames_list = data.SessionNames_List;
         players_list = data.Players_List;
         gameAttributes_list = data.GameAttributes_List;
-    
-        console.log(data);
     
         const list = document.getElementById("sessionList");
         list.innerHTML = "";
