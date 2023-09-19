@@ -1,50 +1,27 @@
+require('dotenv').config()
 
+const express = require('express')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const path = require('path')
+const http = require('http')
+const fs = require("fs")
 
-const express = require("express")
 const app = express()
-const bcrypt = require("bcrypt")
+const server = http.createServer(app)
+const io = require('socket.io')(server, {
+    cors: {
+        origin: ['http://192.168.178.41:3000', 'http://127.0.0.1:3000', 'http://localhost:3000'],
+        methods: ['GET', 'POST']
+    }
+});
 
+app.use(express.static(path.join(__dirname, "public")))
 app.use(express.json())
 
 
-const users = []
-
-
-app.get("/users", (req, res) => {
-    res.json(users)
-})
-
-
-app.post("/users", async (req, res) => {
-
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        const user = {Name: req.body.name, Password: hashedPassword}
-        users.push(user)
-        
-        res.status(201).send()
-    } catch {
-        res.status(500).send()
-    }
-
-})
-
-
-app.post("/users/login", async (req, res) => {
-    const user = users.find(user => user.Name = req.body.Name)
-    if(user == null) {return res.status(400).send("Wrong credentials")}
-
-    try {
-        if(await bcrypt.compare(req.body.password, user.Password)) {
-            res.send("Success")
-        } else {
-            return res.status(400).send("Wrong credentials")
-        }
-    } catch {
-        res.status(500).send()
-    }
-
-})
+let users = []
+let refreshToken_list = []
 
 
 
@@ -53,62 +30,20 @@ app.post("/users/login", async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.listen(3000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-let list = [];
 
 
 //____________________Save____________________
 
-const fs = require("fs");
-
 fs.readFile("data.txt", "utf-8", (err, data) => {
 
-    if(err) {console.log(err);} else {
-        list = JSON.parse(data);
-    }
+    if(!err) users = JSON.parse(data);
 
 });
 
 function save() {
 
-    fs.writeFile("data.txt", JSON.stringify(list), (err) => {
-        if(err) {console.log(err);}
+    fs.writeFile("data.txt", JSON.stringify(users), (err) => {
+        if(err) console.log(err);
     });
 
 }
@@ -117,126 +52,112 @@ function save() {
 
 
 
-//____________________Socket____________________
 
-const io = require("socket.io")(3000, {
-    cors: {
-        origin: ["http://192.168.178.41:5500", "http://127.0.0.1:5500"],
-        methods: ["GET", "POST"]
+
+
+
+
+//__________________________________________________SocketIO - Connection__________________________________________________
+
+const { handleConnection } = require('./connectionHandler')
+const { error } = require('console')
+
+io.on('connection', socket => handleConnection(socket))
+
+
+
+
+
+
+
+
+
+
+//____________________________________________________________________________________________________Authentication____________________________________________________________________________________________________
+
+//__________________________________________________Token(-Renewal)__________________________________________________
+
+app.post('/token', (req, res) => {
+
+    const refreshToken = req.body.token
+    if(refreshToken == null) return res.sendStatus(401)
+    if(!refreshToken_list.includes(refreshToken)) return res.sendStatus(403)
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+
+        if(err) return res.sendStatus(403)
+        const accessToken = generateAccessToken({ Name: user.Name, Password: user.Password })
+        res.json({ AccessToken: accessToken })
+
+    })
+
+})
+
+function generateToken(user) {
+
+    const tmp = { Name: user.Name, Password: user.Password }
+    const accessToken = generateAccessToken(tmp)
+    const refreshToken = jwt.sign(tmp, process.env.REFRESH_TOKEN_SECRET)
+    refreshToken_list.push(refreshToken)
+
+    return { AccessToken: accessToken, RefreshToken: refreshToken }
+
+}
+
+function authenticateToken(req, res, next) {
+
+    const authHeader = req.headers['authorization']
+    let token = authHeader && authHeader.split(' ')[1]
+    if(token == null) {
+        token = req.query.token
+
+        if(token == null) return res.redirect('/login')
     }
-});
 
-io.on("connection", socket => {
-
-
-
-
-
-    //____________________Registration____________________
-
-    socket.on("registration", user => {
-
-        const tmpUser = registration(user.Name, user.Password);
-        list.push(tmpUser);
-        socket.emit("registration", {Name: tmpUser.Name, Token: tmpUser.Token});
-        save();
-
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if(err) return res.sendStatus(403)
+        req.user = user
+        next()
     })
 
+}
 
-
-
-    
-    //____________________Login____________________
-
-    socket.on("login", user => {
-        
-        const tmpUser = login(user.Name, user.Password);
-        socket.emit("login", tmpUser !== "" ? {Name: tmpUser.Name, Token: tmpUser.Token} : "Error");
-        save();
-
-    })
+function generateAccessToken(user) {
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+}
 
 
 
 
 
-    //____________________LoadSessions____________________
+//__________________________________________________Registration__________________________________________________
 
-    socket.on("loadSessions", user => {
+app.get('/registration', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'registration.html'))
+})
 
-        const tmpUser = getUser(user.Name, user.Token);
+app.post('/registration', async (req, res) => {
 
-        if(tmpUser != null) {
-            if(tmpUser.SessionNames_List.length != 0) {
-                socket.emit("loadSessions", {SessionNames_List: tmpUser.SessionNames_List, GameAttributes_List: tmpUser.GameAttributes_List, Players_List: tmpUser.Players_List});
-            } else {
-                socket.emit("loadSessions", null);
-            }
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.Password, 10)
+        const user = {
+            Name: req.body.Name,
+            Password: hashedPassword,
+            SessionNames_List: [],
+            Players_List: [],
+            GameAttributes_List: [],
+            FinalScores_List: []
         }
+        users.push(user)
 
-    })
-
-
-
-
-
-    //____________________SaveResults____________________
-
-    socket.on("sessionNameRequest", user => {
-
-        const tmpUser = getUser(user.Name, user.Token);
-
-        socket.emit("sessionNameRequest", generateSessionName(tmpUser.SessionNames_List));
+        save()
         
-    })
-
-    socket.on("saveResults", user => {
-
-        const tmpUser = getUser(user.User.Name, user.User.Token);
-
-        const gameAttributes = user.GameAttributes;
-        const players = user.Players;
-        const finalScores = user.FinalScores;
-        
-        const sessionName = gameAttributes.SessionName;
-
-
-        const tmpG = tmpUser.GameAttributes_List;
-
-        for(let i = 0; tmpG.length > i; i++) {
-            if(tmpG[i].SessionName == gameAttributes.SessionName) {
-                tmpG[i] = gameAttributes;
-                tmpUser.Players_List[i] = players;
-                tmpUser.FinalScores_List[i].push(finalScores);
-                save();
-                return;
-            }
-        }
-    
-        tmpUser.GameAttributes_List.push(gameAttributes);
-        tmpUser.Players_List.push(players);
-        tmpUser.FinalScores_List.push([finalScores]);
-
-        save();
-
-    })
-
-
-
-
-
-    //____________________FinalScoresRequest____________________
-
-    socket.on("finalScoresRequest", user => {
-
-        const tmpUser = getUser(user.Name, user.Token);
-        const sessionName = user.SessionName;
-
-        if(tmpUser != null) {socket.emit("finalScoresRequest", tmpUser.FinalScores_List[tmpUser.SessionNames_List.indexOf(sessionName)]);}
-
-    })
-
+        const token = JSON.stringify(generateToken(user));
+        const response = { Token: token, Redirect: '/creategame'}
+        res.json(response)
+    } catch {
+        res.sendStatus(500)
+    }
 
 })
 
@@ -244,67 +165,47 @@ io.on("connection", socket => {
 
 
 
-function generateSessionName(sessionNames_List) {
+//__________________________________________________Login__________________________________________________
 
-    let sessionName;
-    
-    for(let i = 0; sessionNames_List.length + 1 > i; i++) {
-        sessionName = "gameSession_" + i;
-        if(!sessionNames_List.includes(sessionName)) {break;}
-    }
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'))
+})
 
-    sessionNames_List.push(sessionName);
-    return sessionName;
+app.post('/login', async (req, res) => {
 
-}
+    const user = users.find(user => user.Name = req.body.Name)
+    if(user == null) {return res.status(400).send('Wrong credentials')}
 
+    try {
+        if(await bcrypt.compare(req.body.Password, user.Password)) {
 
+            res.json({ Token: generateToken(user), Redirect: '/creategame' })
 
-function registration(name, password) {
-    return {
-        Name: name,
-        Password: password,
-        Token: generateToken(),
-        SessionNames_List: [],
-        Players_List: [],
-        GameAttributes_List: [],
-        FinalScores_List: []
-    };
-}
-
-function login(name, password) {
-
-    let user = "";
-    for(const tmpUser of list) {
-
-        if(tmpUser.Name == name && tmpUser.Password == password) {
-            user = tmpUser;
-            user.Token = generateToken();
-            break;
+        } else {
+            return res.status(403).send('Wrong credentials')
         }
-
+    } catch(err) {
+        res.status(500).send()
     }
 
-    return user;
+})
 
-}
 
-function generateToken() {
-    const min = 1000000000;
-    const max = 9999999999;
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
-}
 
-function getUser(name, token) {
 
-    for(const tmpUser of list) {
-        if(tmpUser.Name == name && tmpUser.Token == token) {return tmpUser;}
-    }
 
-}
+//__________________________________________________Logout__________________________________________________
 
-*/
+app.delete('/logout', (req, res) => {
+    refreshToken_list = refreshToken_list.filter(token => token !== req.body.token)
+    res.sendStatus(204)
+})
 
+
+
+
+
+//____________________________________________________________________________________________________End of Authentication____________________________________________________________________________________________________
 
 
 
@@ -318,14 +219,93 @@ function getUser(name, token) {
 
 
 
-// const {Client} = require("pg");
+
+
+
+
+
+
+
+app.get('/', (req, res) => {
+    res.render('index')
+})
+
+app.get('/users', (req, res) => {
+    res.json(users)
+})
+
+app.get('/test', authenticateToken, (req, res) => {
+    res.send(req.user)
+})
+
+app.get('/creategame', authenticateToken, (req, res) => {
+    console.log(req.params.token)
+
+    res.sendFile(path.join(__dirname, 'public', 'creategame.html'));
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const PORT = process.env.PORT || 3000 
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const {Client} = require('pg');
 
 // const client = new Client({
-//     host: "172.23.0.2",
-//     user: "kniffel",
+//     host: '172.23.0.2',
+//     user: 'kniffel',
 //     port: 5432,
-//     password: "8%$$9N#ppR7eJ74kyf#V6&3B%PFJ$n67%#@NmaQNurEarcMS#E^6yWJV#@!@tJ#*@m*uGT6wi8kdoE4Ax9^DLBu23ahzkaZ$!Ha5HKzYe8XijMn4&f$M!5BzLexVWh@x",
-//     database: "kniffel"
+//     password: '8%$$9N#ppR7eJ74kyf#V6&3B%PFJ$n67%#@NmaQNurEarcMS#E^6yWJV#@!@tJ#*@m*uGT6wi8kdoE4Ax9^DLBu23ahzkaZ$!Ha5HKzYe8XijMn4&f$M!5BzLexVWh@x',
+//     database: 'kniffel'
 // });
 
 // client.connect();
