@@ -176,7 +176,11 @@ function checkCredentials(name, password) {
 
 
 
-async function GET(url, token) {
+async function redirect(url, token) {
+
+    //const token = sessionStorage.getItem(sessionStorage_token);
+    //window.location.replace(`${data.Redirect}?token=${encodeURIComponent(token.AccessToken)}`)
+
     try {
         const response = await fetch(url, {
             method: 'GET',

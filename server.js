@@ -106,16 +106,19 @@ function generateToken(user) {
 
 function authenticateToken(req, res, next) {
 
-    const authHeader = req.headers['authorization']
-    let token = authHeader && authHeader.split(' ')[1]
-    if(token == null) {
-        token = req.query.token
+    const tmp = req.headers.cookie
 
-        if(token == null) return res.redirect('/login')
-    }
+    const tokenJSON = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1]))
+    const token = tokenJSON.AccessToken
 
+    console.log(0)
+    if(token == null) return res.redirect('/login')
+
+    console.log(1)
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        console.log(2)
         if(err) return res.sendStatus(403)
+        console.log(3)
         req.user = user
         next()
     })
@@ -153,8 +156,8 @@ app.post('/registration', async (req, res) => {
         save()
         
         const token = JSON.stringify(generateToken(user));
-        const response = { Token: token, Redirect: '/creategame'}
-        res.json(response)
+        res.cookie('Token', token)
+        return res.redirect('/creategame')
     } catch {
         res.sendStatus(500)
     }
@@ -227,7 +230,7 @@ app.delete('/logout', (req, res) => {
 
 
 app.get('/', (req, res) => {
-    res.render('index')
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 })
 
 app.get('/users', (req, res) => {
@@ -239,8 +242,6 @@ app.get('/test', authenticateToken, (req, res) => {
 })
 
 app.get('/creategame', authenticateToken, (req, res) => {
-    console.log(req.params.token)
-
     res.sendFile(path.join(__dirname, 'public', 'creategame.html'));
 })
 

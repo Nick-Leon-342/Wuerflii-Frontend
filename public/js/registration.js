@@ -20,20 +20,16 @@ async function next() {
         const user = { Name: name, Password: password }
 
         try {
-            const response = await fetch('/registration', {
+            fetch('/registration', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(user)
             });
     
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-    
-            const data = await response.json()
-            sessionStorage.setItem(sessionStorage_token, data.Token)
+            // const data = await response.json()
+            // sessionStorage.setItem(sessionStorage_token, data.Token)
 
-            GET(data.Redirect, data.Token.AccessToken)
+            // GET(data.Redirect, data.Token.AccessToken)
 
         } catch (error) {
             console.error('Error:', error);

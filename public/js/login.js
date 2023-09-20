@@ -31,11 +31,11 @@ async function next() {
             }
     
             const data = await response.json()
-            sessionStorage.setItem(sessionStorage_token, JSON.stringify(data.Token))
+            const url = data.Redirect
+            const token = data.Token
+            sessionStorage.setItem(sessionStorage_token, token)
 
-            //window.location.href = data.Redirect
-            console.log(`${data.Redirect}?token=${encodeURIComponent(data.Token.AccessToken)}`)
-            window.location.replace(`${data.Redirect}?token=${encodeURIComponent(data.Token.AccessToken)}`)
+            redirect(url, token.AccessToken)
 
         } catch (error) {
             console.error('Error:', error);
