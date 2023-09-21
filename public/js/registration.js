@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-async function next() {
+document.getElementById('next').addEventListener('click', async function () {
 
     const name = document.getElementById('name').value;
     const password = document.getElementById('password').value;
@@ -19,24 +19,24 @@ async function next() {
         
         const user = { Name: name, Password: password }
 
-        try {
-            fetch('/registration', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user)
-            });
-    
-            // const data = await response.json()
-            // sessionStorage.setItem(sessionStorage_token, data.Token)
-
-            // GET(data.Redirect, data.Token.AccessToken)
-
-        } catch (error) {
+        await fetch('/registration', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                return response.json();
+            }
+        })
+        .catch(error => {
             console.error('Error:', error);
-        }
+        });
     }
 
-}
+})
 
 
 

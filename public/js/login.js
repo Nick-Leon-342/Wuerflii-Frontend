@@ -19,27 +19,21 @@ async function next() {
         
         const user = { Name: name, Password: password }
 
-        try {
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user)
-            });
-    
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+        await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                return response.json();
             }
-    
-            const data = await response.json()
-            const url = data.Redirect
-            const token = data.Token
-            sessionStorage.setItem(sessionStorage_token, token)
-
-            redirect(url, token.AccessToken)
-
-        } catch (error) {
+        })
+        .catch(error => {
             console.error('Error:', error);
-        }
+        });
     }
 
 }

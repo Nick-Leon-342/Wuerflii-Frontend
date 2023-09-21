@@ -171,31 +171,3 @@ function isTest() {
 function checkCredentials(name, password) {
     return name != '' && password != ''
 }
-
-
-
-
-
-async function redirect(url, token) {
-
-    //const token = sessionStorage.getItem(sessionStorage_token);
-    //window.location.replace(`${data.Redirect}?token=${encodeURIComponent(token.AccessToken)}`)
-
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const data = await response;
-        console.log(data.body);
-    } catch (e) {
-        console.log(e);
-    }
-}

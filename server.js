@@ -108,17 +108,15 @@ function authenticateToken(req, res, next) {
 
     const tmp = req.headers.cookie
 
+    if(tmp == null) return res.redirect('/login')
+
     const tokenJSON = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1]))
     const token = tokenJSON.AccessToken
 
-    console.log(0)
     if(token == null) return res.redirect('/login')
 
-    console.log(1)
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        console.log(2)
         if(err) return res.sendStatus(403)
-        console.log(3)
         req.user = user
         next()
     })
@@ -176,20 +174,25 @@ app.get('/login', (req, res) => {
 
 app.post('/login', async (req, res) => {
 
-    const user = users.find(user => user.Name = req.body.Name)
-    if(user == null) {return res.status(400).send('Wrong credentials')}
+    const tmp = req.body
+    
+    for(const user of users) {
+        if(user.Name = tmp.Name) {
 
-    try {
-        if(await bcrypt.compare(req.body.Password, user.Password)) {
+            try {
+                if(await bcrypt.compare(req.body.Password, user.Password)) {
+        
+                    const token = JSON.stringify(generateToken(user))
+                    res.cookie('Token', token)
+                    return res.redirect('/creategame')
+        
+                } 
+            } catch {}
 
-            res.json({ Token: generateToken(user), Redirect: '/creategame' })
-
-        } else {
-            return res.status(403).send('Wrong credentials')
         }
-    } catch(err) {
-        res.status(500).send()
     }
+
+    return res.status(403).send('Wrong credentials')    
 
 })
 
