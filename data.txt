@@ -1,0 +1,1 @@
+[{"Name":"187","Password":"$2b$10$rdc7rdeortzY2YLLxMPmGe02LHnIfBEOApwzS8dYXwURg94s1FtF6","SessionNames_List":[],"Players_List":[],"GameAttributes_List":[],"FinalScores_List":[]},{"Name":"22","Password":"$2b$10$7WcXgAMB8wZ5ElGv0S1OmO0YCZaHSxfPpNOluG9qN3fZRfKOlcDYi","SessionNames_List":[],"Players_List":[],"GameAttributes_List":[],"FinalScores_List":[]}]

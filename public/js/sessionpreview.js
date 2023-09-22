@@ -1,6 +1,6 @@
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener('DOMContentLoaded', function() {
 
     if(isTest()) {
 
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
         gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
 
-        socket.emit("finalScoresRequest", {Name: sessionStorage.getItem(sessionStorage_user), Token: sessionStorage.getItem(sessionStorage_token), SessionName: gameAttributes.SessionName}); 
+        socket.emit('finalScoresRequest', {Name: sessionStorage.getItem(sessionStorage_user), Token: sessionStorage.getItem(sessionStorage_token), SessionName: gameAttributes.SessionName}); 
 
     }
 
@@ -25,8 +25,8 @@ const socket = io(ip);
 
 
 
-socket.on("finalScoresRequest", data => {
-    document.getElementById("application").style.display = "block";
+socket.on('finalScoresRequest', data => {
+    document.getElementById('application').style.display = 'block';
 
     finalScores = data;
 
@@ -38,7 +38,7 @@ socket.on("finalScoresRequest", data => {
 
 function resizeTable() {
 
-    const t = document.getElementById("winCountPreview").querySelectorAll("td");
+    const t = document.getElementById('winCountPreview').querySelectorAll('td');
     let max_width = t[0].offsetWidth;
 
     for(let i = 1; t.length / 2 > i; i++) {
@@ -47,11 +47,11 @@ function resizeTable() {
     }
 
     for(let i = 1; t.length / 2 > i; i++) {
-        t[i].style.width = max_width + "px";
+        t[i].style.width = max_width + 'px';
     }
 
-    const up = winCountPreview_Players.querySelectorAll("td");
-    const bottom = finalScorePreview.querySelectorAll("td");
+    const up = winCountPreview_Players.querySelectorAll('td');
+    const bottom = finalScorePreview.querySelectorAll('td');
     for(let i = 0; up.length > i; i++) {
         const width = window.getComputedStyle(up[i]).width;
         up[i].style.minWidth = width;
@@ -67,18 +67,18 @@ function resizeTable() {
 function initSession() {
 
     //____________________WinCountPreview____________________
-    const winCountPreview_Players = document.getElementById("winCountPreview_Players");
-    const winCountPreview_Wins = document.getElementById("winCountPreview_Wins");
-    winCountPreview_Players.innerHTML = "<td>Spieler</td>";
-    winCountPreview_Wins.innerHTML = "<td>Gewonnen</td>";
+    const winCountPreview_Players = document.getElementById('winCountPreview_Players');
+    const winCountPreview_Wins = document.getElementById('winCountPreview_Wins');
+    winCountPreview_Players.innerHTML = '<td>Spieler</td>';
+    winCountPreview_Wins.innerHTML = '<td>Gewonnen</td>';
 
     for(const player of players) {
 
-        const element_player = document.createElement("td");
+        const element_player = document.createElement('td');
         element_player.textContent = player.Name;
         winCountPreview_Players.appendChild(element_player);
 
-        const element_wins = document.createElement("td");
+        const element_wins = document.createElement('td');
         element_wins.textContent = player.Wins;
         winCountPreview_Wins.appendChild(element_wins);
 
@@ -86,20 +86,20 @@ function initSession() {
 
 
     //____________________FinalScoresPreview____________________
-    const finalScorePreview = document.getElementById("finalScorePreview");
-    finalScorePreview.innerHTML = "";
+    const finalScorePreview = document.getElementById('finalScorePreview');
+    finalScorePreview.innerHTML = '';
 
     for(let f = 0; finalScores.length > f; f++) {
 
-        const row = document.createElement("tr");
-        row.setAttribute("index", f);
-        const element_date = document.createElement("td");
+        const row = document.createElement('tr');
+        row.setAttribute('index', f);
+        const element_date = document.createElement('td');
         element_date.textContent = finalScores[f].gamePlayed;
         row.appendChild(element_date);
 
         for(const player of players) {
 
-            const element_playerCount = document.createElement("td");
+            const element_playerCount = document.createElement('td');
             element_playerCount.textContent = finalScores[f][player.Name];
             row.appendChild(element_playerCount);
 
@@ -118,13 +118,13 @@ function initSession() {
 function backToSelectSession() {
 
     clearSessionStorage();
-    window.location.href = "../selectsession/selectsession.html";
+    window.location.href = '../selectsession/selectsession.html';
 
 }
 
 function play() {
 
-    window.location.href = "../game/game.html";
+    window.location.href = '../game/game.html';
 
 }
 

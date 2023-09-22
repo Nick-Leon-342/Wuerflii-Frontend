@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-document.getElementById('next').addEventListener('click', async function () {
+async function next() {
 
     const name = document.getElementById('name').value;
     const password = document.getElementById('password').value;
@@ -19,7 +19,7 @@ document.getElementById('next').addEventListener('click', async function () {
         
         const user = { Name: name, Password: password }
 
-        await fetch('/registration', {
+        fetch('/registration', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
@@ -36,7 +36,7 @@ document.getElementById('next').addEventListener('click', async function () {
         });
     }
 
-})
+}
 
 
 

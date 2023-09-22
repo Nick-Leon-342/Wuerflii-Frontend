@@ -1,7 +1,7 @@
 
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("application").style.display = "block";
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('application').style.display = 'block';
 
     if(isTest()) {
 
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const winnerIndex = JSON.parse(sessionStorage.getItem(sessionStorage_winner));
 
         if(winnerIndex == null) {
-            window.location.href = "../game/game.html";
+            window.location.href = '../game/game.html';
         }
 
         initWinner(winnerIndex);
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function resizeTable() {
 
-    const t = document.getElementById("wins-table").querySelectorAll("td");
+    const t = document.getElementById('wins-table').querySelectorAll('td');
     let max_width = t[1].offsetWidth;
     for(let i = 1; t.length > i; i++) {
         const tmp_Width = t[i].offsetWidth;
@@ -41,7 +41,7 @@ function resizeTable() {
     }
 
     for(const e of t) {
-        e.style.width = max_width + "px";
+        e.style.width = max_width + 'px';
     }
 
 }
@@ -52,10 +52,10 @@ function resizeTable() {
 
 function initTestData() {
 
-    const playersRow = document.getElementById("players");
-    const winsRow = document.getElementById("wins");
+    const playersRow = document.getElementById('players');
+    const winsRow = document.getElementById('wins');
 
-    players = [{Name: "P_0"}, {Name: "Player_1"}, {Name: "ThisIsPlayer_2"}, {Name: "Player_3"}];
+    players = [{Name: 'P_0'}, {Name: 'Player_1'}, {Name: 'ThisIsPlayer_2'}, {Name: 'Player_3'}];
     const tmpWins = [2, 4, 4, 3];
     
     let iW = [1, 2];
@@ -63,7 +63,7 @@ function initTestData() {
 
     for(const p of players) {
 
-        const pElement = document.createElement("td");
+        const pElement = document.createElement('td');
         pElement.textContent = p;
         playersRow.appendChild(pElement);
 
@@ -71,7 +71,7 @@ function initTestData() {
 
     for(const w of tmpWins) {
 
-        const wElement = document.createElement("td");
+        const wElement = document.createElement('td');
         wElement.textContent = w;
         winsRow.appendChild(wElement);
 
@@ -85,7 +85,7 @@ function initTestData() {
 
 function initWinner(winnerIndexList) {
 
-    const w = document.getElementById("winner");
+    const w = document.getElementById('winner');
 
     if(winnerIndexList.length == 1) {
 
@@ -114,16 +114,16 @@ function initWinner(winnerIndexList) {
 
 function initWinsTable() {
 
-    const playersRow = document.getElementById("players");
-    const winsRow = document.getElementById("wins");
+    const playersRow = document.getElementById('players');
+    const winsRow = document.getElementById('wins');
 
     for(let i = 0; players.length > i; i++) {
 
-        const pElement = document.createElement("td");
+        const pElement = document.createElement('td');
         pElement.textContent = players[i].Name;
         playersRow.appendChild(pElement);
 
-        const wElement = document.createElement("td");
+        const wElement = document.createElement('td');
         wElement.textContent = players[i].Wins;
         winsRow.appendChild(wElement);
 
@@ -138,6 +138,6 @@ function initWinsTable() {
 function ok() {
     
     clearSessionStorage();
-    window.location.href = "../kniffel.html";
+    window.location.href = '../kniffel.html';
 
 }

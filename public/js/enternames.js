@@ -2,8 +2,8 @@
 
 //__________________________________________________Check SessionStorage before displaying__________________________________________________
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("application").style.display = "block";
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('application').style.display = 'block';
 
     if(isTest()) {
 
@@ -16,17 +16,17 @@ document.addEventListener("DOMContentLoaded", function() {
         if(playercount) {
 
             if(JSON.parse(playercount).isNaN) {
-                window.location.href = "../game/game.html";
+                window.location.href = '../game/game.html';
             } 
 
             gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
 
-            document.getElementById("enterNamesList").innerHTML = "";
+            document.getElementById('enterNamesList').innerHTML = '';
             for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i);}
-            if(document.getElementById("enterNamesList").innerHTML == "") {window.location.href = "../kniffel.html";}
+            if(document.getElementById('enterNamesList').innerHTML == '') {window.location.href = '../kniffel.html';}
 
         } else {
-            window.location.href = "../kniffel.html";
+            window.location.href = '../kniffel.html';
         }
 
     }
@@ -53,17 +53,17 @@ function initTestData() {
 
 function addEnterNamesAndSelectColorElement(i) {
 
-    const enterNamesList = document.getElementById("enterNamesList");
-    const dt = document.createElement("dt");
-    const nameInput = document.createElement("input");
-    const colorInput = document.createElement("input");
+    const enterNamesList = document.getElementById('enterNamesList');
+    const dt = document.createElement('dt');
+    const nameInput = document.createElement('input');
+    const colorInput = document.createElement('input');
 
-    dt.classList.add("enterNamesElement");
-    nameInput.classList.add("input");
+    dt.classList.add('enterNamesElement');
+    nameInput.classList.add('input');
     nameInput.value = `Player_${i+1}`
-    colorInput.classList.add("colorbox");
-    colorInput.type = "color";
-    colorInput.value = i % 2 == 0 ? "#ffffff" : "#ADD8E6";
+    colorInput.classList.add('colorbox');
+    colorInput.type = 'color';
+    colorInput.value = i % 2 == 0 ? '#ffffff' : '#ADD8E6';
 
     dt.appendChild(nameInput);
     dt.appendChild(colorInput);
@@ -77,15 +77,15 @@ function addEnterNamesAndSelectColorElement(i) {
 
 function play() {
     
-    const enterNamesElement = document.getElementsByClassName("enterNamesElement");
+    const enterNamesElement = document.getElementsByClassName('enterNamesElement');
     players.length = 0;
     for(const element of enterNamesElement) {
-        players.push(createPlayer(element.querySelector(".input").value, element.querySelector(".colorbox").value));
+        players.push(createPlayer(element.querySelector('.input').value, element.querySelector('.colorbox').value));
     }
 
     sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
 
-    window.location.href = "../game/game.html";
+    window.location.href = '../game/game.html';
 
 }
 
@@ -96,6 +96,6 @@ function play() {
 function backToEnterNameAndColumnCount() {
 
     clearSessionStorage();
-    window.location.href = "../kniffel.html";
+    window.location.href = '../kniffel.html';
 
 }

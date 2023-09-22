@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const path = require('path')
 const http = require('http')
-const fs = require("fs")
+const fs = require('fs')
 
 const app = express()
 const server = http.createServer(app)
@@ -16,7 +16,7 @@ const io = require('socket.io')(server, {
     }
 });
 
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
 
 
@@ -34,7 +34,7 @@ let refreshToken_list = []
 
 //____________________Save____________________
 
-fs.readFile("data.txt", "utf-8", (err, data) => {
+fs.readFile('data.txt', 'utf-8', (err, data) => {
 
     if(!err) users = JSON.parse(data);
 
@@ -42,7 +42,7 @@ fs.readFile("data.txt", "utf-8", (err, data) => {
 
 function save() {
 
-    fs.writeFile("data.txt", JSON.stringify(users), (err) => {
+    fs.writeFile('data.txt', JSON.stringify(users), (err) => {
         if(err) console.log(err);
     });
 
@@ -116,7 +116,10 @@ function authenticateToken(req, res, next) {
     if(token == null) return res.redirect('/login')
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if(err) return res.sendStatus(403)
+        if(err) {
+            res.clearCookie('Token')
+            return res.redirect('/login')
+        }
         req.user = user
         next()
     })
@@ -236,19 +239,47 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 })
 
-app.get('/users', (req, res) => {
-    res.json(users)
-})
 
-app.get('/test', authenticateToken, (req, res) => {
-    res.send(req.user)
-})
+
+
+
+//__________________________________________________SelectSession__________________________________________________
 
 app.get('/creategame', authenticateToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'creategame.html'));
 })
 
 
+
+
+
+//__________________________________________________SelectSession__________________________________________________
+
+app.get('/selectsession', authenticateToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'selectsession.html'))
+})
+
+app.post('/selectsession', authenticateToken, (req, res) => {
+    
+    const user = req.user
+
+    for(const u of users) {
+        if(u.Name == user.Name && u.Password == user.Password) {
+
+            if(u.SessionNames_List.length != 0) {
+                const response = { SessionNames_List: u.SessionNames_List, Players_List: u.Players_List, GameAttributes_List: u.GameAttributes_List }
+                return res.json(response)
+            } else {
+                console.log('Test')
+                return res.send(null)
+            }
+
+        }
+    }
+
+    res.sendStatus(500)
+
+})
 
 
 

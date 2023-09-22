@@ -9,8 +9,8 @@ const socket = io(ip);
 const user = {Name: sessionStorage.getItem(sessionStorage_user), Token: sessionStorage.getItem(sessionStorage_token)};
 
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("application").style.display = "block";
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('application').style.display = 'block';
 
     if(isTest()) {
 
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             players = JSON.parse(playercount);
             if(players.isNaN) {
-                window.location.href = "../enternames/enternames.html";
+                window.location.href = '../enternames/enternames.html';
             }
 
             gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
@@ -35,17 +35,17 @@ document.addEventListener("DOMContentLoaded", function() {
             resizeEvent();
 
         } else {
-            window.location.href = "../kniffel.html";
+            window.location.href = '../kniffel.html';
         }
 
     }
 
-    playerTable.querySelectorAll(".checkbox").forEach(function(element) {
-        element.addEventListener("change", function() {
+    playerTable.querySelectorAll('.checkbox').forEach(function(element) {
+        element.addEventListener('change', function() {
     
             const checks = [];
             for(let i = 0; players.length > i; i++) {
-                checks.push(playerTable.querySelectorAll("tr")[2].querySelectorAll(".checkbox")[i].checked);
+                checks.push(playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked);
             }
             sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(checks));
     
@@ -60,9 +60,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function initTestData() {
 
-    let p_0 = createPlayer("Player_0", "lightblue");
-    let p_1 = createPlayer("P_1", "white");
-    let p_2 = createPlayer("ThisIsPlayer_2", "lightgray");
+    let p_0 = createPlayer('Player_0', 'lightblue');
+    let p_1 = createPlayer('P_1', 'white');
+    let p_2 = createPlayer('ThisIsPlayer_2', 'lightgray');
     
     players.push(p_0);
     players.push(p_1);
@@ -117,30 +117,30 @@ function addColumnToPlayerTable(i) {
     const width = sessionStorage.getItem(sessionStorage_offsetWidth) ? sessionStorage.getItem(sessionStorage_offsetWidth) : gameAttributes.Columns * upperTable.rows[0].cells[2].offsetWidth;
     sessionStorage.setItem(sessionStorage_offsetWidth, width);
 
-    const nameTD = document.createElement("td");
-    nameTD.classList.add("playerSumElement");
+    const nameTD = document.createElement('td');
+    nameTD.classList.add('playerSumElement');
     nameTD.textContent = players[i].Name;
-    nameTD.style.color = "white";
-    nameTD.style.maxWidth = width + "px";
-    nameTD.style.overflow = "hidden";
-    playerTable.querySelectorAll("tr")[0].appendChild(nameTD);
+    nameTD.style.color = 'white';
+    nameTD.style.maxWidth = width + 'px';
+    nameTD.style.overflow = 'hidden';
+    playerTable.querySelectorAll('tr')[0].appendChild(nameTD);
 
-    const sumTD = document.createElement("td");
-    const sumTDLabel = document.createElement("label");
-    sumTD.classList.add("playerSumElement");
-    sumTD.style.color = "white";
-    sumTD.style.width = width + "px";
-    sumTD.style.overflow = "hidden";
+    const sumTD = document.createElement('td');
+    const sumTDLabel = document.createElement('label');
+    sumTD.classList.add('playerSumElement');
+    sumTD.style.color = 'white';
+    sumTD.style.width = width + 'px';
+    sumTD.style.overflow = 'hidden';
     sumTD.appendChild(sumTDLabel);
-    playerTable.querySelectorAll("tr")[1].appendChild(sumTD);
+    playerTable.querySelectorAll('tr')[1].appendChild(sumTD);
 
-    const gnadenwurfTD = document.createElement("td");
-    const box = document.createElement("input");
-    box.classList.add("checkbox");
-    box.type = "checkbox";
+    const gnadenwurfTD = document.createElement('td');
+    const box = document.createElement('input');
+    box.classList.add('checkbox');
+    box.type = 'checkbox';
     box.setAttribute = i;
     gnadenwurfTD.appendChild(box);
-    playerTable.querySelectorAll("tr")[2].appendChild(gnadenwurfTD);
+    playerTable.querySelectorAll('tr')[2].appendChild(gnadenwurfTD);
 
 }
 
@@ -156,39 +156,39 @@ function addColumnToTable(column, tableID, color) {
 
 function addRowToTable(column, tableID, rows, input, color, i) {
 
-    const td = document.createElement("td");
+    const td = document.createElement('td');
     let element;
 
-    if(Boolean(input)) {element = document.createElement("input");
-    }else{element = document.createElement("label");}
-    element.classList.add("kniffelInput");
-    element.type = "text";
-    element.inputMode = "numeric";
+    if(Boolean(input)) {element = document.createElement('input');
+    }else{element = document.createElement('label');}
+    element.classList.add('kniffelInput');
+    element.type = 'text';
+    element.inputMode = 'numeric';
     element.style.backgroundColor = color;
-    element.setAttribute("data-tableid", tableID);
-    element.setAttribute("data-column", column);
-    element.setAttribute("data-row", i);
+    element.setAttribute('data-tableid', tableID);
+    element.setAttribute('data-column', column);
+    element.setAttribute('data-row', i);
     element.onblur = function() {onblurEvent(element)};
     element.oninput = function() {inputEvent(element)};
     td.style.backgroundColor = color;
     td.appendChild(element);
     rows[i].appendChild(td);
 
-    element.addEventListener("focus", function() {focusEvent(element)});
-    element.addEventListener("blur", function() {removeFocusEvent(element)});
+    element.addEventListener('focus', function() {focusEvent(element)});
+    element.addEventListener('blur', function() {removeFocusEvent(element)});
 
 }
 
 function onblurEvent(element) {
 
-    const id = element.getAttribute("data-tableid");
-    const column = Number(element.getAttribute("data-column"));
+    const id = element.getAttribute('data-tableid');
+    const column = Number(element.getAttribute('data-column'));
 
     saveElement(
         id, 
         element.value, 
         column, 
-        Number(element.getAttribute("data-row")));
+        Number(element.getAttribute('data-row')));
 
     if(id == id_upperTable) {
         calculateUpperColumn(column);
@@ -208,9 +208,9 @@ function inputEvent(element) {
 
 function focusEvent(element) {
 
-    const h = "highlighted";
+    const h = 'highlighted';
 
-    const r = element.closest("tr");
+    const r = element.closest('tr');
     if(!r.classList.contains(h)) {
         r.classList.add(h);
     }
@@ -221,7 +221,7 @@ function focusEvent(element) {
 
 function removeFocusEvent(r) {
 
-    const h = "highlighted";
+    const h = 'highlighted';
 
     const u = document.getElementById(id_upperTable).rows;
     for(const e of u) {
@@ -243,7 +243,7 @@ function removeFocusEvent(r) {
 
 function calculateUpperColumn(columnIndex) {
 
-    const column = upperTable.querySelectorAll(`[data-column="${columnIndex}"]`);
+    const column = upperTable.querySelectorAll(`[data-column='${columnIndex}']`);
 
     let columnCompleted = true;
     let sum = 0;
@@ -251,7 +251,7 @@ function calculateUpperColumn(columnIndex) {
     for(let i = 0; 6 > i; i++) {
 
         const n = column[i].value;
-        if(n == "") {
+        if(n == '') {
             columnCompleted = false;
         } else {
             sum += Number(n);
@@ -259,21 +259,21 @@ function calculateUpperColumn(columnIndex) {
 
     }
 
-    const bottomLabels = bottomTable.querySelectorAll(`label[data-column="${columnIndex}"]`);
+    const bottomLabels = bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`);
     column[6].textContent = sum;
     if(Boolean(columnCompleted)) {
 
         sum = sum >= 63 ? sum + 35 : sum;
-        column[7].textContent = sum >= 63 ? 35 : "-";
+        column[7].textContent = sum >= 63 ? 35 : '-';
         column[8].textContent = sum;
         
         bottomLabels[1].textContent = sum;
         
     } else {
 
-        column[7].textContent = "";
-        column[8].textContent = "";
-        bottomLabels[1].textContent = "";
+        column[7].textContent = '';
+        column[8].textContent = '';
+        bottomLabels[1].textContent = '';
 
     }
 
@@ -285,7 +285,7 @@ function calculateUpperColumn(columnIndex) {
 
 function calculateBottomColumn(columnIndex) {
 
-    const column = bottomTable.querySelectorAll(`[data-column="${columnIndex}"]`);
+    const column = bottomTable.querySelectorAll(`[data-column='${columnIndex}']`);
 
     let columnCompleted = true;
     let sum = 0;
@@ -293,7 +293,7 @@ function calculateBottomColumn(columnIndex) {
     for(let i = 0; 7 > i; i++) {
 
         const n = column[i].value;
-        if(n == "") {
+        if(n == '') {
             columnCompleted = false;
         } else {
             sum += Number(n);
@@ -307,12 +307,12 @@ function calculateBottomColumn(columnIndex) {
         
     } else {
 
-        column[7].textContent = "";
-        column[9].textContent = "";
+        column[7].textContent = '';
+        column[9].textContent = '';
 
     }
 
-    calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[data-column="${columnIndex}"]`));
+    calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`));
     columnsSum[columnIndex].Bottom = sum;
     calculateScores();
 
@@ -324,14 +324,14 @@ function calculateBottomLabels(columnIndex, bottomLabels) {
     const bottom = Number(bottomLabels[1].textContent);
     const sum = up + bottom;
 
-    bottomLabels[2].textContent = up != 0 && bottom != 0 ? sum : "";
+    bottomLabels[2].textContent = up != 0 && bottom != 0 ? sum : '';
     columnsSum[columnIndex].All = Number(bottomLabels[2].textContent);
 
 }
 
 function calculateScores() {
 
-    const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll("label");
+    const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label');
     
     for(let i = 0; players.length > i; i++) {
 
@@ -361,7 +361,7 @@ function calculateScores() {
 
 function saveElement(tableID, value, column, row) {
 
-    sessionStorage.setItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + "." + column, value);
+    sessionStorage.setItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + '.' + column, value);
 
 }
   
@@ -370,11 +370,11 @@ function loadTables() {
     const checks = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf));
     if(checks) {
         for(let i = 0; checks.length > i; i++) {
-            playerTable.querySelectorAll("tr")[2].querySelectorAll(".checkbox")[i].checked = checks[i];
+            playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked = checks[i];
         }
     }
-    loadTablesHelp(upperTable.querySelectorAll("input"), id_upperTable);
-    loadTablesHelp(bottomTable.querySelectorAll("input"), id_bottomTable);
+    loadTablesHelp(upperTable.querySelectorAll('input'), id_upperTable);
+    loadTablesHelp(bottomTable.querySelectorAll('input'), id_bottomTable);
     
 }
 
@@ -383,7 +383,7 @@ function loadTablesHelp(inputs, tableID) {
     const placol = gameAttributes.Columns * players.length;
 
     for(let i = 0; inputs.length > i; i++) {
-        inputs[i].value = sessionStorage.getItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + "." + i%placol);
+        inputs[i].value = sessionStorage.getItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + '.' + i%placol);
         onblurEvent(inputs[i]);
     }
 
@@ -403,26 +403,26 @@ function saveResults() {
 
     for(const element of columnsSum) {
         if(element.All == 0) {
-            window.alert("Bitte alle Werte eingeben!");
+            window.alert('Bitte alle Werte eingeben!');
             return;
         }
     }
     
     if(players.length >= 2) {
 
-        if(gameAttributes.SessionName == "") {
-            socket.emit("sessionNameRequest", user);
+        if(gameAttributes.SessionName == '') {
+            socket.emit('sessionNameRequest', user);
         } else {
             sendResults();
         }
 
     } else {
-        window.location.href = "../kniffel.html";
+        window.location.href = '../kniffel.html';
     }
 
 }
 
-socket.on("sessionNameRequest", data => {
+socket.on('sessionNameRequest', data => {
 
     gameAttributes.SessionName = data;
     sendResults();
@@ -432,7 +432,7 @@ socket.on("sessionNameRequest", data => {
 function sendResults() {
 
     //____________________Players____________________
-    const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll("label");
+    const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('label');
     const playerScores = [];
     for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent);}
 
@@ -456,21 +456,21 @@ function sendResults() {
 
 
     //____________________GameAttributes____________________
-    gameAttributes.LastPlayed = new Date().toLocaleDateString("de-DE");
+    gameAttributes.LastPlayed = new Date().toLocaleDateString('de-DE');
 
 
     //____________________FinalScore____________________
     const finalScores = createFinalScoreElement(playerScores);
 
     
-    socket.emit("saveResults", {User: user, Players: players, GameAttributes: gameAttributes, FinalScores: finalScores}, (ack) => {
+    socket.emit('saveResults', {User: user, Players: players, GameAttributes: gameAttributes, FinalScores: finalScores}, (ack) => {
 
-        console.log("Nachricht empfangen:", ack);
+        console.log('Nachricht empfangen:', ack);
 
     });
 
     clearSessionStorageTables();
-    window.location.href = "../endscreen/endscreen.html";
+    window.location.href = '../endscreen/endscreen.html';
 
 }
 
@@ -479,7 +479,7 @@ function sendResults() {
 function newGame() {
 
     clearSessionStorage();
-    window.location.href = "../kniffel.html";
+    window.location.href = '../kniffel.html';
 
 }
 
