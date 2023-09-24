@@ -427,15 +427,6 @@ app.get('/endscreen', authenticateToken, (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
 function getUser(name, password) {
 
     for(const u of users) {
@@ -452,55 +443,6 @@ function getUser(name, password) {
 
 
 
-
-
-
-
-
-
-
-
-
-const PORT = process.env.PORT || 3000 
+const PORT = process.env.PORT || 10000 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const {Client} = require('pg');
-
-// const client = new Client({
-//     host: '172.23.0.2',
-//     user: 'kniffel',
-//     port: 5432,
-//     password: '8%$$9N#ppR7eJ74kyf#V6&3B%PFJ$n67%#@NmaQNurEarcMS#E^6yWJV#@!@tJ#*@m*uGT6wi8kdoE4Ax9^DLBu23ahzkaZ$!Ha5HKzYe8XijMn4&f$M!5BzLexVWh@x',
-//     database: 'kniffel'
-// });
-
-// client.connect();
-
-// client.query(`Select *`, (err, res) => {
-//     if(!err) {
-//         console.log(res.rows);
-//     } else {
-//         console.log(err.message);
-//     }
-//     client.end;
-// })
