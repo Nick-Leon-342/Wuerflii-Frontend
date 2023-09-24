@@ -113,7 +113,7 @@ function authenticateToken(req, res, next) {
 }
 
 function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3 })
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 600 })
 }
 
 function noAccessToken(req, res, next) {
