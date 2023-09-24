@@ -242,9 +242,10 @@ app.post('/login', noAccessToken, async (req, res) => {
 
 app.delete('/logout', (req, res) => {
 
-    const tmp = req.headers.cookie
-    const tokenJSON = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1]))
-    refreshToken_list.splice(refreshToken_list.indexOf(tokenJSON.RefreshToken), 1)
+    const tmp = getCookie(req, 'Token')
+    if(!tmp) return res.redirect('/login')
+    const rt = JSON.parse(tmp).RefreshToken
+    refreshToken_list.splice(refreshToken_list.indexOf(rt), 1)
     res.clearCookie('Token')
     res.end()
 
