@@ -1,31 +1,31 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('application').style.display = 'block';
+    document.getElementById('application').style.display = 'block'
 
     if(isTest()) {
 
-        initTestData();
+        initTestData()
 
     }else {
 
-        players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
-        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
+        players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
+        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes))
 
-        const winnerIndex = JSON.parse(sessionStorage.getItem(sessionStorage_winner));
+        const winnerIndex = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
 
         if(winnerIndex == null) {
-            window.location.href = '../game/game.html';
+            window.location.replace('/game')
         }
 
-        initWinner(winnerIndex);
-        initWinsTable();
+        initWinner(winnerIndex)
+        initWinsTable()
 
     }
 
-    resizeTable();
+    resizeTable()
 
-}, false);
+}, false)
 
 
 
@@ -33,15 +33,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function resizeTable() {
 
-    const t = document.getElementById('wins-table').querySelectorAll('td');
-    let max_width = t[1].offsetWidth;
+    const t = document.getElementById('wins-table').querySelectorAll('td')
+    let max_width = t[1].offsetWidth
     for(let i = 1; t.length > i; i++) {
-        const tmp_Width = t[i].offsetWidth;
-        if(tmp_Width > max_width) {max_width = tmp_Width;}
+        const tmp_Width = t[i].offsetWidth
+        if(tmp_Width > max_width) {max_width = tmp_Width}
     }
 
     for(const e of t) {
-        e.style.width = max_width + 'px';
+        e.style.width = max_width + 'px'
     }
 
 }
@@ -52,28 +52,28 @@ function resizeTable() {
 
 function initTestData() {
 
-    const playersRow = document.getElementById('players');
-    const winsRow = document.getElementById('wins');
+    const playersRow = document.getElementById('players')
+    const winsRow = document.getElementById('wins')
 
-    players = [{Name: 'P_0'}, {Name: 'Player_1'}, {Name: 'ThisIsPlayer_2'}, {Name: 'Player_3'}];
-    const tmpWins = [2, 4, 4, 3];
+    players = [{Name: 'P_0'}, {Name: 'Player_1'}, {Name: 'ThisIsPlayer_2'}, {Name: 'Player_3'}]
+    const tmpWins = [2, 4, 4, 3]
     
-    let iW = [1, 2];
-    initWinner(iW);
+    let iW = [1, 2]
+    initWinner(iW)
 
     for(const p of players) {
 
-        const pElement = document.createElement('td');
-        pElement.textContent = p;
-        playersRow.appendChild(pElement);
+        const pElement = document.createElement('td')
+        pElement.textContent = p
+        playersRow.appendChild(pElement)
 
     }
 
     for(const w of tmpWins) {
 
-        const wElement = document.createElement('td');
-        wElement.textContent = w;
-        winsRow.appendChild(wElement);
+        const wElement = document.createElement('td')
+        wElement.textContent = w
+        winsRow.appendChild(wElement)
 
     }
 
@@ -85,24 +85,24 @@ function initTestData() {
 
 function initWinner(winnerIndexList) {
 
-    const w = document.getElementById('winner');
+    const w = document.getElementById('winner')
 
     if(winnerIndexList.length == 1) {
 
-        w.textContent = `'${players[winnerIndexList[0]].Name}' hat gewonnen!`;
+        w.textContent = `'${players[winnerIndexList[0]].Name}' hat gewonnen!`
 
     } else {
 
-        let winners = `'${players[winnerIndexList[0]].Name}' `;
+        let winners = `'${players[winnerIndexList[0]].Name}' `
         for(let i = 1; winnerIndexList.length > i; i++) {
-            const p = `'${players[winnerIndexList[i]].Name}'`;
+            const p = `'${players[winnerIndexList[i]].Name}'`
             if((i + 1) == winnerIndexList.length) {
-                winners += ` und ${p}`;
+                winners += ` und ${p}`
             } else {
-                winners += `, ${p}`;
+                winners += `, ${p}`
             }
         }
-        w.textContent = `${winners} haben gewonnen!`;
+        w.textContent = `${winners} haben gewonnen!`
 
     }
 
@@ -114,18 +114,18 @@ function initWinner(winnerIndexList) {
 
 function initWinsTable() {
 
-    const playersRow = document.getElementById('players');
-    const winsRow = document.getElementById('wins');
+    const playersRow = document.getElementById('players')
+    const winsRow = document.getElementById('wins')
 
     for(let i = 0; players.length > i; i++) {
 
-        const pElement = document.createElement('td');
-        pElement.textContent = players[i].Name;
-        playersRow.appendChild(pElement);
+        const pElement = document.createElement('td')
+        pElement.textContent = players[i].Name
+        playersRow.appendChild(pElement)
 
-        const wElement = document.createElement('td');
-        wElement.textContent = players[i].Wins;
-        winsRow.appendChild(wElement);
+        const wElement = document.createElement('td')
+        wElement.textContent = players[i].Wins
+        winsRow.appendChild(wElement)
 
     }
 
@@ -137,7 +137,7 @@ function initWinsTable() {
 
 function ok() {
     
-    clearSessionStorage();
-    window.location.href = '../kniffel.html';
+    clearSessionStorage()
+    window.location.replace('/creategame')
 
 }

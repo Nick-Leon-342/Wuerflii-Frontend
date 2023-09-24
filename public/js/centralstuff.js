@@ -3,8 +3,6 @@
 let players = [];
 let gameAttributes;
 
-const ip = 'http://192.168.178.41:3000';
-
 
 
 //____________________IDs____________________
@@ -26,9 +24,6 @@ const substring_winner                      = 'winner';
 
 const substring_gameSession                 = 'gameSession_';
 
-const substring_user                        = 'user';
-const substring_token                       = 'token';
-
 
 //____________________SessionStorage____________________
 
@@ -43,8 +38,6 @@ const sessionStorage_winner                 = substring_sessionStorage + substri
 const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + '_';
 const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + '_';
 
-const sessionStorage_token                  = substring_sessionStorage + substring_token;
-
 
 
 
@@ -55,11 +48,6 @@ function clearSessionStorage() {
 
     cSS(substring_sessionStorage);
 
-}
-
-function clearSessionStorageUserAndToken() {
-    sessionStorage.removeItem(sessionStorage_user);
-    sessionStorage.removeItem(sessionStorage_token);
 }
 
 function clearSessionStorageTables() {
@@ -76,7 +64,7 @@ function cSS(substring) {
     for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i));}
     
     for(const key of sessionStorage_Keys) {
-        if (key.includes(substring) && key != sessionStorage_user && key != sessionStorage_token) {
+        if (key.includes(substring)) {
             sessionStorage.removeItem(key);
         }
     }

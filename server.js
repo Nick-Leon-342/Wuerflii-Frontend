@@ -9,12 +9,6 @@ const fs = require('fs')
 
 const app = express()
 const server = http.createServer(app)
-const io = require('socket.io')(server, {
-    cors: {
-        origin: ['http://192.168.178.41:3000', 'http://127.0.0.1:3000', 'http://localhost:3000'],
-        methods: ['GET', 'POST']
-    }
-});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
@@ -57,41 +51,25 @@ function save() {
 
 
 
-//__________________________________________________SocketIO - Connection__________________________________________________
-
-const { handleConnection } = require('./connectionHandler')
-const { error } = require('console')
-
-io.on('connection', socket => handleConnection(socket))
-
-
-
-
-
-
-
-
-
-
 //____________________________________________________________________________________________________Authentication____________________________________________________________________________________________________
 
 //__________________________________________________Token(-Renewal)__________________________________________________
 
-app.post('/token', (req, res) => {
+function refreshAccessToken(refreshToken) {
+    if(!refreshToken_list.includes(refreshToken)) return 
 
-    const refreshToken = req.body.token
-    if(refreshToken == null) return res.sendStatus(401)
-    if(!refreshToken_list.includes(refreshToken)) return res.sendStatus(403)
-
+    let json
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 
-        if(err) return res.sendStatus(403)
-        const accessToken = generateAccessToken({ Name: user.Name, Password: user.Password })
-        res.json({ AccessToken: accessToken })
+        if(err) return 
+        const at = generateAccessToken(user)
+        json = { User: user, AccessToken: at }
 
     })
 
-})
+    return json
+
+}
 
 function generateToken(user) {
 
@@ -100,7 +78,7 @@ function generateToken(user) {
     const refreshToken = jwt.sign(tmp, process.env.REFRESH_TOKEN_SECRET)
     refreshToken_list.push(refreshToken)
 
-    return { AccessToken: accessToken, RefreshToken: refreshToken }
+    return JSON.stringify({ AccessToken: accessToken, RefreshToken: refreshToken })
 
 }
 
@@ -108,26 +86,50 @@ function authenticateToken(req, res, next) {
 
     const tmp = req.headers.cookie
 
-    if(tmp == null) return res.redirect('/login')
+    if(!tmp) return res.redirect('/login')
 
     const tokenJSON = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1]))
-    const token = tokenJSON.AccessToken
+    const at = tokenJSON.AccessToken
+    const rt = tokenJSON.RefreshToken
 
-    if(token == null) return res.redirect('/login')
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if(err) {
-            res.clearCookie('Token')
-            return res.redirect('/login')
+
+            const json = refreshAccessToken(rt)
+            if(json) {
+                res.cookie('Token', JSON.stringify({ AccessToken: json.AccessToken, RefreshToken: rt }))
+                req.user = json.User
+            } else {
+                res.clearCookie('Token')
+                return res.redirect('/login')
+            }
+
+        } else {
+            req.user = user
         }
-        req.user = user
         next()
     })
 
 }
 
 function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3 })
+}
+
+function noAccessToken(req, res, next) {
+
+    const tmp = req.headers.cookie
+    if(!tmp) return next()
+
+    const at = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1])).AccessToken
+
+    jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if(err) {
+            return next()
+        }
+        return res.redirect('/creategame')
+    })
+
 }
 
 
@@ -136,11 +138,11 @@ function generateAccessToken(user) {
 
 //__________________________________________________Registration__________________________________________________
 
-app.get('/registration', (req, res) => {
+app.get('/registration', noAccessToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'registration.html'))
 })
 
-app.post('/registration', async (req, res) => {
+app.post('/registration', noAccessToken, async (req, res) => {
 
     try {
         const hashedPassword = await bcrypt.hash(req.body.Password, 10)
@@ -156,7 +158,7 @@ app.post('/registration', async (req, res) => {
 
         save()
         
-        const token = JSON.stringify(generateToken(user));
+        const token = generateToken(user)
         res.cookie('Token', token)
         return res.redirect('/creategame')
     } catch {
@@ -171,11 +173,11 @@ app.post('/registration', async (req, res) => {
 
 //__________________________________________________Login__________________________________________________
 
-app.get('/login', (req, res) => {
+app.get('/login', noAccessToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'))
 })
 
-app.post('/login', async (req, res) => {
+app.post('/login', noAccessToken, async (req, res) => {
 
     const tmp = req.body
     
@@ -185,7 +187,7 @@ app.post('/login', async (req, res) => {
             try {
                 if(await bcrypt.compare(req.body.Password, user.Password)) {
         
-                    const token = JSON.stringify(generateToken(user))
+                    const token = generateToken(user)
                     res.cookie('Token', token)
                     return res.redirect('/creategame')
         
@@ -206,8 +208,13 @@ app.post('/login', async (req, res) => {
 //__________________________________________________Logout__________________________________________________
 
 app.delete('/logout', (req, res) => {
-    refreshToken_list = refreshToken_list.filter(token => token !== req.body.token)
-    res.sendStatus(204)
+
+    const tmp = req.headers.cookie
+    const tokenJSON = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1]))
+    refreshToken_list.splice(refreshToken_list.indexOf(tokenJSON.RefreshToken), 1)
+    res.clearCookie('Token')
+    res.end()
+
 })
 
 
@@ -243,7 +250,7 @@ app.get('/', (req, res) => {
 
 
 
-//__________________________________________________SelectSession__________________________________________________
+//__________________________________________________CreateGame__________________________________________________
 
 app.get('/creategame', authenticateToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'creategame.html'));
@@ -261,24 +268,125 @@ app.get('/selectsession', authenticateToken, (req, res) => {
 
 app.post('/selectsession', authenticateToken, (req, res) => {
     
-    const user = req.user
+    const u = getUser(req.user.Name, req.user.Password)
 
-    for(const u of users) {
-        if(u.Name == user.Name && u.Password == user.Password) {
-
-            if(u.SessionNames_List.length != 0) {
-                const response = { SessionNames_List: u.SessionNames_List, Players_List: u.Players_List, GameAttributes_List: u.GameAttributes_List }
-                return res.json(response)
-            } else {
-                console.log('Test')
-                return res.send(null)
-            }
-
+    if(u) {
+        if(u.SessionNames_List.length != 0) {
+            const response = { SessionNames_List: u.SessionNames_List, Players_List: u.Players_List, GameAttributes_List: u.GameAttributes_List }
+            return res.json(response)
         }
     }
-
+    
     res.sendStatus(500)
 
+})
+
+app.post('/deletesession', authenticateToken, (req, res) => {
+
+    const u = getUser(req.user.Name, req.user.Password)
+    const sessionName = req.body.SessionName
+    const index = u.SessionNames_List.indexOf(sessionName)
+
+    u.SessionNames_List.splice(index, 1);
+    u.GameAttributes_List.splice(index, 1)
+    u.Players_List.splice(index, 1)
+    u.FinalScores_List.splice(index, 1)
+
+    save()
+    res.end()
+
+})
+
+
+
+
+
+//__________________________________________________SessionPreview__________________________________________________
+
+app.get('/sessionpreview', authenticateToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'sessionpreview.html'))
+})
+
+app.post('/sessionpreview', authenticateToken, (req, res) => {
+
+    const u = getUser(req.user.Name, req.user.Password)
+    const sessionName = req.body.SessionName
+
+    const json = { FinalScores: u.FinalScores_List[u.SessionNames_List.indexOf(sessionName)] }
+    res.json(json)
+
+})
+
+
+
+
+
+//__________________________________________________SelectSession__________________________________________________
+
+app.get('/enternames', authenticateToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'enternames.html'))
+})
+
+
+
+
+
+//__________________________________________________Game__________________________________________________
+
+app.get('/game', authenticateToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'game.html'))
+})
+
+app.post('/sessionnamerequest', authenticateToken, (req, res) => {
+    
+    const u = getUser(req.user.Name, req.user.Password)
+    if(u) return res.json({ SessionName: generateSessionName(u.SessionNames_List) })
+
+    res.sendStatus(403)
+
+})
+
+function generateSessionName(sessionNames_List) {
+
+    let sessionName;
+    
+    for(let i = 0; sessionNames_List.length + 1 > i; i++) {
+        sessionName = "gameSession_" + i;
+        if(!sessionNames_List.includes(sessionName)) {break;}
+    }
+
+    sessionNames_List.push(sessionName);
+    return sessionName;
+
+}
+
+app.post('/game', authenticateToken, (req, res) => {
+    
+    const u = getUser(req.user.Name, req.user.Password)
+    const json = req.body
+
+    const index = u.SessionNames_List.indexOf(json.GameAttributes.SessionName)
+    u.Players_List[index] = json.Players
+    u.GameAttributes_List[index] = json.GameAttributes
+    if(u.FinalScores_List[index]) {
+        u.FinalScores_List[index].push(json.FinalScores)
+    } else {
+        u.FinalScores_List[index] = [ json.FinalScores ]
+    }
+
+    save()
+    res.end()
+
+})
+
+
+
+
+
+//__________________________________________________Endscreen__________________________________________________
+
+app.get('/endscreen', authenticateToken, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'endscreen.html'))
 })
 
 
@@ -294,8 +402,17 @@ app.post('/selectsession', authenticateToken, (req, res) => {
 
 
 
+function getUser(name, password) {
 
+    for(const u of users) {
+        if(u.Name == name && u.Password == password) {
 
+            return u
+
+        }
+    }
+
+}
 
 
 

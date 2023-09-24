@@ -2,9 +2,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    document.getElementById('application').style.display = 'block';
+    document.getElementById('application').style.display = 'block'
 
-}, false);
+}, false)
 
 
 
@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function next() {
 
-    const name = document.getElementById('name').value;
-    const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value
+    const password = document.getElementById('password').value
 
     if(checkCredentials(name, password)) {
         
@@ -26,14 +26,14 @@ async function next() {
         })
         .then(response => {
             if (response.redirected) {
-                window.location.href = response.url;
+                window.location.replace(response.url)
             } else {
-                return response.json();
+                return response.json()
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-        });
+            console.error('Error:', error)
+        })
     }
 
 }
@@ -43,5 +43,5 @@ async function next() {
 
 
 function switchToRegistration() {
-    window.location.href = '/registration';
+    window.location.replace('/registration')
 }

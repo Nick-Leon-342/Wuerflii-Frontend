@@ -3,30 +3,25 @@
 //__________________________________________________Check SessionStorage before displaying__________________________________________________
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('application').style.display = 'block';
+    document.getElementById('application').style.display = 'block'
 
     if(isTest()) {
 
-        initTestData();
+        initTestData()
 
     }else {
 
-        const playercount = sessionStorage.getItem(sessionStorage_players);
+        const playercount = sessionStorage.getItem(sessionStorage_players)
 
-        if(playercount) {
+        if(playercount && playercount != 0) {
 
-            if(JSON.parse(playercount).isNaN) {
-                window.location.href = '../game/game.html';
-            } 
+            gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes))
 
-            gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
-
-            document.getElementById('enterNamesList').innerHTML = '';
-            for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i);}
-            if(document.getElementById('enterNamesList').innerHTML == '') {window.location.href = '../kniffel.html';}
+            document.getElementById('enterNamesList').innerHTML = ''
+            for(let i = 0; playercount > i; i++){addEnterNamesAndSelectColorElement(i)}
 
         } else {
-            window.location.href = '../kniffel.html';
+            window.location.replace('/creategame')
         }
 
     }
@@ -42,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initTestData() {
 
     for(let i = 0; 5 > i; i++) {
-        addEnterNamesAndSelectColorElement(i);
+        addEnterNamesAndSelectColorElement(i)
     }
 
 }
@@ -53,21 +48,21 @@ function initTestData() {
 
 function addEnterNamesAndSelectColorElement(i) {
 
-    const enterNamesList = document.getElementById('enterNamesList');
-    const dt = document.createElement('dt');
-    const nameInput = document.createElement('input');
-    const colorInput = document.createElement('input');
+    const enterNamesList = document.getElementById('enterNamesList')
+    const dt = document.createElement('dt')
+    const nameInput = document.createElement('input')
+    const colorInput = document.createElement('input')
 
-    dt.classList.add('enterNamesElement');
-    nameInput.classList.add('input');
+    dt.classList.add('enterNamesElement')
+    nameInput.classList.add('input')
     nameInput.value = `Player_${i+1}`
-    colorInput.classList.add('colorbox');
+    colorInput.classList.add('colorbox')
     colorInput.type = 'color';
-    colorInput.value = i % 2 == 0 ? '#ffffff' : '#ADD8E6';
+    colorInput.value = i % 2 == 0 ? '#ffffff' : '#ADD8E6'
 
-    dt.appendChild(nameInput);
-    dt.appendChild(colorInput);
-    enterNamesList.appendChild(dt);
+    dt.appendChild(nameInput)
+    dt.appendChild(colorInput)
+    enterNamesList.appendChild(dt)
 
 }
 
@@ -77,15 +72,15 @@ function addEnterNamesAndSelectColorElement(i) {
 
 function play() {
     
-    const enterNamesElement = document.getElementsByClassName('enterNamesElement');
-    players.length = 0;
+    const enterNamesElement = document.getElementsByClassName('enterNamesElement')
+    players.length = 0
     for(const element of enterNamesElement) {
-        players.push(createPlayer(element.querySelector('.input').value, element.querySelector('.colorbox').value));
+        players.push(createPlayer(element.querySelector('.input').value, element.querySelector('.colorbox').value))
     }
 
-    sessionStorage.setItem(sessionStorage_players, JSON.stringify(players));
+    sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
 
-    window.location.href = '../game/game.html';
+    window.location.replace('/game')
 
 }
 
@@ -93,9 +88,9 @@ function play() {
 
 
 
-function backToEnterNameAndColumnCount() {
+function backToCreateGame() {
 
-    clearSessionStorage();
-    window.location.href = '../kniffel.html';
+    clearSessionStorage()
+    window.location.replace('/creategame')
 
 }

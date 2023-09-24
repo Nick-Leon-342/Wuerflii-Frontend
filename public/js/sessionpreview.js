@@ -4,36 +4,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if(isTest()) {
 
-
+        //Not finished
         resizeTable();
 
     } else {
 
-        players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
-        gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
-
-        socket.emit('finalScoresRequest', {Name: sessionStorage.getItem(sessionStorage_user), Token: sessionStorage.getItem(sessionStorage_token), SessionName: gameAttributes.SessionName}); 
+        requestFinalScores()
 
     }
+    document.getElementById('application').style.display = 'block';
 
 }, false);
 
 let finalScores;
 
-const socket = io(ip);
 
 
+async function requestFinalScores() {
 
+    players = JSON.parse(sessionStorage.getItem(sessionStorage_players));
+    gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes));
 
-socket.on('finalScoresRequest', data => {
-    document.getElementById('application').style.display = 'block';
+    console.log(gameAttributes.SessionName)
 
-    finalScores = data;
+    const response = await fetch('/sessionpreview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ SessionName: gameAttributes.SessionName })
+    })
+
+    const data = await response.json()
+    finalScores = data.FinalScores;
 
     initSession();
     resizeTable();
 
-})
+}
+
+
+
 
 
 function resizeTable() {
@@ -118,13 +127,13 @@ function initSession() {
 function backToSelectSession() {
 
     clearSessionStorage();
-    window.location.href = '../selectsession/selectsession.html';
+    window.location.replace('/selectsession')
 
 }
 
 function play() {
 
-    window.location.href = '../game/game.html';
+    window.location.replace('/game')
 
 }
 
