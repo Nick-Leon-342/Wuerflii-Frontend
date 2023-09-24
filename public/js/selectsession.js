@@ -4,6 +4,8 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
+    loadError()
+
     if(isTest()) {
 
         initTestData()
@@ -14,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
             loadAllSessions()
         } catch(err) {
             nothingInList = true
-            loadError()
         }
 
     }
@@ -63,7 +64,7 @@ function switchToCreateGame() {
 
 
 
-document.getElementById('sessionList').addEventListener('click', function(event) {if(!nothingInList) {
+document.getElementById('sessionList').addEventListener('click', async function(event) {if(!nothingInList) {
     
     const target = event.target
     if(target.tagName !== 'BUTTON') {
@@ -81,13 +82,13 @@ document.getElementById('sessionList').addEventListener('click', function(event)
             
             const sessionName = target.getAttribute('gameSessionName')
             
-            fetch('/deletesession', {
+            await fetch('/deletesession', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ SessionName: sessionName })
             })
     
-            loadAllSessions()
+            window.location.reload()
 
         }
 
@@ -113,7 +114,6 @@ async function loadAllSessions() {
         const data = await response.json()
         loadAllSessionsHelp(data)
     } catch {
-        loadError()
     }
 
 }

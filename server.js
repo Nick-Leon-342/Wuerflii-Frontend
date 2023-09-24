@@ -84,31 +84,40 @@ function generateToken(user) {
 
 function authenticateToken(req, res, next) {
 
-    const tmp = req.headers.cookie
+    try {
 
-    if(!tmp) return res.redirect('/login')
-
-    const tokenJSON = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1]))
-    const at = tokenJSON.AccessToken
-    const rt = tokenJSON.RefreshToken
-
-    jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if(err) {
-
-            const json = refreshAccessToken(rt)
-            if(json) {
-                res.cookie('Token', JSON.stringify({ AccessToken: json.AccessToken, RefreshToken: rt }))
-                req.user = json.User
+        const tmp = getCookie(req, 'Token')
+        if(!tmp) return res.redirect('/login')
+    
+        const t = JSON.parse(tmp)
+        const at = t.AccessToken
+        const rt = t.RefreshToken
+    
+        jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if(err) {
+    
+                const json = refreshAccessToken(rt)
+                if(json) {
+                    res.cookie('Token', JSON.stringify({ AccessToken: json.AccessToken, RefreshToken: rt }))
+                    req.user = json.User
+                } else {
+                    res.clearCookie('Token')
+                    return res.redirect('/login')
+                }
+    
             } else {
-                res.clearCookie('Token')
-                return res.redirect('/login')
+                req.user = user
             }
+            next()
+        })
 
-        } else {
-            req.user = user
-        }
-        next()
-    })
+    } catch(e) {
+
+        console.log(e)
+        res.clearCookie('Token')
+        return res.redirect('/login')
+
+    }
 
 }
 
@@ -118,17 +127,39 @@ function generateAccessToken(user) {
 
 function noAccessToken(req, res, next) {
 
-    const tmp = req.headers.cookie
-    if(!tmp) return next()
+    try {
 
-    const at = JSON.parse(decodeURIComponent(tmp && tmp.split('=')[1])).AccessToken
+        const tmp = getCookie(req, 'Token')
+        if(!tmp) return next()
+        const at = JSON.parse(tmp).AccessToken
+    
+        jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if(err) {
+                return next()
+            }
+            return res.redirect('/creategame')
+        })
 
-    jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if(err) {
-            return next()
-        }
-        return res.redirect('/creategame')
-    })
+    } catch(e) {
+
+        console.log(e)
+        res.clearCookie('Token')
+        return
+
+    }
+
+}
+
+function getCookie(req, cookieName) {
+
+    if(req.headers.cookie) {
+        let cookie = {}
+        req.headers.cookie.split(';').forEach(function(el) {
+            let [key,value] = el.split('=')
+            cookie[key.trim()] = decodeURIComponent(value)
+        })
+        return cookie[cookieName]
+    }
 
 }
 
