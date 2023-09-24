@@ -11,6 +11,8 @@ const app = express()
 const server = http.createServer(app)
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/css', express.static(path.join(__dirname, 'css'), { 'extensions': ['css'], 'index': false }));
+app.use('/js', express.static(path.join(__dirname, 'js'), { 'extensions': ['js'], 'index': false }));
 app.use(express.json())
 
 
