@@ -1,23 +1,23 @@
+
+
 require('dotenv').config()
 
 const express = require('express')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 const path = require('path')
-const http = require('http')
 const fs = require('fs')
+const uuid = require('uuid')
+
+const { generateToken, generateAccessToken, refreshAccessToken, authenticateToken, noAccessToken } = require('./jwtToken.js')
+//const {  } = require('postgreSQL.js')
 
 const app = express()
-const server = http.createServer(app)
 
 app.use(express.static(path.join(__dirname, 'public')))
-app.use('/css', express.static(path.join(__dirname, 'css'), { 'extensions': ['css'], 'index': false }));
-app.use('/js', express.static(path.join(__dirname, 'js'), { 'extensions': ['js'], 'index': false }));
 app.use(express.json())
 
 
 let users = []
-let refreshToken_list = []
 
 
 
@@ -55,103 +55,6 @@ function save() {
 
 //____________________________________________________________________________________________________Authentication____________________________________________________________________________________________________
 
-//__________________________________________________Token(-Renewal)__________________________________________________
-
-function refreshAccessToken(refreshToken) {
-    if(!refreshToken_list.includes(refreshToken)) return 
-
-    let json
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-
-        if(err) return 
-        const at = generateAccessToken(user)
-        json = { User: user, AccessToken: at }
-
-    })
-
-    return json
-
-}
-
-function generateToken(user) {
-
-    const tmp = { Name: user.Name, Password: user.Password }
-    const accessToken = generateAccessToken(tmp)
-    const refreshToken = jwt.sign(tmp, process.env.REFRESH_TOKEN_SECRET)
-    refreshToken_list.push(refreshToken)
-
-    return JSON.stringify({ AccessToken: accessToken, RefreshToken: refreshToken })
-
-}
-
-function authenticateToken(req, res, next) {
-
-    try {
-
-        const tmp = getCookie(req, 'Token')
-        if(!tmp) return res.redirect('/login')
-    
-        const t = JSON.parse(tmp)
-        const at = t.AccessToken
-        const rt = t.RefreshToken
-    
-        jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-            if(err) {
-    
-                const json = refreshAccessToken(rt)
-                if(json) {
-                    res.cookie('Token', JSON.stringify({ AccessToken: json.AccessToken, RefreshToken: rt }))
-                    req.user = json.User
-                } else {
-                    res.clearCookie('Token')
-                    return res.redirect('/login')
-                }
-    
-            } else {
-                req.user = user
-            }
-            next()
-        })
-
-    } catch(e) {
-
-        console.log(e)
-        res.clearCookie('Token')
-        return res.redirect('/login')
-
-    }
-
-}
-
-function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 600 })
-}
-
-function noAccessToken(req, res, next) {
-
-    try {
-
-        const tmp = getCookie(req, 'Token')
-        if(!tmp) return next()
-        const at = JSON.parse(tmp).AccessToken
-    
-        jwt.verify(at, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-            if(err) {
-                return next()
-            }
-            return res.redirect('/creategame')
-        })
-
-    } catch(e) {
-
-        console.log(e)
-        res.clearCookie('Token')
-        return
-
-    }
-
-}
-
 function getCookie(req, cookieName) {
 
     if(req.headers.cookie) {
@@ -182,6 +85,7 @@ app.post('/registration', noAccessToken, async (req, res) => {
         const user = {
             Name: req.body.Name,
             Password: hashedPassword,
+            UUID: uuid.v4(),
             SessionNames_List: [],
             Players_List: [],
             GameAttributes_List: [],
@@ -443,6 +347,11 @@ function getUser(name, password) {
 
 
 
+
+
+
+
+
 const PORT = process.env.PORT || 10000 
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
 
