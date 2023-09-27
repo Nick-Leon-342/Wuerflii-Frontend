@@ -451,7 +451,6 @@ async function sendResults() {
 
     //____________________GameAttributes____________________
     const options = { year: 'numeric', month: 'numeric', day: 'numeric' } // 19.10.2004
-    console.log(new Date().toLocaleDateString('de-DE', options))
     gameAttributes.LastPlayed = new Date().toLocaleDateString('de-DE', options)
 
 

@@ -1,6 +1,26 @@
 
 
+//____________________InitClient____________________
+
 const { Client } = require('pg')
+
+const client = new Client({
+
+    host: process.env.DATABASE_HOST || 'localhost',
+    user: process.env.DATABASE_USER || 'user',
+    port: process.env.DATABASE_PORT || 5432,
+    password: process.env.DATABASE_PASSWORD || 'password',
+    database: process.env.DATABASE_NAME || 'database'
+
+})
+
+client.connect()
+
+
+
+
+
+//____________________TableVariables____________________
 
 const table_player = { 
     Name: 'playerTable', 
@@ -16,17 +36,9 @@ const table_refreshToken = {
 
 
 
-const client = new Client({
 
-    host: process.env.DATABASE_HOST || 'localhost',
-    user: process.env.DATABASE_USER || 'user',
-    port: process.env.DATABASE_PORT || 5432,
-    password: process.env.DATABASE_PASSWORD || 'password',
-    database: process.env.DATABASE_NAME || 'database'
 
-})
-
-client.connect()
+//____________________InitTables____________________
 
 function initTables() {
 
@@ -34,18 +46,13 @@ function initTables() {
 
 }
 
-// function refreshTokenValid(refreshToken) {
-    
-//     client.query(`SELECT * FROM ${table_refreshToken.Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
-      
-//         if (err) return console.error(err)
-//         if (res.rows.length > 0) return true
+function createTable(table) { client.query(table.Create(), (err, res) => { if(err) console.log(err) }) }
 
-//     })
 
-//     return false
 
-// }
+
+
+//____________________RefreshToken____________________
 
 function refreshTokenValid(refreshToken) {
     return new Promise((resolve, reject) => {
@@ -64,10 +71,10 @@ function addRefreshToken(refreshToken) {
 
 }
 
-function createTable(table) {
+function removeRefreshToken(refreshToken) {
 
-    client.query(table.Create(), (err, res) => {
-        //client.end()
+    client.query(`DELETE FROM ${table_refreshToken.Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
+        if(err) console.log(err)
     })
 
 }

@@ -86,14 +86,14 @@ app.post('/registration', noAccessToken, async (req, res) => {
             Name: req.body.Name,
             Password: hashedPassword,
             UUID: uuid.v4(),
-            SessionNames_List: [],
-            Players_List: [],
-            GameAttributes_List: [],
-            FinalScores_List: []
+            Created: new Date().toLocaleDateString('de-DE', { year: 'numeric', month: 'numeric', day: 'numeric' }), // 19.10.2004
+            GamesPlayedTotal: 0,
+            List_SessionNames: [],
+            List_Players: [],
+            List_GameAttributes: [],
+            List_FinalScores: []
         }
         users.push(user)
-
-        save()
         
         const token = generateToken(user)
         res.cookie('Token', token)
@@ -209,8 +209,8 @@ app.post('/selectsession', authenticateToken, (req, res) => {
     const u = getUser(req.user.Name, req.user.Password)
 
     if(u) {
-        if(u.SessionNames_List.length != 0) {
-            const response = { SessionNames_List: u.SessionNames_List, Players_List: u.Players_List, GameAttributes_List: u.GameAttributes_List }
+        if(u.List_SessionNames.length != 0) {
+            const response = { List_SessionNames: u.List_SessionNames, List_Players: u.List_Players, List_GameAttributes: u.List_GameAttributes }
             return res.json(response)
         }
     }
@@ -223,12 +223,12 @@ app.post('/deletesession', authenticateToken, (req, res) => {
 
     const u = getUser(req.user.Name, req.user.Password)
     const sessionName = req.body.SessionName
-    const index = u.SessionNames_List.indexOf(sessionName)
+    const index = u.List_SessionNames.indexOf(sessionName)
 
-    u.SessionNames_List.splice(index, 1);
-    u.GameAttributes_List.splice(index, 1)
-    u.Players_List.splice(index, 1)
-    u.FinalScores_List.splice(index, 1)
+    u.List_SessionNames.splice(index, 1);
+    u.List_GameAttributes.splice(index, 1)
+    u.List_Players.splice(index, 1)
+    u.List_FinalScores.splice(index, 1)
 
     save()
     res.end()
@@ -250,7 +250,7 @@ app.post('/sessionpreview', authenticateToken, (req, res) => {
     const u = getUser(req.user.Name, req.user.Password)
     const sessionName = req.body.SessionName
 
-    const json = { FinalScores: u.FinalScores_List[u.SessionNames_List.indexOf(sessionName)] }
+    const json = { FinalScores: u.List_FinalScores[u.List_SessionNames.indexOf(sessionName)] }
     res.json(json)
 
 })
@@ -278,22 +278,22 @@ app.get('/game', authenticateToken, (req, res) => {
 app.post('/sessionnamerequest', authenticateToken, (req, res) => {
     
     const u = getUser(req.user.Name, req.user.Password)
-    if(u) return res.json({ SessionName: generateSessionName(u.SessionNames_List) })
+    if(u) return res.json({ SessionName: generateSessionName(u.List_SessionNames) })
 
     res.sendStatus(403)
 
 })
 
-function generateSessionName(sessionNames_List) {
+function generateSessionName(List_SessionNames) {
 
     let sessionName;
     
-    for(let i = 0; sessionNames_List.length + 1 > i; i++) {
+    for(let i = 0; List_SessionNames.length + 1 > i; i++) {
         sessionName = "gameSession_" + i;
-        if(!sessionNames_List.includes(sessionName)) {break;}
+        if(!List_SessionNames.includes(sessionName)) {break;}
     }
 
-    sessionNames_List.push(sessionName);
+    List_SessionNames.push(sessionName);
     return sessionName;
 
 }
@@ -303,13 +303,13 @@ app.post('/game', authenticateToken, (req, res) => {
     const u = getUser(req.user.Name, req.user.Password)
     const json = req.body
 
-    const index = u.SessionNames_List.indexOf(json.GameAttributes.SessionName)
-    u.Players_List[index] = json.Players
-    u.GameAttributes_List[index] = json.GameAttributes
-    if(u.FinalScores_List[index]) {
-        u.FinalScores_List[index].push(json.FinalScores)
+    const index = u.List_SessionNames.indexOf(json.GameAttributes.SessionName)
+    u.List_Players[index] = json.Players
+    u.List_GameAttributes[index] = json.GameAttributes
+    if(u.List_FinalScores[index]) {
+        u.List_FinalScores[index].push(json.FinalScores)
     } else {
-        u.FinalScores_List[index] = [ json.FinalScores ]
+        u.List_FinalScores[index] = [ json.FinalScores ]
     }
 
     save()

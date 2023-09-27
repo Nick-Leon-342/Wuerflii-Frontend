@@ -4,8 +4,45 @@ Name:
 Password:
 UUID:
 Created:
-GamesPlayedTotal:
+GamesPlayedTotal: -->maybe include in lists (players or gameAttributes)
 
 
-SessionNames_List[]
-GameAttributes
+List_SessionNames[]
+
+List_Players[]
+List_GameAttributes[]
+List_FinalScores[]
+
+
+
+
+
+Player-Object:
+
+Name:
+Color:
+Wins:
+
+
+GameAttributes-Object:
+
+Column:
+LastPlayed:
+CreatedDate:
+SessionName:
+
+
+FinalScores-Object:
+
+gamePlayed:
+UserName_1: Score
+UserName_2: Score
+...
+
+
+
+
+
+
+
+
