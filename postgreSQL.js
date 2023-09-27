@@ -4,7 +4,7 @@ const { Client } = require('pg')
 
 const table_player = { 
     Name: 'playerTable', 
-    Create: function() {`CREATE ${this.Name} (  )`} 
+    Create: function() {return `CREATE TABLE ${this.Name} (  )`} 
 }
 
 
@@ -16,15 +16,13 @@ const table_refreshToken = {
 
 
 
-
-
 const client = new Client({
 
     host: process.env.DATABASE_HOST || 'localhost',
     user: process.env.DATABASE_USER || 'user',
     port: process.env.DATABASE_PORT || 5432,
     password: process.env.DATABASE_PASSWORD || 'password',
-    database: process.env.DATABASE_NAME || 'kniffel'
+    database: process.env.DATABASE_NAME || 'database'
 
 })
 
@@ -32,35 +30,36 @@ client.connect()
 
 function initTables() {
 
-
-
     createTable(table_refreshToken)
 
 }
 
-function refreshTokenValid(refreshToken) {
+// function refreshTokenValid(refreshToken) {
     
-    client.query(`SELECT 1 FROM ${table_refreshToken.Name} WHERE ${table_refreshToken.Column} = ${refreshToken}`, (err, res) => {
+//     client.query(`SELECT * FROM ${table_refreshToken.Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
       
-        if (err) {
-            console.error(err)
-            client.end()
-        }
-        
-        if (res.rows.length > 0) return true
-        client.end()
+//         if (err) return console.error(err)
+//         if (res.rows.length > 0) return true
 
+//     })
+
+//     return false
+
+// }
+
+function refreshTokenValid(refreshToken) {
+    return new Promise((resolve, reject) => {
+        client.query(`SELECT 1 FROM ${table_refreshToken.Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
+            if (err) return reject(err)
+            resolve(res.rows.length > 0)
+        })
     })
-
-    return false
-
 }
 
 function addRefreshToken(refreshToken) {
 
-    client.query(`INSERT INTO ${table_refreshToken.Name} (${table_refreshToken.Column} VALUES ('${refreshToken}'))`, (err, res) => {
-    if (err) return console.error(err)
-        client.end()
+    client.query(`INSERT INTO ${table_refreshToken.Name} (${table_refreshToken.Column}) VALUES ('${refreshToken}')`, (err, res) => {
+        if (err) return console.error(err)
     })
 
 }
@@ -68,18 +67,24 @@ function addRefreshToken(refreshToken) {
 function createTable(table) {
 
     client.query(table.Create(), (err, res) => {
-        client.end()
+        //client.end()
     })
 
 }
 
 
 
-initTables()
-addRefreshToken('Eins')
-addRefreshToken('Zwei')
-refreshTokenValid('Zwei')
 
+async function main() {
+    initTables()
+    await addRefreshToken('Eins')
+    await addRefreshToken('Zwei')
+    console.log(await refreshTokenValid('Trölf'))
+    client.end()
+}
+
+main()
+    
 
 
 
