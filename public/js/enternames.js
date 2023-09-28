@@ -74,8 +74,9 @@ function play() {
     
     const enterNamesElement = document.getElementsByClassName('enterNamesElement')
     players.length = 0
-    for(const element of enterNamesElement) {
-        players.push(createPlayer(element.querySelector('.input').value, element.querySelector('.colorbox').value))
+    //for(const element of enterNamesElement) {
+    for(let i = 0; enterNamesElement.length > i; i++) {
+        players.push(createPlayer(enterNamesElement[i].querySelector('.input').value, `Player_${i}`, enterNamesElement[i].querySelector('.colorbox').value))
     }
 
     sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))

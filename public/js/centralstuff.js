@@ -77,9 +77,10 @@ function cSS(substring) {
 
 //____________________CreateObjects____________________
 
-function createPlayer(name, color) {
+function createPlayer(name, alias, color) {
     return {
         Name: name,
+        Alias: alias,
         Color: color,
         Wins: 0
     };

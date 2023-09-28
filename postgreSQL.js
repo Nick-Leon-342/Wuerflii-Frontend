@@ -22,16 +22,38 @@ client.connect()
 
 //____________________TableVariables____________________
 
-const table_player = { 
-    Name: 'playerTable', 
-    Create: function() {return `CREATE TABLE ${this.Name} (  )`} 
+const table_players = {
+
+    Table_Name: 'players', 
+
+    Name: 'name TEXT',
+    Password: 'password TEXT',
+    UUID: 'uuid TEXT',
+    Created: 'created TEXT',
+
+    Create: function() { return `CREATE TABLE ${this.Table_Name} (  )` }
+
 }
 
+const table_sessions = {
 
-const table_refreshToken = { 
-    Name: 'refreshtoken', 
-    Column: 'token', 
-    Create: function() {return `CREATE TABLE ${this.Name} ( ${this.Column} TEXT )`} 
+    Table_Name: 'sessions',
+
+    UUID: 'uuid TEXT',   //UUID_sessionName
+    
+
+    Create: function() { return `CREATE TABLE ${this.Table_Name} (  )` }
+
+}
+
+const table_refreshToken = {
+
+    Table_Name: 'refreshtoken',
+
+    Column: 'token TEXT',
+
+    Create: function() { return `CREATE TABLE ${this.Table_Name} ( ${this.Column} )` } 
+
 }
 
 
@@ -56,7 +78,7 @@ function createTable(table) { client.query(table.Create(), (err, res) => { if(er
 
 function refreshTokenValid(refreshToken) {
     return new Promise((resolve, reject) => {
-        client.query(`SELECT 1 FROM ${table_refreshToken.Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
+        client.query(`SELECT 1 FROM ${table_refreshToken.Table_Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
             if (err) return reject(err)
             resolve(res.rows.length > 0)
         })
@@ -65,7 +87,7 @@ function refreshTokenValid(refreshToken) {
 
 function addRefreshToken(refreshToken) {
 
-    client.query(`INSERT INTO ${table_refreshToken.Name} (${table_refreshToken.Column}) VALUES ('${refreshToken}')`, (err, res) => {
+    client.query(`INSERT INTO ${table_refreshToken.Table_Name} (${table_refreshToken.Column}) VALUES ('${refreshToken}')`, (err, res) => {
         if (err) return console.error(err)
     })
 
@@ -73,11 +95,18 @@ function addRefreshToken(refreshToken) {
 
 function removeRefreshToken(refreshToken) {
 
-    client.query(`DELETE FROM ${table_refreshToken.Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
+    client.query(`DELETE FROM ${table_refreshToken.Table_Name} WHERE ${table_refreshToken.Column} = '${refreshToken}'`, (err, res) => {
         if(err) console.log(err)
     })
 
 }
+
+
+
+
+
+//____________________RefreshToken____________________
+
 
 
 
