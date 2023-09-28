@@ -20,6 +20,7 @@ List_FinalScores[]
 Player-Object:
 
 Name:
+Alias:          //important for finalScore | can't be changed and is set by the system 
 Color:
 Wins:
 
@@ -34,8 +35,9 @@ SessionName:
 
 FinalScores-Object:
 
-gamePlayed:
-UserName_1: Score
+gamePlayed:         //Date
+timePlayed:         //How long
+UserName_1: Score   //username-"alias" like player_1 to prevent issues or massive load when playername is renamed
 UserName_2: Score
 ...
 
