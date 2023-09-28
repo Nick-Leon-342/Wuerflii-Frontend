@@ -30,6 +30,7 @@ const table_players = {
     Password: 'password TEXT',
     UUID: 'uuid TEXT',
     Created: 'created TEXT',
+    List_SessionNames: 'sessionnames JSONB',    //Syntax: UUID_sessionName
 
     Create: function() { return `CREATE TABLE ${this.Table_Name} (  )` }
 
@@ -39,8 +40,10 @@ const table_sessions = {
 
     Table_Name: 'sessions',
 
-    UUID: 'uuid TEXT',   //UUID_sessionName
-    
+    SessionName: 'sessionname TEXT',
+    List_Players: 'players JSONB',
+    List_Attributes: 'attributes JSONB',
+    List_FinalScores: 'finalscores JSONB',
 
     Create: function() { return `CREATE TABLE ${this.Table_Name} (  )` }
 

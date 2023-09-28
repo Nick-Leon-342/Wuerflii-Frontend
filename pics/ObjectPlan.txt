@@ -12,7 +12,7 @@ List_SessionNames[]
 
 
 List_Players[]
-List_GameAttributes[]
+List_Attributes[]
 List_FinalScores[]
 
 
@@ -27,7 +27,7 @@ Color:
 Wins:
 
 
-GameAttributes-Object:
+Attributes-Object:
 
 Column:
 LastPlayed:
