@@ -24,28 +24,43 @@ client.connect()
 
 const table_players = {
 
-    Table_Name: 'players', 
+    Table_Name:         'players', 
 
-    Name: 'name TEXT',
-    Password: 'password TEXT',
-    UUID: 'uuid TEXT',
-    Created: 'created TEXT',
-    List_SessionNames: 'sessionnames JSONB',    //Syntax: UUID_sessionName
+    Name:               'name',
+    Password:           'password',
+    UUID:               'uuid',
+    Created:            'created',
+    List_SessionNames:  'sessionnames',    //Syntax: UUID_sessionName in JSON
 
-    Create: function() { return `CREATE TABLE ${this.Table_Name} (  )` }
+    Create: function() { 
+        return `CREATE TABLE ${this.Table_Name} ( 
+            ${this.Name} TEXT, 
+            ${this.Password} TEXT, 
+            ${this.UUID} TEXT,
+            ${this.Created} TEXT, 
+            ${this.List_SessionNames} JSONB
+        )` 
+    }
 
 }
 
 const table_sessions = {
 
-    Table_Name: 'sessions',
+    Table_Name:         'sessions',
 
-    SessionName: 'sessionname TEXT',
-    List_Players: 'players JSONB',
-    List_Attributes: 'attributes JSONB',
-    List_FinalScores: 'finalscores JSONB',
+    SessionName:        'sessionname',
+    List_Players:       'players',
+    List_Attributes:    'attributes',
+    List_FinalScores:   'finalscores',
 
-    Create: function() { return `CREATE TABLE ${this.Table_Name} (  )` }
+    Create: function() {
+        return `CREATE TABLE ${this.Table_Name} (
+            ${this.SessionName} TEXT,
+            ${this.List_Players} JSONB,
+            ${this.List_Attributes} JSONB,
+            ${this.List_FinalScores} JSONB
+        )`
+    }
 
 }
 
@@ -53,9 +68,9 @@ const table_refreshToken = {
 
     Table_Name: 'refreshtoken',
 
-    Column: 'token TEXT',
+    Column: 'token',
 
-    Create: function() { return `CREATE TABLE ${this.Table_Name} ( ${this.Column} )` } 
+    Create: function() { return `CREATE TABLE ${this.Table_Name} ( ${this.Column} TEXT )` } 
 
 }
 
@@ -67,11 +82,13 @@ const table_refreshToken = {
 
 function initTables() {
 
+    createTable(table_players)
+    createTable(table_sessions)
     createTable(table_refreshToken)
 
 }
 
-function createTable(table) { client.query(table.Create(), (err, res) => { if(err) console.log(err) }) }
+function createTable(table) { client.query(table.Create(), (err, res) => { if(err && !err.toString().includes('already exists')) console.log(err) }) }
 
 
 
@@ -90,7 +107,7 @@ function refreshTokenValid(refreshToken) {
 
 function addRefreshToken(refreshToken) {
 
-    client.query(`INSERT INTO ${table_refreshToken.Table_Name} (${table_refreshToken.Column}) VALUES ('${refreshToken}')`, (err, res) => {
+    client.query(`INSERT INTO ${table_refreshToken.Table_Name} ( ${table_refreshToken.Column} ) VALUES ('${refreshToken}')`, (err, res) => {
         if (err) return console.error(err)
     })
 
@@ -110,19 +127,40 @@ function removeRefreshToken(refreshToken) {
 
 //____________________RefreshToken____________________
 
+function addUser(user) {
+
+    Name:               'name',
+    Password:           'password',
+    UUID:               'uuid',
+    Created:            'created',
+    List_SessionNames:  'sessionnames',
+
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 async function main() {
-    initTables()
+    await initTables()
     await addRefreshToken('Eins')
     await addRefreshToken('Zwei')
-    console.log(await refreshTokenValid('Trölf'))
-    client.end()
+    await addRefreshToken('Drei')
+    await addRefreshToken('Vier')
+    console.log(await refreshTokenValid('Zwei'))
+    await removeRefreshToken('Zwei')
+    console.log(await refreshTokenValid('Zwei'))
+    //client.end()
 }
-
-main()
     
 
 
@@ -130,5 +168,5 @@ main()
 
 
 module.exports = {
-    
+    main
 }

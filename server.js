@@ -8,8 +8,8 @@ const path = require('path')
 const fs = require('fs')
 const uuid = require('uuid')
 
-const { generateToken, generateAccessToken, refreshAccessToken, authenticateToken, noAccessToken } = require('./jwtToken.js')
-//const {  } = require('postgreSQL.js')
+//const { generateToken, generateAccessToken, refreshAccessToken, authenticateToken, noAccessToken } = require('./jwtToken.js')
+const { main } = require('./postgreSQL.js')
 
 const app = express()
 
@@ -20,12 +20,12 @@ app.use(express.json())
 let users = []
 
 
+main()
 
 
 
 
-
-
+/*
 
 
 //____________________Save____________________
@@ -355,3 +355,8 @@ function getUser(name, password) {
 const PORT = process.env.PORT || 10000 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
 
+
+
+
+
+*/
