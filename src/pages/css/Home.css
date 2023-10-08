@@ -1,0 +1,158 @@
+
+
+body {
+	overflow-x: hidden;
+	margin: 0;
+}
+
+.headerpanel {
+	margin-top: 0;
+    width: 100%;
+    height: 206px;
+    flex-shrink: 0;
+    background: #2B4EA8;
+	z-index: -1;
+	position: absolute;
+}
+
+.welcome {
+    display: flex;
+	align-items: flex-start;
+	margin-top: 50px;
+	padding-left: 20px;
+
+    color: #FFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 27px;
+    font-style: normal;
+    font-weight: 550;
+    line-height: normal;
+}
+
+.mainpanel {
+	position: absolute;
+	margin-top: 100px;
+    width: 100vw;
+    height: 10000px;
+    flex-shrink: 0;
+    
+    border-radius: 15px;
+    background: #EAEAEA;
+	
+}
+
+.cashflow {
+	position: relative;
+	width: 370px;
+	height: 140px;
+	margin: auto;
+	margin-top: 30px;
+	display: flex;
+	flex-direction: column;
+  
+	border-radius: 15px;
+	background: #F5F5F5;
+	box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.25);
+}
+  
+#cashflow {
+	padding: 10px 20px;
+	display: flex;
+	align-items: flex-start;
+
+	color: #000;
+	font-family: Arial;
+	font-size: 22px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+  
+.money {
+	display: flex;
+	justify-content: space-around;
+}
+  
+.moneyBlub {
+	width: 150px;
+	height: 75px;
+	border-radius: 10px;
+	background: #4288F0;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.moneyBlub-header {
+	padding: 5px 10px;
+	display: flex;
+	align-items: flex-start;
+
+	color: #FFF;
+	font-family: Arial;
+	font-size: 15px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.moneyBlub-text {
+	padding-top: 5px;
+
+	color: #FFF;
+	text-align: center;
+	font-family: Arial;
+	font-size: 24px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+
+
+
+
+
+.trend {
+	width: 370px;
+	height: 350px;
+	flex-shrink: 0;
+	margin-top: 40px;
+	margin-left: 10px;
+
+	border-radius: 15px;
+	background: #F5F5F5;
+	box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.25);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.sidemenu {
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: -300px;
+	width: 300px;
+	height: 100%;
+	background-color: #bdbdbd;
+	transition: all .2s linear;
+}
+  
+.show {
+	left: 0;
+}
+  
+.hide {
+	left: -300px;
+}
