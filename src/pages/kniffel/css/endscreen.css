@@ -1,0 +1,10 @@
+
+
+#wins-table td {
+    padding: 5px;
+    font-weight: bold;
+}
+
+#winner {
+    font-weight: bold;
+}
