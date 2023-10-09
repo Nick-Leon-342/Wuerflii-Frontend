@@ -1,15 +1,15 @@
 
 
-let players = [];
-let gameAttributes;
+export let players = [];
+export let gameAttributes;
 
 
 
 //____________________IDs____________________
 
-const id_upperTable                         = 'upperTable';
-const id_bottomTable                        = 'bottomTable';
-const id_playerTable                        = 'playerTable';
+export const id_upperTable                         = 'upperTable';
+export const id_bottomTable                        = 'bottomTable';
+export const id_playerTable                        = 'playerTable';
 
 
 //____________________Substrings____________________
@@ -28,15 +28,15 @@ const substring_gameSession                 = 'gameSession_';
 //____________________SessionStorage____________________
 
 const substring_sessionStorage              = 'kniffel_sessionStorage_';
-const sessionStorage_players                = substring_sessionStorage + substring_players;
-const sessionStorage_gameAttributes         = substring_sessionStorage + substring_gameAttributes;
+export const sessionStorage_players                = substring_sessionStorage + substring_players;
+export const sessionStorage_gameAttributes         = substring_sessionStorage + substring_gameAttributes;
 
-const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf;
-const sessionStorage_offsetWidth            = substring_sessionStorage + substring_offsetWidth;
-const sessionStorage_winner                 = substring_sessionStorage + substring_winner;
+export const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf;
+export const sessionStorage_offsetWidth            = substring_sessionStorage + substring_offsetWidth;
+export const sessionStorage_winner                 = substring_sessionStorage + substring_winner;
 
-const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + '_';
-const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + '_';
+export const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + '_';
+export const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + '_';
 
 
 
@@ -44,13 +44,13 @@ const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bott
 
 //____________________ClearStorage____________________
 
-function clearSessionStorage() {
+export function clearSessionStorage() {
 
     cSS(substring_sessionStorage);
 
 }
 
-function clearSessionStorageTables() {
+export function clearSessionStorageTables() {
 
     cSS(sessionStorage_upperTable_substring);
     cSS(sessionStorage_bottomTable_substring);
@@ -160,3 +160,7 @@ function isTest() {
 function checkCredentials(name, password) {
     return name != '' && password != ''
 }
+
+
+
+

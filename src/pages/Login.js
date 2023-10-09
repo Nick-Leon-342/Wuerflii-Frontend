@@ -44,7 +44,7 @@ const Login = () => {
             setUser('')
             setPwd('')
 
-            navigate('/home', { replace: true })
+            navigate('/CreateGame', { replace: true })
 
         } catch (err) {
             if (!err?.response) {
@@ -62,150 +62,53 @@ const Login = () => {
     }
 
     return (
+		<>
+			<p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
+			<h1>Login</h1>
+			<form onSubmit={handleSubmit}>
 
-        <div>
-            <p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
-
-                <label htmlFor='Username'>Benutzername:</label>
+				<label htmlFor='Username'>Benutzername:</label>
 				<br/>
-                <input
-                    type='text'
-                    id='Username'
+				<input
+					type='text'
+					className='input'
+					id='Username'
 					placeholder='Jeffrey'
-                    ref={userRef}
-                    autoComplete='off'
-                    onChange={(e) => setUser(e.target.value)}
-                    value={Name}
-                    required
-                />
+					ref={userRef}
+					autoComplete='off'
+					onChange={(e) => setUser(e.target.value)}
+					value={Name}
+					required
+				/>
 
 				<br/>
 
-                <label htmlFor='Password'>Passwort:</label>
+				<label htmlFor='Password'>Passwort:</label>
 				<br/>
-                <input
-                    type='password'
-                    id='Password'
+				<input
+					type='password'
+					className='input'
+					id='Password'
 					placeholder='#Pass123'
-                    onChange={(e) => setPwd(e.target.value)}
-                    value={Password}
-                    required
-                />
+					onChange={(e) => setPwd(e.target.value)}
+					value={Password}
+					required
+				/>
 
 				<br/>
 				<br/>
 
-                <button>Einloggen</button>
+				<button className='button'>Einloggen</button>
 
-            </form>
-            <p>
-                Noch keinen Account?<br />
-                <span className='line'>
-                    <Link to='/registration'>Erstellen</Link>
-                </span>
-            </p>
-        </div>
-
+			</form>
+			<p>
+				Noch keinen Account?<br />
+				<span className='line'>
+					<Link to='/registration'>Erstellen</Link>
+				</span>
+			</p>
+		</>
     )
 }
 
 export default Login
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useRef} from 'react'
-// import { Formik, Form, Field, ErrorMessage } from 'formik'
-// import axios from '../api/axios'
-// import { useNavigate } from 'react-router-dom'
-// import * as Yup from 'yup'
-
-
-// function Login() {
-
-// 	const { setAuth } = useAuth()
-// 	let navigate = useNavigate()
-
-// 	const initialValues = {
-// 		Name: '',
-// 		Password: ''
-// 	}
-
-// 	const onSubmit = async (values) => {
-
-// 		await axios.post('/auth/login', values).then((res) => {
-// 			console.log(res.data)
-// 		})
-
-// 	}
-
-// 	const validationSchema = Yup.object().shape({
-// 		Name: Yup.string()
-// 				.min(6, 'Der Benutzername muss mindestens 6 Zeichen lang sein!')
-// 				.max(128, 'Der Benutzername darf maximal 128 Zeichen lang sein!')
-// 				.required('Du musst einen Benutzernamen eingeben!'),
-// 		Password: Yup.string()
-// 					.min(6, 'Das Passwort muss aus mindestens 6 Zeichen bestehen!')
-// 					.max(128, 'Das Passwort darf maximal 128 Zeichen lang sein!')
-// 					.required('Du musst ein Passwort eingeben!')
-// 	})
-
-
-// 	const navigateEvent = () => {navigate('/registration')}
-
-// 	return (
-// 		<div>
-
-// 			<button onClick={navigateEvent}>Registration</button>
-
-// 			<br/>
-// 			<br/>
-
-// 			<Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-// 				<Form>
-
-// 					<label>Benutzername: </label>
-// 					<br/>
-// 					<ErrorMessage name='Name' />
-// 					<br/>
-// 					<Field id='username' name='Name' placeholder='username' />
-// 					<br />
-
-
-// 					<label>Passwort: </label>
-// 					<br/>
-// 					<ErrorMessage name='Password' />
-// 					<br/>
-// 					<Field id='password' name='Password' placeholder='password' type='password' />
-// 					<br />
-// 					<br />
-
-
-// 					<button type='submit'>Einloggen</button>
-
-// 				</Form>
-// 			</Formik>
-
-// 		</div>
-// 	)
-// }
-
-// export default Login

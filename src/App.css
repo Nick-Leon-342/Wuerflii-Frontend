@@ -1,38 +1,143 @@
+
+
+* {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+}
+
 .App {
-  text-align: center;
+	text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+
+
+
+/* ____________________Application____________________ */
+
+#application {
+    background-color: #A9A9A9;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px 10px rgb(100, 100, 100);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+
+
+
+
+/* ____________________Interface____________________ */
+
+.interface {
+    background-color: rgb(150, 150, 150);
+    border-radius: 15px;
+    padding: 15px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+
+
+
+/* ____________________Button____________________ */
+
+.button {
+    color: black;
+    font-size: 20px;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 5px 15px;
+    background-color: #00FF00;
+    border-color: black;
+    outline: none;
 }
 
-.App-link {
-  color: #61dafb;
+.button:hover {
+    background-color: #16df26;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.button:active {
+    transform: scale(0.9);
+}
+
+.button-container {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+
+
+
+
+/* ____________________Input____________________ */
+
+.input {
+    background-color: #A9A9A9;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: -10px;
+}
+
+.input-container label {
+    margin-top: 7px;
+    margin-right: 15px;
+    color: white;
+}
+
+
+
+
+
+/* ____________________Table____________________ */
+
+.table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 5px;
+}
+
+.table th, table td {
+    border: 2px solid rgb(65, 65, 65);
+    text-align: center;
+    height: 50px;
+}
+
+
+
+
+
+@media (max-width: 1650px) {
+
+}
+
+@media (max-width: 1250px) {
+
+}
+
+@media (max-width: 950px) {
+
+}
+
+@media (max-width: 750px) {
+
+}
+
+@media (max-width: 475px) {
+
 }

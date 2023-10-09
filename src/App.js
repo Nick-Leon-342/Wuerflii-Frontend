@@ -7,32 +7,44 @@ import Login from './pages/Login'
 import PersistLogin from './pages/PersistLogin'
 import Registration from './pages/Registration'
 
-import Home from './pages/Home'
+import CreateGame from './pages/CreateGame'
+import SelectSession from './pages/SelectSession'
 
 function App() {
 
 	return (
 		<div className="App">
-			<Router>
-				<Routes>
-					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/' element={<Login />} />
-					<Route path='/login' element={<Login />} />
-					<Route path='/registration' element={<Registration />} />
+			<div id='application'>
+				
+				<a href='https://games.mmtn-schneider.com'><button className='button'>Home</button></a>
+
+				<div className='interface'>
+					<Router>
+						<Routes>
+							{/* 'Public' routes --> routes that can be accessed without token */}
+							<Route path='/' element={<Login />} />
+							<Route path='/login' element={<Login />} />
+							<Route path='/registration' element={<Registration />} />
 
 
-					{/* 
-					routes that have to be protected by a token
-					PersistLogin is needed, so that the user doesn't have to login after page refresh
-					*/}
-					<Route element={<PersistLogin />}>
+							{/* 
+							routes that have to be protected by a token
+							PersistLogin is needed, so that the user doesn't have to login after page refresh
+							*/}
+							<Route element={<PersistLogin />}>
 
-						<Route path='/home' element={<Home />} />
+								<Route path='/CreateGame' element={<CreateGame />} />
+								<Route path='/SelectSession' element={<SelectSession />} />
+								<Route path='/CreateGame' element={<CreateGame />} />
+								<Route path='/CreateGame' element={<CreateGame />} />
+								<Route path='/CreateGame' element={<CreateGame />} />
 
-					</Route>
+							</Route>
 
-				</Routes>
-			</Router>
+						</Routes>
+					</Router>
+				</div>
+			</div>
 		</div>
 	)
 

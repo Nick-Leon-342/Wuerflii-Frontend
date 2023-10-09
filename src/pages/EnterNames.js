@@ -1,5 +1,14 @@
 
 
+import '../App.css'
+import './css/EnterNames.css'
+
+import React from 'react'
+
+
+function EnterNames() {
+
+
 //__________________________________________________Check SessionStorage before displaying__________________________________________________
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -95,3 +104,22 @@ function backToCreateGame() {
     window.location.replace('/creategame')
 
 }
+
+
+	return (
+		<div id='application'>
+			<a href='https://games.mmtn-schneider.com'><button class='button'>Home</button></a>
+
+			<div class='interface'>
+				<dl id='enterNamesList'></dl>
+				<div class='button-container'>
+					<button class='button' onclick='backToCreateGame()'>Zurück</button>
+					<button class='button' onclick='play()'>Los!</button>
+				</div>
+			</div>
+
+		</div>
+	)
+}
+
+export default EnterNames
