@@ -60,10 +60,6 @@
 
 
 
-#nothingInListMessage {
-
-}
-
-#nothingInListMessage label {
+.message {
     font-size: 25px;
 }

@@ -1,6 +1,5 @@
 
 
-import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import Login from './pages/Login'
@@ -8,6 +7,8 @@ import PersistLogin from './pages/PersistLogin'
 import Registration from './pages/Registration'
 
 import CreateGame from './pages/CreateGame'
+import EnterNames from './pages/EnterNames'
+
 import SelectSession from './pages/SelectSession'
 
 function App() {
@@ -34,8 +35,10 @@ function App() {
 							<Route element={<PersistLogin />}>
 
 								<Route path='/CreateGame' element={<CreateGame />} />
+								<Route path='/EnterNames' element={<EnterNames />} />
+								
 								<Route path='/SelectSession' element={<SelectSession />} />
-								<Route path='/CreateGame' element={<CreateGame />} />
+								
 								<Route path='/CreateGame' element={<CreateGame />} />
 								<Route path='/CreateGame' element={<CreateGame />} />
 

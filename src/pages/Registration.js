@@ -89,12 +89,11 @@ const Registration = () => {
 			<h1>Registration</h1>
 			<form onSubmit={handleSubmit}>
 
-				<label htmlFor='Name'>
-					Benutzername:
+				<p className='input-header' htmlFor='Name'>
+					Benutzername
 					<FontAwesomeIcon icon={faCheck} className={validName ? 'valid' : 'hide'} />
 					<FontAwesomeIcon icon={faTimes} className={validName || !Name ? 'hide' : 'invalid'} />
-				</label>
-				<br/>
+				</p>
 				<input
 					type='text'
 					className='input'
@@ -115,15 +114,13 @@ const Registration = () => {
 					Der Benutzername muss zwischen 4 und 50 Zeichen lang sein und mit einem Buchstaben anfangen.<br />
 					Erlaubt sind Buchstaben, Zahlen, Binde- und Unterstriche.
 				</p>
-				<br/>
 
 
-				<label htmlFor='Password'>
-					Passwort:
+				<p className='input-header' htmlFor='Password'>
+					Passwort
 					<FontAwesomeIcon icon={faCheck} className={validPwd ? 'valid' : 'hide'} />
 					<FontAwesomeIcon icon={faTimes} className={validPwd || !Password ? 'hide' : 'invalid'} />
-				</label>
-				<br/>
+				</p>
 				<input
 					type='password'
 					className='input'
@@ -143,15 +140,13 @@ const Registration = () => {
 					Erlaubt sind Kleinbuchstaben, Großuchstaben, Zahlen und diese Zeichen:<br />
 					<span aria-label='exclamation mark'>!</span> <span aria-label='at symbol'>@</span> <span aria-label='hashtag'>#</span> <span aria-label='dollar sign'>$</span> <span aria-label='percent'>%</span>
 				</p>
-				<br/>
 
 
-				<label htmlFor='confirm_pwd'>
-					Passwort bestätigen:
+				<p className='input-header' htmlFor='confirm_pwd'>
+					Passwort bestätigen
 					<FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? 'valid' : 'hide'} />
 					<FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? 'hide' : 'invalid'} />
-				</label>
-				<br/>
+				</p>
 				<input
 					type='password'
 					className='input'
@@ -171,11 +166,12 @@ const Registration = () => {
 				</p>
 				<br/>
 				<br/>
+				<br/>
 
-				<button className='button' disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
+				<button className='button registration' disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
 			</form>
-			<p>
-				Bereits registriert?<br />
+			<p className='goLogin'>
+				Bereits registriert?{' '}
 				<span className='line'>
 					<Link to='/'>Einloggen</Link>
 				</span>

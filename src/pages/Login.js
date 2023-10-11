@@ -3,6 +3,7 @@
 import '../App.css'
 import './css/Login.css'
 
+import React from 'react'
 import { useRef, useState, useEffect } from 'react'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
@@ -67,8 +68,7 @@ const Login = () => {
 			<h1>Login</h1>
 			<form onSubmit={handleSubmit}>
 
-				<label htmlFor='Username'>Benutzername:</label>
-				<br/>
+				<p className='input-header' htmlFor='Username'>Benutzername</p>
 				<input
 					type='text'
 					className='input'
@@ -81,10 +81,7 @@ const Login = () => {
 					required
 				/>
 
-				<br/>
-
-				<label htmlFor='Password'>Passwort:</label>
-				<br/>
+				<p className='input-header' htmlFor='Password'>Passwort</p>
 				<input
 					type='password'
 					className='input'
@@ -98,12 +95,12 @@ const Login = () => {
 				<br/>
 				<br/>
 
-				<button className='button'>Einloggen</button>
+				<button className='button login'>Einloggen</button>
 
 			</form>
-			<p>
-				Noch keinen Account?<br />
-				<span className='line'>
+			<p className='needAccount'>
+				Noch keinen Account?{' '}
+				<span>
 					<Link to='/registration'>Erstellen</Link>
 				</span>
 			</p>

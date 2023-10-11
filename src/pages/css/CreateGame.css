@@ -1,0 +1,49 @@
+
+
+.logout {
+	width: 100%;
+	display: flex;
+}
+
+.logout button {
+	background: none;
+	border: none;
+	color: orangered;
+	padding: 0;
+	margin-bottom: 20px;
+}
+
+.input-computer {
+	width: 75px;
+	margin-left: 50px;
+}
+
+.input-mobile {
+	width: 150px;
+	margin-left: 20px;
+}
+
+.button-next {
+	width: 100%;
+	margin-bottom: 10px;
+	margin-top: 5px;
+}
+
+.loadGames {
+	margin-top: 5px;
+	width: 100%;
+	color: rgb(100, 100, 100);
+	text-align: start;
+}
+
+.loadGames a {
+	color: rgb(0, 255, 0, .7);
+}
+
+.loadGames a:hover {
+	color: rgb(0, 255, 0, .5);
+}
+
+.loadGames a:active {
+	color: rgb(0, 255, 0, .3);
+}

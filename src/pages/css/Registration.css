@@ -27,3 +27,32 @@
     color: limegreen;
     margin-left: 0.25rem;
 }
+
+.input-header {
+	margin-top: 20px;
+	margin-bottom: 5px;
+	text-align: left;
+	width: 100%;
+	font-size: 18px;
+}
+
+.registration {
+	width: 100%;
+}
+
+.goLogin {
+	color: rgb(100, 100, 100);
+	text-align: end;
+}
+
+.goLogin a {
+	color: rgb(0, 255, 0, .7);
+}
+
+.goLogin a:hover {
+	color: rgb(0, 255, 0, .5);
+}
+
+.goLogin a:active {
+	color: rgb(0, 255, 0, .3);
+}
