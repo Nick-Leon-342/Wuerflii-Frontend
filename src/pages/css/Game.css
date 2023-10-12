@@ -17,6 +17,11 @@
     margin: 5px;
 }
 
+.playerTable td:nth-child(1) {
+    width: 220px;
+    font-weight: bold;
+}
+
 #kniffelPlayer td:nth-child(1),
 #playerSum td:nth-child(1),
 #gnadenwurf td:nth-child(1) {

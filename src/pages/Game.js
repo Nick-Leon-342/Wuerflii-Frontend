@@ -4,12 +4,282 @@ import '../App.css'
 import './css/Game.css'
 
 import React from 'react'
+import { sessionStorage_attributes, sessionStorage_players } from './utils';
+
+
+const PlayerScores = ({ players, columns }) => {
+	const playerNames = ['Alice', 'Bob', 'Charlie']; // Beispiel-Spieler
+  
+	const renderPlayerRows = () => {
+	  return playerNames.map((player, index) => {
+		return (
+		  <tr key={index}>
+			<td>{player}</td>
+			{/* Hier kannst du für jede Spalte den entsprechenden Inhalt für den Spieler einfügen */}
+			<td>S1 {index}</td>
+			<td>S2</td>
+			{/* ... weitere Spalten für den Spieler */}
+		  </tr>
+		)
+	  })
+	}
+  
+	return (
+		
+		<tbody>
+			{renderPlayerRows()}
+		</tbody>
+	)
+};
+
+
 
 
 function Games() {
 
+	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
+	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
 
-	// const upperTable  = document.getElementById(id_upperTable)
+	const upperTable_columns = [
+		{ c:
+			<tr id='nurEinserZählen' class='row'>
+					<td>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					</td>
+					<td>Nur Einser<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='nurZweierZählen' class='row'>
+				<td>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+				</td>
+				<td>Nur Zweier<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='nurDreierZählen' class='row'>
+				<td>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+				</td>
+				<td>Nur Dreier<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='nurViererZählen' class='row'>
+				<td>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+				</td>
+				<td>Nur Vierer<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='nurFünferZählen' class='row'>
+				<td>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+				</td>
+				<td>Nur Fünfer<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='nurSechserZählen' class='row'>
+				<td>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+				</td>
+				<td>Nur Sechser<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='gesamt'>
+				<td>gesamt</td>
+				<td>
+					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+				</td>
+			</tr>
+		},
+		{ c:
+			<tr id='bonusBei63OderMehr'>
+				<td>Bonus bei 63<br/>oder mehr</td>
+				<td>plus 35</td>
+			</tr>
+		},
+		{ c:
+			<tr id='gesamtObererTeil'>
+				<td>gesamt<br/>oberer Teil</td>
+				<td>
+					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+				</td>
+			</tr>
+		}
+	]
+
+	const bottomTable_columns = [
+		{ c:
+			<tr id='dreierpasch' class='row'>
+				<td>Dreiferpasch</td>
+				<td>alle Augen<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='viererpasch' class='row'>
+				<td>Viererpasch</td>
+				<td>alle Augen<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='full-house' class='row'>
+				<td>Full-House</td>
+				<td>25<br/>Punkte</td>
+			</tr>
+		},
+		{ c:
+			<tr id='kleineStraße' class='row'>
+				<td>Kleine Straße</td>
+				<td>30<br/>Punkte</td>
+			</tr>
+		},
+		{ c:
+			<tr id='großeStraße' class='row'>
+				<td>Große Straße</td>
+				<td>40<br/>Punkte</td>
+			</tr>
+		},
+		{ c:
+			<tr id='kniffel' class='row'>
+				<td>Kniffel</td>
+				<td>50<br/>Punkte</td>
+			</tr>
+		},
+		{ c:
+			<tr id='chance' class='row'>
+				<td class='kniffelHeadElement'>Chance</td>
+				<td class='kniffelHeadElement'>alle Augen<br/>zählen</td>
+			</tr>
+		},
+		{ c:
+			<tr id='gesamtUntererTeil'>
+				<td>gesamt<br/>unterer Teil</td>
+				<td>
+					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+				</td>
+			</tr>
+		},
+		{ c:
+			<tr id='gesamtObererTeil'>
+				<td>gesamt<br/>oberer Teil</td>
+				<td>
+					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+				</td>
+			</tr>
+		},
+		{ c:
+			<tr id='endsumme'>
+				<td>Endsumme</td>
+				<td>
+					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+				</td>
+			</tr>
+		}
+	]
+
+	const playerTable_columns = [
+		{ c: <td>Spieler</td> },
+		{ c: <td>Spieler gesamt</td>},
+		{ c: <td>Gnadenwurf</td>}
+	]
+
+	const PlayerTable = () => {
+		return (
+			<>
+				<tr>
+					{playerTable_columns[0].c}
+					{players.map((player) => (
+						<td>{player.Name}</td>
+					))}
+				</tr>
+				<tr>
+					{playerTable_columns[1].c}
+					{players.map(() => (
+						<td>0</td>
+					))}
+				</tr>
+				<tr>
+					{playerTable_columns[2].c}
+					{players.map((player) => (
+						<td>Checkbox</td>
+					))}
+				</tr>
+			</>
+		)
+	}
+
+	return (<>
+		{/* <div>
+		  <table id='bottomTable' className='table bottomTable'>
+			<thead>
+			  <tr>
+				<th>Spieler</th>
+				<th>Spalte 1</th>
+				<th>Spalte 2</th>
+			  </tr>
+			</thead>
+			<PlayerScores numPlayers={players.length} />
+		  </table>
+		</div> */}
+
+		<table className='table playerTable'>
+			<tbody>
+				<PlayerTable />
+			</tbody>
+		</table>
+
+		{ /* <>
+
+			<table id='playerTable' class='table'></table>
+			<table id='upperTable' class='table upperTable'></table>
+
+
+
+			<table id='bottomTable' class='table bottomTable'></table>
+
+			<button onclick={newGame}class='button'>Neues Spiel</button>
+			<button onclick={saveResults} class='button'>Spiel beenden</button> 
+		</> */}</>
+	)
+}
+
+export default Games
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const upperTable  = document.getElementById(id_upperTable)
 	// const bottomTable = document.getElementById(id_bottomTable)
 	
 	// let columnsSum = []
@@ -461,167 +731,3 @@ function Games() {
 	// 	window.location.replace('/creategame')
 	
 	// }
-
-
-	return (
-		<>
-			{/* <table id='playerTable' class='table'>
-				<tr id='kniffelPlayer'>
-					<td>Spieler</td>
-				</tr>
-				<tr id='playerSum'>
-					<td>Spieler gesamt</td>
-				</tr>
-				<tr id='gnadenwurf'>
-					<td>Gnadenwurf</td>
-				</tr>
-			</table>
-
-
-
-			<table id='upperTable' class='table upperTable'>
-					
-				<tr id='nurEinserZählen' class='row'>
-					<td>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					</td>
-					<td>Nur Einser<br/>zählen</td>
-				</tr>
-
-				<tr id='nurZweierZählen' class='row'>
-					<td>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					</td>
-					<td>Nur Zweier<br/>zählen</td>
-				</tr>
-
-				<tr id='nurDreierZählen' class='row'>
-					<td>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					</td>
-					<td>Nur Dreier<br/>zählen</td>
-				</tr>
-
-				<tr id='nurViererZählen' class='row'>
-					<td>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					</td>
-					<td>Nur Vierer<br/>zählen</td>
-				</tr>
-
-				<tr id='nurFünferZählen' class='row'>
-					<td>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					</td>
-					<td>Nur Fünfer<br/>zählen</td>
-				</tr>
-
-				<tr id='nurSechserZählen' class='row'>
-					<td>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					</td>
-					<td>Nur Sechser<br/>zählen</td>
-				</tr>
-
-				<tr id='gesamt'>
-					<td>gesamt</td>
-					<td>
-						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-					</td>
-				</tr>
-
-				<tr id='bonusBei63OderMehr'>
-					<td>Bonus bei 63<br/>oder mehr</td>
-					<td>plus 35</td>
-				</tr>
-
-				<tr id='gesamtObererTeil'>
-					<td>gesamt<br/>oberer Teil</td>
-					<td>
-						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-					</td>
-				</tr>
-
-			</table>
-
-
-
-			<table id='bottomTable' class='table bottomTable'>
-					
-				<tr id='dreierpasch' class='row'>
-					<td>Dreiferpasch</td>
-					<td>alle Augen<br/>zählen</td>
-				</tr>
-
-				<tr id='viererpasch' class='row'>
-					<td>Viererpasch</td>
-					<td>alle Augen<br/>zählen</td>
-				</tr>
-
-				<tr id='full-house' class='row'>
-					<td>Full-House</td>
-					<td>25<br/>Punkte</td>
-				</tr>
-
-				<tr id='kleineStraße' class='row'>
-					<td>Kleine Straße</td>
-					<td>30<br/>Punkte</td>
-				</tr>
-
-				<tr id='großeStraße' class='row'>
-					<td>Große Straße</td>
-					<td>40<br/>Punkte</td>
-				</tr>
-
-				<tr id='kniffel' class='row'>
-					<td>Kniffel</td>
-					<td>50<br/>Punkte</td>
-				</tr>
-
-				<tr id='chance' class='row'>
-					<td class='kniffelHeadElement'>Chance</td>
-					<td class='kniffelHeadElement'>alle Augen<br/>zählen</td>
-				</tr>
-
-				<tr id='gesamtUntererTeil'>
-					<td>gesamt<br/>unterer Teil</td>
-					<td>
-						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-					</td>
-				</tr>
-
-				<tr id='gesamtObererTeil'>
-					<td>gesamt<br/>oberer Teil</td>
-					<td>
-						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-					</td>
-				</tr>
-
-				<tr id='endsumme'>
-					<td>Endsumme</td>
-					<td>
-						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-					</td>
-				</tr>
-
-			</table>
-
-			<button onclick={newGame}class='button'>Neues Spiel</button>
-			<button onclick={saveResults} class='button'>Spiel beenden</button> */}
-		</>
-	)
-}
-
-export default Games
