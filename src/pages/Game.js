@@ -1,7 +1,7 @@
 
 
 import '../App.css'
-import './css/Games.css'
+import './css/Game.css'
 
 import React from 'react'
 
@@ -9,634 +9,618 @@ import React from 'react'
 function Games() {
 
 
-	const upperTable  = document.getElementById(id_upperTable)
-	const bottomTable = document.getElementById(id_bottomTable)
+	// const upperTable  = document.getElementById(id_upperTable)
+	// const bottomTable = document.getElementById(id_bottomTable)
 	
-	let columnsSum = []
+	// let columnsSum = []
 	
 	
-	document.addEventListener('DOMContentLoaded', function() {
-		document.getElementById('application').style.display = 'block'
+	// document.addEventListener('DOMContentLoaded', function() {
+	// 	document.getElementById('application').style.display = 'block'
 	
-		if(isTest()) {
 	
-			initTestData()
+	// 		const playercount = sessionStorage.getItem(sessionStorage_players)
 	
-		}else {
+	// 		if(playercount) {
 	
-			const playercount = sessionStorage.getItem(sessionStorage_players)
+	// 			players = JSON.parse(playercount)
+	// 			if(players.isNaN) {
+	// 				window.location.replace('/enternames')
+	// 			}
 	
-			if(playercount) {
+	// 			gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes))
 	
-				players = JSON.parse(playercount)
-				if(players.isNaN) {
-					window.location.replace('/enternames')
-				}
+	// 			createTables()
+	// 			loadTables()
 	
-				gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes))
+	// 			resizeEvent()
 	
-				createTables()
-				loadTables()
+	// 		} else {
+	// 			window.location.replace('/creategame')
+	// 		}
 	
-				resizeEvent()
-	
-			} else {
-				window.location.replace('/creategame')
-			}
-	
-		}
-	
-		playerTable.querySelectorAll('.checkbox').forEach(function(element) {
-			element.addEventListener('change', function() {
+	// 	playerTable.querySelectorAll('.checkbox').forEach(function(element) {
+	// 		element.addEventListener('change', function() {
 		
-				const checks = []
-				for(let i = 0; players.length > i; i++) {
-					checks.push(playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked)
-				}
-				sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(checks))
+	// 			const checks = []
+	// 			for(let i = 0; players.length > i; i++) {
+	// 				checks.push(playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked)
+	// 			}
+	// 			sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(checks))
 		
-			})
-		})
+	// 		})
+	// 	})
 	
-	}, false)
-		
-	function initGame() {
+	// }, false)
+
+	// function initGame() {
 	
-		sessionStorage.clear()
+	// 	sessionStorage.clear()
 	
-		createTables()
+	// 	createTables()
 	
-		sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
-		sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gameAttributes))
-		initSessionStorageTables()
-		resizeEvent()
+	// 	sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
+	// 	sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gameAttributes))
+	// 	initSessionStorageTables()
+	// 	resizeEvent()
 	
-	}
+	// }
 	
-	function createTables() {
+	// function createTables() {
 	
-		for(let p = 0; p < players.length; p++) {
-			for(let c = 0; c < gameAttributes.Columns; c++) {
-				const columnCount = c + p * gameAttributes.Columns
-				addColumnToTable(columnCount, id_upperTable, players[p].Color)
-				addColumnToTable(columnCount, id_bottomTable, players[p].Color)
-				columnsSum.push({Upper: 0, Bottom: 0, All: 0})
-			}
-			addColumnToPlayerTable(p)
-		}
+	// 	for(let p = 0; p < players.length; p++) {
+	// 		for(let c = 0; c < gameAttributes.Columns; c++) {
+	// 			const columnCount = c + p * gameAttributes.Columns
+	// 			addColumnToTable(columnCount, id_upperTable, players[p].Color)
+	// 			addColumnToTable(columnCount, id_bottomTable, players[p].Color)
+	// 			columnsSum.push({Upper: 0, Bottom: 0, All: 0})
+	// 		}
+	// 		addColumnToPlayerTable(p)
+	// 	}
 	
-	}
-	
-	
+	// }
 	
 	
 	
-	//__________________________________________________For generating Kniffel table__________________________________________________
 	
-	function addColumnToPlayerTable(i) {
 	
-		const playerTable = document.getElementById(id_playerTable)
-		const width = sessionStorage.getItem(sessionStorage_offsetWidth) ? sessionStorage.getItem(sessionStorage_offsetWidth) : gameAttributes.Columns * upperTable.rows[0].cells[2].offsetWidth
-		sessionStorage.setItem(sessionStorage_offsetWidth, width)
+	// //__________________________________________________For generating Kniffel table__________________________________________________
 	
-		const nameTD = document.createElement('td')
-		nameTD.classList.add('playerSumElement')
-		nameTD.textContent = players[i].Name
-		nameTD.style.color = 'white'
-		nameTD.style.maxWidth = width + 'px'
-		nameTD.style.overflow = 'hidden'
-		playerTable.querySelectorAll('tr')[0].appendChild(nameTD)
+	// function addColumnToPlayerTable(i) {
 	
-		const sumTD = document.createElement('td')
-		const sumTDLabel = document.createElement('label')
-		sumTD.classList.add('playerSumElement')
-		sumTD.style.color = 'white'
-		sumTD.style.width = width + 'px'
-		sumTD.style.overflow = 'hidden'
-		sumTD.appendChild(sumTDLabel)
-		playerTable.querySelectorAll('tr')[1].appendChild(sumTD)
+	// 	const playerTable = document.getElementById(id_playerTable)
+	// 	const width = sessionStorage.getItem(sessionStorage_offsetWidth) ? sessionStorage.getItem(sessionStorage_offsetWidth) : gameAttributes.Columns * upperTable.rows[0].cells[2].offsetWidth
+	// 	sessionStorage.setItem(sessionStorage_offsetWidth, width)
 	
-		const gnadenwurfTD = document.createElement('td')
-		const box = document.createElement('input')
-		box.classList.add('checkbox')
-		box.type = 'checkbox'
-		box.setAttribute = i
-		gnadenwurfTD.appendChild(box)
-		playerTable.querySelectorAll('tr')[2].appendChild(gnadenwurfTD)
+	// 	const nameTD = document.createElement('td')
+	// 	nameTD.classList.add('playerSumElement')
+	// 	nameTD.textContent = players[i].Name
+	// 	nameTD.style.color = 'white'
+	// 	nameTD.style.maxWidth = width + 'px'
+	// 	nameTD.style.overflow = 'hidden'
+	// 	playerTable.querySelectorAll('tr')[0].appendChild(nameTD)
 	
-	}
+	// 	const sumTD = document.createElement('td')
+	// 	const sumTDLabel = document.createElement('label')
+	// 	sumTD.classList.add('playerSumElement')
+	// 	sumTD.style.color = 'white'
+	// 	sumTD.style.width = width + 'px'
+	// 	sumTD.style.overflow = 'hidden'
+	// 	sumTD.appendChild(sumTDLabel)
+	// 	playerTable.querySelectorAll('tr')[1].appendChild(sumTD)
 	
-	function addColumnToTable(column, tableID, color) {
+	// 	const gnadenwurfTD = document.createElement('td')
+	// 	const box = document.createElement('input')
+	// 	box.classList.add('checkbox')
+	// 	box.type = 'checkbox'
+	// 	box.setAttribute = i
+	// 	gnadenwurfTD.appendChild(box)
+	// 	playerTable.querySelectorAll('tr')[2].appendChild(gnadenwurfTD)
 	
-		const table = document.getElementById(tableID)
-		const rows = table.querySelectorAll('tr')
+	// }
+	
+	// function addColumnToTable(column, tableID, color) {
+	
+	// 	const table = document.getElementById(tableID)
+	// 	const rows = table.querySelectorAll('tr')
 	  
-		for (let i = 0; i < rows.length - 3; i++) {addRowToTable(column, tableID, rows, true, color, i)}
-		for(let i = rows.length - 3; i < rows.length; i++) {addRowToTable(column, tableID, rows, false, color, i)}
+	// 	for (let i = 0; i < rows.length - 3; i++) {addRowToTable(column, tableID, rows, true, color, i)}
+	// 	for(let i = rows.length - 3; i < rows.length; i++) {addRowToTable(column, tableID, rows, false, color, i)}
 	
-	}
+	// }
 	
-	function addRowToTable(column, tableID, rows, input, color, i) {
+	// function addRowToTable(column, tableID, rows, input, color, i) {
 	
-		const td = document.createElement('td')
-		let element
+	// 	const td = document.createElement('td')
+	// 	let element
 	
-		if(Boolean(input)) {element = document.createElement('input')
-		}else{element = document.createElement('label')}
-		element.classList.add('kniffelInput')
-		element.type = 'text'
-		element.inputMode = 'numeric'
-		element.style.backgroundColor = color
-		element.setAttribute('data-tableid', tableID)
-		element.setAttribute('data-column', column)
-		element.setAttribute('data-row', i)
-		element.onblur = function() {onblurEvent(element)}
-		element.oninput = function() {inputEvent(element)}
-		td.style.backgroundColor = color
-		td.appendChild(element)
-		rows[i].appendChild(td)
+	// 	if(Boolean(input)) {element = document.createElement('input')
+	// 	}else{element = document.createElement('label')}
+	// 	element.classList.add('kniffelInput')
+	// 	element.type = 'text'
+	// 	element.inputMode = 'numeric'
+	// 	element.style.backgroundColor = color
+	// 	element.setAttribute('data-tableid', tableID)
+	// 	element.setAttribute('data-column', column)
+	// 	element.setAttribute('data-row', i)
+	// 	element.onblur = function() {onblurEvent(element)}
+	// 	element.oninput = function() {inputEvent(element)}
+	// 	td.style.backgroundColor = color
+	// 	td.appendChild(element)
+	// 	rows[i].appendChild(td)
 	
-		element.addEventListener('focus', function() {focusEvent(element)})
-		element.addEventListener('blur', function() {removeFocusEvent(element)})
+	// 	element.addEventListener('focus', function() {focusEvent(element)})
+	// 	element.addEventListener('blur', function() {removeFocusEvent(element)})
 	
-	}
+	// }
 	
-	function onblurEvent(element) {
+	// function onblurEvent(element) {
 	
-		const id = element.getAttribute('data-tableid')
-		const column = Number(element.getAttribute('data-column'))
+	// 	const id = element.getAttribute('data-tableid')
+	// 	const column = Number(element.getAttribute('data-column'))
 	
-		saveElement(
-			id, 
-			element.value, 
-			column, 
-			Number(element.getAttribute('data-row')))
+	// 	saveElement(
+	// 		id, 
+	// 		element.value, 
+	// 		column, 
+	// 		Number(element.getAttribute('data-row')))
 	
-		if(id == id_upperTable) {
-			calculateUpperColumn(column)
-		} else {
-			calculateBottomColumn(column)
-		}
+	// 	if(id == id_upperTable) {
+	// 		calculateUpperColumn(column)
+	// 	} else {
+	// 		calculateBottomColumn(column)
+	// 	}
 		
-	}
+	// }
 	
-	function inputEvent(element) {
+	// function inputEvent(element) {
 	
-		if (isNaN(parseFloat(element.value)) || !isFinite(element.value) || element.value.length > 2) {
-			element.value = element.value.slice(0, -1)
-		}
+	// 	if (isNaN(parseFloat(element.value)) || !isFinite(element.value) || element.value.length > 2) {
+	// 		element.value = element.value.slice(0, -1)
+	// 	}
 	
-	}
+	// }
 	
-	function focusEvent(element) {
+	// function focusEvent(element) {
 	
-		const h = 'highlighted'
+	// 	const h = 'highlighted'
 	
-		const r = element.closest('tr')
-		if(!r.classList.contains(h)) {
-			r.classList.add(h)
-		}
+	// 	const r = element.closest('tr')
+	// 	if(!r.classList.contains(h)) {
+	// 		r.classList.add(h)
+	// 	}
 	
-		removeFocusEvent(r)
+	// 	removeFocusEvent(r)
 	
-	}
+	// }
 	
-	function removeFocusEvent(r) {
+	// function removeFocusEvent(r) {
 	
-		const h = 'highlighted'
+	// 	const h = 'highlighted'
 	
-		const u = document.getElementById(id_upperTable).rows
-		for(const e of u) {
-			if(e != r) {e.classList.remove(h)}
-		}
+	// 	const u = document.getElementById(id_upperTable).rows
+	// 	for(const e of u) {
+	// 		if(e != r) {e.classList.remove(h)}
+	// 	}
 	
-		const b = document.getElementById(id_bottomTable).rows
-		for(const e of b) {
-			if(e != r) {e.classList.remove(h)}
-		}
+	// 	const b = document.getElementById(id_bottomTable).rows
+	// 	for(const e of b) {
+	// 		if(e != r) {e.classList.remove(h)}
+	// 	}
 	
-	}
-	
-	
+	// }
 	
 	
 	
-	//__________________________________________________Calculating and endgame__________________________________________________
 	
-	function calculateUpperColumn(columnIndex) {
 	
-		const column = upperTable.querySelectorAll(`[data-column='${columnIndex}']`)
+	// //__________________________________________________Calculating and endgame__________________________________________________
 	
-		let columnCompleted = true
-		let sum = 0
+	// function calculateUpperColumn(columnIndex) {
 	
-		for(let i = 0; 6 > i; i++) {
+	// 	const column = upperTable.querySelectorAll(`[data-column='${columnIndex}']`)
 	
-			const n = column[i].value
-			if(n == '') {
-				columnCompleted = false
-			} else {
-				sum += Number(n)
-			}
+	// 	let columnCompleted = true
+	// 	let sum = 0
 	
-		}
+	// 	for(let i = 0; 6 > i; i++) {
 	
-		const bottomLabels = bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`)
-		column[6].textContent = sum
-		if(Boolean(columnCompleted)) {
+	// 		const n = column[i].value
+	// 		if(n == '') {
+	// 			columnCompleted = false
+	// 		} else {
+	// 			sum += Number(n)
+	// 		}
 	
-			sum = sum >= 63 ? sum + 35 : sum
-			column[7].textContent = sum >= 63 ? 35 : '-'
-			column[8].textContent = sum
+	// 	}
+	
+	// 	const bottomLabels = bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`)
+	// 	column[6].textContent = sum
+	// 	if(Boolean(columnCompleted)) {
+	
+	// 		sum = sum >= 63 ? sum + 35 : sum
+	// 		column[7].textContent = sum >= 63 ? 35 : '-'
+	// 		column[8].textContent = sum
 			
-			bottomLabels[1].textContent = sum
+	// 		bottomLabels[1].textContent = sum
 			
-		} else {
+	// 	} else {
 	
-			column[7].textContent = ''
-			column[8].textContent = ''
-			bottomLabels[1].textContent = ''
+	// 		column[7].textContent = ''
+	// 		column[8].textContent = ''
+	// 		bottomLabels[1].textContent = ''
 	
-		}
+	// 	}
 	
-		calculateBottomLabels(columnIndex, bottomLabels)
-		columnsSum[columnIndex].Upper = sum
-		calculateScores()
+	// 	calculateBottomLabels(columnIndex, bottomLabels)
+	// 	columnsSum[columnIndex].Upper = sum
+	// 	calculateScores()
 	
-	}
+	// }
 	
-	function calculateBottomColumn(columnIndex) {
+	// function calculateBottomColumn(columnIndex) {
 	
-		const column = bottomTable.querySelectorAll(`[data-column='${columnIndex}']`)
+	// 	const column = bottomTable.querySelectorAll(`[data-column='${columnIndex}']`)
 	
-		let columnCompleted = true
-		let sum = 0
+	// 	let columnCompleted = true
+	// 	let sum = 0
 	
-		for(let i = 0; 7 > i; i++) {
+	// 	for(let i = 0; 7 > i; i++) {
 	
-			const n = column[i].value
-			if(n == '') {
-				columnCompleted = false
-			} else {
-				sum += Number(n)
-			}
+	// 		const n = column[i].value
+	// 		if(n == '') {
+	// 			columnCompleted = false
+	// 		} else {
+	// 			sum += Number(n)
+	// 		}
 	
-		}
+	// 	}
 	
-		if(Boolean(columnCompleted)) {
+	// 	if(Boolean(columnCompleted)) {
 	
-			column[7].textContent = sum
+	// 		column[7].textContent = sum
 			
-		} else {
+	// 	} else {
 	
-			column[7].textContent = ''
-			column[9].textContent = ''
+	// 		column[7].textContent = ''
+	// 		column[9].textContent = ''
 	
-		}
+	// 	}
 	
-		calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`))
-		columnsSum[columnIndex].Bottom = sum
-		calculateScores()
+	// 	calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`))
+	// 	columnsSum[columnIndex].Bottom = sum
+	// 	calculateScores()
 	
-	}
+	// }
 	
-	function calculateBottomLabels(columnIndex, bottomLabels) {
+	// function calculateBottomLabels(columnIndex, bottomLabels) {
 	
-		const up = Number(bottomLabels[0].textContent)
-		const bottom = Number(bottomLabels[1].textContent)
-		const sum = up + bottom
+	// 	const up = Number(bottomLabels[0].textContent)
+	// 	const bottom = Number(bottomLabels[1].textContent)
+	// 	const sum = up + bottom
 	
-		bottomLabels[2].textContent = up != 0 && bottom != 0 ? sum : ''
-		columnsSum[columnIndex].All = Number(bottomLabels[2].textContent)
+	// 	bottomLabels[2].textContent = up != 0 && bottom != 0 ? sum : ''
+	// 	columnsSum[columnIndex].All = Number(bottomLabels[2].textContent)
 	
-	}
+	// }
 	
-	function calculateScores() {
+	// function calculateScores() {
 	
-		const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
+	// 	const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
 		
-		for(let i = 0; players.length > i; i++) {
+	// 	for(let i = 0; players.length > i; i++) {
 	
-			let sum = 0
-			for(let c = 0; gameAttributes.Columns > c; c++) {
+	// 		let sum = 0
+	// 		for(let c = 0; gameAttributes.Columns > c; c++) {
 	
-				const column = columnsSum[c + i * gameAttributes.Columns]
-				if(column.All != 0) {
-					sum += column.All
-				} else {
-					sum += column.Upper + column.Bottom
-				}
+	// 			const column = columnsSum[c + i * gameAttributes.Columns]
+	// 			if(column.All != 0) {
+	// 				sum += column.All
+	// 			} else {
+	// 				sum += column.Upper + column.Bottom
+	// 			}
 	
-			}
-			playerTableLabels[i].textContent = sum
+	// 		}
+	// 		playerTableLabels[i].textContent = sum
 	
-		}
+	// 	}
 	
-	}
-	
-	
+	// }
 	
 	
 	
 	
-	//__________________________________________________SessionStorage__________________________________________________
 	
-	function saveElement(tableID, value, column, row) {
 	
-		sessionStorage.setItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + '.' + column, value)
+	// //__________________________________________________SessionStorage__________________________________________________
 	
-	}
+	// function saveElement(tableID, value, column, row) {
+	
+	// 	sessionStorage.setItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + '.' + column, value)
+	
+	// }
 	  
-	function loadTables() {
+	// function loadTables() {
 	
-		const checks = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
-		if(checks) {
-			for(let i = 0; checks.length > i; i++) {
-				playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked = checks[i]
-			}
-		}
-		loadTablesHelp(upperTable.querySelectorAll('input'), id_upperTable)
-		loadTablesHelp(bottomTable.querySelectorAll('input'), id_bottomTable)
+	// 	const checks = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
+	// 	if(checks) {
+	// 		for(let i = 0; checks.length > i; i++) {
+	// 			playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked = checks[i]
+	// 		}
+	// 	}
+	// 	loadTablesHelp(upperTable.querySelectorAll('input'), id_upperTable)
+	// 	loadTablesHelp(bottomTable.querySelectorAll('input'), id_bottomTable)
 		
-	}
+	// }
 	
-	function loadTablesHelp(inputs, tableID) {
+	// function loadTablesHelp(inputs, tableID) {
 	
-		const placol = gameAttributes.Columns * players.length
+	// 	const placol = gameAttributes.Columns * players.length
 	
-		for(let i = 0; inputs.length > i; i++) {
-			inputs[i].value = sessionStorage.getItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + '.' + i%placol)
-			onblurEvent(inputs[i])
-		}
+	// 	for(let i = 0; inputs.length > i; i++) {
+	// 		inputs[i].value = sessionStorage.getItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + '.' + i%placol)
+	// 		onblurEvent(inputs[i])
+	// 	}
 	
-	}
-	
-	
+	// }
 	
 	
 	
-	//____________________SaveResults____________________
 	
-	async function saveResults() {
 	
-		for(const element of columnsSum) {
-			if(element.All == 0) {
-				window.alert('Bitte alle Werte eingeben!')
-				return
-			}
-		}
+	// //____________________SaveResults____________________
+	
+	// async function saveResults() {
+	
+	// 	for(const element of columnsSum) {
+	// 		if(element.All == 0) {
+	// 			window.alert('Bitte alle Werte eingeben!')
+	// 			return
+	// 		}
+	// 	}
 		
-		if(players.length >= 2) {
+	// 	if(players.length >= 2) {
 	
-			if(gameAttributes.SessionName == '') {
+	// 		if(gameAttributes.SessionName == '') {
 	
-				const response = await fetch('/sessionnamerequest', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: null
-				})
+	// 			const response = await fetch('/sessionnamerequest', {
+	// 				method: 'POST',
+	// 				headers: { 'Content-Type': 'application/json' },
+	// 				body: null
+	// 			})
 	
-				const data = await response.json()
-				gameAttributes.SessionName = data.SessionName
+	// 			const data = await response.json()
+	// 			gameAttributes.SessionName = data.SessionName
 	
-			} 
-			sendResults()
+	// 		} 
+	// 		sendResults()
 	
-		} else {
-			window.location.replace('/creategame')
-		}
+	// 	} else {
+	// 		window.location.replace('/creategame')
+	// 	}
 	
-	}
+	// }
 	
-	async function sendResults() {
+	// async function sendResults() {
 	
-		//____________________Players____________________
-		const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('label')
-		const playerScores = []
-		for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent)}
+	// 	//____________________Players____________________
+	// 	const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('label')
+	// 	const playerScores = []
+	// 	for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent)}
 	
-		let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
+	// 	let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
 	
-		for(let i = 1; players.length > i; i++) {
-			if(playerScores[i] != null) {
-				if(playerScores[i] > playerScores[winnerIndex[0]]) {
-					winnerIndex.length = 0
-					winnerIndex.push(i)
-				} else if (playerScores[i] == playerScores[winnerIndex[0]]) {
-					winnerIndex.push(i)
-				}
-			}
-		}
+	// 	for(let i = 1; players.length > i; i++) {
+	// 		if(playerScores[i] != null) {
+	// 			if(playerScores[i] > playerScores[winnerIndex[0]]) {
+	// 				winnerIndex.length = 0
+	// 				winnerIndex.push(i)
+	// 			} else if (playerScores[i] == playerScores[winnerIndex[0]]) {
+	// 				winnerIndex.push(i)
+	// 			}
+	// 		}
+	// 	}
 	
-		for(const i of winnerIndex) {players[i].Wins++}
+	// 	for(const i of winnerIndex) {players[i].Wins++}
 	
-		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
-		sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
-	
-	
-		//____________________GameAttributes____________________
-		const options = { year: 'numeric', month: 'numeric', day: 'numeric' } // 19.10.2004
-		gameAttributes.LastPlayed = new Date().toLocaleDateString('de-DE', options)
+	// 	sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
+	// 	sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
 	
 	
-		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(playerScores)
+	// 	//____________________GameAttributes____________________
+	// 	const options = { year: 'numeric', month: 'numeric', day: 'numeric' } // 19.10.2004
+	// 	gameAttributes.LastPlayed = new Date().toLocaleDateString('de-DE', options)
 	
-		console.log(finalScores)
-		const json = JSON.stringify({ Players: players, GameAttributes: gameAttributes, FinalScores: finalScores })
+	
+	// 	//____________________FinalScore____________________
+	// 	const finalScores = createFinalScoreElement(playerScores)
+	
+	// 	console.log(finalScores)
+	// 	const json = JSON.stringify({ Players: players, GameAttributes: gameAttributes, FinalScores: finalScores })
 		
-		await fetch('/game', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: json
-		})
+	// 	await fetch('/game', {
+	// 		method: 'POST',
+	// 		headers: { 'Content-Type': 'application/json' },
+	// 		body: json
+	// 	})
 	
-		clearSessionStorageTables()
-		window.location.replace('/endscreen')
+	// 	clearSessionStorageTables()
+	// 	window.location.replace('/endscreen')
 	
-	}
-	
-	
+	// }
 	
 	
 	
-	//__________________________________________________NewGame__________________________________________________
 	
-	function newGame() {
 	
-		clearSessionStorage()
-		window.location.replace('/creategame')
+	// //__________________________________________________NewGame__________________________________________________
 	
-	}
+	// const newGame = () => {
+	
+	// 	clearSessionStorage()
+	// 	window.location.replace('/creategame')
+	
+	// }
 
 
 	return (
-		<div id='application'>
-			<a href='https://games.mmtn-schneider.com'><button class='button'>Home</button></a>
-
-			<div class='interface'>
-				
-				<table id='playerTable' class='table'>
-					<tr id='kniffelPlayer'>
-						<td>Spieler</td>
-					</tr>
-					<tr id='playerSum'>
-						<td>Spieler gesamt</td>
-					</tr>
-					<tr id='gnadenwurf'>
-						<td>Gnadenwurf</td>
-					</tr>
-				</table>
+		<>
+			{/* <table id='playerTable' class='table'>
+				<tr id='kniffelPlayer'>
+					<td>Spieler</td>
+				</tr>
+				<tr id='playerSum'>
+					<td>Spieler gesamt</td>
+				</tr>
+				<tr id='gnadenwurf'>
+					<td>Gnadenwurf</td>
+				</tr>
+			</table>
 
 
 
-				<table id='upperTable' class='table upperTable'>
+			<table id='upperTable' class='table upperTable'>
 					
-					<tr id='nurEinserZählen' class='row'>
-						<td>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						</td>
-						<td>Nur Einser<br/>zählen</td>
-					</tr>
+				<tr id='nurEinserZählen' class='row'>
+					<td>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					</td>
+					<td>Nur Einser<br/>zählen</td>
+				</tr>
 
-					<tr id='nurZweierZählen' class='row'>
-						<td>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						</td>
-						<td>Nur Zweier<br/>zählen</td>
-					</tr>
+				<tr id='nurZweierZählen' class='row'>
+					<td>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					</td>
+					<td>Nur Zweier<br/>zählen</td>
+				</tr>
 
-					<tr id='nurDreierZählen' class='row'>
-						<td>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						</td>
-						<td>Nur Dreier<br/>zählen</td>
-					</tr>
+				<tr id='nurDreierZählen' class='row'>
+					<td>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					</td>
+					<td>Nur Dreier<br/>zählen</td>
+				</tr>
 
-					<tr id='nurViererZählen' class='row'>
-						<td>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						</td>
-						<td>Nur Vierer<br/>zählen</td>
-					</tr>
+				<tr id='nurViererZählen' class='row'>
+					<td>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					</td>
+					<td>Nur Vierer<br/>zählen</td>
+				</tr>
 
-					<tr id='nurFünferZählen' class='row'>
-						<td>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						</td>
-						<td>Nur Fünfer<br/>zählen</td>
-					</tr>
+				<tr id='nurFünferZählen' class='row'>
+					<td>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					</td>
+					<td>Nur Fünfer<br/>zählen</td>
+				</tr>
 
-					<tr id='nurSechserZählen' class='row'>
-						<td>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-							<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						</td>
-						<td>Nur Sechser<br/>zählen</td>
-					</tr>
+				<tr id='nurSechserZählen' class='row'>
+					<td>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					</td>
+					<td>Nur Sechser<br/>zählen</td>
+				</tr>
 
-					<tr id='gesamt'>
-						<td>gesamt</td>
-						<td>
-							<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-						</td>
-					</tr>
+				<tr id='gesamt'>
+					<td>gesamt</td>
+					<td>
+						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+					</td>
+				</tr>
 
-					<tr id='bonusBei63OderMehr'>
-						<td>Bonus bei 63<br/>oder mehr</td>
-						<td>plus 35</td>
-					</tr>
+				<tr id='bonusBei63OderMehr'>
+					<td>Bonus bei 63<br/>oder mehr</td>
+					<td>plus 35</td>
+				</tr>
 
-					<tr id='gesamtObererTeil'>
-						<td>gesamt<br/>oberer Teil</td>
-						<td>
-							<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-						</td>
-					</tr>
+				<tr id='gesamtObererTeil'>
+					<td>gesamt<br/>oberer Teil</td>
+					<td>
+						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+					</td>
+				</tr>
 
-				</table>
+			</table>
 
 
 
-				<table id='bottomTable' class='table bottomTable'>
+			<table id='bottomTable' class='table bottomTable'>
 					
-					<tr id='dreierpasch' class='row'>
-						<td>Dreiferpasch</td>
-						<td>alle Augen<br/>zählen</td>
-					</tr>
+				<tr id='dreierpasch' class='row'>
+					<td>Dreiferpasch</td>
+					<td>alle Augen<br/>zählen</td>
+				</tr>
 
-					<tr id='viererpasch' class='row'>
-						<td>Viererpasch</td>
-						<td>alle Augen<br/>zählen</td>
-					</tr>
+				<tr id='viererpasch' class='row'>
+					<td>Viererpasch</td>
+					<td>alle Augen<br/>zählen</td>
+				</tr>
 
-					<tr id='full-house' class='row'>
-						<td>Full-House</td>
-						<td>25<br/>Punkte</td>
-					</tr>
+				<tr id='full-house' class='row'>
+					<td>Full-House</td>
+					<td>25<br/>Punkte</td>
+				</tr>
 
-					<tr id='kleineStraße' class='row'>
-						<td>Kleine Straße</td>
-						<td>30<br/>Punkte</td>
-					</tr>
+				<tr id='kleineStraße' class='row'>
+					<td>Kleine Straße</td>
+					<td>30<br/>Punkte</td>
+				</tr>
 
-					<tr id='großeStraße' class='row'>
-						<td>Große Straße</td>
-						<td>40<br/>Punkte</td>
-					</tr>
+				<tr id='großeStraße' class='row'>
+					<td>Große Straße</td>
+					<td>40<br/>Punkte</td>
+				</tr>
 
-					<tr id='kniffel' class='row'>
-						<td>Kniffel</td>
-						<td>50<br/>Punkte</td>
-					</tr>
+				<tr id='kniffel' class='row'>
+					<td>Kniffel</td>
+					<td>50<br/>Punkte</td>
+				</tr>
 
-					<tr id='chance' class='row'>
-						<td class='kniffelHeadElement'>Chance</td>
-						<td class='kniffelHeadElement'>alle Augen<br/>zählen</td>
-					</tr>
+				<tr id='chance' class='row'>
+					<td class='kniffelHeadElement'>Chance</td>
+					<td class='kniffelHeadElement'>alle Augen<br/>zählen</td>
+				</tr>
 
-					<tr id='gesamtUntererTeil'>
-						<td>gesamt<br/>unterer Teil</td>
-						<td>
-							<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-						</td>
-					</tr>
+				<tr id='gesamtUntererTeil'>
+					<td>gesamt<br/>unterer Teil</td>
+					<td>
+						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+					</td>
+				</tr>
 
-					<tr id='gesamtObererTeil'>
-						<td>gesamt<br/>oberer Teil</td>
-						<td>
-							<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-						</td>
-					</tr>
+				<tr id='gesamtObererTeil'>
+					<td>gesamt<br/>oberer Teil</td>
+					<td>
+						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+					</td>
+				</tr>
 
-					<tr id='endsumme'>
-						<td>Endsumme</td>
-						<td>
-							<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
-						</td>
-					</tr>
+				<tr id='endsumme'>
+					<td>Endsumme</td>
+					<td>
+						<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
+					</td>
+				</tr>
 
-				</table>
+			</table>
 
-
-
-				<button onclick='newGame()' class='button'>Neues Spiel</button>
-				<button onclick='saveResults()' class='button'>Spiel beenden</button>
-
-			</div>
-
-		</div>
+			<button onclick={newGame}class='button'>Neues Spiel</button>
+			<button onclick={saveResults} class='button'>Spiel beenden</button> */}
+		</>
 	)
 }
 
