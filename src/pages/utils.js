@@ -15,7 +15,7 @@ export const id_playerTable                        = 'playerTable';
 //____________________Substrings____________________
 
 const substring_players                     = 'players';
-const substring_gameAttributes              = 'gameAttributes';
+const substring_attributes                  = 'attributes';
 const substring_finalScore                  = 'finalScore';
 
 const substring_gnadenwurf                  = 'gnadenwurf';
@@ -27,9 +27,9 @@ const substring_gameSession                 = 'gameSession_';
 
 //____________________SessionStorage____________________
 
-const substring_sessionStorage              = 'kniffel_sessionStorage_';
+const substring_sessionStorage                     = 'kniffel_sessionStorage_';
 export const sessionStorage_players                = substring_sessionStorage + substring_players;
-export const sessionStorage_gameAttributes         = substring_sessionStorage + substring_gameAttributes;
+export const sessionStorage_attributes             = substring_sessionStorage + substring_attributes;
 
 export const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf;
 export const sessionStorage_offsetWidth            = substring_sessionStorage + substring_offsetWidth;
@@ -77,7 +77,7 @@ function cSS(substring) {
 
 //____________________CreateObjects____________________
 
-function createPlayer(name, alias, color) {
+export const createPlayer = (name, alias, color) => {
     return {
         Name: name,
         Alias: alias,
@@ -86,7 +86,7 @@ function createPlayer(name, alias, color) {
     };
 }
 
-function createGameAttributes(columns) {
+export const createAttributes = (columns) => {
     return {
         Columns: columns,
         LastPlayed: new Date().toLocaleDateString(),
@@ -95,7 +95,7 @@ function createGameAttributes(columns) {
     };
 }
 
-function createFinalScoreElement(scoreList) {
+export const createFinalScoreElement = (scoreList) => {
 
     const finalScore = {
         gamePlayed: new Date().toLocaleDateString()
@@ -115,37 +115,35 @@ function createFinalScoreElement(scoreList) {
 
 //____________________ResizeEvent____________________
 
-// window.addEventListener('resize', resizeEvent);
+export const resizeEvent = () => {
 
-// function resizeEvent() {
+    const a = document.getElementById('application')
+    const body = document.body
 
-//     const kA = document.getElementById('application');
-//     const body = document.body;
+    if(a.offsetWidth >= window.innerWidth) {
+        body.style.justifyContent = 'left'
+        a.style.borderRadius = '0px'
+        a.style.marginTop = '10px'
+        a.style.marginBottom = '10px'
+    } else {
+        body.style.justifyContent = 'center'
+        a.style.borderRadius = '20px'
+        a.style.marginTop = '0px'
+        a.style.marginBottom = '0px'
+    }
 
-//     if(kA.offsetWidth >= this.window.innerWidth) {
-//         body.style.justifyContent = 'left';
-//         kA.style.borderRadius = '0px';
-//         kA.style.marginTop = '10px';
-//         kA.style.marginBottom = '10px';
-//     } else {
-//         body.style.justifyContent = 'center';
-//         kA.style.borderRadius = '20px';
-//         kA.style.marginTop = '0px';
-//         kA.style.marginBottom = '0px';
-//     }
-
-//     if(kA.offsetHeight >= this.window.innerHeight) {
-//         body.style.height = '100%';
-//     } else {
-//         body.style.height = '100vh';
-//     }
+    if(a.offsetHeight >= window.innerHeight) {
+        body.style.height = '100%'
+    } else {
+        body.style.height = '100vh'
+    }
     
-// }
+}
 
 
 
 
-function isTest() {
+const isTest = () => {
 
     const parameter = new URLSearchParams(window.location.search).get('test');
     return parameter === 'true';

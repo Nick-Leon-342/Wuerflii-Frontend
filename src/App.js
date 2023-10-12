@@ -11,6 +11,8 @@ import EnterNames from './pages/EnterNames'
 
 import SelectSession from './pages/SelectSession'
 
+import Game from './pages/Game'
+
 function App() {
 
 	return (
@@ -39,8 +41,7 @@ function App() {
 								
 								<Route path='/SelectSession' element={<SelectSession />} />
 								
-								<Route path='/CreateGame' element={<CreateGame />} />
-								<Route path='/CreateGame' element={<CreateGame />} />
+								<Route path='/Game' element={<Game />} />
 
 							</Route>
 

@@ -9,6 +9,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 import React, { useState } from 'react'
 import { isMobile } from 'react-device-detect'
+import { sessionStorage_attributes, sessionStorage_players } from './utils'
 
 function CreateGame() {
 
@@ -24,8 +25,8 @@ function CreateGame() {
 
 		if(!players || !columns) return
 
-		sessionStorage.setItem('players', players)
-		sessionStorage.setItem('columns', columns)
+		sessionStorage.setItem(sessionStorage_players, players)
+		sessionStorage.setItem(sessionStorage_attributes, columns)
 
 		navigate('/enternames', { replace: false })
 

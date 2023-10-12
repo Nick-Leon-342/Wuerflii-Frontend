@@ -59,31 +59,7 @@ function Games() {
 		})
 	
 	}, false)
-	
-	
-	
-	
-	
-	function initTestData() {
-	
-		let p_0 = createPlayer('Player_0', 'lightblue')
-		let p_1 = createPlayer('P_1', 'white')
-		let p_2 = createPlayer('ThisIsPlayer_2', 'lightgray')
 		
-		players.push(p_0)
-		players.push(p_1)
-		players.push(p_2)
-	
-		gameAttributes = createGameAttributes(3)
-	
-		createTables()
-	
-	}
-	
-	
-	
-	
-	
 	function initGame() {
 	
 		sessionStorage.clear()
