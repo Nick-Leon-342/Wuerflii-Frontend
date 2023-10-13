@@ -1,6 +1,7 @@
 
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { resizeEvent } from './pages/utils'
 
 import Login from './pages/Login'
 import PersistLogin from './pages/PersistLogin'
@@ -12,8 +13,18 @@ import EnterNames from './pages/EnterNames'
 import SelectSession from './pages/SelectSession'
 
 import Game from './pages/Game'
+import { useEffect } from 'react'
 
 function App() {
+
+	useEffect(() => {
+		resizeEvent()
+		window.addEventListener('resize', resizeEvent)
+
+		return () => {
+			window.removeEventListener('resize', resizeEvent)
+		}
+	}, [])
 
 	return (
 		<div className="App">

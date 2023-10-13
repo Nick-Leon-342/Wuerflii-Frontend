@@ -7,15 +7,20 @@ import './css/CreateGame.css'
 import { Link, useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { sessionStorage_attributes, sessionStorage_players } from './utils'
+import { resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
 
 function CreateGame() {
 
 	const { setAuth } = useAuth()
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
+
+
+	useEffect(() => {
+		resizeEvent()
+	}, [])
 
 	
 

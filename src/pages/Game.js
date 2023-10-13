@@ -4,13 +4,16 @@ import '../App.css'
 import './css/Game.css'
 
 import React, { useEffect } from 'react'
-import { sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent } from './utils';
+import { useNavigate } from 'react-router-dom'
+import { sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage } from './utils'
 
 
 
 
 
 function Games() {
+
+	const navigate = useNavigate()
 
 	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
@@ -294,7 +297,6 @@ function Games() {
 	useEffect(() => {
 
 		resizeEvent()
-		window.addEventListener('resize', resizeEvent)
 		const elements = document.getElementsByClassName('kniffelInput')
 
 		if (elements) {
@@ -305,7 +307,6 @@ function Games() {
 		}
 
 		return () => {
-			window.removeEventListener('resize', resizeEvent)
 			for(const e of elements) {
 				e.removeEventListener('focus', handleFocus)
 				e.removeEventListener('blur', handleBlur)
@@ -313,6 +314,17 @@ function Games() {
 		}
 
 	}, [])
+	
+	const newGame = () => {
+	
+		clearSessionStorage()
+		navigate('/creategame', { replace: true })
+	
+	}
+
+	const saveResults = () => {
+		console.log('Save results')
+	}
 
 
 
@@ -320,17 +332,17 @@ function Games() {
 
 	return (<>
 
-		<table id={id_playerTable} className='table playerTable'>
-			<PlayerTable/>
-		</table>
+			<table id={id_playerTable} className='table playerTable'>
+				<PlayerTable/>
+			</table>
 
-		{Table(upperTable_rows, id_upperTable)}
-		{Table(bottomTable_rows, id_bottomTable)}
+			{Table(upperTable_rows, id_upperTable)}
+			{Table(bottomTable_rows, id_bottomTable)}
 
-		{ /* <>
-			<button onclick={newGame}class='button'>Neues Spiel</button>
-			<button onclick={saveResults} class='button'>Spiel beenden</button> 
-		</> */}</>
+			<button onClick={newGame} className='button'>Neues Spiel</button>
+			<button onClick={saveResults} className='button'>Spiel beenden</button>
+
+		</>
 	)
 }
 
@@ -681,18 +693,5 @@ export default Games
 	
 	// 	clearSessionStorageTables()
 	// 	window.location.replace('/endscreen')
-	
-	// }
-	
-	
-	
-	
-	
-	// //__________________________________________________NewGame__________________________________________________
-	
-	// const newGame = () => {
-	
-	// 	clearSessionStorage()
-	// 	window.location.replace('/creategame')
 	
 	// }

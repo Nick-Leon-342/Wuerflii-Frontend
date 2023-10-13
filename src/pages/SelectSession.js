@@ -3,8 +3,9 @@
 import '../App.css'
 import './css/SelectSession.css'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { resizeEvent } from './utils'
 
 
 function SelectSession() {
@@ -106,6 +107,10 @@ function SelectSession() {
 
 	const list = []
 	const message = 'Es gibt noch keine Partie!'
+
+	useEffect(() => {
+		resizeEvent()
+	}, [])
 
 	return (
 		<>

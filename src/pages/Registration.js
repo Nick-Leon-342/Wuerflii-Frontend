@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
+import { resizeEvent } from './utils'
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,49}$/
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,128}$/
@@ -35,8 +36,11 @@ const Registration = () => {
 
 	const [errMsg, setErrMsg] = useState('')
 
-	useEffect(() => {userRef.current.focus()}, [])
 	useEffect(() => {setValidName(USER_REGEX.test(Name))}, [Name])
+	useEffect(() => {
+		resizeEvent()
+		userRef.current.focus()
+	}, [])
 
 	useEffect(() => {
 		setValidPwd(PWD_REGEX.test(Password))

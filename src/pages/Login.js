@@ -8,6 +8,7 @@ import { useRef, useState, useEffect } from 'react'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { resizeEvent } from './utils'
 import axios from '../api/axios'
 const LOGIN_URL = '/auth/login'
 
@@ -24,8 +25,11 @@ const Login = () => {
     const [Password, setPwd] = useState('')
     const [errMsg, setErrMsg] = useState('')
 
-    useEffect(() => {userRef.current.focus()}, [])
     useEffect(() => {setErrMsg('')}, [Name, Password])
+    useEffect(() => {
+		resizeEvent()
+		userRef.current.focus()
+	}, [])
 
     const handleSubmit = async (e) => {
 

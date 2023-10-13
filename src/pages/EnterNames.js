@@ -37,13 +37,7 @@ function EnterNames() {
 			sessionStorage.removeItem(sessionStorage_attributes)
 			return navigate('/creategame', { replace: true })
 		}
-
 		resizeEvent()
-		window.addEventListener('resize', resizeEvent)
-
-		return () => {
-			window.removeEventListener('resize', resizeEvent)
-		}
 
 	}, [])
 

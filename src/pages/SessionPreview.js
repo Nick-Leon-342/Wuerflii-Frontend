@@ -144,6 +144,10 @@ function SessionPreview() {
 	
 	}
 
+	useEffect(() => {
+		resizeEvent()
+	}, [])
+
 
 	return (
 		<div id='application'>
