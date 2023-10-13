@@ -40,7 +40,7 @@ function Games() {
 	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
 
-	const upperTable_columns = [
+	const upperTable_rows = [
 		{ c:
 			<tr id='nurEinserZählen' class='row'>
 					<td>
@@ -125,76 +125,135 @@ function Games() {
 		}
 	]
 
-	const bottomTable_columns = [
-		{ c:
-			<tr id='dreierpasch' class='row'>
+	const bottomTable_rows = [
+		{ td:
+			<>
 				<td>Dreiferpasch</td>
 				<td>alle Augen<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='viererpasch' class='row'>
+		{ td:
+			<>
 				<td>Viererpasch</td>
 				<td>alle Augen<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='full-house' class='row'>
+		{ td:
+			<>
 				<td>Full-House</td>
 				<td>25<br/>Punkte</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='kleineStraße' class='row'>
+		{ td:
+			<>
 				<td>Kleine Straße</td>
 				<td>30<br/>Punkte</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='großeStraße' class='row'>
+		{ td:
+			<>
 				<td>Große Straße</td>
 				<td>40<br/>Punkte</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='kniffel' class='row'>
+		{ td:
+			<>
 				<td>Kniffel</td>
 				<td>50<br/>Punkte</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='chance' class='row'>
+		{ td:
+			<>
 				<td class='kniffelHeadElement'>Chance</td>
 				<td class='kniffelHeadElement'>alle Augen<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='gesamtUntererTeil'>
+		{ td:
+			<>
 				<td>gesamt<br/>unterer Teil</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
 				</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='gesamtObererTeil'>
+		{ td:
+			<>
 				<td>gesamt<br/>oberer Teil</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
 				</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='endsumme'>
+		{ td:
+			<>
 				<td>Endsumme</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
 				</td>
-			</tr>
+			</>
 		}
 	]
 
-	const playerTable_columns = [
+	const BottomTable = () => {
+		const columns = Array.from({ length: attributes.Columns })
+
+		return (
+			bottomTable_rows.map((r, index) => {
+				return (
+					<tr className='row'>
+						{r.td}
+						{players.map((player) => {
+							return (
+								columns.map(() => {
+
+									if(index < bottomTable_rows.length - 3) {
+										console.log('1')
+										
+									} else {
+										console.log('2')
+									}
+
+									return (
+										<td>
+											{/*  */}
+											
+										</td>
+									)
+								})
+							)
+						})}
+					</tr>
+				)
+			})
+		)
+	} 
+
+	// function addRowToTable(column, tableID, rows, input, color, i) {
+	
+	// 	const td = document.createElement('td')
+	// 	let element
+	
+	// 	if(Boolean(input)) {element = document.createElement('input')
+	// 	}else{element = document.createElement('label')}
+	// 	element.classList.add('kniffelInput')
+	// 	element.type = 'text'
+	// 	element.inputMode = 'numeric'
+	// 	element.style.backgroundColor = color
+	// 	element.setAttribute('data-tableid', tableID)
+	// 	element.setAttribute('data-column', column)
+	// 	element.setAttribute('data-row', i)
+	// 	element.onblur = function() {onblurEvent(element)}
+	// 	element.oninput = function() {inputEvent(element)}
+	// 	td.style.backgroundColor = color
+	// 	td.appendChild(element)
+	// 	rows[i].appendChild(td)
+	
+	// 	element.addEventListener('focus', function() {focusEvent(element)})
+	// 	element.addEventListener('blur', function() {removeFocusEvent(element)})
+	
+	// }
+
+	const playerTable_rows = [
 		{ c: <td>Spieler</td> },
 		{ c: <td>Spieler gesamt</td>},
 		{ c: <td>Gnadenwurf</td>}
@@ -204,19 +263,19 @@ function Games() {
 		return (
 			<>
 				<tr>
-					{playerTable_columns[0].c}
+					{playerTable_rows[0].c}
 					{players.map((player) => (
 						<td>{player.Name}</td>
 					))}
 				</tr>
 				<tr>
-					{playerTable_columns[1].c}
+					{playerTable_rows[1].c}
 					{players.map(() => (
 						<td>0</td>
 					))}
 				</tr>
 				<tr>
-					{playerTable_columns[2].c}
+					{playerTable_rows[2].c}
 					{players.map((player) => (
 						<td>Checkbox</td>
 					))}
@@ -241,7 +300,13 @@ function Games() {
 
 		<table className='table playerTable'>
 			<tbody>
-				<PlayerTable />
+				<PlayerTable/>
+			</tbody>
+		</table>
+
+		<table className='table bottomTable'>
+			<tbody>
+				<BottomTable/>
 			</tbody>
 		</table>
 
@@ -399,30 +464,7 @@ export default Games
 	
 	// }
 	
-	// function addRowToTable(column, tableID, rows, input, color, i) {
-	
-	// 	const td = document.createElement('td')
-	// 	let element
-	
-	// 	if(Boolean(input)) {element = document.createElement('input')
-	// 	}else{element = document.createElement('label')}
-	// 	element.classList.add('kniffelInput')
-	// 	element.type = 'text'
-	// 	element.inputMode = 'numeric'
-	// 	element.style.backgroundColor = color
-	// 	element.setAttribute('data-tableid', tableID)
-	// 	element.setAttribute('data-column', column)
-	// 	element.setAttribute('data-row', i)
-	// 	element.onblur = function() {onblurEvent(element)}
-	// 	element.oninput = function() {inputEvent(element)}
-	// 	td.style.backgroundColor = color
-	// 	td.appendChild(element)
-	// 	rows[i].appendChild(td)
-	
-	// 	element.addEventListener('focus', function() {focusEvent(element)})
-	// 	element.addEventListener('blur', function() {removeFocusEvent(element)})
-	
-	// }
+
 	
 	// function onblurEvent(element) {
 	
