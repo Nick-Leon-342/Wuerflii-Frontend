@@ -2,12 +2,13 @@
 
 .kniffelImage {
     width: 26px;
+    margin: 2px;
 }
 
-.upperTable td:nth-child(1),
-.upperTable td:nth-child(2),
-.bottomTable td:nth-child(1),
-.bottomTable td:nth-child(2) {
+#upperTable td:nth-child(1),
+#upperTable td:nth-child(2),
+#bottomTable td:nth-child(1),
+#bottomTable td:nth-child(2) {
     min-width: 110px;
     font-weight: bold;
 }

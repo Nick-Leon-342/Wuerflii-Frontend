@@ -3,8 +3,8 @@
 import '../App.css'
 import './css/Game.css'
 
-import React from 'react'
-import { sessionStorage_attributes, sessionStorage_players } from './utils';
+import React, { useEffect } from 'react'
+import { sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable } from './utils';
 
 
 const PlayerScores = ({ players, columns }) => {
@@ -39,89 +39,97 @@ function Games() {
 
 	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
+	
+
+
+	const playerTable_rows = [
+		{ td: <td>Spieler</td> },
+		{ td: <td>Spieler gesamt</td>},
+		{ td: <td>Gnadenwurf</td>}
+	]
 
 	const upperTable_rows = [
-		{ c:
-			<tr id='nurEinserZählen' class='row'>
-					<td>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-						<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					</td>
-					<td>Nur Einser<br/>zählen</td>
-			</tr>
-		},
-		{ c:
-			<tr id='nurZweierZählen' class='row'>
+		{ td:
+			<>
 				<td>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+				</td>
+				<td>Nur Einser<br/>zählen</td>
+			</>
+		},
+		{ td:
+			<>
+				<td>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
 				</td>
 				<td>Nur Zweier<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='nurDreierZählen' class='row'>
+		{ td:
+			<>
 				<td>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
 				</td>
 				<td>Nur Dreier<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='nurViererZählen' class='row'>
+		{ td:
+			<>
 				<td>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
 				</td>
 				<td>Nur Vierer<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='nurFünferZählen' class='row'>
+		{ td:
+			<>
 				<td>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='555' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
 				</td>
 				<td>Nur Fünfer<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='nurSechserZählen' class='row'>
+		{ td:
+			<>
 				<td>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
-					<svg width='26px' height='26px' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
+					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' stroke='#000000' stroke-width='60' pointer-events='all'/><ellipse cx='860' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='555' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='250' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/><ellipse cx='860' cy='270' rx='100' ry='100' fill='#000000' stroke='rgb(0, 0, 0)' pointer-events='all'/></svg>
 				</td>
 				<td>Nur Sechser<br/>zählen</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='gesamt'>
+		{ td:
+			<>
 				<td>gesamt</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
 				</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='bonusBei63OderMehr'>
+		{ td:
+			<>
 				<td>Bonus bei 63<br/>oder mehr</td>
 				<td>plus 35</td>
-			</tr>
+			</>
 		},
-		{ c:
-			<tr id='gesamtObererTeil'>
+		{ td:
+			<>
 				<td>gesamt<br/>oberer Teil</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' fill='#000000' stroke='rgb(0, 0, 0)' stroke-miterlimit='10' pointer-events='all'/></svg>
 				</td>
-			</tr>
+			</>
 		}
 	]
 
@@ -194,131 +202,152 @@ function Games() {
 		}
 	]
 
-	const BottomTable = () => {
-		const columns = Array.from({ length: attributes.Columns })
 
-		return (
-			bottomTable_rows.map((r, index) => {
-				return (
-					<tr className='row'>
-						{r.td}
-						{players.map((player) => {
-							return (
-								columns.map(() => {
 
-									if(index < bottomTable_rows.length - 3) {
-										console.log('1')
-										
-									} else {
-										console.log('2')
-									}
 
-									return (
-										<td>
-											{/*  */}
-											
-										</td>
-									)
-								})
-							)
-						})}
-					</tr>
-				)
-			})
-		)
-	} 
-
-	// function addRowToTable(column, tableID, rows, input, color, i) {
-	
-	// 	const td = document.createElement('td')
-	// 	let element
-	
-	// 	if(Boolean(input)) {element = document.createElement('input')
-	// 	}else{element = document.createElement('label')}
-	// 	element.classList.add('kniffelInput')
-	// 	element.type = 'text'
-	// 	element.inputMode = 'numeric'
-	// 	element.style.backgroundColor = color
-	// 	element.setAttribute('data-tableid', tableID)
-	// 	element.setAttribute('data-column', column)
-	// 	element.setAttribute('data-row', i)
-	// 	element.onblur = function() {onblurEvent(element)}
-	// 	element.oninput = function() {inputEvent(element)}
-	// 	td.style.backgroundColor = color
-	// 	td.appendChild(element)
-	// 	rows[i].appendChild(td)
-	
-	// 	element.addEventListener('focus', function() {focusEvent(element)})
-	// 	element.addEventListener('blur', function() {removeFocusEvent(element)})
-	
-	// }
-
-	const playerTable_rows = [
-		{ c: <td>Spieler</td> },
-		{ c: <td>Spieler gesamt</td>},
-		{ c: <td>Gnadenwurf</td>}
-	]
 
 	const PlayerTable = () => {
 		return (
-			<>
+			<tbody>
 				<tr>
-					{playerTable_rows[0].c}
+					{playerTable_rows[0].td}
 					{players.map((player) => (
 						<td>{player.Name}</td>
 					))}
 				</tr>
 				<tr>
-					{playerTable_rows[1].c}
+					{playerTable_rows[1].td}
 					{players.map(() => (
 						<td>0</td>
 					))}
 				</tr>
 				<tr>
-					{playerTable_rows[2].c}
+					{playerTable_rows[2].td}
 					{players.map((player) => (
 						<td>Checkbox</td>
 					))}
 				</tr>
-			</>
+			</tbody>
 		)
 	}
 
+	const Table = (rows, tableID) => {
+		const columns = Array.from({ length: attributes.Columns })
+
+		return (
+			<table id={tableID} className='table'>
+				<tbody>
+					{rows.map((r, index) => {
+						return (
+							<tr className='row'>
+								{r.td}
+								{players.map((player) => {
+									return (
+										columns.map(() => {
+
+											const css = {
+												className: 'kniffelInput',
+												inputMode: 'numeric',
+												'data-tableid': tableID,
+												'data-column': 'column',
+												'data-row': index,
+												style: { backgroundColor: player.Color }
+											}
+
+											let e
+											if(index < bottomTable_rows.length - 3) {
+												e = <input {...css}/>
+											} else {
+												e = <label {...css}/>
+											}
+
+											return (
+												<td style={{ backgroundColor: player.Color }}>
+													{e}
+												</td>
+											)
+										})
+									)
+								})}
+							</tr>
+						)
+					})}
+				</tbody>
+			</table>
+		)
+	} 
+
+
+
+
+
+	const handleFocus = (element) => {
+
+		const h = 'highlighted'
+	
+		const r = element.target.closest('tr')
+		if(!r.classList.contains(h)) {
+			r.classList.add(h)
+		}
+	
+		removeFocusEvent(r)
+
+	}
+
+	const handleBlur = () => {
+		console.log('Blur')
+	}
+	
+	function removeFocusEvent(r) {
+	
+		const h = 'highlighted'
+	
+		// const u = document.getElementById(id_upperTable).rows
+		// for(const e of u) {
+		// 	if(e != r) {e.classList.remove(h)}
+		// }
+	
+		const b = document.getElementById(id_bottomTable).rows
+		for(const e of b) {
+			if(e != r) {e.classList.remove(h)}
+		}
+	
+	}
+
+	useEffect(() => {
+		const elements = document.getElementsByClassName('kniffelInput')
+
+		if (elements) {
+
+			for(const e of elements) {
+				e.addEventListener('focus', handleFocus)
+				e.addEventListener('blur', handleBlur)
+			}
+
+			return () => {
+				for(const e of elements) {
+					e.removeEventListener('focus', handleFocus)
+					e.removeEventListener('blur', handleBlur)
+				}
+			}
+		  
+		}
+	}, [])
+
+
+
+
+
 	return (<>
-		{/* <div>
-		  <table id='bottomTable' className='table bottomTable'>
-			<thead>
-			  <tr>
-				<th>Spieler</th>
-				<th>Spalte 1</th>
-				<th>Spalte 2</th>
-			  </tr>
-			</thead>
-			<PlayerScores numPlayers={players.length} />
-		  </table>
-		</div> */}
 
-		<table className='table playerTable'>
-			<tbody>
-				<PlayerTable/>
-			</tbody>
+		<table id={id_playerTable} className='table playerTable'>
+			<PlayerTable/>
 		</table>
 
-		<table className='table bottomTable'>
-			<tbody>
-				<BottomTable/>
-			</tbody>
-		</table>
+		{Table(upperTable_rows, id_upperTable)}
+		{Table(bottomTable_rows, id_bottomTable)}
 
 		{ /* <>
-
-			<table id='playerTable' class='table'></table>
-			<table id='upperTable' class='table upperTable'></table>
-
-
-
-			<table id='bottomTable' class='table bottomTable'></table>
-
 			<button onclick={newGame}class='button'>Neues Spiel</button>
 			<button onclick={saveResults} class='button'>Spiel beenden</button> 
 		</> */}</>
@@ -401,68 +430,9 @@ export default Games
 	
 	// }
 	
-	// function createTables() {
-	
-	// 	for(let p = 0; p < players.length; p++) {
-	// 		for(let c = 0; c < gameAttributes.Columns; c++) {
-	// 			const columnCount = c + p * gameAttributes.Columns
-	// 			addColumnToTable(columnCount, id_upperTable, players[p].Color)
-	// 			addColumnToTable(columnCount, id_bottomTable, players[p].Color)
-	// 			columnsSum.push({Upper: 0, Bottom: 0, All: 0})
-	// 		}
-	// 		addColumnToPlayerTable(p)
-	// 	}
-	
-	// }
 	
 	
 	
-	
-	
-	// //__________________________________________________For generating Kniffel table__________________________________________________
-	
-	// function addColumnToPlayerTable(i) {
-	
-	// 	const playerTable = document.getElementById(id_playerTable)
-	// 	const width = sessionStorage.getItem(sessionStorage_offsetWidth) ? sessionStorage.getItem(sessionStorage_offsetWidth) : gameAttributes.Columns * upperTable.rows[0].cells[2].offsetWidth
-	// 	sessionStorage.setItem(sessionStorage_offsetWidth, width)
-	
-	// 	const nameTD = document.createElement('td')
-	// 	nameTD.classList.add('playerSumElement')
-	// 	nameTD.textContent = players[i].Name
-	// 	nameTD.style.color = 'white'
-	// 	nameTD.style.maxWidth = width + 'px'
-	// 	nameTD.style.overflow = 'hidden'
-	// 	playerTable.querySelectorAll('tr')[0].appendChild(nameTD)
-	
-	// 	const sumTD = document.createElement('td')
-	// 	const sumTDLabel = document.createElement('label')
-	// 	sumTD.classList.add('playerSumElement')
-	// 	sumTD.style.color = 'white'
-	// 	sumTD.style.width = width + 'px'
-	// 	sumTD.style.overflow = 'hidden'
-	// 	sumTD.appendChild(sumTDLabel)
-	// 	playerTable.querySelectorAll('tr')[1].appendChild(sumTD)
-	
-	// 	const gnadenwurfTD = document.createElement('td')
-	// 	const box = document.createElement('input')
-	// 	box.classList.add('checkbox')
-	// 	box.type = 'checkbox'
-	// 	box.setAttribute = i
-	// 	gnadenwurfTD.appendChild(box)
-	// 	playerTable.querySelectorAll('tr')[2].appendChild(gnadenwurfTD)
-	
-	// }
-	
-	// function addColumnToTable(column, tableID, color) {
-	
-	// 	const table = document.getElementById(tableID)
-	// 	const rows = table.querySelectorAll('tr')
-	  
-	// 	for (let i = 0; i < rows.length - 3; i++) {addRowToTable(column, tableID, rows, true, color, i)}
-	// 	for(let i = rows.length - 3; i < rows.length; i++) {addRowToTable(column, tableID, rows, false, color, i)}
-	
-	// }
 	
 
 	
@@ -493,34 +463,7 @@ export default Games
 	
 	// }
 	
-	// function focusEvent(element) {
 	
-	// 	const h = 'highlighted'
-	
-	// 	const r = element.closest('tr')
-	// 	if(!r.classList.contains(h)) {
-	// 		r.classList.add(h)
-	// 	}
-	
-	// 	removeFocusEvent(r)
-	
-	// }
-	
-	// function removeFocusEvent(r) {
-	
-	// 	const h = 'highlighted'
-	
-	// 	const u = document.getElementById(id_upperTable).rows
-	// 	for(const e of u) {
-	// 		if(e != r) {e.classList.remove(h)}
-	// 	}
-	
-	// 	const b = document.getElementById(id_bottomTable).rows
-	// 	for(const e of b) {
-	// 		if(e != r) {e.classList.remove(h)}
-	// 	}
-	
-	// }
 	
 	
 	
