@@ -4,7 +4,7 @@ import '../App.css'
 import './css/Game.css'
 
 import React, { useEffect } from 'react'
-import { sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable } from './utils';
+import { sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent } from './utils';
 
 
 
@@ -292,23 +292,26 @@ function Games() {
 	}
 
 	useEffect(() => {
+
+		resizeEvent()
+		window.addEventListener('resize', resizeEvent)
 		const elements = document.getElementsByClassName('kniffelInput')
 
 		if (elements) {
-
 			for(const e of elements) {
 				e.addEventListener('focus', handleFocus)
 				e.addEventListener('blur', handleBlur)
 			}
-
-			return () => {
-				for(const e of elements) {
-					e.removeEventListener('focus', handleFocus)
-					e.removeEventListener('blur', handleBlur)
-				}
-			}
-		  
 		}
+
+		return () => {
+			window.removeEventListener('resize', resizeEvent)
+			for(const e of elements) {
+				e.removeEventListener('focus', handleFocus)
+				e.removeEventListener('blur', handleBlur)
+			}
+		}
+
 	}, [])
 
 
