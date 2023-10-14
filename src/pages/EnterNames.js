@@ -81,7 +81,7 @@ function EnterNames() {
 					</dt>
 				))}
 			</dl>
-			<button className='button' onClick={play}>Los!</button>
+			<button className='button go' onClick={play}>Los!</button>
 			<p className='loadGames'>
 				<Link onClick={clear} to='/creategame'>Zurück</Link>
 			</p>

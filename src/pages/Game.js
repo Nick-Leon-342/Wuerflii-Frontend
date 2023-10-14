@@ -3,12 +3,23 @@
 import '../App.css'
 import './css/Game.css'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage } from './utils'
 
 
 
+	// playerTable.querySelectorAll('.checkbox').forEach(function(element) {
+	// 	element.addEventListener('change', function() {
+	
+	// 		const checks = []
+	// 		for(let i = 0; players.length > i; i++) {
+	// 			checks.push(playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked)
+	// 		}
+	// 		sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(checks))
+	
+	// 	})
+	// })
 
 
 function Games() {
@@ -22,6 +33,13 @@ function Games() {
 	let playerTable
 	let upperTable
 	let bottomTable
+
+	let gnadenwurf = players.map(() => false)
+  
+	const handleGnadenwurfChange = (index, g) => {
+		gnadenwurf[index] = g
+		sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(gnadenwurf))
+	}
 
 
 
@@ -192,6 +210,9 @@ function Games() {
 
 
 	const PlayerTable = () => {
+		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf)) 
+		gnadenwurf = g ? g : players.map(() => false)
+
 		return (
 			<table id={id_playerTable} className='table playerTable'>
 				<tbody>
@@ -209,8 +230,8 @@ function Games() {
 					</tr>
 					<tr>
 						{playerTable_rows[2].td}
-						{players.map((player) => (
-							<td><input className='checkbox' type='checkbox' /></td>
+						{players.map((p, index) => (
+							<td><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[index]} onChange={(e) => handleGnadenwurfChange(index, e.target.checked)} /></td>
 						))}
 					</tr>
 				</tbody>
@@ -222,6 +243,8 @@ function Games() {
 	const Table = (rows, tableID) => {
 		const columns = Array.from({ length: attributes.Columns }, (_, index) => index)
 
+		for(let i = 0; players.length * attributes.Columns > i; i++) {if(tableID === id_upperTable) columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
+
 		return (
 			<table id={tableID} className='table'>
 				<tbody>
@@ -232,8 +255,6 @@ function Games() {
 								{players.map((player, currentPlayerIndex) => {
 									return (
 										columns.map((column) => {
-
-											if(tableID === id_upperTable) columnsSum.push({Upper: 0, Bottom: 0, All: 0})
 
 											const css = {
 												className: 'kniffelInput',
@@ -326,21 +347,9 @@ function Games() {
 	
 	}
 
-	const newGame = () => {
-	
-		clearSessionStorage()
-		navigate('/creategame', { replace: true })
-	
-	}
-
 	const onblurEvent = (element) => {
 		const e = element.target
 		if(e) {
-			// if (isNaN(parseFloat(e.value)) || !isFinite(e.value) || e.value.length > 2) {
-			// 	e.value = ''
-			// 	return
-			// }
-	
 			const id = e.getAttribute('tableid')
 			const column = Number(e.getAttribute('column'))
 	
@@ -535,6 +544,7 @@ function Games() {
 	
 	const saveResults = async () => {
 	
+		console.log(columnsSum)
 		for(const element of columnsSum) {
 			if(element.All === 0) {
 				window.alert('Bitte alle Werte eingeben!')
@@ -613,6 +623,16 @@ function Games() {
 	}
 
 
+	
+
+
+	const newGame = () => {
+	
+		clearSessionStorage()
+		navigate('/creategame', { replace: true })
+	
+	}
+
 
 
 
@@ -631,83 +651,3 @@ function Games() {
 }
 
 export default Games
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const upperTable  = document.getElementById(id_upperTable)
-	// const bottomTable = document.getElementById(id_bottomTable)
-	
-	// let columnsSum = []
-	
-	
-	// document.addEventListener('DOMContentLoaded', function() {
-	// 	document.getElementById('application').style.display = 'block'
-	
-	
-	// 		const playercount = sessionStorage.getItem(sessionStorage_players)
-	
-	// 		if(playercount) {
-	
-	// 			players = JSON.parse(playercount)
-	// 			if(players.isNaN) {
-	// 				window.location.replace('/enternames')
-	// 			}
-	
-	// 			gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes))
-	
-	// 			createTables()
-	// 			loadTables()
-	
-	// 			resizeEvent()
-	
-	// 		} else {
-	// 			window.location.replace('/creategame')
-	// 		}
-	
-	// 	playerTable.querySelectorAll('.checkbox').forEach(function(element) {
-	// 		element.addEventListener('change', function() {
-		
-	// 			const checks = []
-	// 			for(let i = 0; players.length > i; i++) {
-	// 				checks.push(playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked)
-	// 			}
-	// 			sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(checks))
-		
-	// 		})
-	// 	})
-	
-	// }, false)
-
-	// function initGame() {
-	
-	// 	sessionStorage.clear()
-	
-	// 	createTables()
-	
-	// 	sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
-	// 	sessionStorage.setItem(sessionStorage_gameAttributes, JSON.stringify(gameAttributes))
-	// 	initSessionStorageTables()
-	// 	resizeEvent()
-	
-	// }
-	
-	
-	
-	
-	
-	
