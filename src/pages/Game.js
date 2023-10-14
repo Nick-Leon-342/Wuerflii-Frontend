@@ -5,7 +5,7 @@ import './css/Game.css'
 
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage } from './utils'
+import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage } from './utils'
 
 
 
@@ -14,10 +14,15 @@ import { sessionStorage_attributes, sessionStorage_players, id_playerTable, id_b
 function Games() {
 
 	const navigate = useNavigate()
+	let columnsSum = []
 
 	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
 	
+	let playerTable
+	let upperTable
+	let bottomTable
+
 
 
 
@@ -188,54 +193,61 @@ function Games() {
 
 	const PlayerTable = () => {
 		return (
-			<tbody>
-				<tr>
-					{playerTable_rows[0].td}
-					{players.map((player) => (
-						<td>{player.Name}</td>
-					))}
-				</tr>
-				<tr>
-					{playerTable_rows[1].td}
-					{players.map(() => (
-						<td>0</td>
-					))}
-				</tr>
-				<tr>
-					{playerTable_rows[2].td}
-					{players.map((player) => (
-						<td><input className='checkbox' type='checkbox' /></td>
-					))}
-				</tr>
-			</tbody>
+			<table id={id_playerTable} className='table playerTable'>
+				<tbody>
+					<tr>
+						{playerTable_rows[0].td}
+						{players.map((player) => (
+							<td style={{ width: `${attributes.Columns * 54}px` }}>{player.Name}</td>
+						))}
+					</tr>
+					<tr>
+						{playerTable_rows[1].td}
+						{players.map(() => (
+							<td><label>0</label></td>
+						))}
+					</tr>
+					<tr>
+						{playerTable_rows[2].td}
+						{players.map((player) => (
+							<td><input className='checkbox' type='checkbox' /></td>
+						))}
+					</tr>
+				</tbody>
+			</table>
+			
 		)
 	}
 
 	const Table = (rows, tableID) => {
-		const columns = Array.from({ length: attributes.Columns })
+		const columns = Array.from({ length: attributes.Columns }, (_, index) => index)
 
 		return (
 			<table id={tableID} className='table'>
 				<tbody>
-					{rows.map((r, index) => {
+					{rows.map((r, currentRowIndex) => {
 						return (
 							<tr className='row'>
 								{r.td}
-								{players.map((player) => {
+								{players.map((player, currentPlayerIndex) => {
 									return (
-										columns.map(() => {
+										columns.map((column) => {
+
+											if(tableID === id_upperTable) columnsSum.push({Upper: 0, Bottom: 0, All: 0})
 
 											const css = {
 												className: 'kniffelInput',
 												inputMode: 'numeric',
-												'data-tableid': tableID,
-												'data-column': 'column',
-												'data-row': index,
+												tableid: tableID,
+												column: column + (currentPlayerIndex * attributes.Columns),
+												row: currentRowIndex,
+												onBlur: onblurEvent,
+												onInput: inputEvent,
 												style: { backgroundColor: player.Color }
 											}
 
 											let e
-											if(index < bottomTable_rows.length - 3) {
+											if(currentRowIndex < rows.length - 3) {
 												e = <input {...css}/>
 											} else {
 												e = <label {...css}/>
@@ -260,8 +272,32 @@ function Games() {
 
 
 
+	useEffect(() => {
 
-	const handleFocus = (element) => {
+		resizeEvent()
+		const elements = document.getElementsByClassName('kniffelInput')
+		playerTable = document.getElementById(id_playerTable)
+		upperTable = document.getElementById(id_upperTable)
+		bottomTable = document.getElementById(id_bottomTable)
+		loadTables()
+
+		if (elements) {
+			for(const e of elements) {
+				e.addEventListener('focus', focusEvent)
+				e.addEventListener('blur', removeFocusEvent)
+			}
+		}
+
+		return () => {
+			for(const e of elements) {
+				e.removeEventListener('focus', focusEvent)
+				e.removeEventListener('blur', removeFocusEvent)
+			}
+		}
+
+	}, [])
+
+	const focusEvent = (element) => {
 
 		const h = 'highlighted'
 	
@@ -273,48 +309,23 @@ function Games() {
 		removeFocusEvent(r)
 
 	}
-
-	const handleBlur = () => {
-		console.log('Blur')
-	}
 	
-	function removeFocusEvent(r) {
+	const removeFocusEvent = (r) => {
 	
 		const h = 'highlighted'
 	
-		// const u = document.getElementById(id_upperTable).rows
-		// for(const e of u) {
-		// 	if(e != r) {e.classList.remove(h)}
-		// }
+		const u = document.getElementById(id_upperTable).rows
+		for(const e of u) {
+			if(e !== r) {e.classList.remove(h)}
+		}
 	
 		const b = document.getElementById(id_bottomTable).rows
 		for(const e of b) {
-			if(e != r) {e.classList.remove(h)}
+			if(e !== r) {e.classList.remove(h)}
 		}
 	
 	}
 
-	useEffect(() => {
-
-		resizeEvent()
-		const elements = document.getElementsByClassName('kniffelInput')
-
-		if (elements) {
-			for(const e of elements) {
-				e.addEventListener('focus', handleFocus)
-				e.addEventListener('blur', handleBlur)
-			}
-		}
-
-		return () => {
-			for(const e of elements) {
-				e.removeEventListener('focus', handleFocus)
-				e.removeEventListener('blur', handleBlur)
-			}
-		}
-
-	}, [])
-	
 	const newGame = () => {
 	
 		clearSessionStorage()
@@ -322,26 +333,299 @@ function Games() {
 	
 	}
 
-	const saveResults = () => {
-		console.log('Save results')
+	const onblurEvent = (element) => {
+		const e = element.target
+		if(e) {
+			// if (isNaN(parseFloat(e.value)) || !isFinite(e.value) || e.value.length > 2) {
+			// 	e.value = ''
+			// 	return
+			// }
+	
+			const id = e.getAttribute('tableid')
+			const column = Number(e.getAttribute('column'))
+	
+			saveElement(
+				id, 
+				e.value, 
+				column, 
+				Number(e.getAttribute('row')))
+		
+			if(id === id_upperTable) {
+				calculateUpperColumn(column)
+			} else {
+				calculateBottomColumn(column)
+			}
+		}
+	}
+
+	const inputEvent = (element) => {
+
+		const e = element.target
+		if (isNaN(parseFloat(e.value)) || !isFinite(e.value) || e.value.length > 2) {
+			e.value = e.value.slice(0, -1)
+		}
+	
 	}
 
 
 
 
 
-	return (<>
+	//__________________________________________________Calculating and endgame__________________________________________________
+	
+	const calculateUpperColumn = (columnIndex) => {
+	
+		const column = upperTable.querySelectorAll(`[column='${columnIndex}']`)
+	
+		let columnCompleted = true
+		let sum = 0
+	
+		for(let i = 0; 6 > i; i++) {
+	
+			const n = column[i].value
+			if(n === '') {
+				columnCompleted = false
+			} else {
+				sum += Number(n)
+			}
+	
+		}
+	
+		const bottomLabels = bottomTable.querySelectorAll(`label[column='${columnIndex}']`)
+		column[6].textContent = sum
+		if(Boolean(columnCompleted)) {
+	
+			sum = sum >= 63 ? sum + 35 : sum
+			column[7].textContent = sum >= 63 ? 35 : '-'
+			column[8].textContent = sum
+			
+			bottomLabels[1].textContent = sum
+			
+		} else {
+	
+			column[7].textContent = ''
+			column[8].textContent = ''
+			bottomLabels[1].textContent = ''
+	
+		}
+	
+		calculateBottomLabels(columnIndex, bottomLabels)
+		columnsSum[columnIndex].Upper = sum
+		calculateScores()
+	
+	}
+	
+	const calculateBottomColumn = (columnIndex) => {
+	
+		const column = bottomTable.querySelectorAll(`[column='${columnIndex}']`)
+	
+		let columnCompleted = true
+		let sum = 0
+	
+		for(let i = 0; 7 > i; i++) {
+	
+			const n = column[i].value
+			if(n === '') {
+				columnCompleted = false
+			} else {
+				sum += Number(n)
+			}
+	
+		}
+	
+		if(Boolean(columnCompleted)) {
+	
+			column[7].textContent = sum
+			
+		} else {
+	
+			column[7].textContent = ''
+			column[9].textContent = ''
+	
+		}
+	
+		calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[column='${columnIndex}']`))
+		columnsSum[columnIndex].Bottom = sum
+		calculateScores()
+	
+	}
+	
+	const calculateBottomLabels = (columnIndex, bottomLabels) => {
+	
+		const up = Number(bottomLabels[0].textContent)
+		const bottom = Number(bottomLabels[1].textContent)
+		const sum = up + bottom
+	
+		bottomLabels[2].textContent = up !== 0 && bottom !== 0 ? sum : ''
+		columnsSum[columnIndex].All = Number(bottomLabels[2].textContent)
+	
+	}
+	
+	const calculateScores = () => {
+	
+		const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
+		
+		for(let i = 0; players.length > i; i++) {
+	
+			let sum = 0
+			for(let c = 0; attributes.Columns > c; c++) {
+	
+				const column = columnsSum[c + i * attributes.Columns]
+				if(column.All !== 0) {
+					sum += column.All
+				} else {
+					sum += column.Upper + column.Bottom
+				}
+	
+			}
+			playerTableLabels[i].textContent = sum
+	
+		}
+	
+	}
 
-			<table id={id_playerTable} className='table playerTable'>
-				<PlayerTable/>
-			</table>
+
+
+
+
+	//__________________________________________________SessionStorage__________________________________________________
+	
+	const saveElement = (tableID, value, column, row) => {
+	
+		const tmp = (tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + '.' + column
+		if(value === '') {sessionStorage.removeItem(tmp)
+		} else {sessionStorage.setItem(tmp, value)}
+	
+	}
+	  
+	const loadTables = () => {
+	
+		const checks = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
+		if(checks) {
+			for(let i = 0; checks.length > i; i++) {
+				playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked = checks[i]
+			}
+		}
+		loadTablesHelp(upperTable.querySelectorAll('input'), id_upperTable)
+		loadTablesHelp(bottomTable.querySelectorAll('input'), id_bottomTable)
+
+		for(let i = 0; attributes.Columns * players.length > i; i++) {
+			calculateUpperColumn(i)
+			calculateBottomColumn(i)
+		}
+		
+	}
+	
+	const loadTablesHelp = (inputs, tableID) => {
+	
+		const placol = attributes.Columns * players.length
+	
+		for(let i = 0; inputs.length > i; i++) {
+			inputs[i].value = sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + '.' + i%placol)
+			// onblurEvent(inputs[i])
+		}
+	
+	}
+
+
+
+
+
+	//____________________SaveResults____________________
+	
+	const saveResults = async () => {
+	
+		for(const element of columnsSum) {
+			if(element.All === 0) {
+				window.alert('Bitte alle Werte eingeben!')
+				return
+			}
+		}
+		
+		if(players.length >= 2) {
+	
+			if(attributes.SessionName === '') {
+	
+				const response = await fetch('/sessionnamerequest', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: null
+				})
+	
+				const data = await response.json()
+				attributes.SessionName = data.SessionName
+	
+			} 
+			sendResults()
+	
+		} else {
+			window.location.replace('/creategame')
+		}
+	
+	}
+	
+	const sendResults = async () => {
+	
+		//____________________Players____________________
+		const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('label')
+		const playerScores = []
+		for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent)}
+	
+		let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
+	
+		for(let i = 1; players.length > i; i++) {
+			if(playerScores[i] != null) {
+				if(playerScores[i] > playerScores[winnerIndex[0]]) {
+					winnerIndex.length = 0
+					winnerIndex.push(i)
+				} else if (playerScores[i] === playerScores[winnerIndex[0]]) {
+					winnerIndex.push(i)
+				}
+			}
+		}
+	
+		for(const i of winnerIndex) {players[i].Wins++}
+	
+		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
+		sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
+	
+	
+		//____________________GameAttributes____________________
+		const options = { year: 'numeric', month: 'numeric', day: 'numeric' } // 19.10.2004
+		attributes.LastPlayed = new Date().toLocaleDateString('de-DE', options)
+	
+	
+		//____________________FinalScore____________________
+		const finalScores = createFinalScoreElement(playerScores)
+	
+		console.log(finalScores)
+		const json = JSON.stringify({ Players: players, GameAttributes: attributes, FinalScores: finalScores })
+		
+		await fetch('/game', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: json
+		})
+	
+		clearSessionStorageTables()
+		window.location.replace('/endscreen')
+	
+	}
+
+
+
+
+
+
+	return (
+		<>
+			<PlayerTable/>
 
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
 
 			<button onClick={newGame} className='button'>Neues Spiel</button>
 			<button onClick={saveResults} className='button'>Spiel beenden</button>
-
 		</>
 	)
 }
@@ -426,272 +710,4 @@ export default Games
 	
 	
 	
-
 	
-	// function onblurEvent(element) {
-	
-	// 	const id = element.getAttribute('data-tableid')
-	// 	const column = Number(element.getAttribute('data-column'))
-	
-	// 	saveElement(
-	// 		id, 
-	// 		element.value, 
-	// 		column, 
-	// 		Number(element.getAttribute('data-row')))
-	
-	// 	if(id == id_upperTable) {
-	// 		calculateUpperColumn(column)
-	// 	} else {
-	// 		calculateBottomColumn(column)
-	// 	}
-		
-	// }
-	
-	// function inputEvent(element) {
-	
-	// 	if (isNaN(parseFloat(element.value)) || !isFinite(element.value) || element.value.length > 2) {
-	// 		element.value = element.value.slice(0, -1)
-	// 	}
-	
-	// }
-	
-	
-	
-	
-	
-	
-	
-	// //__________________________________________________Calculating and endgame__________________________________________________
-	
-	// function calculateUpperColumn(columnIndex) {
-	
-	// 	const column = upperTable.querySelectorAll(`[data-column='${columnIndex}']`)
-	
-	// 	let columnCompleted = true
-	// 	let sum = 0
-	
-	// 	for(let i = 0; 6 > i; i++) {
-	
-	// 		const n = column[i].value
-	// 		if(n == '') {
-	// 			columnCompleted = false
-	// 		} else {
-	// 			sum += Number(n)
-	// 		}
-	
-	// 	}
-	
-	// 	const bottomLabels = bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`)
-	// 	column[6].textContent = sum
-	// 	if(Boolean(columnCompleted)) {
-	
-	// 		sum = sum >= 63 ? sum + 35 : sum
-	// 		column[7].textContent = sum >= 63 ? 35 : '-'
-	// 		column[8].textContent = sum
-			
-	// 		bottomLabels[1].textContent = sum
-			
-	// 	} else {
-	
-	// 		column[7].textContent = ''
-	// 		column[8].textContent = ''
-	// 		bottomLabels[1].textContent = ''
-	
-	// 	}
-	
-	// 	calculateBottomLabels(columnIndex, bottomLabels)
-	// 	columnsSum[columnIndex].Upper = sum
-	// 	calculateScores()
-	
-	// }
-	
-	// function calculateBottomColumn(columnIndex) {
-	
-	// 	const column = bottomTable.querySelectorAll(`[data-column='${columnIndex}']`)
-	
-	// 	let columnCompleted = true
-	// 	let sum = 0
-	
-	// 	for(let i = 0; 7 > i; i++) {
-	
-	// 		const n = column[i].value
-	// 		if(n == '') {
-	// 			columnCompleted = false
-	// 		} else {
-	// 			sum += Number(n)
-	// 		}
-	
-	// 	}
-	
-	// 	if(Boolean(columnCompleted)) {
-	
-	// 		column[7].textContent = sum
-			
-	// 	} else {
-	
-	// 		column[7].textContent = ''
-	// 		column[9].textContent = ''
-	
-	// 	}
-	
-	// 	calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[data-column='${columnIndex}']`))
-	// 	columnsSum[columnIndex].Bottom = sum
-	// 	calculateScores()
-	
-	// }
-	
-	// function calculateBottomLabels(columnIndex, bottomLabels) {
-	
-	// 	const up = Number(bottomLabels[0].textContent)
-	// 	const bottom = Number(bottomLabels[1].textContent)
-	// 	const sum = up + bottom
-	
-	// 	bottomLabels[2].textContent = up != 0 && bottom != 0 ? sum : ''
-	// 	columnsSum[columnIndex].All = Number(bottomLabels[2].textContent)
-	
-	// }
-	
-	// function calculateScores() {
-	
-	// 	const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
-		
-	// 	for(let i = 0; players.length > i; i++) {
-	
-	// 		let sum = 0
-	// 		for(let c = 0; gameAttributes.Columns > c; c++) {
-	
-	// 			const column = columnsSum[c + i * gameAttributes.Columns]
-	// 			if(column.All != 0) {
-	// 				sum += column.All
-	// 			} else {
-	// 				sum += column.Upper + column.Bottom
-	// 			}
-	
-	// 		}
-	// 		playerTableLabels[i].textContent = sum
-	
-	// 	}
-	
-	// }
-	
-	
-	
-	
-	
-	
-	// //__________________________________________________SessionStorage__________________________________________________
-	
-	// function saveElement(tableID, value, column, row) {
-	
-	// 	sessionStorage.setItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + '.' + column, value)
-	
-	// }
-	  
-	// function loadTables() {
-	
-	// 	const checks = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
-	// 	if(checks) {
-	// 		for(let i = 0; checks.length > i; i++) {
-	// 			playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked = checks[i]
-	// 		}
-	// 	}
-	// 	loadTablesHelp(upperTable.querySelectorAll('input'), id_upperTable)
-	// 	loadTablesHelp(bottomTable.querySelectorAll('input'), id_bottomTable)
-		
-	// }
-	
-	// function loadTablesHelp(inputs, tableID) {
-	
-	// 	const placol = gameAttributes.Columns * players.length
-	
-	// 	for(let i = 0; inputs.length > i; i++) {
-	// 		inputs[i].value = sessionStorage.getItem((tableID == id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + '.' + i%placol)
-	// 		onblurEvent(inputs[i])
-	// 	}
-	
-	// }
-	
-	
-	
-	
-	
-	// //____________________SaveResults____________________
-	
-	// async function saveResults() {
-	
-	// 	for(const element of columnsSum) {
-	// 		if(element.All == 0) {
-	// 			window.alert('Bitte alle Werte eingeben!')
-	// 			return
-	// 		}
-	// 	}
-		
-	// 	if(players.length >= 2) {
-	
-	// 		if(gameAttributes.SessionName == '') {
-	
-	// 			const response = await fetch('/sessionnamerequest', {
-	// 				method: 'POST',
-	// 				headers: { 'Content-Type': 'application/json' },
-	// 				body: null
-	// 			})
-	
-	// 			const data = await response.json()
-	// 			gameAttributes.SessionName = data.SessionName
-	
-	// 		} 
-	// 		sendResults()
-	
-	// 	} else {
-	// 		window.location.replace('/creategame')
-	// 	}
-	
-	// }
-	
-	// async function sendResults() {
-	
-	// 	//____________________Players____________________
-	// 	const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('label')
-	// 	const playerScores = []
-	// 	for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent)}
-	
-	// 	let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
-	
-	// 	for(let i = 1; players.length > i; i++) {
-	// 		if(playerScores[i] != null) {
-	// 			if(playerScores[i] > playerScores[winnerIndex[0]]) {
-	// 				winnerIndex.length = 0
-	// 				winnerIndex.push(i)
-	// 			} else if (playerScores[i] == playerScores[winnerIndex[0]]) {
-	// 				winnerIndex.push(i)
-	// 			}
-	// 		}
-	// 	}
-	
-	// 	for(const i of winnerIndex) {players[i].Wins++}
-	
-	// 	sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
-	// 	sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
-	
-	
-	// 	//____________________GameAttributes____________________
-	// 	const options = { year: 'numeric', month: 'numeric', day: 'numeric' } // 19.10.2004
-	// 	gameAttributes.LastPlayed = new Date().toLocaleDateString('de-DE', options)
-	
-	
-	// 	//____________________FinalScore____________________
-	// 	const finalScores = createFinalScoreElement(playerScores)
-	
-	// 	console.log(finalScores)
-	// 	const json = JSON.stringify({ Players: players, GameAttributes: gameAttributes, FinalScores: finalScores })
-		
-	// 	await fetch('/game', {
-	// 		method: 'POST',
-	// 		headers: { 'Content-Type': 'application/json' },
-	// 		body: json
-	// 	})
-	
-	// 	clearSessionStorageTables()
-	// 	window.location.replace('/endscreen')
-	
-	// }

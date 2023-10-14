@@ -90,7 +90,7 @@ const Registration = () => {
 	return (
 		<>
 			<p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
-			<h1>Registration</h1>
+			{/* <h1>Registration</h1> */}
 			<form onSubmit={handleSubmit}>
 
 				<p className='input-header' htmlFor='Name'>
@@ -172,7 +172,7 @@ const Registration = () => {
 				<br/>
 				<br/>
 
-				<button className='button registration' disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
+				<button className='button registration' disabled={!validName || !validPwd || !validMatch ? true : false}>Registrieren</button>
 			</form>
 			<p className='goLogin'>
 				Bereits registriert?{' '}

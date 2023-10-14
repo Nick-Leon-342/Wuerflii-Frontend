@@ -19,7 +19,6 @@ const substring_attributes                  = 'attributes';
 const substring_finalScore                  = 'finalScore';
 
 const substring_gnadenwurf                  = 'gnadenwurf';
-const substring_offsetWidth                 = 'offsetWidth';
 const substring_winner                      = 'winner';
 
 const substring_gameSession                 = 'gameSession_';
@@ -32,7 +31,6 @@ export const sessionStorage_players                = substring_sessionStorage + 
 export const sessionStorage_attributes             = substring_sessionStorage + substring_attributes;
 
 export const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf;
-export const sessionStorage_offsetWidth            = substring_sessionStorage + substring_offsetWidth;
 export const sessionStorage_winner                 = substring_sessionStorage + substring_winner;
 
 export const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + '_';
@@ -139,26 +137,3 @@ export const resizeEvent = () => {
     }
     
 }
-
-
-
-
-const isTest = () => {
-
-    const parameter = new URLSearchParams(window.location.search).get('test');
-    return parameter === 'true';
-
-}
-
-
-
-
-
-
-function checkCredentials(name, password) {
-    return name !== '' && password !== ''
-}
-
-
-
-
