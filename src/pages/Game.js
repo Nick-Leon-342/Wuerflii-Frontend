@@ -496,9 +496,8 @@ function Games() {
 
 	//____________________SaveResults____________________
 	
-	const saveResults = () => {
+	const saveResults = async () => {
 	
-		console.log('Save', columnsSum)
 		for(const element of columnsSum) {
 			if(element.All === 0) {
 				window.alert('Bitte alle Werte eingeben!')
@@ -506,30 +505,9 @@ function Games() {
 			}
 		}
 		
-		// if(players.length >= 2) {
-	
-		// 	// if(attributes.SessionName === '') {
+		if(players.length < 2) navigate('/creategame', { replace: true })
 
-		// 	// 	const response = await fetch('/sessionnamerequest', {
-		// 	// 		method: 'POST',
-		// 	// 		headers: { 'Content-Type': 'application/json' },
-		// 	// 		body: null
-		// 	// 	})
-	
-		// 	// 	const data = await response.json()
-		// 	// 	attributes.SessionName = data.SessionName
-	
-		// 	// } 
-		// 	sendResults()
-	
-		// } else {
-		// 	navigate('/creategame', { replace: true })
-		// }
-	
-	}
-	
-	const sendResults = async () => {
-	
+
 		//____________________Players____________________
 		const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('label')
 		const playerScores = []
@@ -550,20 +528,21 @@ function Games() {
 	
 		for(const i of winnerIndex) {players[i].Wins++}
 	
-		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
-		sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
 	
-	
-		//____________________GameAttributes____________________
+		//____________________Attributes____________________
 		const options = { year: 'numeric', month: 'numeric', day: 'numeric' } // 19.10.2004
 		attributes.LastPlayed = new Date().toLocaleDateString('de-DE', options)
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(playerScores)
+		const finalScores = createFinalScoreElement(players, playerScores)
 	
-		const json = JSON.stringify({ Players: players, GameAttributes: attributes, FinalScores: finalScores })
-		
+		const json = JSON.stringify({ 
+			Attributes: JSON.stringify(attributes),
+			List_Players: JSON.stringify(players),
+			List_FinalScores: finalScores
+		})
+
 		await axiosPrivate.post('/game',
 			json,
 			{
@@ -572,6 +551,9 @@ function Games() {
 			}
 		)
 	
+	
+		// sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
+		// sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
 		// clearSessionStorageTables()
 		// navigate('/endscreen', { replace: true })
 	
@@ -595,13 +577,10 @@ function Games() {
 	return (
 		<>
 			{PlayerTable()}
-
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
-
 			<button onClick={newGame} className='button'>Neues Spiel</button>
 			<button onClick={saveResults} className='button'>Spiel beenden</button>
-			<button onClick={() => console.log('Test', columnsSum)}>Calc</button>
 		</>
 	)
 }

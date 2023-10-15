@@ -1,12 +1,14 @@
 
 
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import useRefreshToken from '../hooks/useRefreshToken'
 import useAuth from '../hooks/useAuth'
+import { clearSessionStorage } from './utils'
 
 const PersistLogin = () => {
 
+	const navigate = useNavigate()
 	const [isLoading, setIsLoading] = useState(true)
 	const refresh = useRefreshToken()
 	const { auth } = useAuth()
@@ -17,7 +19,8 @@ const PersistLogin = () => {
 			try {
 				await refresh()
 			} catch(err) {
-				console.log(err)
+				clearSessionStorage()
+				navigate('/login')
 			} finally {
 				setIsLoading(false)
 			}

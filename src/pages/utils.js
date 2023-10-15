@@ -1,10 +1,5 @@
 
 
-export let players = [];
-export let gameAttributes;
-
-
-
 //____________________IDs____________________
 
 export const id_upperTable                         = 'upperTable';
@@ -81,7 +76,7 @@ export const createPlayer = (name, alias, color) => {
         Alias: alias,
         Color: color,
         Wins: 0
-    };
+    }
 }
 
 export const createAttributes = (columns) => {
@@ -90,17 +85,17 @@ export const createAttributes = (columns) => {
         LastPlayed: new Date().toLocaleDateString(),
         CreatedDate: new Date().toLocaleDateString(),
         SessionName: ''
-    };
+    }
 }
 
-export const createFinalScoreElement = (scoreList) => {
+export const createFinalScoreElement = (players, scoreList) => {
 
     const finalScore = {
         gamePlayed: new Date().toLocaleDateString()
-    };
+    }
 
     for(let i = 0; i < players.length; i++) {
-        finalScore[players[i].Name] = scoreList[i];
+        finalScore[players[i].Alias] = scoreList[i]
     }
 
     return finalScore;
