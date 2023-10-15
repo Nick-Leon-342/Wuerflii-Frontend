@@ -3,30 +3,19 @@
 import '../App.css'
 import './css/Game.css'
 
-import React, { useEffect} from 'react'
+import React, { useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage } from './utils'
 
 
 
-	// playerTable.querySelectorAll('.checkbox').forEach(function(element) {
-	// 	element.addEventListener('change', function() {
-	
-	// 		const checks = []
-	// 		for(let i = 0; players.length > i; i++) {
-	// 			checks.push(playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked)
-	// 		}
-	// 		sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(checks))
-	
-	// 	})
-	// })
 
 
 function Games() {
 
 	const navigate = useNavigate()
-	const columnsSum = []
+	const [columnsSum] = useState([])
 	const axiosPrivate = useAxiosPrivate()
 
 	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
@@ -42,12 +31,6 @@ function Games() {
 
 
 
-
-	const playerTable_rows = [
-		{ td: <td>Spieler</td> },
-		{ td: <td>Spieler gesamt</td>},
-		{ td: <td>Gnadenwurf</td>}
-	]
 
 	const upperTable_rows = [
 		{ td:
@@ -215,21 +198,21 @@ function Games() {
 			<table id={id_playerTable} className='table playerTable'>
 				<tbody>
 					<tr>
-						{playerTable_rows[0].td}
-						{players.map((player) => (
-							<td style={{ width: `${attributes.Columns * 54}px` }}>{player.Name}</td>
+						<td>Spieler</td>
+						{players.map((p, i) => (
+							<td key={i} style={{ width: `${attributes.Columns * 54}px` }}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
-						{playerTable_rows[1].td}
-						{players.map(() => (
-							<td><label>0</label></td>
+						<td>Spieler gesamt</td>
+						{players.map((p, i) => (
+							<td key={i}><label>0</label></td>
 						))}
 					</tr>
 					<tr>
-						{playerTable_rows[2].td}
-						{players.map((p, index) => (
-							<td><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[index]} onChange={(e) => handleGnadenwurfChange(index, e.target.checked)} /></td>
+						<td>Gnadenwurf</td>
+						{players.map((p, i) => (
+							<td key={i} ><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[i]} onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} /></td>
 						))}
 					</tr>
 				</tbody>
@@ -241,14 +224,14 @@ function Games() {
 	const Table = (rows, tableID) => {
 		const columns = Array.from({ length: attributes.Columns }, (_, index) => index)
 
-		for(let i = 0; players.length * attributes.Columns > i; i++) {if(tableID === id_upperTable) columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
+		if(columnsSum.length === 0 && tableID === id_upperTable) for(let i = 0; players.length * attributes.Columns > i; i++) {columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
 
 		return (
 			<table id={tableID} className='table'>
 				<tbody>
 					{rows.map((r, currentRowIndex) => {
 						return (
-							<tr className='row'>
+							<tr key={currentRowIndex} className='row'>
 								{r.td}
 								{players.map((player, currentPlayerIndex) => {
 									return (
@@ -274,7 +257,7 @@ function Games() {
 											}
 
 											return (
-												<td style={{ backgroundColor: player.Color }}>
+												<td key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} style={{ backgroundColor: player.Color }}>
 													{e}
 												</td>
 											)
@@ -473,7 +456,6 @@ function Games() {
 	const calculateScores = () => {
 	
 		const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
-		console.log('calc', columnsSum)
 		
 		for(let i = 0; players.length > i; i++) {
 	
@@ -516,7 +498,7 @@ function Games() {
 	
 	const saveResults = () => {
 	
-		console.log(columnsSum[0])
+		console.log('Save', columnsSum)
 		for(const element of columnsSum) {
 			if(element.All === 0) {
 				window.alert('Bitte alle Werte eingeben!')
@@ -524,25 +506,25 @@ function Games() {
 			}
 		}
 		
-		if(players.length >= 2) {
+		// if(players.length >= 2) {
 	
-			// if(attributes.SessionName === '') {
+		// 	// if(attributes.SessionName === '') {
 
-			// 	const response = await fetch('/sessionnamerequest', {
-			// 		method: 'POST',
-			// 		headers: { 'Content-Type': 'application/json' },
-			// 		body: null
-			// 	})
+		// 	// 	const response = await fetch('/sessionnamerequest', {
+		// 	// 		method: 'POST',
+		// 	// 		headers: { 'Content-Type': 'application/json' },
+		// 	// 		body: null
+		// 	// 	})
 	
-			// 	const data = await response.json()
-			// 	attributes.SessionName = data.SessionName
+		// 	// 	const data = await response.json()
+		// 	// 	attributes.SessionName = data.SessionName
 	
-			// } 
-			sendResults()
+		// 	// } 
+		// 	sendResults()
 	
-		} else {
-			navigate('/creategame', { replace: true })
-		}
+		// } else {
+		// 	navigate('/creategame', { replace: true })
+		// }
 	
 	}
 	
@@ -619,6 +601,7 @@ function Games() {
 
 			<button onClick={newGame} className='button'>Neues Spiel</button>
 			<button onClick={saveResults} className='button'>Spiel beenden</button>
+			<button onClick={() => console.log('Test', columnsSum)}>Calc</button>
 		</>
 	)
 }
