@@ -3,8 +3,9 @@
 import '../App.css'
 import './css/Game.css'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage } from './utils'
 
 
@@ -25,14 +26,11 @@ import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTabl
 function Games() {
 
 	const navigate = useNavigate()
-	let columnsSum = []
+	const columnsSum = []
+	const axiosPrivate = useAxiosPrivate()
 
 	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
-	
-	let playerTable
-	let upperTable
-	let bottomTable
 
 	let gnadenwurf = players.map(() => false)
   
@@ -254,16 +252,17 @@ function Games() {
 								{r.td}
 								{players.map((player, currentPlayerIndex) => {
 									return (
-										columns.map((column) => {
+										columns.map((currentColumnIndex) => {
 
 											const css = {
 												className: 'kniffelInput',
 												inputMode: 'numeric',
 												tableid: tableID,
-												column: column + (currentPlayerIndex * attributes.Columns),
+												column: currentColumnIndex + (currentPlayerIndex * attributes.Columns),
 												row: currentRowIndex,
 												onBlur: onblurEvent,
 												onInput: inputEvent,
+												defaultValue: sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + currentRowIndex + '.' + (currentColumnIndex  + (currentPlayerIndex * attributes.Columns))),
 												style: { backgroundColor: player.Color }
 											}
 
@@ -294,13 +293,14 @@ function Games() {
 
 
 	useEffect(() => {
-
+		
 		resizeEvent()
 		const elements = document.getElementsByClassName('kniffelInput')
-		playerTable = document.getElementById(id_playerTable)
-		upperTable = document.getElementById(id_upperTable)
-		bottomTable = document.getElementById(id_bottomTable)
-		loadTables()
+		
+		for(let i = 0; players.length * attributes.Columns > i; i++) {
+			calculateUpperColumn(i)
+			calculateBottomColumn(i)
+		}
 
 		if (elements) {
 			for(const e of elements) {
@@ -384,7 +384,7 @@ function Games() {
 	
 	const calculateUpperColumn = (columnIndex) => {
 	
-		const column = upperTable.querySelectorAll(`[column='${columnIndex}']`)
+		const column = document.getElementById(id_upperTable).querySelectorAll(`[column='${columnIndex}']`)
 	
 		let columnCompleted = true
 		let sum = 0
@@ -400,7 +400,7 @@ function Games() {
 	
 		}
 	
-		const bottomLabels = bottomTable.querySelectorAll(`label[column='${columnIndex}']`)
+		const bottomLabels = document.getElementById(id_bottomTable).querySelectorAll(`label[column='${columnIndex}']`)
 		column[6].textContent = sum
 		if(Boolean(columnCompleted)) {
 	
@@ -426,7 +426,7 @@ function Games() {
 	
 	const calculateBottomColumn = (columnIndex) => {
 	
-		const column = bottomTable.querySelectorAll(`[column='${columnIndex}']`)
+		const column = document.getElementById(id_bottomTable).querySelectorAll(`[column='${columnIndex}']`)
 	
 		let columnCompleted = true
 		let sum = 0
@@ -453,7 +453,7 @@ function Games() {
 	
 		}
 	
-		calculateBottomLabels(columnIndex, bottomTable.querySelectorAll(`label[column='${columnIndex}']`))
+		calculateBottomLabels(columnIndex, document.getElementById(id_bottomTable).querySelectorAll(`label[column='${columnIndex}']`))
 		columnsSum[columnIndex].Bottom = sum
 		calculateScores()
 	
@@ -473,6 +473,7 @@ function Games() {
 	const calculateScores = () => {
 	
 		const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
+		console.log('calc', columnsSum)
 		
 		for(let i = 0; players.length > i; i++) {
 	
@@ -506,35 +507,6 @@ function Games() {
 		} else {sessionStorage.setItem(tmp, value)}
 	
 	}
-	  
-	const loadTables = () => {
-	
-		const checks = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
-		if(checks) {
-			for(let i = 0; checks.length > i; i++) {
-				playerTable.querySelectorAll('tr')[2].querySelectorAll('.checkbox')[i].checked = checks[i]
-			}
-		}
-		loadTablesHelp(upperTable.querySelectorAll('input'), id_upperTable)
-		loadTablesHelp(bottomTable.querySelectorAll('input'), id_bottomTable)
-
-		for(let i = 0; attributes.Columns * players.length > i; i++) {
-			calculateUpperColumn(i)
-			calculateBottomColumn(i)
-		}
-		
-	}
-	
-	const loadTablesHelp = (inputs, tableID) => {
-	
-		const placol = attributes.Columns * players.length
-	
-		for(let i = 0; inputs.length > i; i++) {
-			inputs[i].value = sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + ~~(i/placol) + '.' + i%placol)
-			// onblurEvent(inputs[i])
-		}
-	
-	}
 
 
 
@@ -542,9 +514,9 @@ function Games() {
 
 	//____________________SaveResults____________________
 	
-	const saveResults = async () => {
+	const saveResults = () => {
 	
-		console.log(columnsSum)
+		console.log(columnsSum[0])
 		for(const element of columnsSum) {
 			if(element.All === 0) {
 				window.alert('Bitte alle Werte eingeben!')
@@ -554,22 +526,22 @@ function Games() {
 		
 		if(players.length >= 2) {
 	
-			if(attributes.SessionName === '') {
+			// if(attributes.SessionName === '') {
+
+			// 	const response = await fetch('/sessionnamerequest', {
+			// 		method: 'POST',
+			// 		headers: { 'Content-Type': 'application/json' },
+			// 		body: null
+			// 	})
 	
-				const response = await fetch('/sessionnamerequest', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: null
-				})
+			// 	const data = await response.json()
+			// 	attributes.SessionName = data.SessionName
 	
-				const data = await response.json()
-				attributes.SessionName = data.SessionName
-	
-			} 
+			// } 
 			sendResults()
 	
 		} else {
-			window.location.replace('/creategame')
+			navigate('/creategame', { replace: true })
 		}
 	
 	}
@@ -608,17 +580,18 @@ function Games() {
 		//____________________FinalScore____________________
 		const finalScores = createFinalScoreElement(playerScores)
 	
-		console.log(finalScores)
 		const json = JSON.stringify({ Players: players, GameAttributes: attributes, FinalScores: finalScores })
 		
-		await fetch('/game', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: json
-		})
+		await axiosPrivate.post('/game',
+			json,
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
+			}
+		)
 	
-		clearSessionStorageTables()
-		window.location.replace('/endscreen')
+		// clearSessionStorageTables()
+		// navigate('/endscreen', { replace: true })
 	
 	}
 
@@ -639,7 +612,7 @@ function Games() {
 
 	return (
 		<>
-			<PlayerTable/>
+			{PlayerTable()}
 
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
