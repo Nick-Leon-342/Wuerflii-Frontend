@@ -67,7 +67,7 @@ function SessionPreview() {
 	
 	const back = () => {
 	
-		// clearSessionStorage()
+		clearSessionStorage()
 		navigate('/selectsession', { replace: true })
 	
 	}
