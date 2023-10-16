@@ -1,59 +1,46 @@
 
 
-#chooseKniffelGameList {
-
+#sessionList {
+	background-color: #A9A9A9;
+	border-radius: 5px;
+	padding: 5px;
 }
 
 .listElement {
     display: flex;
     justify-content: space-between;
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .listElement:hover {
-    background-color: #A9A9A9;
+    background-color: #cacaca;
 }
 
-.listElement:hover .listElement-label {
+.listElement:hover .label {
     color: black;
 }
 
-.listElement:hover .deleteGameButton {
-    opacity: 1;
-}
-
-.listElement-container {
-    display: flex;
+.container {
     margin-right: 0px;
-    margin-left: 20px;
+    margin-left: 10px;
+    display: flex;
     justify-content: space-between;
 }
 
-.listElement-label {
-    margin-top: 4px;
-    margin-left: 5px;
-    color: white;
+.date {
+	margin-left: 30px;
 }
 
-.deleteGameButton {
-    display: block;
-    margin-right: 5px;
-    margin-left: 15px;
-    border-radius: 50px;
-    background-color: gray;
-    color: white;
-    padding: 2px 5px;
-    opacity: 0;
-    outline: none;
+.label {
+	height: 100%;
+	text-align: center;
+    color: black;
+	font-size: 18px;
 }
 
-.deleteGameButton:hover {
-    background-color: #AFAFAF;
-}
-
-.deleteGameButton:active {
-    transform: scale(0.9);
+.checkbox-delete {
+	width: 15px;
 }
 
 

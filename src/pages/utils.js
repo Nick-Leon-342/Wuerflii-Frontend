@@ -88,7 +88,7 @@ export const createAttributes = (columns) => {
 export const createFinalScoreElement = (players, scoreList) => {
 
     const finalScore = {
-        gamePlayed: new Date().toLocaleDateString()
+        Played: new Date().toLocaleDateString()
     }
 
     for(let i = 0; i < players.length; i++) {
