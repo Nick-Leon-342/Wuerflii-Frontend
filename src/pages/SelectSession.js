@@ -109,6 +109,10 @@ function SelectSession() {
 	const message = 'Es gibt noch keine Partie!'
 
 	useEffect(() => {
+
+		// axiosPrivate.get('/selectsession',
+		// )
+
 		resizeEvent()
 	}, [])
 

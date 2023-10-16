@@ -4,180 +4,87 @@ import '../App.css'
 import './css/EndScreen.css'
 
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { sessionStorage_players, sessionStorage_winner, clearSessionStorage } from './utils'
 
 
 function EndScreen() {
 
-
-	document.addEventListener('DOMContentLoaded', function() {
-		document.getElementById('application').style.display = 'block'
-	
-		if(isTest()) {
-	
-			initTestData()
-	
-		}else {
-	
-			players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
-			gameAttributes = JSON.parse(sessionStorage.getItem(sessionStorage_gameAttributes))
-	
-			const winnerIndex = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
-	
-			if(winnerIndex == null) {
-				window.location.replace('/game')
-			}
-	
-			initWinner(winnerIndex)
-			initWinsTable()
-	
-		}
-	
-		resizeTable()
-	
-	}, false)
+	const navigate = useNavigate()
+	let players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
+	let winner = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
 	
 	
 	
 	
 	
-	function resizeTable() {
+	// const resizeTable = () => {
 	
-		const t = document.getElementById('wins-table').querySelectorAll('td')
-		let max_width = t[1].offsetWidth
-		for(let i = 1; t.length > i; i++) {
-			const tmp_Width = t[i].offsetWidth
-			if(tmp_Width > max_width) {max_width = tmp_Width}
-		}
+	// 	const t = document.getElementById('wins-table').querySelectorAll('td')
+	// 	let max_width = t[1].offsetWidth
+	// 	for(let i = 1; t.length > i; i++) {
+	// 		const tmp_Width = t[i].offsetWidth
+	// 		if(tmp_Width > max_width) {max_width = tmp_Width}
+	// 	}
 	
-		for(const e of t) {
-			e.style.width = max_width + 'px'
-		}
+	// 	for(const e of t) {
+	// 		e.style.width = max_width + 'px'
+	// 	}
 	
-	}
-	
-	
-	
-	
-	
-	function initTestData() {
-	
-		const playersRow = document.getElementById('players')
-		const winsRow = document.getElementById('wins')
-	
-		players = [{Name: 'P_0'}, {Name: 'Player_1'}, {Name: 'ThisIsPlayer_2'}, {Name: 'Player_3'}]
-		const tmpWins = [2, 4, 4, 3]
-		
-		let iW = [1, 2]
-		initWinner(iW)
-	
-		for(const p of players) {
-	
-			const pElement = document.createElement('td')
-			pElement.textContent = p
-			playersRow.appendChild(pElement)
-	
-		}
-	
-		for(const w of tmpWins) {
-	
-			const wElement = document.createElement('td')
-			wElement.textContent = w
-			winsRow.appendChild(wElement)
-	
-		}
-	
-	}
+	// }
 	
 	
 	
 	
 	
-	function initWinner(winnerIndexList) {
-	
-		const w = document.getElementById('winner')
-	
-		if(winnerIndexList.length == 1) {
-	
-			w.textContent = `'${players[winnerIndexList[0]].Name}' hat gewonnen!`
-	
-		} else {
-	
-			let winners = `'${players[winnerIndexList[0]].Name}' `
-			for(let i = 1; winnerIndexList.length > i; i++) {
-				const p = `'${players[winnerIndexList[i]].Name}'`
-				if((i + 1) == winnerIndexList.length) {
-					winners += ` und ${p}`
-				} else {
-					winners += `, ${p}`
-				}
-			}
-			w.textContent = `${winners} haben gewonnen!`
-	
-		}
-	
-	}
-	
-	
-	
-	
-	
-	function initWinsTable() {
-	
-		const playersRow = document.getElementById('players')
-		const winsRow = document.getElementById('wins')
-	
-		for(let i = 0; players.length > i; i++) {
-	
-			const pElement = document.createElement('td')
-			pElement.textContent = players[i].Name
-			playersRow.appendChild(pElement)
-	
-			const wElement = document.createElement('td')
-			wElement.textContent = players[i].Wins
-			winsRow.appendChild(wElement)
-	
-		}
-	
-	}
-	
-	
-	
-	
-	
-	function ok() {
+	const ok = () => {
 		
 		clearSessionStorage()
-		window.location.replace('/creategame')
+		navigate('/creategame', { replace: true })
 	
+	}
+
+
+	let string = `'${players[winner[0]].Name}' `
+	for(let i = 1; winner.length > i; i++) {
+		const p = `'${players[winner[i]].Name}'`
+		if((i + 1) === winner.length) {
+			string += ` und ${p} haben gewonnen!`
+		} else {
+			string += `, ${p}`
+		}
 	}
 
 
 	return (
-		<div id='application'>
-				<a href='https://games.mmtn-schneider.com'><button class='button'>Startseite</button></a>
+		<>
+			<div className='button-container'><label>
+				{winner.length === 1 ? `'${players[winner[0]].Name}' hat gewonnen!` : `${string}`}
+			</label></div>
 
-				<div class='interface'>
+			<br/>
 
-					<div class='button-container'><label id='winner'></label></div>
-					
-					<br/>
-					
-					<table id='wins-table' class='table'>
-						<tr id='players'>
-							<td>Spieler</td>
-						</tr>
-						<tr id='wins'>
-							<td>Gewonnen</td>
-						</tr>
-					</table>
+			<table id='wins-table' className='table'>
+				<tbody>
+					<tr>
+						<td>Spieler</td>
+						{players.map((p, i) => (
+							<td key={i}>{p.Name}</td>
+						))}
+					</tr>
+					<tr>
+						<td>Gewonnen</td>
+						{players.map((p, i) => (
+							<td key={i}>{p.Wins}</td>
+						))}
+					</tr>
+				</tbody>
+			</table>
 
-					<div class='button-container'>
-						<button class='button' onclick='ok()'>Ok</button>
-					</div>
-
-				</div>
-				
+			<div className='button-container'>
+				<button className='button' onClick={ok}>Ok</button>
 			</div>
+		</>
 	)
 }
 

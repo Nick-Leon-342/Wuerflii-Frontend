@@ -13,6 +13,7 @@ import EnterNames from './pages/EnterNames'
 import SelectSession from './pages/SelectSession'
 
 import Game from './pages/Game'
+import EndScreen from './pages/EndScreen'
 import { useEffect } from 'react'
 
 function App() {
@@ -53,6 +54,8 @@ function App() {
 								<Route path='/SelectSession' element={<SelectSession />} />
 								
 								<Route path='/Game' element={<Game />} />
+								<Route path='/EndScreen' element={<EndScreen />} />
+								
 
 							</Route>
 

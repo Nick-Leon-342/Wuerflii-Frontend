@@ -279,7 +279,9 @@ function Games() {
 		
 		resizeEvent()
 		const elements = document.getElementsByClassName('kniffelInput')
-		
+		if(!players || !attributes) navigate('/creategame', { replace: true })
+
+
 		for(let i = 0; players.length * attributes.Columns > i; i++) {
 			calculateUpperColumn(i)
 			calculateBottomColumn(i)
@@ -540,7 +542,7 @@ function Games() {
 		const json = JSON.stringify({ 
 			Attributes: JSON.stringify(attributes),
 			List_Players: JSON.stringify(players),
-			List_FinalScores: finalScores
+			FinalScores: finalScores
 		})
 
 		await axiosPrivate.post('/game',
@@ -552,10 +554,12 @@ function Games() {
 		)
 	
 	
-		// sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
-		// sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
-		// clearSessionStorageTables()
-		// navigate('/endscreen', { replace: true })
+		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
+		sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
+		sessionStorage.removeItem(sessionStorage_attributes)
+		
+		clearSessionStorageTables()
+		navigate('/endscreen', { replace: true })
 	
 	}
 

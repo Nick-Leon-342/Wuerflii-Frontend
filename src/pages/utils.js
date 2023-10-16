@@ -2,34 +2,31 @@
 
 //____________________IDs____________________
 
-export const id_upperTable                         = 'upperTable';
-export const id_bottomTable                        = 'bottomTable';
-export const id_playerTable                        = 'playerTable';
+export const id_upperTable                         = 'upperTable'
+export const id_bottomTable                        = 'bottomTable'
+export const id_playerTable                        = 'playerTable'
 
 
 //____________________Substrings____________________
 
-const substring_players                     = 'players';
-const substring_attributes                  = 'attributes';
-const substring_finalScore                  = 'finalScore';
+const substring_players                     = 'players'
+const substring_attributes                  = 'attributes'
 
-const substring_gnadenwurf                  = 'gnadenwurf';
-const substring_winner                      = 'winner';
-
-const substring_gameSession                 = 'gameSession_';
+const substring_gnadenwurf                  = 'gnadenwurf'
+const substring_winner                      = 'winner'
 
 
 //____________________SessionStorage____________________
 
-const substring_sessionStorage                     = 'kniffel_sessionStorage_';
-export const sessionStorage_players                = substring_sessionStorage + substring_players;
-export const sessionStorage_attributes             = substring_sessionStorage + substring_attributes;
+const substring_sessionStorage                     = 'kniffel_sessionStorage_'
+export const sessionStorage_players                = substring_sessionStorage + substring_players
+export const sessionStorage_attributes             = substring_sessionStorage + substring_attributes
 
-export const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf;
-export const sessionStorage_winner                 = substring_sessionStorage + substring_winner;
+export const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf
+export const sessionStorage_winner                 = substring_sessionStorage + substring_winner
 
-export const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + '_';
-export const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + '_';
+export const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + '_'
+export const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + '_'
 
 
 
@@ -39,14 +36,14 @@ export const sessionStorage_bottomTable_substring  = substring_sessionStorage + 
 
 export function clearSessionStorage() {
 
-    cSS(substring_sessionStorage);
+    cSS(substring_sessionStorage)
 
 }
 
 export function clearSessionStorageTables() {
 
-    cSS(sessionStorage_upperTable_substring);
-    cSS(sessionStorage_bottomTable_substring);
+    cSS(sessionStorage_upperTable_substring)
+    cSS(sessionStorage_bottomTable_substring)
 
 }
 
@@ -54,11 +51,11 @@ function cSS(substring) {
 
     const sessionStorage_Keys = [];
 
-    for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i));}
+    for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i))}
     
     for(const key of sessionStorage_Keys) {
         if (key.includes(substring)) {
-            sessionStorage.removeItem(key);
+            sessionStorage.removeItem(key)
         }
     }
 
