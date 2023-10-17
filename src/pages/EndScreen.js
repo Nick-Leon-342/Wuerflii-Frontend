@@ -3,9 +3,9 @@
 import '../App.css'
 import './css/EndScreen.css'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { sessionStorage_players, sessionStorage_winner, clearSessionStorage } from './utils'
+import { sessionStorage_players, sessionStorage_winner, clearSessionStorage, resizeEvent } from './utils'
 
 
 function EndScreen() {
@@ -36,6 +36,10 @@ function EndScreen() {
 	
 	
 	
+	useEffect(() => {
+		resizeEvent()
+	}, [])
+
 	
 	const ok = () => {
 		
@@ -58,7 +62,7 @@ function EndScreen() {
 
 	return (
 		<>
-			<div className='button-container'><label>
+			<div className='button-container'><label className='winner'>
 				{winner.length === 1 ? `'${players[winner[0]].Name}' hat gewonnen!` : `${string}`}
 			</label></div>
 
@@ -69,13 +73,13 @@ function EndScreen() {
 					<tr>
 						<td>Spieler</td>
 						{players.map((p, i) => (
-							<td key={i}>{p.Name}</td>
+							<td key={i} style={{ width: 'auto' }}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
 						<td>Gewonnen</td>
 						{players.map((p, i) => (
-							<td key={i}>{p.Wins}</td>
+							<td key={i} style={{ width: 'auto' }}>{p.Wins}</td>
 						))}
 					</tr>
 				</tbody>
