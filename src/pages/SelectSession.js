@@ -5,7 +5,7 @@ import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
+import { formatDate, resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -37,6 +37,7 @@ function SelectSession() {
 				})
 			}
 			
+			tmp.sort(sortByTimestampDesc)
 			setList(tmp)
 		})
 
@@ -44,12 +45,18 @@ function SelectSession() {
 
 	}, [])
 
+	const sortByTimestampDesc = (a, b) => {
+		return new Date(b.Attributes.LastPlayed) - new Date(a.Attributes.LastPlayed)
+	}
+
 
 
 
 
 	const handleDelete = (e) => {
 
+		if(disabled) return
+		
 		if (window.confirm('Bist du sicher, dass du diese Session löschen möchtest?')) {
 			console.log('delete')
 		}
@@ -96,7 +103,7 @@ function SelectSession() {
 
 	return (
 		<>
-			<button disabled={disabled} onClick={handleDelete}>Delete</button>
+			<div className={`trashcan-container`}><svg className={`${disabled ? 'disabled' : ''}`} onClick={handleDelete} viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="30" pointerEvents="all"/></g></svg></div>
 			<dl id='sessionList'>
 				{list.length === 0 ? (
 					<dt className='message'>{message}</dt>
@@ -109,7 +116,7 @@ function SelectSession() {
 								<label className='label'>
 									{s.List_Players.map((p) => p.Name).join(' vs ')}
 								</label>
-								<label className='label date'>{s.Attributes.CreatedDate}</label>
+								<label className='label date'>{formatDate(s.Attributes.CreatedDate)}</label>
 							</div>
 						</dt>
 					))

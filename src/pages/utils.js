@@ -79,8 +79,8 @@ export const createPlayer = (name, alias, color) => {
 export const createAttributes = (columns) => {
     return {
         Columns: columns,
-        LastPlayed: new Date().toLocaleDateString(),
-        CreatedDate: new Date().toLocaleDateString(),
+        LastPlayed: new Date(),
+        CreatedDate: new Date(),
         SessionName: ''
     }
 }
@@ -88,7 +88,7 @@ export const createAttributes = (columns) => {
 export const createFinalScoreElement = (players, scoreList) => {
 
     const finalScore = {
-        Played: new Date().toLocaleDateString()
+        Played: new Date()
     }
 
     for(let i = 0; i < players.length; i++) {
@@ -96,6 +96,20 @@ export const createFinalScoreElement = (players, scoreList) => {
     }
 
     return finalScore;
+
+}
+
+export const formatDate = (date) => {
+
+	const d = new Date(date)
+	const day = d.getDate()
+	const month = d.getMonth() + 1
+	const year = d.getFullYear()
+
+	const formattedDay = day < 10 ? `0${day}` : `${day}`
+	const formattedMonth = month < 10 ? `0${month}` : `${month}`
+
+	return `${formattedDay}.${formattedMonth}.${year}`
 
 }
 

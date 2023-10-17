@@ -193,6 +193,7 @@ function Games() {
 	const PlayerTable = () => {
 		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf)) 
 		gnadenwurf = g ? g : players.map(() => false)
+		const width = `${attributes.Columns * 54}px`
 
 		return (
 			<table id={id_playerTable} className='table playerTable'>
@@ -200,7 +201,7 @@ function Games() {
 					<tr>
 						<td>Spieler</td>
 						{players.map((p, i) => (
-							<td key={i} style={{ width: `${attributes.Columns * 54}px` }}>{p.Name}</td>
+							<td key={i} style={{ maxWidth: width, width: width }}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
@@ -532,8 +533,7 @@ function Games() {
 	
 	
 		//____________________Attributes____________________
-		const options = { year: 'numeric', month: 'numeric', day: 'numeric' } // 19.10.2004
-		attributes.LastPlayed = new Date().toLocaleDateString('de-DE', options)
+		attributes.LastPlayed = new Date()
 	
 	
 		//____________________FinalScore____________________
@@ -583,8 +583,11 @@ function Games() {
 			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
-			<button onClick={newGame} className='button'>Neues Spiel</button>
-			<button onClick={saveResults} className='button'>Spiel beenden</button>
+
+			<div className='buttons'>
+				<button onClick={newGame} className='button newGame'>Neues Spiel</button>
+				<button onClick={saveResults} className='button finishGame'>Spiel beenden</button>
+			</div>
 		</>
 	)
 }

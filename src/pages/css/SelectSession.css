@@ -50,3 +50,42 @@
 .message {
     font-size: 25px;
 }
+
+
+
+
+.trashcan-container {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+}
+
+.trashcan-container .disabled {
+	/* color: gray; */
+	opacity: 0.2;
+	pointer-events: none;
+	/* transform: scale(0.8); */
+}
+
+.trashcan-container svg:not(.disabled):hover {
+	margin-left: 10px;
+	height: 25px;
+}
+
+.trashcan-container svg:not(.disabled):hover rect {
+	stroke: rgb(95, 95, 95);
+
+}
+
+/* .trashcan-container svg.disabled:hover {
+
+}
+
+.trashcan-container svg.disabled:hover rect {
+	stroke: green;
+} */
+
+.trashcan-container svg {
+	margin-left: 10px;
+	height: 25px;
+}

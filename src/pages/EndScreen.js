@@ -68,26 +68,24 @@ function EndScreen() {
 
 			<br/>
 
-			<table id='wins-table' className='table'>
+			<table className='table wins'>
 				<tbody>
 					<tr>
 						<td>Spieler</td>
 						{players.map((p, i) => (
-							<td key={i} style={{ width: 'auto' }}>{p.Name}</td>
+							<td key={i}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
 						<td>Gewonnen</td>
 						{players.map((p, i) => (
-							<td key={i} style={{ width: 'auto' }}>{p.Wins}</td>
+							<td key={i}>{p.Wins}</td>
 						))}
 					</tr>
 				</tbody>
 			</table>
 
-			<div className='button-container'>
-				<button className='button' onClick={ok}>Ok</button>
-			</div>
+			<button className='button ok' onClick={ok}>Ok</button>
 		</>
 	)
 }
