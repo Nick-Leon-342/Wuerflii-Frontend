@@ -5,7 +5,7 @@ import './css/SessionPreview.css'
 
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { clearSessionStorage, resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
+import { clearSessionStorage, resizeEvent, sessionStorage_attributes, sessionStorage_players, formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -74,6 +74,10 @@ function SessionPreview() {
 
 	const next = () => {navigate('/game', { replace: true })}
 
+	const firstColumnWidth = '150px'
+	const firstColumnStyle = { width: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
+	const columnWidth = players.length > 8 ? '75px' : (players.length > 4 ? '125px' : '200px')
+	const style = { width: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 
 
@@ -83,15 +87,15 @@ function SessionPreview() {
 			<table className='table'>
 				<tbody>
 					<tr>
-						<td>Spieler</td>
+						<td style={firstColumnStyle}>Spieler</td>
 						{players.map((p, i) => (
-							<td key={i}>{p.Name}</td>
+							<td key={i} style={style}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
-						<td>Gewonnen</td>
+						<td style={firstColumnStyle}>Gewonnen</td>
 						{players.map((p, i) => (
-							<td key={i}>{p.Wins}</td>
+							<td key={i} style={style}>{p.Wins}</td>
 						))}
 					</tr>
 				</tbody>
@@ -101,9 +105,9 @@ function SessionPreview() {
 				<tbody>
 					{finalScores && finalScores.map((fs, i) => (
 						<tr key={i}>
-							<td>{fs.Played}</td>
+							<td style={firstColumnStyle}>{formatDate(fs.Played)}</td>
 							{players.map((p, j) => (
-								<td key={`${i}.${j}`}>{fs[p.Alias]}</td>
+								<td key={`${i}.${j}`} style={style}>{fs[p.Alias]}</td>
 							))}
 						</tr>
 					))}
