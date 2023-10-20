@@ -8,10 +8,6 @@
 	align-items: center;
 	opacity: 1;
 }
-
-.loader.notVisible {
-	opacity: 0;
-}
   
 .loader span {
 	width: 8px;
@@ -105,6 +101,7 @@
 	width: 100%;
 	display: flex;
 	align-items: center;
+	opacity: 1;
 }
 
 .trashcan-container .disabled {
@@ -125,4 +122,10 @@
 .trashcan-container svg {
 	margin-left: 10px;
 	height: 25px;
+}
+
+
+
+.notVisible {
+	opacity: 0;
 }
