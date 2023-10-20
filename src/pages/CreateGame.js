@@ -10,12 +10,16 @@ import { isMobile } from 'react-device-detect'
 import { resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
+import Modal from 'react-modal'
+
+Modal.setAppElement()
 
 function CreateGame() {
 	
 	const { setAuth } = useAuth()
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
+	const [ modalOpen, setModalOpen ] = useState(false)
 
 
 	useEffect(() => {
@@ -82,6 +86,16 @@ function CreateGame() {
 
 	return (
 		<>
+			<Modal 
+				isOpen={modalOpen}
+				onRequestClose={() => setModalOpen(false)}
+			>
+				<div>Test</div>
+				<button onClick={() => setModalOpen(false)}>Close</button>
+			</Modal>
+
+			<button onClick={() => setModalOpen(true)}>Test</button>
+
 			<div className='input-container'>
 				<label className='input-header' style={{ color: 'black' }}>Spieler</label>
 				{isMobile ? (

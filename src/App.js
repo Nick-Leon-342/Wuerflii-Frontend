@@ -43,7 +43,7 @@ function App() {
 					routes that have to be protected by a token
 					PersistLogin is needed, so that the user doesn't have to login after page refresh
 					*/}
-					<Route element={<PersistLogin />}>
+					{/* <Route element={<PersistLogin />}> */}
 
 						<Route path='/CreateGame' element={<CreateGame />} />
 						<Route path='/EnterNames' element={<EnterNames />} />
@@ -54,7 +54,7 @@ function App() {
 						<Route path='/Game' element={<Game />} />
 						<Route path='/EndScreen' element={<EndScreen />} />
 						
-					</Route>
+					{/* </Route> */}
 
 				</Routes>
 			</Router>

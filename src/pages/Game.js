@@ -218,7 +218,6 @@ function Games() {
 					</tr>
 				</tbody>
 			</table>
-			
 		)
 	}
 
@@ -278,7 +277,6 @@ function Games() {
 
 	useEffect(() => {
 		
-		resizeEvent()
 		const elements = document.getElementsByClassName('kniffelInput')
 		if(!players || !attributes) navigate('/creategame', { replace: true })
 
@@ -583,6 +581,7 @@ function Games() {
 			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
+			{resizeEvent()}
 
 			<div className='buttons'>
 				<button onClick={newGame} className='button newGame'>Neues Spiel</button>

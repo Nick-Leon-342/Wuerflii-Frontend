@@ -124,6 +124,17 @@ export const resizeEvent = () => {
     const a = document.getElementById('App')
     const body = document.body
 
+	if(!a) return
+
+	body.style.height = '100%'
+    if(a.offsetHeight >= window.innerHeight) {
+        body.style.height = '100%'
+        // body.style.height = '100vh'
+    } else {
+        body.style.height = '100vh'
+        // body.style.height = '100%'
+    }
+
     if(a.offsetWidth >= window.innerWidth) {
         body.style.justifyContent = 'left'
         a.style.borderRadius = '0px'
@@ -134,12 +145,6 @@ export const resizeEvent = () => {
         a.style.borderRadius = '20px'
         a.style.marginTop = '0px'
         a.style.marginBottom = '0px'
-    }
-
-    if(a.offsetHeight >= window.innerHeight) {
-        body.style.height = '100%'
-    } else {
-        body.style.height = '100vh'
     }
     
 }
