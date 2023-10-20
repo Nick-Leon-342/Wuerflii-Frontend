@@ -69,7 +69,7 @@ const Login = () => {
     return (
 		<>
 			<p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
-			{/* <h1>Login</h1> */}
+			<h1>Login</h1>
 			<form onSubmit={handleSubmit}>
 
 				<p className='input-header' htmlFor='Username'>Benutzername</p>
@@ -77,7 +77,7 @@ const Login = () => {
 					type='text'
 					className='input'
 					id='Username'
-					placeholder='Jeffrey'
+					placeholder='Benutzername'
 					ref={userRef}
 					autoComplete='off'
 					onChange={(e) => setUser(e.target.value)}
@@ -90,7 +90,7 @@ const Login = () => {
 					type='password'
 					className='input'
 					id='Password'
-					placeholder='#Pass123'
+					placeholder='Password'
 					onChange={(e) => setPwd(e.target.value)}
 					value={Password}
 					required
@@ -99,10 +99,10 @@ const Login = () => {
 				<br/>
 				<br/>
 
-				<button className='button login'>Einloggen</button>
+				<button className='button' style={{ width: '100%'}}>Einloggen</button>
 
 			</form>
-			<p className='needAccount'>
+			<p className='reglog-link-switch'>
 				Noch keinen Account?{' '}
 				<span>
 					<Link to='/registration'>Erstellen</Link>

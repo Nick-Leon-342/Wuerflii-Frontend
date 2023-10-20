@@ -4,7 +4,7 @@ import '../App.css'
 import './css/SessionPreview.css'
 
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { clearSessionStorage, resizeEvent, sessionStorage_attributes, sessionStorage_players, formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
@@ -16,34 +16,6 @@ function SessionPreview() {
 	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
 	const [finalScores, setFinalScores] = useState()
-	
-	
-	
-	
-	
-	// function resizeTable() {
-	
-	// 	const t = document.getElementById('winCountPreview').querySelectorAll('td')
-	// 	let max_width = t[0].offsetWidth
-	
-	// 	for(let i = 1; t.length / 2 > i; i++) {
-	// 		const tmp_width = t[i].offsetWidth
-	// 		if(tmp_width > max_width) {max_width = tmp_width}
-	// 	}
-	
-	// 	for(let i = 1; t.length / 2 > i; i++) {
-	// 		t[i].style.width = max_width + 'px'
-	// 	}
-	
-	// 	const up = winCountPreview_Players.querySelectorAll('td')
-	// 	const bottom = finalScorePreview.querySelectorAll('td')
-	// 	for(let i = 0; up.length > i; i++) {
-	// 		const width = window.getComputedStyle(up[i]).width
-	// 		up[i].style.minWidth = width
-	// 		bottom[i].style.minWidth = width
-	// 	}
-	
-	// }
 
 	
 
@@ -114,9 +86,11 @@ function SessionPreview() {
 				</tbody>
 			</table>
 				
-			<div className='button-container'>
-				<button className='button' onClick={back}>Zurück</button>
-				<button className='button' onClick={next}>Los geht's!</button>
+			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={next}>Los geht's!</button>
+			<div style={{ display: 'flex' }}>
+				<p className='link-switch'>
+					<Link to='/selectsession' onClick={back}>Zurück</Link>
+				</p>
 			</div>
 		</>
 	)

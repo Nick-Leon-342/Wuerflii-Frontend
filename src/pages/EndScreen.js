@@ -18,28 +18,9 @@ function EndScreen() {
 	
 	
 	
-	// const resizeTable = () => {
-	
-	// 	const t = document.getElementById('wins-table').querySelectorAll('td')
-	// 	let max_width = t[1].offsetWidth
-	// 	for(let i = 1; t.length > i; i++) {
-	// 		const tmp_Width = t[i].offsetWidth
-	// 		if(tmp_Width > max_width) {max_width = tmp_Width}
-	// 	}
-	
-	// 	for(const e of t) {
-	// 		e.style.width = max_width + 'px'
-	// 	}
-	
-	// }
-	
-	
-	
-	
 	useEffect(() => {
 		resizeEvent()
 	}, [])
-
 	
 	const ok = () => {
 		
@@ -47,7 +28,6 @@ function EndScreen() {
 		navigate('/creategame', { replace: true })
 	
 	}
-
 
 	let string = `'${players[winner[0]].Name}' `
 	for(let i = 1; winner.length > i; i++) {
@@ -59,6 +39,9 @@ function EndScreen() {
 		}
 	}
 
+
+
+	
 
 	return (
 		<>
@@ -85,7 +68,7 @@ function EndScreen() {
 				</tbody>
 			</table>
 
-			<button className='button ok' onClick={ok}>Ok</button>
+			<button className='button' style={{ width: '100%' }} onClick={ok}>Ok</button>
 		</>
 	)
 }

@@ -1,6 +1,6 @@
 
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
 import { resizeEvent } from './pages/utils'
 
 import Login from './pages/Login'
@@ -19,6 +19,7 @@ import { useEffect } from 'react'
 
 function App() {
 
+
 	useEffect(() => {
 		resizeEvent()
 		window.addEventListener('resize', resizeEvent)
@@ -32,9 +33,9 @@ function App() {
 		<div className="App">
 			<div id='application'>
 				
-				<a href='https://games.mmtn-schneider.com'><button className='button'>Home</button></a>
+				{/* <a href='https://games.mmtn-schneider.com'><button className='button'>Home</button></a>
 
-				<div className='interface'>
+				<div className='interface'> */}
 					<Router>
 						<Routes>
 							{/* 'Public' routes --> routes that can be accessed without token */}
@@ -63,7 +64,7 @@ function App() {
 
 						</Routes>
 					</Router>
-				</div>
+				{/* </div> */}
 			</div>
 		</div>
 	)

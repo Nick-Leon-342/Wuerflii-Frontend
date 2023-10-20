@@ -1,5 +1,13 @@
 
 
+.button-container {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+
+
 * {
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
@@ -18,23 +26,10 @@ body {
 
 .App {
 	text-align: center;
-}
-
-
-
-
-
-#application {
-    background-color: #A9A9A9;
-    padding: 10px;
+    background-color: rgb(200, 200, 200);
+    padding: 25px;
     border-radius: 20px;
-    box-shadow: 0px 0px 15px 3px rgb(100, 100, 100);
-}
-
-.interface {
-    background-color: rgb(150, 150, 150);
-    border-radius: 15px;
-    padding: 15px;
+    box-shadow: 0px 0px 20px 0px rgb(100, 100, 100);
 }
 
 
@@ -47,10 +42,13 @@ body {
     color: black;
     font-size: 20px;
     border-radius: 10px;
+	border: none;
+	box-shadow: 0px 0px 7px .5px rgb(150, 150, 150);
     padding: 5px 15px;
     background-color: #00FF00;
-    border-color: black;
     outline: none;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
 .button:hover {
@@ -62,12 +60,31 @@ body {
     background-color: #16df26;
 }
 
-.button-container {
-    display: flex;
-    align-content: center;
-    justify-content: center;
+
+
+.reglog-link-switch {
+	color: rgb(100, 100, 100);
+	text-align: end;
 }
 
+.reglog-link-switch a {
+	color: rgb(150, 255, 150);
+}
+
+.reglog-link-switch a:hover {
+	opacity: .6;
+}
+
+
+
+.link-switch a {
+	color: rgb(150, 255, 150);
+	/* text-align: start; */
+}
+
+.link-switch a:hover {
+	opacity: .6;
+}
 
 
 
@@ -75,10 +92,17 @@ body {
 /* ____________________Input____________________ */
 
 .input {
-    background-color: #A9A9A9;
+    background-color: rgb(240, 240, 240);
     border-radius: 5px;
     padding: 5px;
 	width: 400px;
+}
+
+.input-header {
+	margin-top: 20px;
+	margin-bottom: 5px;
+	text-align: left;
+	font-size: 18px;
 }
 
 .input-container {

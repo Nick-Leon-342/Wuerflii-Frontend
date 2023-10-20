@@ -1,7 +1,54 @@
 
 
-#sessionList {
-	background-color: #A9A9A9;
+.loader {
+	margin-right: 35px;
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	opacity: 1;
+}
+
+.loader.notVisible {
+	opacity: 0;
+}
+  
+.loader span {
+	width: 8px;
+	height: 8px;
+	background: #00FF00;
+	border-radius: 50%;
+	margin: 0 5px;
+	animation: expandShrink 2s linear infinite;
+	animation-delay: 0.1s;
+}
+  
+.loader span:nth-child(1) {
+	animation-delay: 0s;
+}
+  
+.loader span:nth-child(2) {
+	animation-delay: 0.333s;
+}
+  
+.loader span:nth-child(3) {
+	animation-delay: 0.667s;
+}
+
+@keyframes expandShrink {
+	0%, 100% {
+		transform: scale(1.5);
+	}
+	25%, 75% {
+		transform: scale(0.5);
+	}
+}
+  
+
+
+  
+
+.sessionList {
 	border-radius: 5px;
 	padding: 5px;
 }
@@ -9,12 +56,12 @@
 .listElement {
     display: flex;
     justify-content: space-between;
-    padding: 5px;
+    padding: 10px;
     border-radius: 5px;
 }
 
 .listElement:hover {
-    background-color: #cacaca;
+    background-color: rgb(230, 230, 230);
 }
 
 .listElement:hover .label {
@@ -57,14 +104,12 @@
 .trashcan-container {
 	width: 100%;
 	display: flex;
-	justify-content: flex-start;
+	align-items: center;
 }
 
 .trashcan-container .disabled {
-	/* color: gray; */
 	opacity: 0.2;
 	pointer-events: none;
-	/* transform: scale(0.8); */
 }
 
 .trashcan-container svg:not(.disabled):hover {
@@ -76,14 +121,6 @@
 	stroke: rgb(95, 95, 95);
 
 }
-
-/* .trashcan-container svg.disabled:hover {
-
-}
-
-.trashcan-container svg.disabled:hover rect {
-	stroke: green;
-} */
 
 .trashcan-container svg {
 	margin-left: 10px;

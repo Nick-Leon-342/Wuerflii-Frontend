@@ -5,14 +5,14 @@ import '../App.css'
 import './css/CreateGame.css'
 
 import { Link, useNavigate } from 'react-router-dom'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import useAuth from '../hooks/useAuth'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import useAuth from '../hooks/useAuth'
 
 function CreateGame() {
-
+	
 	const { setAuth } = useAuth()
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
@@ -34,20 +34,6 @@ function CreateGame() {
 		sessionStorage.setItem(sessionStorage_attributes, columns)
 
 		navigate('/enternames', { replace: false })
-
-	}
-
-
-	//____________________Logout____________________
-
-	const logout = () => {
-
-		axiosPrivate.delete('/logout').then((res) => {
-			if(res.status === 204) {
-				setAuth({ accessToken: '' })
-				navigate('/login', { replace: true })
-			}
-		})
 
 	}
 
@@ -81,13 +67,23 @@ function CreateGame() {
 		
 	}
 
+	const logout = () => {
+
+		axiosPrivate.delete('/logout').then((res) => {
+			if(res.status === 204) {
+				setAuth({ accessToken: '' })
+				navigate('/login', { replace: true })
+			}
+		})
+
+	}
+
 
 
 	return (
 		<>
-			<div className='logout'><button onClick={logout}>Ausloggen</button></div>
 			<div className='input-container'>
-				<label>Players</label>
+				<label className='input-header' style={{ color: 'black' }}>Spieler</label>
 				{isMobile ? (
 					<select
 						className='input input-mobile'
@@ -119,7 +115,7 @@ function CreateGame() {
 			</div>
 			<br/>
 			<div className='input-container'>
-				<label>Columns</label>
+				<label className='input-header' style={{ color: 'black' }}>Spalten</label>
 				{isMobile ? (
 					<select
 						className='input input-mobile'
@@ -150,10 +146,14 @@ function CreateGame() {
 				)}
 			</div>
 			<br/>
-			<button className='button button-next' onClick={next}>Weiter</button>
-			<p className='loadGames'>
-				<Link to='/selectsession'>Lade Spiel</Link>
-			</p>
+			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={next}>Weiter</button>
+
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<p className='link-switch'>
+					<Link to='/selectsession'>Lade Spiel</Link>
+				</p>
+				<div className='logout'><button onClick={logout}>Ausloggen</button></div>
+			</div>
 		</>
 	)
 }

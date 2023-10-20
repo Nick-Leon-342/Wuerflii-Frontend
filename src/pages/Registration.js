@@ -90,7 +90,8 @@ const Registration = () => {
 	return (
 		<>
 			<p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
-			{/* <h1>Registration</h1> */}
+			<h1>Registration</h1>
+
 			<form onSubmit={handleSubmit}>
 
 				<p className='input-header' htmlFor='Name'>
@@ -102,7 +103,7 @@ const Registration = () => {
 					type='text'
 					className='input'
 					id='Name'
-					placeholder='Jeffrey'
+					placeholder='Benutzername'
 					ref={userRef}
 					autoComplete='off'
 					onChange={(e) => setUser(e.target.value)}
@@ -129,7 +130,7 @@ const Registration = () => {
 					type='password'
 					className='input'
 					id='Password'
-					placeholder='#Pass123'
+					placeholder='Password'
 					onChange={(e) => setPwd(e.target.value)}
 					value={Password}
 					required
@@ -155,7 +156,7 @@ const Registration = () => {
 					type='password'
 					className='input'
 					id='confirm_pwd'
-					placeholder='#Pass123'
+					placeholder='Password'
 					onChange={(e) => setMatchPwd(e.target.value)}
 					value={matchPwd}
 					required
@@ -170,11 +171,12 @@ const Registration = () => {
 				</p>
 				<br/>
 				<br/>
-				<br/>
 
-				<button className='button registration' disabled={!validName || !validPwd || !validMatch ? true : false}>Registrieren</button>
+				<button className='button' style={{ width: '100%'}} disabled={!validName || !validPwd || !validMatch ? true : false}>Registrieren</button>
+
 			</form>
-			<p className='goLogin'>
+			
+			<p className='reglog-link-switch'>
 				Bereits registriert?{' '}
 				<span className='line'>
 					<Link to='/'>Einloggen</Link>

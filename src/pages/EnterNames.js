@@ -81,10 +81,14 @@ function EnterNames() {
 					</dt>
 				))}
 			</dl>
-			<button className='button go' onClick={play}>Los!</button>
-			<p className='loadGames'>
-				<Link onClick={clear} to='/creategame'>Zurück</Link>
-			</p>
+
+			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={play}>Los!</button>
+
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<p className='link-switch'>
+					<Link onClick={clear} to='/creategame'>Zurück</Link>
+				</p>
+			</div>
 		</>
 	)
 }
