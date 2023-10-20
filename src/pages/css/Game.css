@@ -1,24 +1,6 @@
 
 
-.kniffelImage {
-    width: 26px;
-    margin: 2px;
-}
-
-#upperTable td:nth-child(1),
-#upperTable td:nth-child(2),
-#bottomTable td:nth-child(1),
-#bottomTable td:nth-child(2) {
-    min-width: 110px;
-    font-weight: bold;
-}
-
-#playerSum {
-    border-collapse: collapse;
-    margin: 5px;
-}
-
-.playerTable td:nth-child(1) {
+.playerTable td:first-child {
     width: 220px;
     font-weight: bold;
 }
@@ -31,8 +13,31 @@
 	text-overflow: ellipsis;
 }
 
+.checkbox {
+    width: 25px;
+	height: 25px;
+	border-radius: 5px;
+}
 
 
+
+
+
+
+
+
+#upperTable td:nth-child(1),
+#upperTable td:nth-child(2),
+#bottomTable td:nth-child(1),
+#bottomTable td:nth-child(2) {
+    min-width: 110px;
+    font-weight: bold;
+}
+
+.kniffelImage {
+    width: 26px;
+    margin: 2px;
+}
 
 .kniffelInput {
     border: none;
@@ -43,24 +48,18 @@
     font-size: 20px;
 }
 
+
 .highlighted {
-    color: white;
+    color: rgb(0, 200, 0);
 }
 
 .highlighted rect {
-    stroke: white;
+    stroke: rgb(0, 200, 0);
 }
 
 .highlighted ellipse {
-    fill: white;
+    fill: rgb(0, 200, 0);
 }
-
-.checkbox {
-    width: 30px;
-	height: 30px;
-	border-radius: 5px;
-}
-
 
 
 .buttons {

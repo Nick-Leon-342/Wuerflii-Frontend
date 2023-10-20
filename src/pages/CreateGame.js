@@ -91,7 +91,7 @@ function CreateGame() {
 						onChange={handleInputChange_players}
 						>
 						<option value="" disabled>
-							Number of players
+							Spieleranzahl
 						</option>
 						{options_players.map((p) => (
 							<option key={p} value={p}>{p}</option>
@@ -123,7 +123,7 @@ function CreateGame() {
 						onChange={handleInputChange_columns}
 						>
 						<option value="" disabled>
-							Columns per player
+							Spaltenanzahl
 						</option>
 						{options_columns.map((c) => (
 							<option key={c} value={c}>{c}</option>

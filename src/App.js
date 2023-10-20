@@ -30,42 +30,34 @@ function App() {
 	}, [])
 
 	return (
-		<div className="App">
-			<div id='application'>
-				
-				{/* <a href='https://games.mmtn-schneider.com'><button className='button'>Home</button></a>
-
-				<div className='interface'> */}
-					<Router>
-						<Routes>
-							{/* 'Public' routes --> routes that can be accessed without token */}
-							<Route path='/' element={<Login />} />
-							<Route path='/login' element={<Login />} />
-							<Route path='/registration' element={<Registration />} />
+		<div className="App" id='App'>
+			<Router>
+				<Routes>
+					{/* 'Public' routes --> routes that can be accessed without token */}
+					<Route path='/' element={<Login />} />
+					<Route path='/login' element={<Login />} />
+					<Route path='/registration' element={<Registration />} />
 
 
-							{/* 
-							routes that have to be protected by a token
-							PersistLogin is needed, so that the user doesn't have to login after page refresh
-							*/}
-							<Route element={<PersistLogin />}>
+					{/* 
+					routes that have to be protected by a token
+					PersistLogin is needed, so that the user doesn't have to login after page refresh
+					*/}
+					<Route element={<PersistLogin />}>
 
-								<Route path='/CreateGame' element={<CreateGame />} />
-								<Route path='/EnterNames' element={<EnterNames />} />
-								
-								<Route path='/SelectSession' element={<SelectSession />} />
-								<Route path='/SessionPreview' element={<SessionPreview />} />
-								
-								<Route path='/Game' element={<Game />} />
-								<Route path='/EndScreen' element={<EndScreen />} />
-								
+						<Route path='/CreateGame' element={<CreateGame />} />
+						<Route path='/EnterNames' element={<EnterNames />} />
+						
+						<Route path='/SelectSession' element={<SelectSession />} />
+						<Route path='/SessionPreview' element={<SessionPreview />} />
+						
+						<Route path='/Game' element={<Game />} />
+						<Route path='/EndScreen' element={<EndScreen />} />
+						
+					</Route>
 
-							</Route>
-
-						</Routes>
-					</Router>
-				{/* </div> */}
-			</div>
+				</Routes>
+			</Router>
 		</div>
 	)
 

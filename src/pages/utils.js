@@ -121,7 +121,7 @@ export const formatDate = (date) => {
 
 export const resizeEvent = () => {
 
-    const a = document.getElementById('application')
+    const a = document.getElementById('App')
     const body = document.body
 
     if(a.offsetWidth >= window.innerWidth) {
