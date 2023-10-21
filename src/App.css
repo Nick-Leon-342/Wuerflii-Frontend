@@ -33,8 +33,14 @@ body {
 	box-shadow: 0px 0px 20px 0px rgb(100, 100, 100);
 }
 
+.modal {
+	border-radius: 10px;
+	border: none;
+	padding: 20px;
+	outline: none;
+}
+
 dialog::backdrop {
-	/* color: rgb(150, 150, 150); */
 	background-color: rgb(150, 150, 150);
 	opacity: .5;
 }

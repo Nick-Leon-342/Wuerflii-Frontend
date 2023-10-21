@@ -1,5 +1,8 @@
 
 
+export const USER_REGEX = /^[A-z][A-z0-9-_]{3,49}$/
+export const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,128}$/
+
 //____________________IDs____________________
 
 export const id_upperTable                         = 'upperTable'

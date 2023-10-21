@@ -6,7 +6,6 @@
 }
 
 .playerTable td {
-	/* width: 100px; */
 	padding: 5px;
 	white-space: nowrap;
 	overflow: hidden;

@@ -9,10 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
-import { resizeEvent } from './utils'
+import { resizeEvent, USER_REGEX, PWD_REGEX } from './utils'
 
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,49}$/
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,128}$/
 const REGISTER_URL = '/auth/registration'
 
 const Registration = () => {

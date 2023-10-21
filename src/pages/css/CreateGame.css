@@ -4,11 +4,19 @@
 	display: flex;
 }
 
-.logout button {
+.logout-button {
 	background: none;
 	border: none;
 	color: rgb(255, 0, 0);
 	padding: 0;
+}
+
+.logout-button:hover {
+	opacity: .5;
+}
+
+.logout-button:active {
+	transform: scale(.9);
 }
 
 
@@ -21,4 +29,15 @@
 .input-mobile {
 	width: 150px;
 	margin-left: 20px;
+}
+
+
+
+.info {
+	background-color: rgb(200, 200, 200);
+	color: red;
+}
+
+.info svg {
+	fill: red;
 }
