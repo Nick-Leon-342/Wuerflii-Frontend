@@ -114,8 +114,7 @@ const Registration = () => {
 				/>
 				<p id='uidnote' className={userFocus && Name && !validName ? 'instructions' : 'offscreen'}>
 					<FontAwesomeIcon icon={faInfoCircle} />
-					Der Benutzername muss zwischen 4 und 50 Zeichen lang sein und mit einem Buchstaben anfangen.<br />
-					Erlaubt sind Buchstaben, Zahlen, Binde- und Unterstriche.
+					
 				</p>
 
 
