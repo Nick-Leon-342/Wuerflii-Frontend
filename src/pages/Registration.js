@@ -9,49 +9,49 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
-import { resizeEvent, USER_REGEX, PWD_REGEX } from './utils'
+import { resizeEvent, NAME_REGEX, PASSWORD_REGEX } from './utils'
 
 const REGISTER_URL = '/auth/registration'
 
 const Registration = () => {
 
-	const userRef = useRef()
+	const nameRef = useRef()
 	const errRef = useRef()
 	const navigate = useNavigate()
 	const { setAuth } = useAuth()
 
-	const [Name, setUser] = useState('')
+	const [Name, setName] = useState('')
 	const [validName, setValidName] = useState(false)
-	const [userFocus, setUserFocus] = useState(false)
+	const [nameFocus, setNameFocus] = useState(false)
 
-	const [Password, setPwd] = useState('')
-	const [validPwd, setValidPwd] = useState(false)
-	const [pwdFocus, setPwdFocus] = useState(false)
+	const [Password, setPassword] = useState('')
+	const [validPassword, setValidPassword] = useState(false)
+	const [passwordFocus, setPasswordFocus] = useState(false)
 
-	const [matchPwd, setMatchPwd] = useState('')
+	const [matchPassword, setMatchPassword] = useState('')
 	const [validMatch, setValidMatch] = useState(false)
 	const [matchFocus, setMatchFocus] = useState(false)
 
 	const [errMsg, setErrMsg] = useState('')
 
-	useEffect(() => {setValidName(USER_REGEX.test(Name))}, [Name])
+	useEffect(() => {setValidName(NAME_REGEX.test(Name))}, [Name])
 	useEffect(() => {
 		resizeEvent()
-		userRef.current.focus()
+		nameRef.current.focus()
 	}, [])
 
 	useEffect(() => {
-		setValidPwd(PWD_REGEX.test(Password))
-		setValidMatch(Password === matchPwd)
-	}, [Password, matchPwd])
+		setValidPassword(PASSWORD_REGEX.test(Password))
+		setValidMatch(Password === matchPassword)
+	}, [Password, matchPassword])
 
-	useEffect(() => {setErrMsg('')}, [Name, Password, matchPwd])
+	useEffect(() => {setErrMsg('')}, [Name, Password, matchPassword])
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
-		const v1 = USER_REGEX.test(Name)
-		const v2 = PWD_REGEX.test(Password)
+		const v1 = NAME_REGEX.test(Name)
+		const v2 = PASSWORD_REGEX.test(Password)
 		if (!v1 || !v2) {
 			setErrMsg('Invalid Entry')
 			return
@@ -67,8 +67,8 @@ const Registration = () => {
 			)
             const accessToken = response?.data?.accessToken
             setAuth({ accessToken })
-            setUser('')
-            setPwd('')
+            setName('')
+            setPassword('')
 
             navigate('/CreateGame', { replace: true })
 
@@ -102,17 +102,17 @@ const Registration = () => {
 					className='input'
 					id='Name'
 					placeholder='Benutzername'
-					ref={userRef}
+					ref={nameRef}
 					autoComplete='off'
-					onChange={(e) => setUser(e.target.value)}
+					onChange={(e) => setName(e.target.value)}
 					value={Name}
 					required
 					aria-invalid={validName ? 'false' : 'true'}
 					aria-describedby='uidnote'
-					onFocus={() => setUserFocus(true)}
-					onBlur={() => setUserFocus(false)}
+					onFocus={() => setNameFocus(true)}
+					onBlur={() => setNameFocus(false)}
 				/>
-				<p id='uidnote' className={userFocus && Name && !validName ? 'instructions' : 'offscreen'}>
+				<p id='uidnote' className={nameFocus && Name && !validName ? 'instructions' : 'offscreen'}>
 					<FontAwesomeIcon icon={faInfoCircle} />
 					
 				</p>
@@ -120,42 +120,40 @@ const Registration = () => {
 
 				<p className='input-header' htmlFor='Password'>
 					Passwort
-					<FontAwesomeIcon icon={faCheck} className={validPwd ? 'valid' : 'hide'} />
-					<FontAwesomeIcon icon={faTimes} className={validPwd || !Password ? 'hide' : 'invalid'} />
+					<FontAwesomeIcon icon={faCheck} className={validPassword ? 'valid' : 'hide'} />
+					<FontAwesomeIcon icon={faTimes} className={validPassword || !Password ? 'hide' : 'invalid'} />
 				</p>
 				<input
 					type='password'
 					className='input'
 					id='Password'
 					placeholder='Password'
-					onChange={(e) => setPwd(e.target.value)}
+					onChange={(e) => setPassword(e.target.value)}
 					value={Password}
 					required
-					aria-invalid={validPwd ? 'false' : 'true'}
+					aria-invalid={validPassword ? 'false' : 'true'}
 					aria-describedby='pwdnote'
-					onFocus={() => setPwdFocus(true)}
-					onBlur={() => setPwdFocus(false)}
+					onFocus={() => setPasswordFocus(true)}
+					onBlur={() => setPasswordFocus(false)}
 				/>
-				<p id='pwdnote' className={pwdFocus && !validPwd ? 'instructions' : 'offscreen'}>
+				<p id='pwdnote' className={passwordFocus && !validPassword ? 'instructions' : 'offscreen'}>
 					<FontAwesomeIcon icon={faInfoCircle} />
-					Das Passwort muss zwischen 8 und 128 Zeichen lang sein.<br />
-					Erlaubt sind Kleinbuchstaben, Großuchstaben, Zahlen und diese Zeichen:<br />
-					<span aria-label='exclamation mark'>!</span> <span aria-label='at symbol'>@</span> <span aria-label='hashtag'>#</span> <span aria-label='dollar sign'>$</span> <span aria-label='percent'>%</span>
+					
 				</p>
 
 
 				<p className='input-header' htmlFor='confirm_pwd'>
 					Passwort bestätigen
-					<FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? 'valid' : 'hide'} />
-					<FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? 'hide' : 'invalid'} />
+					<FontAwesomeIcon icon={faCheck} className={validMatch && matchPassword ? 'valid' : 'hide'} />
+					<FontAwesomeIcon icon={faTimes} className={validMatch || !matchPassword ? 'hide' : 'invalid'} />
 				</p>
 				<input
 					type='password'
 					className='input'
 					id='confirm_pwd'
 					placeholder='Password'
-					onChange={(e) => setMatchPwd(e.target.value)}
-					value={matchPwd}
+					onChange={(e) => setMatchPassword(e.target.value)}
+					value={matchPassword}
 					required
 					aria-invalid={validMatch ? 'false' : 'true'}
 					aria-describedby='confirmnote'
@@ -169,7 +167,7 @@ const Registration = () => {
 				<br/>
 				<br/>
 
-				<button className='button' style={{ width: '100%'}} disabled={!validName || !validPwd || !validMatch ? true : false}>Registrieren</button>
+				<button className='button' style={{ width: '100%'}} disabled={!validName || !validPassword || !validMatch ? true : false}>Registrieren</button>
 
 			</form>
 			

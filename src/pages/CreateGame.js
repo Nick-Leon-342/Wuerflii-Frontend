@@ -5,9 +5,9 @@ import '../App.css'
 import './css/CreateGame.css'
 
 import { Link, useNavigate } from 'react-router-dom'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { resizeEvent, sessionStorage_attributes, sessionStorage_players, USER_REGEX, PWD_REGEX } from './utils'
+import { resizeEvent, sessionStorage_attributes, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 
@@ -87,8 +87,8 @@ function CreateGame() {
 	}
 
 
-	const [ Name, setName ] = useState('')
 	const [ infoName, setInfoName ] = useState(false)
+	const [ Name, setName ] = useState('')
 
 	const [ Password, setPassword ] = useState('')
 	const [ infoPassword, setInfoPassword ] = useState(false)
@@ -96,21 +96,40 @@ function CreateGame() {
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
-		const v1 = USER_REGEX.test(Name)
-		const v2 = PWD_REGEX.test(Password)
-		if (!v1 || !v2) {
-			// setErrMsg('Invalid Entry')
+		if ((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) {
 			return
 		}
+
+		let json = {}
+		if(NAME_REGEX.test(Name) && PASSWORD_REGEX.test(Password)) {
+			//Name and Password are valid
+
+			json.Name = Name
+			json.Password = Password
+
+		} else if(NAME_REGEX.test(Name)) {
+			//Name is valid, password not entered
+
+			json.Name = Name
+
+		} else {
+			//Password is valid, name not entered
+
+			json.Password = Password
+
+		}
+
+		console.log(json)
+
 		try {
 
-			await axiosPrivate.post('/auth/changecredentials', 
-				JSON.stringify({ Name, Password }),
-				{
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-			)
+			// await axiosPrivate.post('/auth/changecredentials', 
+			// 	JSON.stringify({ Name, Password }),
+			// 	{
+            //         headers: { 'Content-Type': 'application/json' },
+            //         withCredentials: true
+            //     }
+			// )
             setName('')
             setPassword('')
 
@@ -123,7 +142,6 @@ function CreateGame() {
 			// } else {
 			// 	setErrMsg('Registration Failed')
 			// }
-			// errRef.current.focus()
 		}
 	}
 
@@ -138,13 +156,31 @@ function CreateGame() {
 					}}
 				>
 					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={closeModal} height="24" viewBox="0 -960 960 960"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+						<svg onClick={closeModal} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 					<h1>Einstellungen</h1>
 					
 					<form onSubmit={handleSubmit}>
 					
-						<p htmlFor='Username' className='input-header' style={{ color: 'black' }}>Benutzernamen ändern</p>
+						<p htmlFor='Username' className='input-header' style={{ color: 'black' }}>
+							Benutzernamen ändern
+							<svg 
+								height='24' 
+								viewBox='0 -960 960 960'
+								style={{
+									fill: 'rgb(0, 255, 0',
+									display: Name && NAME_REGEX.test(Name) ? '' : 'none',
+								}}
+							><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
+							<svg 
+								height='24' 
+								viewBox='0 -960 960 960'
+								style={{
+									fill: 'rgb(255, 0, 0)',
+									display: Name && !NAME_REGEX.test(Name) ? '' : 'none',
+								}}
+							><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+						</p>
 						<input
 							className='input'
 							value={Name}
@@ -156,11 +192,29 @@ function CreateGame() {
 							onFocus={() => setInfoName(true)}
 							onBlur={() => setInfoName(false)}
 						/>
-						{infoName && <DialogName/>}
+						{infoName && !NAME_REGEX.test(Name) && <DialogName/>}
 						
 
 
-						<p htmlFor='Password' className='input-header' style={{ color: 'black' }}>Passwort ändern</p>
+						<p htmlFor='Password' className='input-header' style={{ color: 'black' }}>
+							Passwort ändern
+							<svg 
+								height='24' 
+								viewBox='0 -960 960 960'
+								style={{
+									fill: 'rgb(0, 255, 0',
+									display: Password && PASSWORD_REGEX.test(Password) ? '' : 'none',
+								}}
+							><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
+							<svg 
+								height='24' 
+								viewBox='0 -960 960 960'
+								style={{
+									fill: 'rgb(255, 0, 0)',
+									display: Password && !PASSWORD_REGEX.test(Password) ? '' : 'none',
+								}}
+							><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+						</p>
 						<input
 							type='password'
 							className='input'
@@ -172,7 +226,7 @@ function CreateGame() {
 							onFocus={() => setInfoPassword(true)}
 							onBlur={() => setInfoPassword(false)}
 						/>
-						{infoPassword && <DialogPassword/>}
+						{infoPassword && !PASSWORD_REGEX.test(Password) && <DialogPassword/>}
 
 						<br/>
 						<br/>
