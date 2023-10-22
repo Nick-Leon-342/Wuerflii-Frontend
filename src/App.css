@@ -92,7 +92,6 @@ dialog::backdrop {
 
 .link-switch a {
 	color: rgb(150, 255, 150);
-	/* text-align: start; */
 }
 
 .link-switch a:hover {
@@ -146,28 +145,4 @@ dialog::backdrop {
     border: 2px solid rgb(65, 65, 65);
     text-align: center;
     height: 50px;
-}
-
-
-
-
-
-@media (max-width: 1650px) {
-
-}
-
-@media (max-width: 1250px) {
-
-}
-
-@media (max-width: 950px) {
-
-}
-
-@media (max-width: 750px) {
-
-}
-
-@media (max-width: 475px) {
-
 }

@@ -16,13 +16,16 @@ import DialogPassword from '../dialog/DialogPassword'
 
 
 function CreateGame() {
-	
+
 	const { setAuth } = useAuth()
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
 
 
-	const showModal = () => {document.getElementById('modal').showModal()}
+	const showModal = () => {
+		setError('')
+		document.getElementById('modal').showModal()
+	}
 	const closeModal = () => {document.getElementById('modal').close()}
 
 
@@ -48,7 +51,7 @@ function CreateGame() {
 
 	//____________________Players____________________
 
-	const maxPlayers = process.env.MAX_PLAYERS || 16
+	const maxPlayers = process.env.REACT_APP_MAX_PLAYERS || 16
 	const [players, setPlayers] = useState('')
 	const options_players = Array.from({ length: maxPlayers }, (_, index) => index + 1)
 
@@ -63,7 +66,7 @@ function CreateGame() {
 
 	//____________________Columns____________________
 
-	const maxColumns = process.env.MAX_COLUMNS || 10
+	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
 	const [columns, setColumns] = useState('')
 	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
 
@@ -93,6 +96,8 @@ function CreateGame() {
 	const [ Password, setPassword ] = useState('')
 	const [ infoPassword, setInfoPassword ] = useState(false)
 
+	const [ error, setError ] = useState('')
+
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
@@ -103,45 +108,38 @@ function CreateGame() {
 		let json = {}
 		if(NAME_REGEX.test(Name) && PASSWORD_REGEX.test(Password)) {
 			//Name and Password are valid
-
 			json.Name = Name
 			json.Password = Password
-
 		} else if(NAME_REGEX.test(Name)) {
 			//Name is valid, password not entered
-
 			json.Name = Name
-
 		} else {
 			//Password is valid, name not entered
-
 			json.Password = Password
 
 		}
 
-		console.log(json)
-
 		try {
 
-			// await axiosPrivate.post('/auth/changecredentials', 
-			// 	JSON.stringify({ Name, Password }),
-			// 	{
-            //         headers: { 'Content-Type': 'application/json' },
-            //         withCredentials: true
-            //     }
-			// )
+			await axiosPrivate.post('/changecredentials', 
+				JSON.stringify(json),
+				{
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+			)
             setName('')
             setPassword('')
+			setError('')
 
 		} catch (err) {
-			console.log(err)
-			// if (!err?.response) {
-			// 	setErrMsg('No Server Response')
-			// } else if (err.response?.status === 409) {
-			// 	setErrMsg('Username Taken')
-			// } else {
-			// 	setErrMsg('Registration Failed')
-			// }
+			if (!err?.response) {
+				setError('Der Server antwortet nicht!')
+			} else if (err.response?.status === 409) {
+				setError('Der Benutzername wird bereits benutzt!')
+			} else {
+				setError('Es trat ein unvorhergesehener Fehler auf!')
+			}
 		}
 	}
 
@@ -228,12 +226,22 @@ function CreateGame() {
 						/>
 						{infoPassword && !PASSWORD_REGEX.test(Password) && <DialogPassword/>}
 
-						<br/>
-						<br/>
-						<br/>
-						<br/>
-						<br/>
-						<br/>
+						<p style={{
+							opacity: error ? '1' : '0',
+							border: '2px solid rgb(255, 0, 0)',
+							borderRadius: '10px',
+							color: 'rgb(255, 0, 0)',
+							fill: 'rgb(255, 0, 0)',
+							margin: '25px',
+							padding: '20px',
+						}}>
+							<div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+								<svg height="20" viewBox="0 -960 960 960"><path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+								<p style={{ height: '100%', fontSize: '19px', margin: 'auto', marginLeft: '5px' }}>Fehler</p>
+							</div>
+							<span style={{ display: 'flex' }}>{error}</span>
+						</p>
+
 						<button className='button' style={{ width: '100%'}}>Speichern</button>
 					
 					</form>
