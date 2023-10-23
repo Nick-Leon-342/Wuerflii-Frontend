@@ -52,13 +52,13 @@ function CreateGame() {
 	//____________________Players____________________
 
 	const maxPlayers = process.env.REACT_APP_MAX_PLAYERS || 16
-	const [players, setPlayers] = useState('')
+	const [ players, setPlayers ] = useState('')
 	const options_players = Array.from({ length: maxPlayers }, (_, index) => index + 1)
 
 	const handleInputChange_players = (event) => {
 		
 		const intValue = event.target.value
-		if (isNaN(parseFloat(intValue)) || intValue < 1 || intValue > maxPlayers) {return setPlayers(intValue.slice(0, -1))}
+		if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxPlayers) return setPlayers(intValue.slice(0, -1))
 		setPlayers(intValue)
 		
 	}
@@ -73,7 +73,7 @@ function CreateGame() {
 	const handleInputChange_columns = (event) => {
 		
 		const intValue = event.target.value
-		if (isNaN(parseFloat(intValue)) || intValue < 1 || intValue > maxColumns) {return setColumns(intValue.slice(0, -1))}
+		if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
 		setColumns(intValue)
 		
 	}
@@ -160,10 +160,10 @@ function CreateGame() {
 					
 					<form onSubmit={handleSubmit}>
 					
-						<p htmlFor='Username' className='input-header' style={{ color: 'black' }}>
-							Benutzernamen ändern
+						<p htmlFor='Username' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
+							<span style={{ height: '100%', marginLeft: '7px', marginRight: '5px' }}>Benutzernamen ändern</span>
 							<svg 
-								height='24' 
+								height='20' 
 								viewBox='0 -960 960 960'
 								style={{
 									fill: 'rgb(0, 255, 0',
@@ -171,7 +171,7 @@ function CreateGame() {
 								}}
 							><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
 							<svg 
-								height='24' 
+								height='20' 
 								viewBox='0 -960 960 960'
 								style={{
 									fill: 'rgb(255, 0, 0)',
@@ -194,10 +194,10 @@ function CreateGame() {
 						
 
 
-						<p htmlFor='Password' className='input-header' style={{ color: 'black' }}>
-							Passwort ändern
+						<p htmlFor='Password' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
+							<span style={{ height: '100%', marginLeft: '7px', marginRight: '5px' }}>Passwort ändern</span>
 							<svg 
-								height='24' 
+								height='20' 
 								viewBox='0 -960 960 960'
 								style={{
 									fill: 'rgb(0, 255, 0',
@@ -205,7 +205,7 @@ function CreateGame() {
 								}}
 							><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
 							<svg 
-								height='24' 
+								height='20' 
 								viewBox='0 -960 960 960'
 								style={{
 									fill: 'rgb(255, 0, 0)',
@@ -255,7 +255,7 @@ function CreateGame() {
 			<br/>
 			<br/>
 			<div className='input-container'>
-				<label className='input-header' style={{ color: 'black' }}>Spieler</label>
+				<label className='input-header'>Spieler</label>
 				{isMobile ? (
 					<select
 						className='input input-mobile'
@@ -287,7 +287,7 @@ function CreateGame() {
 			</div>
 			<br/>
 			<div className='input-container'>
-				<label className='input-header' style={{ color: 'black' }}>Spalten</label>
+				<label className='input-header'>Spalten</label>
 				{isMobile ? (
 					<select
 						className='input input-mobile'
