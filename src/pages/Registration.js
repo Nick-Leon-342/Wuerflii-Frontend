@@ -99,8 +99,6 @@ const Registration = () => {
 				</p>
 				<input
 					type='text'
-					className='input'
-					id='Name'
 					placeholder='Benutzername'
 					ref={nameRef}
 					autoComplete='off'
@@ -125,7 +123,6 @@ const Registration = () => {
 				</p>
 				<input
 					type='password'
-					className='input'
 					id='Password'
 					placeholder='Password'
 					onChange={(e) => setPassword(e.target.value)}
@@ -149,7 +146,6 @@ const Registration = () => {
 				</p>
 				<input
 					type='password'
-					className='input'
 					id='confirm_pwd'
 					placeholder='Password'
 					onChange={(e) => setMatchPassword(e.target.value)}

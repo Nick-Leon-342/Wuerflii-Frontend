@@ -75,7 +75,6 @@ const Login = () => {
 				<p className='input-header' htmlFor='Username'>Benutzername</p>
 				<input
 					type='text'
-					className='input'
 					id='Username'
 					placeholder='Benutzername'
 					ref={userRef}
@@ -88,7 +87,6 @@ const Login = () => {
 				<p className='input-header' htmlFor='Password'>Passwort</p>
 				<input
 					type='password'
-					className='input'
 					id='Password'
 					placeholder='Password'
 					onChange={(e) => setPwd(e.target.value)}

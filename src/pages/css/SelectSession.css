@@ -60,10 +60,6 @@
     background-color: rgb(230, 230, 230);
 }
 
-.listElement:hover .label {
-    color: black;
-}
-
 .container {
     margin-right: 0px;
     margin-left: 10px;
@@ -78,7 +74,6 @@
 .label {
 	height: 100%;
 	text-align: center;
-    color: black;
 	font-size: 18px;
 }
 

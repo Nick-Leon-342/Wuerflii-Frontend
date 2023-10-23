@@ -8,8 +8,8 @@
 
 
 
-* {
-	color: rgb(100, 100, 100);
+:root {
+	--text-color: rgb(100, 100, 100)
 }
 
 body {
@@ -26,10 +26,28 @@ body {
 	
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
-	fill: rgb(100, 100, 100);
-	stroke: rgb(100, 100, 100);
-	border-color: rgb(100, 100, 100);
+	fill: var(--text-color);
+	stroke: var(--text-color);
+	border-color: var(--text-color);
+	color: var(--text-color);
 }
+
+dialog {color: var(--text-color);}
+h1 {color: var(--text-color);}
+p {color: var(--text-color);}
+span {color: var(--text-color);}
+label {color: var(--text-color);}
+
+/* rect {stroke: var(--text-color);}
+ellipse {fill: var(--text-color);} */
+svg {
+	stroke: var(--text-color);
+	fill: var(--text-color);
+}
+
+
+
+
 
 .App {
 	text-align: center;
@@ -64,52 +82,37 @@ dialog::backdrop {
 	box-shadow: 0px 0px 4px 0px rgb(200, 200, 200);
 	padding: 5px 15px;
 	background-color: rgb(0, 255, 0);
+	color: var(--text-color);
 	outline: none;
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
 
 .button:hover {
-    background-color: rgb(0, 250, 0);
+    background-color: rgb(0, 245, 0);
 }
 
 .button:active {
-    transform: scale(0.9);
+    transform: scale(0.95);
 }
 
+.reglog-link-switch {text-align: end;}
+.reglog-link-switch a {color: rgb(0, 255, 0);}
+.reglog-link-switch a:hover {opacity: .6;}
 
+.link-switch a {color: rgb(0, 255, 0);}
+.link-switch a:hover {opacity: .6;}
 
-.reglog-link-switch {
-	color: rgb(100, 100, 100);
-	text-align: end;
-}
-
-.reglog-link-switch a {
-	color: rgb(150, 255, 150);
-}
-
-.reglog-link-switch a:hover {
-	opacity: .6;
-}
-
-
-
-.link-switch a {
-	color: rgb(0, 255, 0);
-}
-
-.link-switch a:hover {
-	opacity: .6;
-}
 
 
 
 
 /* ____________________Input____________________ */
 
-.input {
+input {
 	border-color: rgb(200, 200, 200);
     background-color: rgb(240, 240, 240);
+	color: var(--text-color);
     border-radius: 5px;
     padding: 5px;
 	width: 400px;
@@ -146,27 +149,11 @@ dialog::backdrop {
     margin: 5px;
 }
 
-.table svg {
-	stroke: rgb(100, 100, 100);
-	color: rgb(100, 100, 100);
-}
-
-.table th, table td {
-    /* border: 2px solid rgb(65, 65, 65); */
+.table td {
     border: 2px solid;
     text-align: center;
     height: 50px;
-}
-
-td rect {
-	stroke: rgb(100, 100, 100);
-}
-
-td ellipse {
-	fill: rgb(100, 100, 100);
-}
-
-td path {
-	stroke: rgb(100, 100, 100);
-	fill: rgb(100, 100, 100);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

@@ -131,7 +131,7 @@ function SelectSession() {
 	return (
 		<>
 			<div className={`trashcan-container`}>
-				<svg className={`${list.length === 0 ? 'notVisible' : (disabled ? 'disabled' : '')}`} onClick={handleDelete} viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" stroke="rgb(0, 0, 0)" strokeWidth="30" pointerEvents="all"/></g></svg>
+				<svg className={`${list.length === 0 ? 'notVisible' : (disabled ? 'disabled' : '')}`} onClick={handleDelete} viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/></g></svg>
 				<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
 					<span/>
 					<span/>

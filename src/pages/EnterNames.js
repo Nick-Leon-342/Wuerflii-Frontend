@@ -68,7 +68,6 @@ function EnterNames() {
 				{players.map((p, index) => (
 					<dt className='enterNamesElement' key={p}>
 						<input
-							className='input'
 							defaultValue={names[index]}
 							onChange={(e) => handleNameChange(index, e.target.value)}
 						/>
