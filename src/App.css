@@ -38,8 +38,6 @@ p {color: var(--text-color);}
 span {color: var(--text-color);}
 label {color: var(--text-color);}
 
-/* rect {stroke: var(--text-color);}
-ellipse {fill: var(--text-color);} */
 svg {
 	stroke: var(--text-color);
 	fill: var(--text-color);

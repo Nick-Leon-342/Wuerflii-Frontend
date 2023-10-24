@@ -226,7 +226,6 @@ function CreateGame() {
 						<br/>
 
 						<p style={{
-							// display: error ? '' : 'none',
 							opacity: error ? '1' : '0',
 							border: '2px solid rgb(255, 0, 0)',
 							borderRadius: '10px',
@@ -262,7 +261,7 @@ function CreateGame() {
 						value={players}
 						onChange={handleInputChange_players}
 						>
-						<option value="" disabled>
+						<option value='' disabled>
 							Spieleranzahl
 						</option>
 						{options_players.map((p) => (
@@ -294,7 +293,7 @@ function CreateGame() {
 						value={columns}
 						onChange={handleInputChange_columns}
 						>
-						<option value="" disabled>
+						<option value='' disabled>
 							Spaltenanzahl
 						</option>
 						{options_columns.map((c) => (

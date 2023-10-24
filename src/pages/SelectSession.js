@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { formatDate, resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { isMobile } from 'react-device-detect'
 
 
 function SelectSession() {
@@ -138,12 +139,36 @@ function SelectSession() {
 
 	const showSettings = () => {
 
-		console.log(session)
+		setColumns(session?.Attributes?.Columns)
 		document.getElementById('modal').showModal()
 
 	}
 
-	const handleSubmit = () => {
+	const handleSave = () => {
+
+		console.log(columns)
+		return 
+
+	}
+
+
+	const [columns, setColumns] = useState('')
+	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
+	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
+
+	const handleColumnChange = (event) => {
+
+		const intValue = event.target.value
+		if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
+		setColumns(intValue)
+
+	}
+
+	const handleNameChange = (p, n) => {
+
+	}
+
+	const handleColorChange = (p, c) => {
 
 	}
 
@@ -158,22 +183,71 @@ function SelectSession() {
 					style={{
 						display: 'flex',
 						flexDirection: 'column',
+						width: '',
 					}}
 				>
-					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+					<div style={{ display: 'flex', justifyContent: 'flex-end', width: '500px' }}>
 						<svg onClick={() => document.getElementById('modal').close()} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
+					
 					<h1>Einstellungen</h1>
 					
-					<form onSubmit={handleSubmit}>
-					
-						
-						<label className='input-header'>Spalten</label>
-						<input defaultValue={session?.Attributes?.Columns}/>
 
-						<button className='button' style={{ width: '100%'}}>Speichern</button>
-					
-					</form>
+					{/* ______________________________ChangeColumns______________________________ */}
+					<div className='input-container'>
+						<label className='input-header'>Spalten</label>
+						{isMobile ? (
+							<select
+								className='input-mobile'
+								defaultValue={session?.Attributes?.Columns}
+								onChange={handleColumnChange}
+								value={columns}
+								>
+								<option value='' disabled>
+									Spaltenanzahl
+								</option>
+								{options_columns.map((c) => (
+									<option key={c} value={c}>{c}</option>
+								))}
+							</select>
+						) : (
+							<>
+								<input 
+									className='input-computer' 
+									list='columns'
+									defaultValue={session?.Attributes?.Columns}
+									onChange={handleColumnChange}
+									value={columns}
+								/>
+								<datalist id='columns'>
+									{options_columns.map((c) => {
+										return <option key={c} value={c} />
+									})}
+								</datalist>
+							</>
+						)}
+					</div>
+
+
+					{/* ______________________________ChangeNames______________________________ */}
+					<dl id='enterNamesList'>
+						{session.List_Players.map((p, index) => (
+							<dt className='enterNamesElement' key={index}>
+								<input
+									defaultValue={p.Name}
+									onChange={(e) => handleNameChange(p, e.target.value)}
+								/>
+								<input
+									className='colorbox'
+									type='color'
+									value={p.Color}
+									onChange={(e) => handleColorChange(p, e.target.value)}
+								/>
+							</dt>
+						))}
+					</dl>
+
+					<button className='button' onClick={handleSave} style={{ width: '100%' }}>Speichern</button>
 
 				</div>
 			</dialog>
