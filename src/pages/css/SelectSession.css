@@ -19,25 +19,13 @@
 	animation-delay: 0.1s;
 }
   
-.loader span:nth-child(1) {
-	animation-delay: 0s;
-}
-  
-.loader span:nth-child(2) {
-	animation-delay: 0.333s;
-}
-  
-.loader span:nth-child(3) {
-	animation-delay: 0.667s;
-}
+.loader span:nth-child(1) {animation-delay: 0s;}
+.loader span:nth-child(2) {animation-delay: 0.333s;}
+.loader span:nth-child(3) {animation-delay: 0.667s;}
 
 @keyframes expandShrink {
-	0%, 100% {
-		transform: scale(1.5);
-	}
-	25%, 75% {
-		transform: scale(0.5);
-	}
+	0%, 100% {transform: scale(1.5);}
+	25%, 75% {transform: scale(0.5);}
 }
   
 
@@ -52,7 +40,7 @@
 .listElement {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    /* padding: 10px; */
     border-radius: 5px;
 }
 
@@ -61,10 +49,12 @@
 }
 
 .container {
-    margin-right: 0px;
+    margin-right: 10px;
     margin-left: 10px;
+	height: 30px;
     display: flex;
     justify-content: space-between;
+	width: 100%;
 }
 
 .date {
@@ -73,12 +63,13 @@
 
 .label {
 	height: 100%;
-	text-align: center;
+	padding-top: 5px;
 	font-size: 18px;
 }
 
 .checkbox-delete {
-	width: 15px;
+	width: 20px;
+	margin-left: 10px;
 }
 
 
@@ -105,7 +96,6 @@
 }
 
 .trashcan-container svg:not(.disabled):hover {
-	margin-left: 10px;
 	height: 25px;
 }
 
@@ -115,7 +105,6 @@
 }
 
 .trashcan-container svg {
-	margin-left: 10px;
 	height: 25px;
 }
 
