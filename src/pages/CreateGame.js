@@ -289,7 +289,7 @@ function CreateGame() {
 				<label className='input-header'>Spalten</label>
 				{isMobile ? (
 					<select
-						className='input-mobile'
+						className='input input-mobile'
 						value={columns}
 						onChange={handleInputChange_columns}
 						>

@@ -186,7 +186,7 @@ function SelectSession() {
 						width: '',
 					}}
 				>
-					<div style={{ display: 'flex', justifyContent: 'flex-end', width: '500px' }}>
+					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
 						<svg onClick={() => document.getElementById('modal').close()} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 					
@@ -194,12 +194,12 @@ function SelectSession() {
 					
 
 					{/* ______________________________ChangeColumns______________________________ */}
-					<div className='input-container'>
+					<div className='input-container' style={{ marginBottom: '20px' }}>
 						<label className='input-header'>Spalten</label>
 						{isMobile ? (
 							<select
 								className='input-mobile'
-								defaultValue={session?.Attributes?.Columns}
+								placeholder={session?.Attributes?.Columns}
 								onChange={handleColumnChange}
 								value={columns}
 								>
@@ -215,7 +215,7 @@ function SelectSession() {
 								<input 
 									className='input-computer' 
 									list='columns'
-									defaultValue={session?.Attributes?.Columns}
+									placeholder={session?.Attributes?.Columns}
 									onChange={handleColumnChange}
 									value={columns}
 								/>
@@ -231,14 +231,14 @@ function SelectSession() {
 
 					{/* ______________________________ChangeNames______________________________ */}
 					<dl id='enterNamesList'>
-						{session.List_Players.map((p, index) => (
+						{session?.List_Players?.map((p, index) => (
 							<dt className='enterNamesElement' key={index}>
 								<input
 									defaultValue={p.Name}
 									onChange={(e) => handleNameChange(p, e.target.value)}
 								/>
 								<input
-									className='colorbox'
+									className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
 									type='color'
 									value={p.Color}
 									onChange={(e) => handleColorChange(p, e.target.value)}

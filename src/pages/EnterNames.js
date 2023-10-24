@@ -6,6 +6,7 @@ import './css/EnterNames.css'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { createAttributes, createPlayer, resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
+import { isMobile } from 'react-device-detect'
 
 
 function EnterNames() {
@@ -72,7 +73,7 @@ function EnterNames() {
 							onChange={(e) => handleNameChange(index, e.target.value)}
 						/>
 						<input
-							className='colorbox'
+							className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
 							type='color'
 							value={colors[index]}
 							onChange={(e) => handleColorChange(index, e.target.value)}

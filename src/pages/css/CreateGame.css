@@ -29,6 +29,9 @@
 .input-mobile {
 	width: 150px;
 	margin-left: 20px;
+	border-radius: 5px;
+	border: 1px solid var(--text-color);
+	color: var(--text-color);
 }
 
 

@@ -108,7 +108,7 @@ dialog::backdrop {
 /* ____________________Input____________________ */
 
 input {
-	border-color: rgb(200, 200, 200);
+	border-color: var(--text-color);
     background-color: rgb(240, 240, 240);
 	color: var(--text-color);
     border-radius: 5px;

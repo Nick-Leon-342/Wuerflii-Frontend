@@ -42,7 +42,7 @@ function Games() {
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td>Nur Einser<br/>zählen</td>
+				<td><label>Nur Einser<br/>zählen</label></td>
 			</>
 		},
 		{ td:
@@ -52,7 +52,7 @@ function Games() {
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td>Nur Zweier<br/>zählen</td>
+				<td><label>Nur Zweier<br/>zählen</label></td>
 			</>
 		},
 		{ td:
@@ -62,7 +62,7 @@ function Games() {
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td>Nur Dreier<br/>zählen</td>
+				<td><label>Nur Dreier<br/>zählen</label></td>
 			</>
 		},
 		{ td:
@@ -72,7 +72,7 @@ function Games() {
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td>Nur Vierer<br/>zählen</td>
+				<td><label>Nur Vierer<br/>zählen</label></td>
 			</>
 		},
 		{ td:
@@ -82,7 +82,7 @@ function Games() {
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td>Nur Fünfer<br/>zählen</td>
+				<td><label>Nur Fünfer<br/>zählen</label></td>
 			</>
 		},
 		{ td:
@@ -92,7 +92,7 @@ function Games() {
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='860' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='860' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td>Nur Sechser<br/>zählen</td>
+				<td><label>Nur Sechser<br/>zählen</label></td>
 			</>
 		},
 		{ td:
@@ -122,44 +122,44 @@ function Games() {
 	const bottomTable_rows = [
 		{ td:
 			<>
-				<td>Dreiferpasch</td>
-				<td>alle Augen<br/>zählen</td>
+				<td><label>Dreiferpasch</label></td>
+				<td><label>alle Augen<br/>zählen</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>Viererpasch</td>
-				<td>alle Augen<br/>zählen</td>
+				<td><label>Viererpasch</label></td>
+				<td><label>alle Augen<br/>zählen</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>Full-House</td>
-				<td>25<br/>Punkte</td>
+				<td><label>Full-House</label></td>
+				<td><label>25<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>Kleine Straße</td>
-				<td>30<br/>Punkte</td>
+				<td><label>Kleine Straße</label></td>
+				<td><label>30<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>Große Straße</td>
-				<td>40<br/>Punkte</td>
+				<td><label>Große Straße</label></td>
+				<td><label>40<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>Kniffel</td>
-				<td>50<br/>Punkte</td>
+				<td><label>Kniffel</label></td>
+				<td><label>50<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>Chance</td>
-				<td>alle Augen<br/>zählen</td>
+				<td><label>Chance</label></td>
+				<td><label>alle Augen<br/>zählen</label></td>
 			</>
 		},
 		{ td:
