@@ -143,6 +143,10 @@ function SelectSession() {
 
 	}
 
+	const handleSubmit = () => {
+
+	}
+
 
 
 
@@ -150,10 +154,28 @@ function SelectSession() {
 	return (
 		<>
 			<dialog id='modal' className='modal'>
-				<label className='input-header'>Spalten</label>
-				<input defaultValue={session?.Attributes?.Columns}/>
-				<br/>
-				<button onClick={() => document.getElementById('modal').close()}>Close</button>
+				<div 
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+					}}
+				>
+					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+						<svg onClick={() => document.getElementById('modal').close()} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+					</div>
+					<h1>Einstellungen</h1>
+					
+					<form onSubmit={handleSubmit}>
+					
+						
+						<label className='input-header'>Spalten</label>
+						<input defaultValue={session?.Attributes?.Columns}/>
+
+						<button className='button' style={{ width: '100%'}}>Speichern</button>
+					
+					</form>
+
+				</div>
 			</dialog>
 
 			<div className={`trashcan-container`}>

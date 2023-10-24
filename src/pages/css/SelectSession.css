@@ -40,7 +40,6 @@
 .listElement {
     display: flex;
     justify-content: space-between;
-    /* padding: 10px; */
     border-radius: 5px;
 }
 
