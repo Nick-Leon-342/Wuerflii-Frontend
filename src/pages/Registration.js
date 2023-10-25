@@ -3,7 +3,7 @@
 import '../App.css'
 import './css/Registration.css'
 
-import { useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from '../api/axios'
@@ -11,51 +11,47 @@ import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
 import { resizeEvent, NAME_REGEX, PASSWORD_REGEX } from './utils'
 
+import DialogName from '../dialog/DialogName'
+import DialogPassword from '../dialog/DialogPassword'
+import DialogPasswordMatch from '../dialog/DialogPasswordMatch'
+
+
+
+
 const REGISTER_URL = '/auth/registration'
 
 const Registration = () => {
 
-	const nameRef = useRef()
-	const errRef = useRef()
 	const navigate = useNavigate()
 	const { setAuth } = useAuth()
 
 	const [Name, setName] = useState('')
-	const [validName, setValidName] = useState(false)
-	const [nameFocus, setNameFocus] = useState(false)
+	const [infoName, setInfoName] = useState(false)
 
 	const [Password, setPassword] = useState('')
-	const [validPassword, setValidPassword] = useState(false)
-	const [passwordFocus, setPasswordFocus] = useState(false)
+	const [infoPassword, setInfoPassword] = useState(false)
 
 	const [matchPassword, setMatchPassword] = useState('')
-	const [validMatch, setValidMatch] = useState(false)
-	const [matchFocus, setMatchFocus] = useState(false)
+	const [infoPasswordMatch, setInfoPasswordMatch] = useState(false)
 
-	const [errMsg, setErrMsg] = useState('')
+	const [error, setError] = useState('')
 
-	useEffect(() => {setValidName(NAME_REGEX.test(Name))}, [Name])
-	useEffect(() => {
-		resizeEvent()
-		nameRef.current.focus()
-	}, [])
+	useEffect(() => {resizeEvent()}, [])
 
-	useEffect(() => {
-		setValidPassword(PASSWORD_REGEX.test(Password))
-		setValidMatch(Password === matchPassword)
-	}, [Password, matchPassword])
 
-	useEffect(() => {setErrMsg('')}, [Name, Password, matchPassword])
+
+
 
 	const handleSubmit = async (e) => {
+		
 		e.preventDefault()
 
-		const v1 = NAME_REGEX.test(Name)
-		const v2 = PASSWORD_REGEX.test(Password)
-		if (!v1 || !v2) {
-			setErrMsg('Invalid Entry')
+		if(!Name || !Password || !matchPassword) return
+		if (!NAME_REGEX.test(Name) || !PASSWORD_REGEX.test(Password)) {
+			setError('Invalid Entry')
 			return
 		}
+
 		try {
 
 			const response = await axios.post(REGISTER_URL, 
@@ -73,53 +69,78 @@ const Registration = () => {
             navigate('/CreateGame', { replace: true })
 
 		} catch (err) {
-			console.log(err)
 			if (!err?.response) {
-				setErrMsg('No Server Response')
+				setError('Der Server antwortet nicht!')
 			} else if (err.response?.status === 409) {
-				setErrMsg('Username Taken')
+				setError('Der Benutzername ist vergeben!')
 			} else {
-				setErrMsg('Registration Failed')
+				setError('Die Registration schlug fehl!')
 			}
-			errRef.current.focus()
 		}
+
 	}
+
+
+
+
 
 	return (
 		<>
-			<p ref={errRef} className={errMsg ? 'errmsg' : 'offscreen'} aria-live='assertive'>{errMsg}</p>
-			<h1>Registration</h1>
+			<h1>Registrierung</h1>
 
 			<form onSubmit={handleSubmit}>
 
-				<p className='input-header' htmlFor='Name'>
-					Benutzername
-					<FontAwesomeIcon icon={faCheck} className={validName ? 'valid' : 'hide'} />
-					<FontAwesomeIcon icon={faTimes} className={validName || !Name ? 'hide' : 'invalid'} />
+				<p htmlFor='Username' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
+					<span style={{ height: '100%', marginLeft: '7px', marginRight: '5px' }}>Benutzernamen</span>
+					<svg 
+						height='20' 
+						viewBox='0 -960 960 960'
+						style={{
+							fill: 'rgb(0, 255, 0',
+							display: Name && NAME_REGEX.test(Name) ? '' : 'none',
+						}}
+					><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
+					<svg 
+						height='20' 
+						viewBox='0 -960 960 960'
+						style={{
+							fill: 'rgb(255, 0, 0)',
+							display: Name && !NAME_REGEX.test(Name) ? '' : 'none',
+						}}
+					><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 				</p>
 				<input
+					id='Username'
 					type='text'
 					placeholder='Benutzername'
-					ref={nameRef}
 					autoComplete='off'
 					onChange={(e) => setName(e.target.value)}
 					value={Name}
 					required
-					aria-invalid={validName ? 'false' : 'true'}
-					aria-describedby='uidnote'
-					onFocus={() => setNameFocus(true)}
-					onBlur={() => setNameFocus(false)}
+					onFocus={() => setInfoName(true)}
+					onBlur={() => setInfoName(false)}
 				/>
-				<p id='uidnote' className={nameFocus && Name && !validName ? 'instructions' : 'offscreen'}>
-					<FontAwesomeIcon icon={faInfoCircle} />
-					
-				</p>
+				{infoName && Name && !NAME_REGEX.test(Name) && <DialogName/>}
 
 
-				<p className='input-header' htmlFor='Password'>
-					Passwort
-					<FontAwesomeIcon icon={faCheck} className={validPassword ? 'valid' : 'hide'} />
-					<FontAwesomeIcon icon={faTimes} className={validPassword || !Password ? 'hide' : 'invalid'} />
+				<p htmlFor='Password' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
+					<span style={{ height: '100%', marginLeft: '7px', marginRight: '5px' }}>Passwort</span>
+					<svg 
+						height='20' 
+						viewBox='0 -960 960 960'
+						style={{
+							fill: 'rgb(0, 255, 0',
+							display: Password && PASSWORD_REGEX.test(Password) ? '' : 'none',
+						}}
+					><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
+					<svg 
+						height='20' 
+						viewBox='0 -960 960 960'
+						style={{
+							fill: 'rgb(255, 0, 0)',
+							display: Password && !PASSWORD_REGEX.test(Password) ? '' : 'none',
+						}}
+					><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 				</p>
 				<input
 					type='password'
@@ -128,49 +149,69 @@ const Registration = () => {
 					onChange={(e) => setPassword(e.target.value)}
 					value={Password}
 					required
-					aria-invalid={validPassword ? 'false' : 'true'}
-					aria-describedby='pwdnote'
-					onFocus={() => setPasswordFocus(true)}
-					onBlur={() => setPasswordFocus(false)}
+					onFocus={() => setInfoPassword(true)}
+					onBlur={() => setInfoPassword(false)}
 				/>
-				<p id='pwdnote' className={passwordFocus && !validPassword ? 'instructions' : 'offscreen'}>
-					<FontAwesomeIcon icon={faInfoCircle} />
-					
-				</p>
+				{infoPassword && Password && !PASSWORD_REGEX.test(Password) && <DialogPassword/>}
 
 
-				<p className='input-header' htmlFor='confirm_pwd'>
-					Passwort bestätigen
-					<FontAwesomeIcon icon={faCheck} className={validMatch && matchPassword ? 'valid' : 'hide'} />
-					<FontAwesomeIcon icon={faTimes} className={validMatch || !matchPassword ? 'hide' : 'invalid'} />
+				<p htmlFor='matchPassword' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
+					<span style={{ height: '100%', marginLeft: '7px', marginRight: '5px' }}>Passwort bestätigen</span>
+					<svg 
+						height='20' 
+						viewBox='0 -960 960 960'
+						style={{
+							fill: 'rgb(0, 255, 0',
+							display: matchPassword && Password === matchPassword ? '' : 'none',
+						}}
+					><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
+					<svg 
+						height='20' 
+						viewBox='0 -960 960 960'
+						style={{
+							fill: 'rgb(255, 0, 0)',
+							display: matchPassword && Password !== matchPassword ? '' : 'none',
+						}}
+					><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 				</p>
 				<input
 					type='password'
-					id='confirm_pwd'
+					id='matchPassword'
 					placeholder='Password'
 					onChange={(e) => setMatchPassword(e.target.value)}
 					value={matchPassword}
 					required
-					aria-invalid={validMatch ? 'false' : 'true'}
-					aria-describedby='confirmnote'
-					onFocus={() => setMatchFocus(true)}
-					onBlur={() => setMatchFocus(false)}
+					onFocus={() => setInfoPasswordMatch(true)}
+					onBlur={() => setInfoPasswordMatch(false)}
 				/>
-				<p id='confirmnote' className={matchFocus && !validMatch ? 'instructions' : 'offscreen'}>
-					<FontAwesomeIcon icon={faInfoCircle} />
-					Die Passwörter müssen gleich sein.
-				</p>
+				{infoPasswordMatch && !PASSWORD_REGEX.test(matchPassword) && Password !== matchPassword && <DialogPasswordMatch/>}
+
 				<br/>
 				<br/>
 
-				<button className='button' style={{ width: '100%'}} disabled={!validName || !validPassword || !validMatch ? true : false}>Registrieren</button>
+				<p style={{
+					display: error ? '' : 'none',
+					border: '2px solid rgb(255, 0, 0)',
+					borderRadius: '10px',
+					color: 'rgb(255, 0, 0)',
+					fill: 'rgb(255, 0, 0)',
+					padding: '20px',
+				}}>
+					<span style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+						<svg height="20" viewBox="0 -960 960 960"><path fill='rgb(255, 0, 0)' d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+						<span style={{ height: '100%', fontSize: '19px', margin: 'auto', marginLeft: '5px', color: 'rgb(255, 0, 0)' }}>Fehler</span>
+					</span>
+					<span style={{ display: 'flex' }}>{error}</span>
+				</p>
+
+				<button className='button' style={{ height: '40px', width: '100%'}}>Registrieren</button>
 
 			</form>
 			
 			<p className='reglog-link-switch'>
 				Bereits registriert?{' '}
 				<span className='line'>
-					<Link to='/'>Einloggen</Link>
+					<Link to='/'>Anmelden</Link>
 				</span>
 			</p>
 		</>

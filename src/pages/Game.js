@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_attributes, sessionStorage_players, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage } from './utils'
+import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage, sessionStorage_players } from './utils'
 
 
 
@@ -20,10 +20,9 @@ function Games() {
 	const tableRef = useRef(null)
 	const [tableWidth, setTableWidth] = useState(0);
 
-	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
-	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
+	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
 
-	let gnadenwurf = players?.map(() => false)
+	let gnadenwurf = session.List_Players?.map(() => false)
   
 	const handleGnadenwurfChange = (index, g) => {
 		gnadenwurf[index] = g
@@ -197,26 +196,26 @@ function Games() {
 	const PlayerTable = () => {
 
 		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf)) 
-		gnadenwurf = g ? g : players?.map(() => false)
+		gnadenwurf = g ? g : session.List_Players?.map(() => false)
 
 		return (
 			<table id={id_playerTable} className='table playerTable' style={{ width: tableWidth, maxWidth: tableWidth }}>
 				<tbody>
 					<tr>
 						<td>Spieler</td>
-						{players?.map((p, i) => (
+						{session.List_Players?.map((p, i) => (
 							<td key={i}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
 						<td>Spieler gesamt</td>
-						{players?.map((p, i) => (
+						{session.List_Players?.map((p, i) => (
 							<td key={i}><label>0</label></td>
 						))}
 					</tr>
 					<tr>
 						<td>Gnadenwurf</td>
-						{players?.map((p, i) => (
+						{session.List_Players?.map((p, i) => (
 							<td key={i} ><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[i]} onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} /></td>
 						))}
 					</tr>
@@ -228,8 +227,8 @@ function Games() {
 
 	const Table = (rows, tableID) => {
 
-		const columns = Array.from({ length: attributes?.Columns }, (_, index) => index)
-		if(columnsSum.length === 0 && tableID === id_upperTable) for(let i = 0; players?.length * attributes?.Columns > i; i++) {columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
+		const columns = Array.from({ length: session.Attributes?.Columns }, (_, index) => index)
+		if(columnsSum.length === 0 && tableID === id_upperTable) for(let i = 0; session.List_Players?.length * session.Attributes?.Columns > i; i++) {columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
 
 		return (
 			<table id={tableID} className='table' ref={tableRef}>
@@ -238,7 +237,7 @@ function Games() {
 						return (
 							<tr key={currentRowIndex} className='row'>
 								{r.td}
-								{players?.map((player, currentPlayerIndex) => {
+								{session.List_Players?.map((player, currentPlayerIndex) => {
 									return (
 										columns.map((currentColumnIndex) => {
 
@@ -246,11 +245,11 @@ function Games() {
 												className: 'kniffelInput',
 												inputMode: 'numeric',
 												tableid: tableID,
-												column: currentColumnIndex + (currentPlayerIndex * attributes.Columns),
+												column: currentColumnIndex + (currentPlayerIndex * session.Attributes.Columns),
 												row: currentRowIndex,
 												onBlur: onblurEvent,
 												onInput: inputEvent,
-												defaultValue: sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + currentRowIndex + '.' + (currentColumnIndex  + (currentPlayerIndex * attributes.Columns))),
+												defaultValue: sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + currentRowIndex + '.' + (currentColumnIndex  + (currentPlayerIndex * session.Attributes.Columns))),
 												style: { backgroundColor: player.Color }
 											}
 
@@ -284,10 +283,10 @@ function Games() {
 	useEffect(() => {
 		
 		const elements = document.getElementsByClassName('kniffelInput')
-		if(!players || !attributes) return navigate('/creategame', { replace: true })
+		if(!session) return navigate('/creategame', { replace: true })
 		resizeEvent()
 
-		for(let i = 0; players.length * attributes.Columns > i; i++) {
+		for(let i = 0; session.List_Players.length * session.Attributes.Columns > i; i++) {
 			calculateUpperColumn(i)
 			calculateBottomColumn(i)
 		}
@@ -464,12 +463,12 @@ function Games() {
 	
 		const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
 		
-		for(let i = 0; players.length > i; i++) {
+		for(let i = 0; session.List_Players.length > i; i++) {
 	
 			let sum = 0
-			for(let c = 0; attributes.Columns > c; c++) {
+			for(let c = 0; session.Attributes.Columns > c; c++) {
 	
-				const column = columnsSum[c + i * attributes.Columns]
+				const column = columnsSum[c + i * session.Attributes.Columns]
 				if(column.All !== 0) {
 					sum += column.All
 				} else {
@@ -512,7 +511,7 @@ function Games() {
 			}
 		}
 		
-		if(players.length < 2) navigate('/creategame', { replace: true })
+		if(session.List_Players.length < 2) navigate('/creategame', { replace: true })
 
 
 		//____________________Players____________________
@@ -522,7 +521,7 @@ function Games() {
 	
 		let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
 	
-		for(let i = 1; players.length > i; i++) {
+		for(let i = 1; session.List_Players.length > i; i++) {
 			if(playerScores[i] != null) {
 				if(playerScores[i] > playerScores[winnerIndex[0]]) {
 					winnerIndex.length = 0
@@ -533,19 +532,20 @@ function Games() {
 			}
 		}
 	
-		for(const i of winnerIndex) {players[i].Wins++}
+		for(const i of winnerIndex) {session.List_Players[i].Wins++}
 	
 	
 		//____________________Attributes____________________
-		attributes.LastPlayed = new Date()
+		session.Attributes.LastPlayed = new Date()
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(players, playerScores)
+		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes)
 	
 		const json = JSON.stringify({ 
-			Attributes: JSON.stringify(attributes),
-			List_Players: JSON.stringify(players),
+			id: session.id,
+			Attributes: JSON.stringify(session.Attributes),
+			List_Players: JSON.stringify(session.List_Players),
 			FinalScores: finalScores
 		})
 
@@ -559,8 +559,8 @@ function Games() {
 	
 	
 		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
-		sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
-		sessionStorage.removeItem(sessionStorage_attributes)
+		sessionStorage.setItem(sessionStorage_players, JSON.stringify(session.List_Players))
+		sessionStorage.removeItem(sessionStorage_session)
 		
 		clearSessionStorageTables()
 		navigate('/endscreen', { replace: true })

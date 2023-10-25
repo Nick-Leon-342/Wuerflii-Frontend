@@ -5,7 +5,7 @@ import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { formatDate, resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
+import { formatDate, resizeEvent, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 
@@ -20,6 +20,7 @@ function SelectSession() {
 	const [trashcanDisabled, setTrashcanDisabled] = useState(true)
 	const [settingsDisabled, setSettingsDisabled] = useState(true)
 	const [session, setSession] = useState('')
+	const [list_session, setList_Session] = useState([])
 	const [loaderVisible, setLoaderVisible] = useState(false)
 	
 	const message = 'Es gibt noch keine Partie!'
@@ -40,6 +41,7 @@ function SelectSession() {
 
 				for(const e of l) {
 					tmp.push({ 
+						id: e.id,
 						Attributes: JSON.parse(e.Attributes), 
 						List_Players: JSON.parse(e.List_Players) 
 					})
@@ -47,6 +49,9 @@ function SelectSession() {
 				
 				tmp.sort(sortByTimestampDesc)
 				setList(tmp)
+
+			}).catch((err) => {
+				console.log(err)
 			})
 
 			setLoaderVisible(false)
@@ -74,14 +79,15 @@ function SelectSession() {
 		if((window.confirm('Bist du sicher, dass du diese Session(s) löschen möchtest?'))) {
 			for(let i = 0; list_checkbox.length > i; i++) {
 				if(list_checkbox[i]) {
+					console.log(list[i])
 					await axiosPrivate.delete('/selectsession',
 						{
 							headers: { 'Content-Type': 'application/json' },
 							withCredentials: true,
-							params: list[i].Attributes
+							params: { id: list[i].id }
 						}
-					).catch((e) => {
-						console.log(e)
+					).catch((err) => {
+						console.log(err)
 					})
 
 
@@ -102,8 +108,7 @@ function SelectSession() {
 		
 		const i = element.target.closest('dt').getAttribute('index')
 		
-		sessionStorage.setItem(sessionStorage_attributes, JSON.stringify(list[i].Attributes))
-		sessionStorage.setItem(sessionStorage_players, JSON.stringify(list[i].List_Players))
+		sessionStorage.setItem(sessionStorage_session, JSON.stringify(list[i]))
 
 		navigate('/sessionpreview', { replace: false })
 
@@ -139,15 +144,45 @@ function SelectSession() {
 
 	const showSettings = () => {
 
-		setColumns(session?.Attributes?.Columns)
+		const tmp = []
+
+		for(let i = 0; session.List_Players.length > i; i++) {
+			tmp.push({ Name: session.List_Players[i].Name, Color: session.List_Players[i].Color })
+		}
+
+		setList_Session(tmp)
 		document.getElementById('modal').showModal()
 
 	}
 
-	const handleSave = () => {
+	const handleClose = () => {
+		
+		setList_Session([])
+		document.getElementById('modal').close()
+	}
 
-		console.log(columns)
-		return 
+	const handleSave = async () => {
+
+		if(columns !== '') session.Attributes.Columns = columns
+		for(let i = 0; session.List_Players.length > i; i++) {
+			session.List_Players[i].Name = list_session[i].Name
+			session.List_Players[i].Color = list_session[i].Color
+		}
+
+		await axiosPrivate.post('/selectsession', 
+			JSON.stringify(session),
+			{
+                   headers: { 'Content-Type': 'application/json' },
+                   withCredentials: true
+               }
+		).then((res) => {
+			if(res.status === 204) {
+				handleClose()
+			}
+		}).catch((err) => {
+			return console.log(err)
+		})
+		
 
 	}
 
@@ -161,14 +196,6 @@ function SelectSession() {
 		const intValue = event.target.value
 		if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
 		setColumns(intValue)
-
-	}
-
-	const handleNameChange = (p, n) => {
-
-	}
-
-	const handleColorChange = (p, c) => {
 
 	}
 
@@ -187,10 +214,10 @@ function SelectSession() {
 					}}
 				>
 					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={() => document.getElementById('modal').close()} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+						<svg onClick={handleClose} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 					
-					<h1>Einstellungen</h1>
+					<h1>Bearbeiten</h1>
 					
 
 					{/* ______________________________ChangeColumns______________________________ */}
@@ -199,7 +226,6 @@ function SelectSession() {
 						{isMobile ? (
 							<select
 								className='input-mobile'
-								placeholder={session?.Attributes?.Columns}
 								onChange={handleColumnChange}
 								value={columns}
 								>
@@ -231,17 +257,17 @@ function SelectSession() {
 
 					{/* ______________________________ChangeNames______________________________ */}
 					<dl id='enterNamesList'>
-						{session?.List_Players?.map((p, index) => (
+						{list_session.map((p, index) => (
 							<dt className='enterNamesElement' key={index}>
 								<input
 									defaultValue={p.Name}
-									onChange={(e) => handleNameChange(p, e.target.value)}
+									onChange={(e) => p.Name = e.target.value}
 								/>
 								<input
 									className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
 									type='color'
-									value={p.Color}
-									onChange={(e) => handleColorChange(p, e.target.value)}
+									defaultValue={p.Color}
+									onChange={(e) => p.Color = e.target.value}
 								/>
 							</dt>
 						))}

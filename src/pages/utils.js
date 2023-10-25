@@ -5,31 +5,33 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{
 
 //____________________IDs____________________
 
-export const id_upperTable                         = 'upperTable'
-export const id_bottomTable                        = 'bottomTable'
-export const id_playerTable                        = 'playerTable'
+export const id_upperTable							= 'upperTable'
+export const id_bottomTable							= 'bottomTable'
+export const id_playerTable							= 'playerTable'
 
 
 //____________________Substrings____________________
 
-const substring_players                     = 'players'
-const substring_attributes                  = 'attributes'
+const substring_session								= 'session'
+const substring_players								= 'players'
+const substring_attributes							= 'attributes'
 
-const substring_gnadenwurf                  = 'gnadenwurf'
-const substring_winner                      = 'winner'
+const substring_gnadenwurf							= 'gnadenwurf'
+const substring_winner								= 'winner'
 
 
 //____________________SessionStorage____________________
 
-const substring_sessionStorage                     = 'kniffel_sessionStorage_'
-export const sessionStorage_players                = substring_sessionStorage + substring_players
-export const sessionStorage_attributes             = substring_sessionStorage + substring_attributes
+const substring_sessionStorage						= 'kniffel_sessionStorage_'
+export const sessionStorage_session					= substring_sessionStorage + substring_session
+export const sessionStorage_players					= substring_sessionStorage + substring_players
+export const sessionStorage_attributes				= substring_sessionStorage + substring_attributes
 
-export const sessionStorage_gnadenwurf             = substring_sessionStorage + substring_gnadenwurf
-export const sessionStorage_winner                 = substring_sessionStorage + substring_winner
+export const sessionStorage_gnadenwurf				= substring_sessionStorage + substring_gnadenwurf
+export const sessionStorage_winner					= substring_sessionStorage + substring_winner
 
-export const sessionStorage_upperTable_substring   = substring_sessionStorage + id_upperTable + '_'
-export const sessionStorage_bottomTable_substring  = substring_sessionStorage + id_bottomTable + '_'
+export const sessionStorage_upperTable_substring	= substring_sessionStorage + id_upperTable + '_'
+export const sessionStorage_bottomTable_substring	= substring_sessionStorage + id_bottomTable + '_'
 
 
 
@@ -84,14 +86,14 @@ export const createAttributes = (columns) => {
         Columns: columns,
         LastPlayed: new Date(),
         CreatedDate: new Date(),
-        SessionName: ''
     }
 }
 
-export const createFinalScoreElement = (players, scoreList) => {
+export const createFinalScoreElement = (players, scoreList, attributes) => {
 
     const finalScore = {
-        Played: new Date()
+        Played: new Date(),
+		Columns: attributes.Columns,
     }
 
     for(let i = 0; i < players.length; i++) {

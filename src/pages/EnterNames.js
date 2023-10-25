@@ -5,7 +5,7 @@ import './css/EnterNames.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { createAttributes, createPlayer, resizeEvent, sessionStorage_attributes, sessionStorage_players } from './utils'
+import { createAttributes, createPlayer, resizeEvent, sessionStorage_players, sessionStorage_attributes, sessionStorage_session } from './utils'
 import { isMobile } from 'react-device-detect'
 
 
@@ -51,8 +51,9 @@ function EnterNames() {
 			players.push(createPlayer(names[i], `Player_${i}`, colors[i]))
 		}
 
-		sessionStorage.setItem(sessionStorage_attributes, JSON.stringify(attributes))
-		sessionStorage.setItem(sessionStorage_players, JSON.stringify(players))
+		sessionStorage.setItem(sessionStorage_session, JSON.stringify({ Attributes: attributes, List_Players: players}))
+		sessionStorage.removeItem(sessionStorage_players)
+		sessionStorage.removeItem(sessionStorage_attributes)
 
 		navigate('/game', { replace: true })
 

@@ -5,7 +5,7 @@ import './css/SessionPreview.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { clearSessionStorage, resizeEvent, sessionStorage_attributes, sessionStorage_players, formatDate } from './utils'
+import { clearSessionStorage, resizeEvent, sessionStorage_session, formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -13,8 +13,7 @@ function SessionPreview() {
 	
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
-	const attributes = JSON.parse(sessionStorage.getItem(sessionStorage_attributes))
+	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
 	const [finalScores, setFinalScores] = useState()
 
 	
@@ -26,11 +25,19 @@ function SessionPreview() {
 		axiosPrivate.get('/sessionpreview',
 			{
 				headers: { 'Content-Type': 'application/json' },
-				params: { SessionName: attributes.SessionName },
+				params: { id: session.id },
 				withCredentials: true
 			}
 		).then((res) => {
 			setFinalScores(JSON.parse(res.data))
+		}).catch((err) => {
+			const status = err.response.status
+			if(status === 404) {
+				window.alert('Die Partie wurde nicht gefunden!')
+				navigate('/selectsession', { replace: true })
+			} else {
+				window.alert('Unknown error:', err)
+			}
 		})
 
 		resizeEvent()
@@ -44,11 +51,9 @@ function SessionPreview() {
 	
 	}
 
-	const next = () => {navigate('/game', { replace: true })}
-
 	const firstColumnWidth = '150px'
 	const firstColumnStyle = { width: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
-	const columnWidth = players.length > 8 ? '75px' : (players.length > 4 ? '125px' : '200px')
+	const columnWidth = session.List_Players.length > 8 ? '75px' : (session.List_Players.length > 4 ? '125px' : '200px')
 	const style = { width: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 
@@ -60,13 +65,13 @@ function SessionPreview() {
 				<tbody>
 					<tr>
 						<td style={firstColumnStyle}>Spieler</td>
-						{players.map((p, i) => (
+						{session.List_Players.map((p, i) => (
 							<td key={i} style={style}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
 						<td style={firstColumnStyle}>Gewonnen</td>
-						{players.map((p, i) => (
+						{session.List_Players.map((p, i) => (
 							<td key={i} style={style}>{p.Wins}</td>
 						))}
 					</tr>
@@ -78,7 +83,7 @@ function SessionPreview() {
 					{finalScores && finalScores.map((fs, i) => (
 						<tr key={i}>
 							<td style={firstColumnStyle}>{formatDate(fs.Played)}</td>
-							{players.map((p, j) => (
+							{session.List_Players.map((p, j) => (
 								<td key={`${i}.${j}`} style={style}>{fs[p.Alias]}</td>
 							))}
 						</tr>
@@ -86,7 +91,7 @@ function SessionPreview() {
 				</tbody>
 			</table>
 				
-			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={next}>Los geht's!</button>
+			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={() => navigate('/game', { replace: true })}>Los geht's!</button>
 			<div style={{ display: 'flex' }}>
 				<p className='link-switch'>
 					<Link to='/selectsession' onClick={back}>Zurück</Link>
