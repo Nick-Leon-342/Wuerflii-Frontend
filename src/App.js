@@ -30,7 +30,7 @@ function App() {
 	}, [])
 
 	return (
-		<div style={{ display: 'flex', alignItems: 'center' }}>
+		<div style={{ display: 'flex', alignItems: 'center', padding: '150px' }}>
 			<div className="App" id='App'>
 				<Router>
 					<Routes>

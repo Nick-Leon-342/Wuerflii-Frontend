@@ -293,7 +293,7 @@ function SelectSession() {
 				) : (
 					list.map((s, i) => (
 						<dt className='listElement' index={i} key={i}>
-							<input className='checkbox-delete' type='checkbox' onChange={(e) => handleCheckbox(i, e.target.checked)} />
+							<input className='checkbox-delete' style={isMobile ? { marginTop: '7px' } : {}} type='checkbox' onChange={(e) => handleCheckbox(i, e.target.checked)} />
 
 							<div className='container' onClick={handleClick}>
 								<label className='label'>
