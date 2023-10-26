@@ -414,9 +414,9 @@ function Games() {
 
 			} else {
 				
+				window.alert(`${value} ist nicht zulässig!\nZulässig sind: ${r}`)
 				e.value = ''
 				value = ''
-				window.alert(`${value} ist nicht zulässig!\nZulässig sind: ${r}`)
 
 			}
 
