@@ -126,6 +126,8 @@ export const formatDate = (date) => {
 
 export const resizeEvent = () => {
 
+return
+
     const a = document.getElementById('App')
     const body = document.body
 

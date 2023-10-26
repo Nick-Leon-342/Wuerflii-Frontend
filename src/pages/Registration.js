@@ -1,7 +1,6 @@
 
 
 import '../App.css'
-import './css/Registration.css'
 
 import { useState, useEffect } from 'react'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
