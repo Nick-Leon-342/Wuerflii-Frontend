@@ -63,20 +63,12 @@
 	height: 100%;
 	padding-top: 5px;
 	font-size: 18px;
-	text-wrap: nowrap;
+	width: max-content;
 }
 
 .checkbox-delete {
 	width: 20px;
 	margin-left: 10px;
-}
-
-
-
-
-
-.message {
-    font-size: 25px;
 }
 
 

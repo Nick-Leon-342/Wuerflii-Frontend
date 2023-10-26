@@ -14,6 +14,7 @@ function SessionPreview() {
 	const axiosPrivate = useAxiosPrivate()
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
 	const [finalScores, setFinalScores] = useState()
+	const [loaderVisible, setLoaderVisible] = useState(false)
 
 	
 
@@ -23,24 +24,33 @@ function SessionPreview() {
 		
 		if(!session || !session.List_Players) return navigate('/creategame', { replace: true })
 
-		axiosPrivate.get('/sessionpreview',
-			{
-				headers: { 'Content-Type': 'application/json' },
-				params: { id: session.id },
-				withCredentials: true
-			}
-		).then((res) => {
-			setFinalScores(JSON.parse(res.data))
-		}).catch((err) => {
-			const status = err.response.status
-			if(status === 404) {
-				window.alert('Die Partie wurde nicht gefunden!')
-				navigate('/selectsession', { replace: true })
-			} else {
-				window.alert('Unknown error:', err)
-			}
-		})
+		async function request() {
 
+			setLoaderVisible(true)
+
+			await axiosPrivate.get('/sessionpreview',
+				{
+					headers: { 'Content-Type': 'application/json' },
+					params: { id: session.id },
+					withCredentials: true
+				}
+			).then((res) => {
+				setFinalScores(JSON.parse(res.data))
+			}).catch((err) => {
+				const status = err.response.status
+				if(status === 404) {
+					window.alert('Die Partie wurde nicht gefunden!')
+					navigate('/selectsession', { replace: true })
+				} else {
+					window.alert('Unknown error:', err)
+				}
+			})
+
+			setLoaderVisible(false)
+
+		}
+
+		request()
 		resizeEvent()
 
 	}, [])
@@ -91,6 +101,12 @@ function SessionPreview() {
 					))}
 				</tbody>
 			</table>
+			
+			<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
+				<span/>
+				<span/>
+				<span/>
+			</div>
 				
 			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={() => navigate('/game', { replace: true })}>Los geht's!</button>
 			<div style={{ display: 'flex' }}>

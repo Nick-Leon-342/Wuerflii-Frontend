@@ -289,7 +289,7 @@ function SelectSession() {
 			</div>
 			<dl className='sessionList'>
 				{list.length === 0 ? (
-					<dt className='message'>{message}</dt>
+					<dt style={{ fontSize: '25px', width: 'max-content' }}>{message}</dt>
 				) : (
 					list.map((s, i) => (
 						<dt className='listElement' index={i} key={i}>
