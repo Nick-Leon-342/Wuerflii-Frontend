@@ -6,8 +6,8 @@ import './css/Game.css'
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
-
+import { createFinalScoreElement, sessionStorage_lastPlayer, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
+import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 
 
 
@@ -18,7 +18,9 @@ function Games() {
 	const [columnsSum] = useState([])
 	const axiosPrivate = useAxiosPrivate()
 	const tableRef = useRef(null)
-	const [tableWidth, setTableWidth] = useState(0);
+	const [tableWidth, setTableWidth] = useState(0)
+
+	const [lastPlayerIndex, setLastPlayer] = useState(-1)
 
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
 
@@ -202,9 +204,19 @@ function Games() {
 			<table id={id_playerTable} className='table playerTable' style={{ width: tableWidth, maxWidth: tableWidth }}>
 				<tbody>
 					<tr>
-						<td>Spieler</td>
+						<td>
+							<span>Spieler </span>
+							<svg onClick={printNextPlayer} height='18' viewBox='0 -960 960 960'><path d='M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>
+						</td>
 						{session?.List_Players?.map((p, i) => (
-							<td key={i}>{p.Name}</td>
+							<td key={i}>
+								<span style={{ 
+									fontWeight: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'bold' : '',
+									color: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'rgb(0, 255, 0)' : '',
+								}}>
+									{p.Name}
+								</span>
+							</td>
 						))}
 					</tr>
 					<tr>
@@ -245,17 +257,30 @@ function Games() {
 												className: 'kniffelInput',
 												inputMode: 'numeric',
 												tableid: tableID,
+												appearance: 'none',
 												column: currentColumnIndex + (currentPlayerIndex * session.Attributes.Columns),
+												playerindex: currentPlayerIndex,
 												row: currentRowIndex,
 												onBlur: onblurEvent,
 												onInput: inputEvent,
 												defaultValue: sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + currentRowIndex + '.' + (currentColumnIndex  + (currentPlayerIndex * session.Attributes.Columns))),
-												style: { backgroundColor: player.Color }
+												style: { backgroundColor: player.Color },
 											}
+
+											const id = `${tableID}_${currentRowIndex}`
+											const possibleEntries = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[currentRowIndex]
 
 											let e
 											if(currentRowIndex < rows.length - 3) {
-												e = <input {...css}/>
+												e = 
+												<>
+													<input list={id} {...css}/>
+													<datalist id={id}>
+														{possibleEntries.map((v) => {
+															return <option key={v} value={v}/>
+														})}
+													</datalist>
+												</>
 											} else {
 												e = <label {...css}/>
 											}
@@ -275,7 +300,24 @@ function Games() {
 			</table>
 		)
 
-	} 
+	}
+
+
+
+	const printNextPlayer = () => {
+
+		if(lastPlayerIndex === -1) {
+			window.alert('Bis jetzt war noch keiner dran!')
+		} else {
+
+			const lastPlayer = session?.List_Players[lastPlayerIndex].Name
+			const nextPlayer = session?.List_Players[( lastPlayerIndex + 1 ) % session?.List_Players?.length].Name
+			window.alert(`'${lastPlayer}' war als letztes dran.\nNun kommt '${nextPlayer}'`)
+
+		}
+
+
+	}
 
 
 
@@ -302,6 +344,9 @@ function Games() {
 			calculateUpperColumn(i)
 			calculateBottomColumn(i)
 		}
+		
+		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
+		if(lastPlayer) setLastPlayer(Number(lastPlayer))
 
 		if (elements) {
 			for(const e of elements) {
@@ -349,23 +394,46 @@ function Games() {
 	}
 
 	const onblurEvent = (element) => {
+
 		const e = element.target
 		if(e) {
 			const id = e.getAttribute('tableid')
+			const row = Number(e.getAttribute('row'))
 			const column = Number(e.getAttribute('column'))
-	
+			const playerIndex = Number(e.getAttribute('playerindex'))
+
+			let value = e.value
+			const r = (id === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
+
+			if(r.includes(Number(value)) || value === '') {
+				
+				if(value) {
+					setLastPlayer(playerIndex)
+					sessionStorage.setItem(sessionStorage_lastPlayer, Number(e.getAttribute('playerIndex')))
+				}
+
+			} else {
+				
+				e.value = ''
+				value = ''
+				window.alert(`${value} ist nicht zulässig!\nZulässig sind: ${r}`)
+
+			}
+
 			saveElement(
 				id, 
-				e.value, 
+				value, 
 				column, 
-				Number(e.getAttribute('row')))
-		
+				row)
+
 			if(id === id_upperTable) {
 				calculateUpperColumn(column)
 			} else {
 				calculateBottomColumn(column)
 			}
+			
 		}
+
 	}
 
 	const inputEvent = (element) => {

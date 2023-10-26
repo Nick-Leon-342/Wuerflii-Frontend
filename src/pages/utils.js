@@ -15,6 +15,7 @@ export const id_playerTable							= 'playerTable'
 const substring_session								= 'session'
 const substring_players								= 'players'
 const substring_attributes							= 'attributes'
+const substring_lastPlayer							= 'lastPlayer'
 
 const substring_gnadenwurf							= 'gnadenwurf'
 const substring_winner								= 'winner'
@@ -26,6 +27,7 @@ const substring_sessionStorage						= 'kniffel_sessionStorage_'
 export const sessionStorage_session					= substring_sessionStorage + substring_session
 export const sessionStorage_players					= substring_sessionStorage + substring_players
 export const sessionStorage_attributes				= substring_sessionStorage + substring_attributes
+export const sessionStorage_lastPlayer				= substring_sessionStorage + substring_lastPlayer
 
 export const sessionStorage_gnadenwurf				= substring_sessionStorage + substring_gnadenwurf
 export const sessionStorage_winner					= substring_sessionStorage + substring_winner

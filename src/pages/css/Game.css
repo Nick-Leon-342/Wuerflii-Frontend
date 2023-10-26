@@ -52,6 +52,9 @@
     font-size: 20px;
 	color: var(--text-color);
 }
+.kniffelInput::-webkit-calendar-picker-indicator {
+	display: none !important;
+  }
 
 
 .highlighted label {
