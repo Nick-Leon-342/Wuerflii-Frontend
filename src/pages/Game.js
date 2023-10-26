@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, resizeEvent, clearSessionStorage, sessionStorage_players } from './utils'
+import { createFinalScoreElement, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
 
 
 
@@ -297,7 +297,6 @@ function Games() {
 
 		const elements = document.getElementsByClassName('kniffelInput')
 		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
-		resizeEvent()
 
 		for(let i = 0; session.List_Players.length * session.Attributes.Columns > i; i++) {
 			calculateUpperColumn(i)

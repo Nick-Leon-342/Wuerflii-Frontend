@@ -4,7 +4,7 @@ import '../App.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { clearSessionStorage, resizeEvent, sessionStorage_session, formatDate } from './utils'
+import { clearSessionStorage, sessionStorage_session, formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -51,7 +51,6 @@ function SessionPreview() {
 		}
 
 		request()
-		resizeEvent()
 
 	}, [])
 	
@@ -108,7 +107,8 @@ function SessionPreview() {
 				<span/>
 			</div>
 				
-			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={() => navigate('/game', { replace: true })}>Los geht's!</button>
+			<button className='button' style={{ height: '40px', width: '100%', marginBottom: '0px' }} onClick={() => navigate('/game', { replace: true })}>Los geht's!</button>
+
 			<div style={{ display: 'flex' }}>
 				<p className='link-switch'>
 					<Link to='/selectsession' onClick={back}>Zurück</Link>

@@ -2,11 +2,11 @@
 
 import '../App.css'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
-import { resizeEvent, NAME_REGEX, PASSWORD_REGEX } from './utils'
+import { NAME_REGEX, PASSWORD_REGEX } from './utils'
 
 import DialogName from '../dialog/DialogName'
 import DialogPassword from '../dialog/DialogPassword'
@@ -32,8 +32,6 @@ const Registration = () => {
 
 	const [error, setError] = useState('')
 	const [loaderVisible, setLoaderVisible] = useState(false)
-
-	useEffect(() => {resizeEvent()}, [])
 
 
 

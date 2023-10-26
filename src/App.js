@@ -15,19 +15,9 @@ import SessionPreview from './pages/SessionPreview'
 
 import Game from './pages/Game'
 import EndScreen from './pages/EndScreen'
-import { useEffect } from 'react'
 
 
 function App() {
-
-	useEffect(() => {
-		resizeEvent()
-		window.addEventListener('resize', resizeEvent)
-
-		return () => {
-			window.removeEventListener('resize', resizeEvent)
-		}
-	}, [])
 
 	return (
 		<div style={{ display: 'flex', alignItems: 'center', padding: '150px' }}>

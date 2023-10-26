@@ -5,7 +5,7 @@ import './css/EndScreen.css'
 
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { sessionStorage_players, sessionStorage_winner, clearSessionStorage, resizeEvent } from './utils'
+import { sessionStorage_players, sessionStorage_winner, clearSessionStorage } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -52,8 +52,6 @@ function EndScreen() {
 			}
 			setHeader(string)
 		}
-
-		resizeEvent()
 
 	}, [])
 	

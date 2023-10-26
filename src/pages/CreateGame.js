@@ -7,7 +7,7 @@ import './css/CreateGame.css'
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { resizeEvent, sessionStorage_attributes, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX } from './utils'
+import { sessionStorage_attributes, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 
@@ -51,7 +51,6 @@ function CreateGame() {
 		}
 
 		connect()
-		resizeEvent()
 
 	}, [])
 

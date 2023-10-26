@@ -5,7 +5,7 @@ import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { formatDate, resizeEvent, sessionStorage_session } from './utils'
+import { formatDate, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 
@@ -22,6 +22,7 @@ function SelectSession() {
 	const [session, setSession] = useState('')
 	const [list_session, setList_Session] = useState([])
 	const [loaderVisible, setLoaderVisible] = useState(false)
+	const [dialog_loaderVisible, setDialog_loaderVisible] = useState(false)
 	const [successfullyUpdatedVisible, setSuccessfullyUpdatedVisible] = useState(false)
 	
 	const message = 'Es gibt noch keine Partie!'
@@ -33,7 +34,6 @@ function SelectSession() {
 	useEffect(() => {
 
 		request()
-		resizeEvent()
 
 	}, [])
 
@@ -166,6 +166,8 @@ function SelectSession() {
 
 	const handleSave = async () => {
 
+		setDialog_loaderVisible(true)
+
 		if(columns !== '') session.Attributes.Columns = columns
 		for(let i = 0; session.List_Players.length > i; i++) {
 			session.List_Players[i].Name = list_session[i].Name
@@ -188,6 +190,7 @@ function SelectSession() {
 			return console.log(err)
 		})
 		
+		setDialog_loaderVisible(false)
 
 	}
 
@@ -277,6 +280,13 @@ function SelectSession() {
 							</dt>
 						))}
 					</dl>
+
+					
+					<div className={`loader ${dialog_loaderVisible ? '' : 'notVisible'}`}>
+						<span/>
+						<span/>
+						<span/>
+					</div>
 
 					<button className='button' onClick={handleSave} style={{ width: '100%' }}>Speichern</button>
 

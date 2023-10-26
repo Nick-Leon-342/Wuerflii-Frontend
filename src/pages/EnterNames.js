@@ -5,7 +5,7 @@ import './css/EnterNames.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { createAttributes, createPlayer, resizeEvent, sessionStorage_players, sessionStorage_attributes, sessionStorage_session } from './utils'
+import { createAttributes, createPlayer, sessionStorage_players, sessionStorage_attributes, sessionStorage_session } from './utils'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
@@ -53,7 +53,6 @@ function EnterNames() {
 			sessionStorage.removeItem(sessionStorage_attributes)
 			return navigate('/creategame', { replace: true })
 		}
-		resizeEvent()
 
 	}, [])
 

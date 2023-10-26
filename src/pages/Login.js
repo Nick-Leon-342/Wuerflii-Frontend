@@ -3,11 +3,9 @@
 import '../App.css'
 
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
-
-import { resizeEvent } from './utils'
 import axios from '../api/axios'
 
 
@@ -24,8 +22,6 @@ const Login = () => {
     const [Password, setPassword] = useState('')
     const [error, setError] = useState('')
 	const [loaderVisible, setLoaderVisible] = useState(false)
-
-    useEffect(() => {resizeEvent()}, [])
 
 
 
