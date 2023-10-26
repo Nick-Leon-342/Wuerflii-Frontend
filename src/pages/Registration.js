@@ -3,8 +3,6 @@
 import '../App.css'
 
 import { useState, useEffect } from 'react'
-import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
@@ -17,7 +15,6 @@ import DialogPasswordMatch from '../dialog/DialogPasswordMatch'
 
 
 
-const REGISTER_URL = '/auth/registration'
 
 const Registration = () => {
 
@@ -56,7 +53,7 @@ const Registration = () => {
 
 		try {
 
-			const response = await axios.post(REGISTER_URL, 
+			const response = await axios.post('/auth/registration', 
 				JSON.stringify({ Name, Password }),
 				{
                     headers: { 'Content-Type': 'application/json' },

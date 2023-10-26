@@ -1,23 +1,15 @@
 
 
-.logout {
-	display: flex;
-}
-
+.logout {display: flex;}
 .logout-button {
 	background: none;
 	border: none;
 	color: rgb(255, 0, 0);
 	padding: 0;
+	font-size: 17px;
 }
-
-.logout-button:hover {
-	opacity: .5;
-}
-
-.logout-button:active {
-	transform: scale(.9);
-}
+.logout-button:hover {opacity: .5;}
+.logout-button:active {transform: scale(.9);}
 
 
 
@@ -32,15 +24,4 @@
 	border-radius: 5px;
 	border: 1px solid var(--text-color);
 	color: var(--text-color);
-}
-
-
-
-.info {
-	
-	color: red;
-}
-
-.info svg {
-	fill: red;
 }

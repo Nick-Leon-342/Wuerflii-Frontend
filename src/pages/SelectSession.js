@@ -22,6 +22,7 @@ function SelectSession() {
 	const [session, setSession] = useState('')
 	const [list_session, setList_Session] = useState([])
 	const [loaderVisible, setLoaderVisible] = useState(false)
+	const [successfullyUpdatedVisible, setSuccessfullyUpdatedVisible] = useState(false)
 	
 	const message = 'Es gibt noch keine Partie!'
 
@@ -31,37 +32,37 @@ function SelectSession() {
 
 	useEffect(() => {
 
-		async function request() {
-
-			setLoaderVisible(true)
-
-			await axiosPrivate.get('/selectsession').then((res) => {
-				const l = res.data
-				const tmp = []
-
-				for(const e of l) {
-					tmp.push({ 
-						id: e.id,
-						Attributes: JSON.parse(e.Attributes), 
-						List_Players: JSON.parse(e.List_Players) 
-					})
-				}
-				
-				tmp.sort(sortByTimestampDesc)
-				setList(tmp)
-
-			}).catch((err) => {
-				console.log(err)
-			})
-
-			setLoaderVisible(false)
-
-		}
-
 		request()
 		resizeEvent()
 
 	}, [])
+
+	async function request() {
+
+		setLoaderVisible(true)
+
+		await axiosPrivate.get('/selectsession').then((res) => {
+			const l = res.data
+			const tmp = []
+
+			for(const e of l) {
+				tmp.push({ 
+					id: e.id,
+					Attributes: JSON.parse(e.Attributes), 
+					List_Players: JSON.parse(e.List_Players) 
+				})
+			}
+			
+			tmp.sort(sortByTimestampDesc)
+			setList(tmp)
+
+		}).catch((err) => {
+			console.log(err)
+		})
+
+		setLoaderVisible(false)
+
+	}
 
 	const sortByTimestampDesc = (a, b) => {
 		return new Date(b.Attributes.LastPlayed) - new Date(a.Attributes.LastPlayed)
@@ -142,7 +143,7 @@ function SelectSession() {
 
 	}
 
-	const showSettings = () => {
+	const edit = () => {
 
 		const tmp = []
 
@@ -150,6 +151,7 @@ function SelectSession() {
 			tmp.push({ Name: session.List_Players[i].Name, Color: session.List_Players[i].Color })
 		}
 
+		setSuccessfullyUpdatedVisible(false)
 		setList_Session(tmp)
 		document.getElementById('modal').showModal()
 
@@ -158,6 +160,7 @@ function SelectSession() {
 	const handleClose = () => {
 		
 		setList_Session([])
+		setColumns('')
 		document.getElementById('modal').close()
 	}
 
@@ -177,7 +180,9 @@ function SelectSession() {
                }
 		).then((res) => {
 			if(res.status === 204) {
+				setSuccessfullyUpdatedVisible(true)
 				handleClose()
+				request()
 			}
 		}).catch((err) => {
 			return console.log(err)
@@ -285,8 +290,20 @@ function SelectSession() {
 					<span/>
 					<span/>
 				</div>
-				<svg style={{ marginRight: '15px' }} className={`${list.length === 0 ? 'notVisible' : (settingsDisabled ? 'disabled' : '')}`} onClick={showSettings} width='25' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+				<svg style={{ marginRight: '15px' }} className={`${list.length === 0 ? 'notVisible' : (settingsDisabled ? 'disabled' : '')}`} onClick={edit} width='25' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
 			</div>
+
+			<div style={{ display: successfullyUpdatedVisible ? 'flex' : 'none', justifyContent: 'center', marginTop: '10px' }}>
+				<svg 
+					height='20' 
+					viewBox='0 -960 960 960'
+					style={{
+						fill: 'rgb(0, 255, 0)',
+					}}
+				><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
+				<p style={{ width: 'max-content', height: '100%', fontSize: '19px', margin: '0', marginLeft: '5px', color: 'rgb(0, 255, 0)' }}>Erfolgreich gespeichert!</p>
+			</div>
+
 			<dl className='sessionList'>
 				{list.length === 0 ? (
 					<dt style={{ fontSize: '25px', width: 'max-content' }}>{message}</dt>
