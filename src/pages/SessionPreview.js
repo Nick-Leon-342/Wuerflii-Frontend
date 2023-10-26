@@ -22,6 +22,8 @@ function SessionPreview() {
 
 	useEffect(() => {
 		
+		if(!session || !session.List_Players) return navigate('/creategame', { replace: true })
+
 		axiosPrivate.get('/sessionpreview',
 			{
 				headers: { 'Content-Type': 'application/json' },
@@ -53,7 +55,7 @@ function SessionPreview() {
 
 	const firstColumnWidth = '150px'
 	const firstColumnStyle = { width: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
-	const columnWidth = session.List_Players.length > 8 ? '75px' : (session.List_Players.length > 4 ? '125px' : '200px')
+	const columnWidth = session?.List_Players?.length > 8 ? '75px' : (session?.List_Players?.length > 4 ? '125px' : '200px')
 	const style = { width: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 
@@ -65,13 +67,13 @@ function SessionPreview() {
 				<tbody>
 					<tr>
 						<td style={firstColumnStyle}>Spieler</td>
-						{session.List_Players.map((p, i) => (
+						{session?.List_Players?.map((p, i) => (
 							<td key={i} style={style}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
 						<td style={firstColumnStyle}>Gewonnen</td>
-						{session.List_Players.map((p, i) => (
+						{session?.List_Players?.map((p, i) => (
 							<td key={i} style={style}>{p.Wins}</td>
 						))}
 					</tr>
@@ -83,7 +85,7 @@ function SessionPreview() {
 					{finalScores && finalScores.map((fs, i) => (
 						<tr key={i}>
 							<td style={firstColumnStyle}>{formatDate(fs.Played)}</td>
-							{session.List_Players.map((p, j) => (
+							{session?.List_Players?.map((p, j) => (
 								<td key={`${i}.${j}`} style={style}>{fs[p.Alias]}</td>
 							))}
 						</tr>

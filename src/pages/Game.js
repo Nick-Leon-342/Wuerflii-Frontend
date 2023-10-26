@@ -22,7 +22,7 @@ function Games() {
 
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
 
-	let gnadenwurf = session.List_Players?.map(() => false)
+	let gnadenwurf = session?.List_Players?.map(() => false)
   
 	const handleGnadenwurfChange = (index, g) => {
 		gnadenwurf[index] = g
@@ -196,26 +196,26 @@ function Games() {
 	const PlayerTable = () => {
 
 		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf)) 
-		gnadenwurf = g ? g : session.List_Players?.map(() => false)
+		gnadenwurf = g ? g : session?.List_Players?.map(() => false)
 
 		return (
 			<table id={id_playerTable} className='table playerTable' style={{ width: tableWidth, maxWidth: tableWidth }}>
 				<tbody>
 					<tr>
 						<td>Spieler</td>
-						{session.List_Players?.map((p, i) => (
+						{session?.List_Players?.map((p, i) => (
 							<td key={i}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
 						<td>Spieler gesamt</td>
-						{session.List_Players?.map((p, i) => (
+						{session?.List_Players?.map((p, i) => (
 							<td key={i}><label>0</label></td>
 						))}
 					</tr>
 					<tr>
 						<td>Gnadenwurf</td>
-						{session.List_Players?.map((p, i) => (
+						{session?.List_Players?.map((p, i) => (
 							<td key={i} ><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[i]} onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} /></td>
 						))}
 					</tr>
@@ -227,8 +227,8 @@ function Games() {
 
 	const Table = (rows, tableID) => {
 
-		const columns = Array.from({ length: session.Attributes?.Columns }, (_, index) => index)
-		if(columnsSum.length === 0 && tableID === id_upperTable) for(let i = 0; session.List_Players?.length * session.Attributes?.Columns > i; i++) {columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
+		const columns = Array.from({ length: session?.Attributes?.Columns }, (_, index) => index)
+		if(columnsSum.length === 0 && tableID === id_upperTable) for(let i = 0; session?.List_Players?.length * session?.Attributes?.Columns > i; i++) {columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
 
 		return (
 			<table id={tableID} className='table' ref={tableRef}>
@@ -237,7 +237,7 @@ function Games() {
 						return (
 							<tr key={currentRowIndex} className='row'>
 								{r.td}
-								{session.List_Players?.map((player, currentPlayerIndex) => {
+								{session?.List_Players?.map((player, currentPlayerIndex) => {
 									return (
 										columns.map((currentColumnIndex) => {
 
@@ -296,7 +296,7 @@ function Games() {
 		connect()
 
 		const elements = document.getElementsByClassName('kniffelInput')
-		if(!session) return navigate('/creategame', { replace: true })
+		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
 		resizeEvent()
 
 		for(let i = 0; session.List_Players.length * session.Attributes.Columns > i; i++) {
@@ -607,7 +607,6 @@ function Games() {
 					className='button'
 					style={{
 						width: '40%',
-						// margin: '5px',
 						textWrap: 'nowrap',
 						background: 'none',
 						border: 'none',

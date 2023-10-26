@@ -3,7 +3,7 @@
 import '../App.css'
 import './css/EndScreen.css'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { sessionStorage_players, sessionStorage_winner, clearSessionStorage, resizeEvent } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
@@ -15,7 +15,8 @@ function EndScreen() {
 	const axiosPrivate = useAxiosPrivate()
 	let players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	let winner = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
-	
+	const [header, setHeader] = useState('')
+
 	
 	
 	
@@ -34,6 +35,24 @@ function EndScreen() {
 		}
 
 		connect()
+
+		if(!players || !winner) return navigate('/creategame', { replace: true })
+
+		if(winner.length === 1) {
+			setHeader(`'${players[winner[0]].Name}' hat gewonnen!`)
+		} else {
+			let string = `'${players[winner[0]].Name}' `
+			for(let i = 1; winner.length > i; i++) {
+				const p = `'${players[winner[i]].Name}'`
+				if((i + 1) === winner.length) {
+					string += ` und ${p} haben gewonnen!`
+				} else {
+					string += `, ${p}`
+				}
+			}
+			setHeader(string)
+		}
+
 		resizeEvent()
 
 	}, [])
@@ -45,15 +64,7 @@ function EndScreen() {
 	
 	}
 
-	let string = `'${players[winner[0]].Name}' `
-	for(let i = 1; winner.length > i; i++) {
-		const p = `'${players[winner[i]].Name}'`
-		if((i + 1) === winner.length) {
-			string += ` und ${p} haben gewonnen!`
-		} else {
-			string += `, ${p}`
-		}
-	}
+	
 
 
 
@@ -62,7 +73,7 @@ function EndScreen() {
 	return (
 		<>
 			<div className='button-container'><label className='winner'>
-				{winner.length === 1 ? `'${players[winner[0]].Name}' hat gewonnen!` : `${string}`}
+				{header}
 			</label></div>
 
 			<br/>
@@ -71,13 +82,13 @@ function EndScreen() {
 				<tbody>
 					<tr>
 						<td>Spieler</td>
-						{players.map((p, i) => (
+						{players?.map((p, i) => (
 							<td key={i}>{p.Name}</td>
 						))}
 					</tr>
 					<tr>
 						<td>Gewonnen</td>
-						{players.map((p, i) => (
+						{players?.map((p, i) => (
 							<td key={i}>{p.Wins}</td>
 						))}
 					</tr>
