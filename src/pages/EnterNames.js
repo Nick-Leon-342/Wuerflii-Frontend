@@ -7,11 +7,13 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { createAttributes, createPlayer, resizeEvent, sessionStorage_players, sessionStorage_attributes, sessionStorage_session } from './utils'
 import { isMobile } from 'react-device-detect'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
 function EnterNames() {
 
 	const navigate = useNavigate()
+	const axiosPrivate = useAxiosPrivate()
 	
 	const players = Array.from({ length: sessionStorage.getItem(sessionStorage_players) }, (_, index) => index)
 	const columns = sessionStorage.getItem(sessionStorage_attributes)
@@ -32,6 +34,19 @@ function EnterNames() {
 	}
 
 	useEffect(() => {
+
+		async function connect() {
+			await axiosPrivate.get('/enternames',
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).catch(() => {
+				navigate('/login', { replace: true })
+			})
+		}
+
+		connect()
 
 		if(players.length === 0 || !columns || isNaN(columns)) {
 			sessionStorage.removeItem(sessionStorage_players)

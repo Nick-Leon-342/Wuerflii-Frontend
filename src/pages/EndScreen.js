@@ -6,11 +6,13 @@ import './css/EndScreen.css'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { sessionStorage_players, sessionStorage_winner, clearSessionStorage, resizeEvent } from './utils'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
 function EndScreen() {
 
 	const navigate = useNavigate()
+	const axiosPrivate = useAxiosPrivate()
 	let players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
 	let winner = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
 	
@@ -19,7 +21,21 @@ function EndScreen() {
 	
 	
 	useEffect(() => {
+
+		async function connect() {
+			await axiosPrivate.get('/endscreen',
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).catch(() => {
+				navigate('/login', { replace: true })
+			})
+		}
+
+		connect()
 		resizeEvent()
+
 	}, [])
 	
 	const ok = () => {

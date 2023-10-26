@@ -30,7 +30,21 @@ function CreateGame() {
 
 
 	useEffect(() => {
+
+		async function connect() {
+			await axiosPrivate.get('/creategame',
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).catch(() => {
+				navigate('/login', { replace: true })
+			})
+		}
+
+		connect()
 		resizeEvent()
+
 	}, [])
 
 	

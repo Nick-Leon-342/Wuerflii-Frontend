@@ -282,6 +282,19 @@ function Games() {
 
 	useEffect(() => {
 		
+		async function connect() {
+			await axiosPrivate.get('/game',
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).catch(() => {
+				navigate('/login', { replace: true })
+			})
+		}
+
+		connect()
+
 		const elements = document.getElementsByClassName('kniffelInput')
 		if(!session) return navigate('/creategame', { replace: true })
 		resizeEvent()
