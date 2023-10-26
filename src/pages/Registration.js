@@ -35,6 +35,7 @@ const Registration = () => {
 	const [infoPasswordMatch, setInfoPasswordMatch] = useState(false)
 
 	const [error, setError] = useState('')
+	const [loaderVisible, setLoaderVisible] = useState(false)
 
 	useEffect(() => {resizeEvent()}, [])
 
@@ -44,6 +45,8 @@ const Registration = () => {
 
 	const handleSubmit = async (e) => {
 		
+		setLoaderVisible(true)
+		setError('')
 		e.preventDefault()
 
 		if(!Name || !Password || !matchPassword) return
@@ -77,6 +80,7 @@ const Registration = () => {
 				setError('Die Registration schlug fehl!')
 			}
 		}
+		setLoaderVisible(false)
 
 	}
 
@@ -188,6 +192,11 @@ const Registration = () => {
 
 				<br/>
 				<br/>
+				<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
+					<span/>
+					<span/>
+					<span/>
+				</div>
 
 				<p style={{
 					display: error ? '' : 'none',

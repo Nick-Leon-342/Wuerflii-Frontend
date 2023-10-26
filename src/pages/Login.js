@@ -24,6 +24,7 @@ const Login = () => {
     const [Name, setName] = useState('')
     const [Password, setPassword] = useState('')
     const [error, setError] = useState('')
+	const [loaderVisible, setLoaderVisible] = useState(false)
 
     useEffect(() => {resizeEvent()}, [])
 
@@ -33,6 +34,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
 
+		setLoaderVisible(true)
 		setError('')
         e.preventDefault()
 
@@ -61,6 +63,7 @@ const Login = () => {
                 setError('Die Anmeldung hat nicht funktioniert!')
             }
         }
+		setLoaderVisible(false)
 
     }
 
@@ -101,6 +104,11 @@ const Login = () => {
 
 				<br/>
 				<br/>
+				<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
+					<span/>
+					<span/>
+					<span/>
+				</div>
 
 				<p style={{
 					display: error ? '' : 'none',
