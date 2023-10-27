@@ -664,6 +664,26 @@ function Games() {
 
 	return (
 		<>
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<div style={{ width: 'max-content' }}>
+					<input 
+						className='checkbox' 
+						type='checkbox' 
+						// defaultChecked={gnadenwurf[i]} 
+						// onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} 
+					/>
+					<label>Input auswählen</label>
+				</div>
+				<button 
+					className='button'
+					style={{
+						margin: '0',
+						marginRight: '5px',
+						
+					}}
+				>Aufgeben</button>
+			</div>
+
 			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
