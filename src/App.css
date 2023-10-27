@@ -155,7 +155,7 @@ input {
 }
 
 .table td {
-    border: 2px solid;
+    border: 1px solid;
     text-align: center;
     height: 50px;
 	white-space: nowrap;

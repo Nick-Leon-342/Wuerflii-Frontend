@@ -23,7 +23,9 @@
 
 
 
-
+td select {
+    width: 50px;
+}
 
 #upperTable td:nth-child(1),
 #upperTable td:nth-child(2),
@@ -54,7 +56,7 @@
 }
 .kniffelInput::-webkit-calendar-picker-indicator {
 	display: none !important;
-  }
+}
 
 
 .highlighted label {

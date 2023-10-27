@@ -14,6 +14,8 @@ import { possibleEntries_upperTable, possibleEntries_bottomTable} from './Possib
 
 function Games() {
 
+	const [inputType, setInputType] = useState(2)
+
 	const navigate = useNavigate()
 	const [columnsSum] = useState([])
 	const axiosPrivate = useAxiosPrivate()
@@ -272,15 +274,32 @@ function Games() {
 
 											let e
 											if(currentRowIndex < rows.length - 3) {
-												e = 
-												<>
-													<input list={id} {...css}/>
-													<datalist id={id}>
-														{possibleEntries.map((v) => {
-															return <option key={v} value={v}/>
-														})}
-													</datalist>
-												</>
+
+												if(inputType === '0') {
+
+													e = <select {...css}>
+														<option></option>
+														{possibleEntries.map((v) => (
+															<option key={v} value={v}>{v}</option>
+													))}
+													</select>
+
+												} else if(inputType === '1') {
+
+													e = <>
+														<input list={id} {...css}/>
+														<datalist id={id}>
+															{possibleEntries.map((v) => {
+																return <option key={v} value={v}/>
+															})}
+														</datalist>
+													</>
+												} else {
+													
+													e = <input {...css}/>
+
+												}
+
 											} else {
 												e = <label {...css}/>
 											}
@@ -661,18 +680,37 @@ function Games() {
 
 
 
+	const handleInputTypeChange = (e) => {
+
+		const v = e.target.value
+		setInputType(v)
+
+	}
+
+
+
+
 
 	return (
 		<>
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<div style={{ width: 'max-content' }}>
-					<input 
-						className='checkbox' 
-						type='checkbox' 
-						// defaultChecked={gnadenwurf[i]} 
-						// onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} 
-					/>
-					<label>Input auswählen</label>
+					<select
+						value={inputType}
+						onChange={handleInputTypeChange}
+						style={{
+							borderRadius: '10px',
+							height: '30px',
+							padding: '5px',
+							marginLeft: '5px',
+							border: '1px solid var(--text-color)',
+							outline: 'none',
+						}}
+					>
+						<option value='0' key='0'>Auswahl</option>
+						<option value='1' key='1'>Auswahl und Eingabe</option>
+						<option value='2' key='2'>Eingabe</option>
+					</select>
 				</div>
 				<button 
 					className='button'

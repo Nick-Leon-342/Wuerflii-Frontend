@@ -314,7 +314,7 @@ function CreateGame() {
 						className='input-mobile'
 						value={players}
 						onChange={handleInputChange_players}
-						>
+					>
 						<option value='' disabled>
 							Spieleranzahl
 						</option>
