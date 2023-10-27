@@ -207,7 +207,7 @@ function Games() {
 					<tr>
 						<td>
 							<span>Spieler </span>
-							<svg onClick={printNextPlayer} height='18' viewBox='0 -960 960 960'><path d='M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>
+							<svg onClick={() => document.getElementById('modal-nextPlayer').showModal()} height='18' viewBox='0 -960 960 960'><path d='M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>
 						</td>
 						{session?.List_Players?.map((p, i) => (
 							<td key={i}>
@@ -317,23 +317,6 @@ function Games() {
 				</tbody>
 			</table>
 		)
-
-	}
-
-
-
-	const printNextPlayer = () => {
-
-		if(lastPlayerIndex === -1) {
-			window.alert('Bis jetzt war noch keiner dran!')
-		} else {
-
-			const lastPlayer = session?.List_Players[lastPlayerIndex].Name
-			const nextPlayer = session?.List_Players[( lastPlayerIndex + 1 ) % session?.List_Players?.length].Name
-			window.alert(`'${lastPlayer}' war als letztes dran.\nNun kommt '${nextPlayer}'`)
-
-		}
-
 
 	}
 
@@ -600,9 +583,9 @@ function Games() {
 
 	//____________________SaveResults____________________
 	
-	const saveResults = async (surrender, winner) => {
+	const saveResults = async () => {
 	
-		if(!surrender) {
+		if(askIfSurrender === -1) {
 			for(const element of columnsSum) {
 				if(element.All === 0) {
 					window.alert('Bitte alle Werte eingeben!')
@@ -621,10 +604,10 @@ function Games() {
 	
 		let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
 	
-		if(surrender) {
+		if(askIfSurrender !== -1) {
 
 			winnerIndex.length = 0
-			winnerIndex.push(winner)
+			winnerIndex.push(askIfSurrender)
 
 		} else {
 
@@ -650,7 +633,7 @@ function Games() {
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, surrender)
+		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, askIfSurrender !== -1)
 	
 		const json = JSON.stringify({ 
 			id: session.id,
@@ -699,14 +682,14 @@ function Games() {
 
 	}
 
-	const handleSurrender = () => {document.getElementById('modal').showModal()}
-	const closeSurrender = () => {document.getElementById('modal').close()}
-	const selectWinner = (p, i) => {
-		
-		if(window.confirm(`Sicher, dass '${p.Name}' gewinnen soll?`)) {
-			saveResults(true, i)
-		}
 
+
+	const [askIfSurrender, setAskIfSurrender] = useState(-1)	//if -1 then dont ask, else it's the index of the 'winner'
+
+	const handleSurrender = () => {document.getElementById('modal').showModal()}
+	const closeSurrender = () => {
+		document.getElementById('modal').close()
+		setAskIfSurrender(-1)
 	}
 
 
@@ -752,11 +735,32 @@ function Games() {
 					</div>
 					<h1>Gewinner auswählen</h1>
 
+					<div style={{ display: askIfSurrender !== -1 ? '' : 'none' }}>
+						<label style={{ fontSize: '22px', }}>{`Sicher, dass ${session?.List_Players[askIfSurrender]?.Name} gewinnen soll?`}</label>
+						<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+							<button 
+								className='button' 
+								onClick={saveResults}
+								style={{
+									width: '50%',
+								}}
+							>Ja</button>
+							<button 
+								className='button' 
+								onClick={closeSurrender}
+								style={{
+									backgroundColor: 'rgb(255, 0, 0)',
+									color: 'white',
+								}}
+							>Abbrechen</button>
+						</div>
+					</div>
+
 					<dl>
 						{session?.List_Players?.map((p, i) => (
 							<dt 
 								className='listElement' 
-								onClick={() => selectWinner(p, i)} 
+								onClick={() => setAskIfSurrender(i)} 
 								key={i}
 								style={{
 									padding: '10px',
@@ -773,6 +777,20 @@ function Games() {
 
 			</dialog>
 
+			<dialog id='modal-nextPlayer' className='modal'>
+				<p style={{ fontSize: '22px', marginTop: '20px' }}>
+					{lastPlayerIndex === -1 
+						? 'Bis jetzt war noch keiner dran!'
+						: (
+							<>
+								{'\'' + session?.List_Players[lastPlayerIndex].Name + '\'' + ' war als letztes dran.'}<br />
+								{'Nun kommt \'' + session?.List_Players[(lastPlayerIndex + 1) % session?.List_Players?.length].Name + '\''}
+							</>
+						)
+					}
+				</p>
+				<button className='button' onClick={() => document.getElementById('modal-nextPlayer').close()}>Ok</button>
+			</dialog>
 
 			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
@@ -793,7 +811,7 @@ function Games() {
 					}}
 				>Neues Spiel</button>
 				<button 
-					onClick={() => saveResults(false, null)} 
+					onClick={saveResults} 
 					className='button'
 					style={{
 						width: '60%',

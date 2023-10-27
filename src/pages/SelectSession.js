@@ -71,31 +71,38 @@ function SelectSession() {
 	const handleDelete = async () => {
 
 		if(trashcanDisabled) return
+		document.getElementById('modal-delete').showModal()
+		
+	}
+
+	const submitDelete = async () => {
+
+		cancelDelete()
 		setLoaderVisible(true)
 
-		if((window.confirm('Bist du sicher, dass du diese Session(s) löschen möchtest?'))) {
-			for(let i = 0; list_checkbox.length > i; i++) {
-				if(list_checkbox[i]) {
-					console.log(list[i])
-					await axiosPrivate.delete('/selectsession',
-						{
-							headers: { 'Content-Type': 'application/json' },
-							withCredentials: true,
-							params: { id: list[i].id }
-						}
-					).catch((err) => {
-						console.log(err)
-					})
+		for(let i = 0; list_checkbox.length > i; i++) {
+			if(list_checkbox[i]) {
+				console.log(list[i])
+				await axiosPrivate.delete('/selectsession',
+					{
+						headers: { 'Content-Type': 'application/json' },
+						withCredentials: true,
+						params: { id: list[i].id }
+					}
+				).catch((err) => {
+					console.log(err)
+				})
 
 
-				}
 			}
 		}
 
 		setLoaderVisible(false)
 		window.location.reload()
-		
+
 	}
+
+	const cancelDelete = () => {document.getElementById('modal-delete').close()}
 
 
 
@@ -286,6 +293,27 @@ function SelectSession() {
 
 					<button className='button' onClick={handleSave} style={{ width: '100%' }}>Speichern</button>
 
+				</div>
+			</dialog>
+
+			<dialog id='modal-delete' className='modal'>
+				<label>Bist du sicher, dass du diese Session(s) löschen möchtest?</label>
+				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+					<button 
+						className='button' 
+						onClick={submitDelete}
+						style={{
+							width: '50%',
+						}}
+					>Ja</button>
+					<button 
+						className='button' 
+						onClick={cancelDelete}
+						style={{
+							backgroundColor: 'rgb(255, 0, 0)',
+							color: 'white',
+						}}
+					>Abbrechen</button>
 				</div>
 			</dialog>
 
