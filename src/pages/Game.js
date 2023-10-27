@@ -6,15 +6,13 @@ import './css/Game.css'
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, sessionStorage_lastPlayer, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
+import { createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 
 
 
 
 function Games() {
-
-	const [inputType, setInputType] = useState(2)
 
 	const navigate = useNavigate()
 	const [columnsSum] = useState([])
@@ -25,6 +23,7 @@ function Games() {
 	const [lastPlayerIndex, setLastPlayer] = useState(-1)
 
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
+	const [inputType, setInputType] = useState(Number(sessionStorage.getItem(sessionStorage_inputType)) || session?.Attributes?.InputType)
 
 	let gnadenwurf = session?.List_Players?.map(() => false)
   
@@ -256,7 +255,7 @@ function Games() {
 										columns.map((currentColumnIndex) => {
 
 											const css = {
-												className: 'kniffelInput',
+												className: `kniffelInput ${inputType === 1 ? 'select' : ''}`,
 												inputMode: 'numeric',
 												tableid: tableID,
 												appearance: 'none',
@@ -275,7 +274,7 @@ function Games() {
 											let e
 											if(currentRowIndex < rows.length - 3) {
 
-												if(inputType === '0') {
+												if(inputType === 1) {
 
 													e = <select {...css}>
 														<option></option>
@@ -284,7 +283,7 @@ function Games() {
 													))}
 													</select>
 
-												} else if(inputType === '1') {
+												} else if(inputType === 2) {
 
 													e = <>
 														<input list={id} {...css}/>
@@ -294,7 +293,7 @@ function Games() {
 															})}
 														</datalist>
 													</>
-												} else {
+												} else if(inputType === 3) {
 													
 													e = <input {...css}/>
 
@@ -601,12 +600,14 @@ function Games() {
 
 	//____________________SaveResults____________________
 	
-	const saveResults = async () => {
+	const saveResults = async (surrender, winner) => {
 	
-		for(const element of columnsSum) {
-			if(element.All === 0) {
-				window.alert('Bitte alle Werte eingeben!')
-				return
+		if(!surrender) {
+			for(const element of columnsSum) {
+				if(element.All === 0) {
+					window.alert('Bitte alle Werte eingeben!')
+					return
+				}
 			}
 		}
 		
@@ -620,15 +621,24 @@ function Games() {
 	
 		let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
 	
-		for(let i = 1; session.List_Players.length > i; i++) {
-			if(playerScores[i] != null) {
-				if(playerScores[i] > playerScores[winnerIndex[0]]) {
-					winnerIndex.length = 0
-					winnerIndex.push(i)
-				} else if (playerScores[i] === playerScores[winnerIndex[0]]) {
-					winnerIndex.push(i)
+		if(surrender) {
+
+			winnerIndex.length = 0
+			winnerIndex.push(winner)
+
+		} else {
+
+			for(let i = 1; session.List_Players.length > i; i++) {
+				if(playerScores[i] != null) {
+					if(playerScores[i] > playerScores[winnerIndex[0]]) {
+						winnerIndex.length = 0
+						winnerIndex.push(i)
+					} else if (playerScores[i] === playerScores[winnerIndex[0]]) {
+						winnerIndex.push(i)
+					}
 				}
 			}
+
 		}
 	
 		for(const i of winnerIndex) {session.List_Players[i].Wins++}
@@ -636,10 +646,11 @@ function Games() {
 	
 		//____________________Attributes____________________
 		session.Attributes.LastPlayed = new Date()
+		session.Attributes.InputType = inputType
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes)
+		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, surrender)
 	
 		const json = JSON.stringify({ 
 			id: session.id,
@@ -682,8 +693,19 @@ function Games() {
 
 	const handleInputTypeChange = (e) => {
 
-		const v = e.target.value
+		const v = Number(e.target.value)
+		sessionStorage.setItem(sessionStorage_inputType, v)
 		setInputType(v)
+
+	}
+
+	const handleSurrender = () => {document.getElementById('modal').showModal()}
+	const closeSurrender = () => {document.getElementById('modal').close()}
+	const selectWinner = (p, i) => {
+		
+		if(window.confirm(`Sicher, dass '${p.Name}' gewinnen soll?`)) {
+			saveResults(true, i)
+		}
 
 	}
 
@@ -707,20 +729,50 @@ function Games() {
 							outline: 'none',
 						}}
 					>
-						<option value='0' key='0'>Auswahl</option>
-						<option value='1' key='1'>Auswahl und Eingabe</option>
-						<option value='2' key='2'>Eingabe</option>
+						<option value={1} key='1'>Auswahl</option>
+						<option value={2} key='2'>Auswahl und Eingabe</option>
+						<option value={3} key='3'>Eingabe</option>
 					</select>
 				</div>
 				<button 
 					className='button'
+					onClick={handleSurrender}
 					style={{
 						margin: '0',
 						marginRight: '5px',
-						
+						background: 'none',
+						boxShadow: 'none',
 					}}
 				>Aufgeben</button>
 			</div>
+
+			<dialog id='modal' className='modal'>
+					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+						<svg onClick={closeSurrender} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+					</div>
+					<h1>Gewinner auswählen</h1>
+
+					<dl>
+						{session?.List_Players?.map((p, i) => (
+							<dt 
+								className='listElement' 
+								onClick={() => selectWinner(p, i)} 
+								key={i}
+								style={{
+									padding: '10px',
+								}}
+							>
+								<label
+									style={{
+										fontSize: '20px',
+									}}
+								>{p.Name}</label>
+							</dt>
+						))}
+					</dl>
+
+			</dialog>
+
 
 			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
@@ -741,7 +793,7 @@ function Games() {
 					}}
 				>Neues Spiel</button>
 				<button 
-					onClick={saveResults} 
+					onClick={() => saveResults(false, null)} 
 					className='button'
 					style={{
 						width: '60%',

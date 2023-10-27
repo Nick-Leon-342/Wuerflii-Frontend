@@ -23,10 +23,6 @@
 
 
 
-td select {
-    width: 50px;
-}
-
 #upperTable td:nth-child(1),
 #upperTable td:nth-child(2),
 #bottomTable td:nth-child(1),
@@ -45,6 +41,8 @@ td select {
 
 
 
+
+
 .kniffelInput {
     border: none;
     height: 100%;
@@ -54,9 +52,20 @@ td select {
     font-size: 20px;
 	color: var(--text-color);
 }
+
 .kniffelInput::-webkit-calendar-picker-indicator {
 	display: none !important;
 }
+
+.select {
+	width: 60px;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+
+
 
 
 .highlighted label {

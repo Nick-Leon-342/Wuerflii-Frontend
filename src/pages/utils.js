@@ -16,6 +16,7 @@ const substring_session								= 'session'
 const substring_players								= 'players'
 const substring_attributes							= 'attributes'
 const substring_lastPlayer							= 'lastPlayer'
+const substring_inputType							= 'inputType'
 
 const substring_gnadenwurf							= 'gnadenwurf'
 const substring_winner								= 'winner'
@@ -28,6 +29,7 @@ export const sessionStorage_session					= substring_sessionStorage + substring_s
 export const sessionStorage_players					= substring_sessionStorage + substring_players
 export const sessionStorage_attributes				= substring_sessionStorage + substring_attributes
 export const sessionStorage_lastPlayer				= substring_sessionStorage + substring_lastPlayer
+export const sessionStorage_inputType				= substring_sessionStorage + substring_inputType
 
 export const sessionStorage_gnadenwurf				= substring_sessionStorage + substring_gnadenwurf
 export const sessionStorage_winner					= substring_sessionStorage + substring_winner
@@ -86,16 +88,18 @@ export const createPlayer = (name, alias, color) => {
 export const createAttributes = (columns) => {
     return {
         Columns: columns,
+		InputType: 3,
         LastPlayed: new Date(),
         CreatedDate: new Date(),
     }
 }
 
-export const createFinalScoreElement = (players, scoreList, attributes) => {
+export const createFinalScoreElement = (players, scoreList, attributes, surrender) => {
 
     const finalScore = {
         Played: new Date(),
 		Columns: attributes.Columns,
+		Surrender: surrender, 
     }
 
     for(let i = 0; i < players.length; i++) {

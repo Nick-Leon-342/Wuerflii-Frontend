@@ -31,11 +31,7 @@ function SelectSession() {
 
 
 
-	useEffect(() => {
-
-		request()
-
-	}, [])
+	useEffect(() => {request()}, [])
 
 	async function request() {
 
