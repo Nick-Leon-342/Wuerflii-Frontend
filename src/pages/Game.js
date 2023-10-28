@@ -262,7 +262,6 @@ function Games() {
 												column: currentColumnIndex + (currentPlayerIndex * session.Attributes.Columns),
 												playerindex: currentPlayerIndex,
 												row: currentRowIndex,
-												onBlur: onblurEvent,
 												onInput: inputEvent,
 												defaultValue: sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + currentRowIndex + '.' + (currentColumnIndex  + (currentPlayerIndex * session.Attributes.Columns))),
 												style: { backgroundColor: player.Color },
@@ -276,7 +275,7 @@ function Games() {
 
 												if(inputType === 1) {
 
-													e = <select {...css}>
+													e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: '20px' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
 														<option></option>
 														{possibleEntries.map((v) => (
 															<option key={v} value={v}>{v}</option>
@@ -286,7 +285,7 @@ function Games() {
 												} else if(inputType === 2) {
 
 													e = <>
-														<input list={id} {...css}/>
+														<input list={id} {...css} onBlur={onblurEvent}/>
 														<datalist id={id}>
 															{possibleEntries.map((v) => {
 																return <option key={v} value={v}/>
@@ -295,7 +294,7 @@ function Games() {
 													</>
 												} else if(inputType === 3) {
 													
-													e = <input {...css}/>
+													e = <input {...css} onBlur={onblurEvent}/>
 
 												}
 
@@ -352,14 +351,18 @@ function Games() {
 		if (elements) {
 			for(const e of elements) {
 				e.addEventListener('focus', focusEvent)
-				e.addEventListener('blur', removeFocusEvent)
+				if(inputType === 0) {
+					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
+				} else {
+					e.addEventListener('blur', removeFocusEvent)
+				}
 			}
 		}
 
 		return () => {
 			for(const e of elements) {
 				e.removeEventListener('focus', focusEvent)
-				e.removeEventListener('blur', removeFocusEvent)
+				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
 			}
 		}
 
@@ -415,7 +418,9 @@ function Games() {
 
 			} else {
 				
-				window.alert(`${value} ist nicht zulässig!\nZulässig sind: ${r}`)
+				document.getElementById('modal-invalidnumber').showModal()
+				document.getElementById('message-invalidnumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
+
 				e.value = ''
 				value = ''
 
@@ -790,6 +795,11 @@ function Games() {
 					}
 				</p>
 				<button className='button' onClick={() => document.getElementById('modal-nextPlayer').close()}>Ok</button>
+			</dialog>
+
+			<dialog id='modal-invalidnumber' className='modal'>
+				<p id='message-invalidnumber' style={{ fontSize: '22px', marginTop: '20px' }}></p>
+				<button className='button' onClick={() => document.getElementById('modal-invalidnumber').close()}>Ok</button>
 			</dialog>
 
 			{PlayerTable()}

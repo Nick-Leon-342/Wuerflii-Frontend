@@ -10,6 +10,7 @@ import { isMobile } from 'react-device-detect'
 import { sessionStorage_attributes, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
+import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS } from './utils-env'
 
 import DialogName from '../dialog/DialogName'
 import DialogPassword from '../dialog/DialogPassword'
@@ -72,7 +73,7 @@ function CreateGame() {
 
 	//____________________Players____________________
 
-	const maxPlayers = process.env.REACT_APP_MAX_PLAYERS || 16
+	const maxPlayers = REACT_APP_MAX_PLAYERS || 16
 	const [ players, setPlayers ] = useState('')
 	const options_players = Array.from({ length: maxPlayers }, (_, index) => index + 1)
 
@@ -87,7 +88,7 @@ function CreateGame() {
 
 	//____________________Columns____________________
 
-	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
+	const maxColumns = REACT_APP_MAX_COLUMNS || 10
 	const [columns, setColumns] = useState('')
 	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
 

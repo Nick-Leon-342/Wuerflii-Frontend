@@ -1,7 +1,6 @@
 
 
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
-import { resizeEvent } from './pages/utils'
+import { BrowserRouter as Router, Routes, Route, Redirect } from 'react-router-dom'
 
 import Login from './pages/Login'
 import PersistLogin from './pages/PersistLogin'
@@ -46,6 +45,8 @@ function App() {
 							<Route path='/EndScreen' element={<EndScreen />} />
 							
 						</Route>
+
+						<Route path='*' element={<CreateGame />} />
 
 					</Routes>
 				</Router>
