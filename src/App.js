@@ -1,6 +1,6 @@
 
 
-import { BrowserRouter as Router, Routes, Route, Redirect } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
 import Login from './pages/Login'
 import PersistLogin from './pages/PersistLogin'
