@@ -174,7 +174,7 @@ function SelectSession() {
 
 		setSuccessfullyUpdatedVisible(false)
 		setList_Session(tmp)
-		document.getElementById('modal').showModal()
+		document.getElementById('modal-edit').showModal()
 
 	}
 
@@ -182,7 +182,7 @@ function SelectSession() {
 		
 		setList_Session([])
 		setColumns('')
-		document.getElementById('modal').close()
+		document.getElementById('modal-edit').close()
 	}
 
 	const modalEditSave = async () => {
