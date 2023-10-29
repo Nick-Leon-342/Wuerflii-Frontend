@@ -21,21 +21,12 @@ function CreateGame() {
 	const { setAuth } = useAuth()
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
+
 	const [loaderVisible, setLoaderVisible] = useState(false)
 	const [successfullyUpdatedVisible, setSuccessfullyUpdatedVisible] = useState(false)
 
 
 
-
-
-	const showModal = () => {
-
-		setError('')
-		setSuccessfullyUpdatedVisible(false)
-		document.getElementById('modal').showModal()
-
-	}
-	const closeModal = () => {document.getElementById('modal').close()}
 
 
 	useEffect(() => {
@@ -57,10 +48,6 @@ function CreateGame() {
 
 	}, [])
 
-	
-
-	//____________________Next____________________
-
 	const next = () => {
 
 		if(!players || !columns) return
@@ -73,7 +60,10 @@ function CreateGame() {
 	}
 
 
-	//____________________Players____________________
+
+
+
+	// __________________________________________________Players__________________________________________________
 
 	const maxPlayers = REACT_APP_MAX_PLAYERS || 16
 	const [ players, setPlayers ] = useState('')
@@ -91,7 +81,7 @@ function CreateGame() {
 
 
 
-	//____________________Columns____________________
+	// __________________________________________________Columns__________________________________________________
 
 	const maxColumns = REACT_APP_MAX_COLUMNS || 10
 	const [columns, setColumns] = useState('')
@@ -119,6 +109,7 @@ function CreateGame() {
 
 
 
+	// __________________________________________________Modal-Settings__________________________________________________
 
 	const [ infoName, setInfoName ] = useState(false)
 	const [ Name, setName ] = useState('')
@@ -129,8 +120,17 @@ function CreateGame() {
 	const [ error, setError ] = useState('')
 
 
+	const modalSettingsShow = () => {
 
+		setError('')
+		setSuccessfullyUpdatedVisible(false)
+		document.getElementById('modal-settings').showModal()
 
+	}
+
+	const modalSettingsClose = () => {
+		document.getElementById('modal-settings').close()
+	}
 
 	const handleSubmit = async (e) => {
 
@@ -168,7 +168,7 @@ function CreateGame() {
             setPassword('')
 			setError('')
 			setSuccessfullyUpdatedVisible(true)
-			closeModal()
+			modalSettingsClose()
 
 		} catch (err) {
 			if (!err?.response) {
@@ -195,7 +195,10 @@ function CreateGame() {
 
 	return (
 		<>
-			<dialog id='modal' className='modal'>
+
+			{/* __________________________________________________Dialogs__________________________________________________ */}
+
+			<dialog id='modal-settings' className='modal'>
 				<div 
 					style={{
 						display: 'flex',
@@ -203,7 +206,7 @@ function CreateGame() {
 					}}
 				>
 					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg autoFocus={true} onClick={closeModal} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+						<svg autoFocus={true} onClick={modalSettingsClose} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 					<h1>Einstellungen</h1>
 					
@@ -326,7 +329,13 @@ function CreateGame() {
 				</div>
 			</dialog>
 
-			<svg onClick={showModal} height="24" viewBox="0 -960 960 960" ><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
+
+
+
+
+			{/* __________________________________________________Page__________________________________________________ */}
+
+			<svg onClick={modalSettingsShow} height="24" viewBox="0 -960 960 960" ><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
 			<br/>
 
 			<div style={{ display: successfullyUpdatedVisible ? 'flex' : 'none', justifyContent: 'center', marginTop: '10px' }}>
@@ -412,6 +421,7 @@ function CreateGame() {
 					<Link to='/selectsession'>Lade Spiel</Link>
 				</p>
 			</div>
+
 		</>
 	)
 }

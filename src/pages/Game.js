@@ -13,18 +13,89 @@ import { possibleEntries_upperTable, possibleEntries_bottomTable} from './Possib
 
 
 
+
 function Games() {
 
 	const navigate = useNavigate()
-	const [columnsSum] = useState([])
-	const axiosPrivate = useAxiosPrivate()
 	const tableRef = useRef(null)
-	const [tableWidth, setTableWidth] = useState(0)
+	const axiosPrivate = useAxiosPrivate()
 
-	const [lastPlayerIndex, setLastPlayer] = useState(-1)
+	const [ columnsSum ] = useState([])
+	const [ tableWidth, setTableWidth ] = useState(0)
+	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
 
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
-	const [inputType, setInputType] = useState(Number(sessionStorage.getItem(sessionStorage_inputType)) || session?.Attributes?.InputType)
+
+	
+
+
+
+	useEffect(() => {if(tableRef.current) {setTableWidth(tableRef.current.offsetWidth)}}, [tableRef])
+
+	useEffect(() => {
+		
+		async function connect() {
+			await axiosPrivate.get('/game',
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).catch(() => {
+				navigate('/login', { replace: true })
+			})
+		}
+
+		connect()
+
+		const elements = document.getElementsByClassName('kniffelInput')
+		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
+
+		for(let i = 0; session.List_Players.length * session.Attributes.Columns > i; i++) {
+			calculateUpperColumn(i)
+			calculateBottomColumn(i)
+		}
+		
+		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
+		if(lastPlayer) setLastPlayer(Number(lastPlayer))
+
+		if (elements) {
+			for(const e of elements) {
+				e.addEventListener('focus', focusEvent)
+				if(inputType === 0) {
+					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
+				} else {
+					e.addEventListener('blur', removeFocusEvent)
+				}
+			}
+		}
+
+		return () => {
+			for(const e of elements) {
+				e.removeEventListener('focus', focusEvent)
+				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
+			}
+		}
+
+	}, [])
+
+	const newGame = () => {
+	
+		clearSessionStorage()
+		navigate('/creategame', { replace: true })
+	
+	}
+
+	const isIOS = () => {
+
+		let userAgent = navigator.userAgent || window.opera
+		if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {return true}
+		return false
+	
+	}
+
+
+	// __________________________________________________Gnadenwurf__________________________________________________
+	// Gnadenwurf is an extra try
 
 	let gnadenwurf = session?.List_Players?.map(() => false)
   
@@ -33,9 +104,27 @@ function Games() {
 		sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(gnadenwurf))
 	}
 
+	
 
 
 
+	// __________________________________________________InputType__________________________________________________
+
+	const [ inputType, setInputType ] = useState(Number(sessionStorage.getItem(sessionStorage_inputType)) || session?.Attributes?.InputType)
+
+	const handleInputTypeChange = (e) => {
+
+		const v = Number(e.target.value)
+		sessionStorage.setItem(sessionStorage_inputType, v)
+		setInputType(v)
+
+	}
+
+
+
+
+
+	// __________________________________________________TableGeneration__________________________________________________
 
 	const upperTable_rows = [
 		{ td:
@@ -191,12 +280,6 @@ function Games() {
 		}
 	]
 
-
-
-
-
-	useEffect(() => {if(tableRef.current) {setTableWidth(tableRef.current.offsetWidth)}}, [tableRef])
-
 	const PlayerTable = () => {
 
 		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf)) 
@@ -276,7 +359,7 @@ function Games() {
 
 												if(inputType === 1) {
 
-													e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: isMobile ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
+													e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
 														<option></option>
 														{possibleEntries.map((v) => (
 															<option key={v} value={v}>{v}</option>
@@ -323,51 +406,8 @@ function Games() {
 
 
 
-	useEffect(() => {
-		
-		async function connect() {
-			await axiosPrivate.get('/game',
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).catch(() => {
-				navigate('/login', { replace: true })
-			})
-		}
 
-		connect()
-
-		const elements = document.getElementsByClassName('kniffelInput')
-		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
-
-		for(let i = 0; session.List_Players.length * session.Attributes.Columns > i; i++) {
-			calculateUpperColumn(i)
-			calculateBottomColumn(i)
-		}
-		
-		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
-		if(lastPlayer) setLastPlayer(Number(lastPlayer))
-
-		if (elements) {
-			for(const e of elements) {
-				e.addEventListener('focus', focusEvent)
-				if(inputType === 0) {
-					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
-				} else {
-					e.addEventListener('blur', removeFocusEvent)
-				}
-			}
-		}
-
-		return () => {
-			for(const e of elements) {
-				e.removeEventListener('focus', focusEvent)
-				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
-			}
-		}
-
-	}, [])
+	// __________________________________________________Events__________________________________________________
 
 	const focusEvent = (element) => {
 
@@ -456,7 +496,7 @@ function Games() {
 
 
 
-	//__________________________________________________Calculating and endgame__________________________________________________
+	//__________________________________________________Calculating__________________________________________________
 	
 	const calculateUpperColumn = (columnIndex) => {
 	
@@ -587,7 +627,7 @@ function Games() {
 
 
 
-	//____________________SaveResults____________________
+	//__________________________________________________FinishGame/SaveResults__________________________________________________
 	
 	const saveResults = async () => {
 	
@@ -670,31 +710,14 @@ function Games() {
 	
 
 
-	const newGame = () => {
-	
-		clearSessionStorage()
-		navigate('/creategame', { replace: true })
-	
-	}
-
-
-
-
-	const handleInputTypeChange = (e) => {
-
-		const v = Number(e.target.value)
-		sessionStorage.setItem(sessionStorage_inputType, v)
-		setInputType(v)
-
-	}
-
-
+	// __________________________________________________Modal-Surrender__________________________________________________
 
 	const [askIfSurrender, setAskIfSurrender] = useState(-1)	//if -1 then dont ask, else it's the index of the 'winner'
 
-	const handleSurrender = () => {document.getElementById('modal').showModal()}
+	const handleSurrender = () => {document.getElementById('modal-surrender').showModal()}
+
 	const closeSurrender = () => {
-		document.getElementById('modal').close()
+		document.getElementById('modal-surrender').close()
 		setAskIfSurrender(-1)
 	}
 
@@ -702,40 +725,38 @@ function Games() {
 
 
 
+	// __________________________________________________Modal-Edit__________________________________________________
+
+	const [ tmpListPlayers, setTmpListPlayers ] = useState()
+
+	const modalEditClose = () => {
+		setTmpListPlayers()
+		document.getElementById('modal-edit').close()
+	}
+
+	const modalEditSave = () => {
+
+		session.List_Players = tmpListPlayers
+		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
+		window.location.reload()
+
+	}
+
+	const modalEditShow = () => {
+		setTmpListPlayers(session?.List_Players)
+		document.getElementById('modal-edit').showModal()
+	}
+
+	
+
+
+
 	return (
 		<>
-			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-				<div style={{ width: 'max-content' }}>
-					<select
-						value={inputType}
-						onChange={handleInputTypeChange}
-						style={{
-							borderRadius: '10px',
-							height: '30px',
-							padding: '5px',
-							marginLeft: '5px',
-							border: '1px solid var(--text-color)',
-							outline: 'none',
-						}}
-					>
-						<option value={1} key='1'>Auswahl</option>
-						<option value={2} key='2'>Auswahl und Eingabe</option>
-						<option value={3} key='3'>Eingabe</option>
-					</select>
-				</div>
-				<button 
-					className='button'
-					onClick={handleSurrender}
-					style={{
-						margin: '0',
-						marginRight: '5px',
-						background: 'none',
-						boxShadow: 'none',
-					}}
-				>Aufgeben</button>
-			</div>
 
-			<dialog id='modal' className='modal'>
+			{/* __________________________________________________Dialogs__________________________________________________ */}
+
+			<dialog id='modal-surrender' className='modal'>
 				<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
 						<svg onClick={closeSurrender} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 				</div>
@@ -782,6 +803,43 @@ function Games() {
 				</dl>
 			</dialog>
 
+			<dialog id='modal-edit' className='modal'>
+				<div 
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						width: '',
+					}}
+				>
+					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+						<svg onClick={modalEditClose} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+					</div>
+					
+					<h1>Bearbeiten</h1>
+
+					{/* ______________________________ChangeNames______________________________ */}
+					<dl id='enterNamesList'>
+						{tmpListPlayers?.map((p, index) => (
+							<dt className='enterNamesElement' key={index}>
+								<input
+									defaultValue={p.Name}
+									onChange={(e) => p.Name = e.target.value}
+								/>
+								<input
+									className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
+									type='color'
+									defaultValue={p.Color}
+									onChange={(e) => p.Color = e.target.value}
+								/>
+							</dt>
+						))}
+					</dl>
+
+					<button className='button' onClick={modalEditSave} style={{ width: '100%' }}>Speichern</button>
+
+				</div>
+			</dialog>
+
 			<dialog id='modal-nextPlayer' className='modal'>
 				<p style={{ fontSize: '22px', marginTop: '20px' }}>
 					{lastPlayerIndex === -1 
@@ -801,6 +859,45 @@ function Games() {
 				<p id='message-invalidnumber' style={{ fontSize: '22px', marginTop: '20px' }}></p>
 				<button className='button' onClick={() => document.getElementById('modal-invalidnumber').close()}>Ok</button>
 			</dialog>
+
+
+
+
+
+			{/* __________________________________________________Page__________________________________________________ */}
+
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<select
+					value={inputType}
+					onChange={handleInputTypeChange}
+					style={{
+						borderRadius: '10px',
+						height: '30px',
+						padding: '5px',
+						marginLeft: '5px',
+						marginRight: '10px',
+						border: '1px solid var(--text-color)',
+						outline: 'none',
+					}}
+				>
+					<option value={1} key='1'>Auswahl</option>
+					<option value={2} key='2'>Auswahl und Eingabe</option>
+					<option value={3} key='3'>Eingabe</option>
+				</select>
+
+				<svg onClick={modalEditShow} width='25' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+
+				<button 
+					className='button'
+					onClick={handleSurrender}
+					style={{
+						margin: '0',
+						marginRight: '5px',
+						background: 'none',
+						boxShadow: 'none',
+					}}
+				>Aufgeben</button>
+			</div>
 
 			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
@@ -830,6 +927,7 @@ function Games() {
 					}}
 				>Spiel beenden</button>
 			</div>
+
 		</>
 	)
 }

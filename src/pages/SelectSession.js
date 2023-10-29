@@ -63,21 +63,61 @@ function SelectSession() {
 	const sortByTimestampDesc = (a, b) => {
 		return new Date(b.Attributes.LastPlayed) - new Date(a.Attributes.LastPlayed)
 	}
+	
+
+
+
+
+	// __________________________________________________ListElement__________________________________________________
+
+	const listElementClick = (element) => {
+		
+		const i = element.target.closest('dt').getAttribute('index')
+		sessionStorage.setItem(sessionStorage_session, JSON.stringify(list[i]))
+		navigate('/sessionpreview', { replace: false })
+
+	}
+
+	const checkboxClick = (index, checked) => {
+
+		list_checkbox[index] = checked
+
+		let counter = 0
+		for(let i = 0; list_checkbox.length > i; i++) {
+			if(list_checkbox[i]) {
+				counter++
+				setSession(list[i])
+			}
+		}
+		setSettingsDisabled(counter !== 1)
+
+		if(checked) {
+			setTrashcanDisabled(false)
+		} else {
+			for(const e of list_checkbox) {
+				if(e) return
+			}
+			setTrashcanDisabled(true)
+		}
+
+	}
 
 
 
 
 
-	const handleDelete = async () => {
+	// __________________________________________________Modal-Delete__________________________________________________
+
+	const modalDeleteShow = async () => {
 
 		if(trashcanDisabled) return
 		document.getElementById('modal-delete').showModal()
 		
 	}
 
-	const submitDelete = async () => {
+	const modalDeleteSubmit = async () => {
 
-		cancelDelete()
+		modalDeleteClose()
 		setLoaderVisible(true)
 
 		for(let i = 0; list_checkbox.length > i; i++) {
@@ -102,51 +142,29 @@ function SelectSession() {
 
 	}
 
-	const cancelDelete = () => {document.getElementById('modal-delete').close()}
-
-
-
-
-
-	const handleClick = (element) => {
-		
-		const i = element.target.closest('dt').getAttribute('index')
-		
-		sessionStorage.setItem(sessionStorage_session, JSON.stringify(list[i]))
-
-		navigate('/sessionpreview', { replace: false })
-
+	const modalDeleteClose = () => {
+		document.getElementById('modal-delete').close()
 	}
 
 
 
 
 
-	const handleCheckbox = (index, checked) => {
+	// __________________________________________________Modal-Edit__________________________________________________
 
-		list_checkbox[index] = checked
+	const [columns, setColumns] = useState('')
+	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
+	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
 
-		let counter = 0
-		for(let i = 0; list_checkbox.length > i; i++) {
-			if(list_checkbox[i]) {
-				counter++
-				setSession(list[i])
-			}
-		}
-		setSettingsDisabled(counter !== 1)
+	const modalEditHandleColumnChange = (event) => {
 
-		if(checked) {
-			setTrashcanDisabled(false)
-		} else {
-			for(const e of list_checkbox) {
-				if(e) return
-			}
-			setTrashcanDisabled(true)
-		}
+		const intValue = event.target.value
+		if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
+		setColumns(intValue)
 
 	}
 
-	const edit = () => {
+	const modalEditShow = () => {
 
 		const tmp = []
 
@@ -160,14 +178,14 @@ function SelectSession() {
 
 	}
 
-	const handleClose = () => {
+	const modalEditClose = () => {
 		
 		setList_Session([])
 		setColumns('')
 		document.getElementById('modal').close()
 	}
 
-	const handleSave = async () => {
+	const modalEditSave = async () => {
 
 		setDialog_loaderVisible(true)
 
@@ -186,7 +204,7 @@ function SelectSession() {
 		).then((res) => {
 			if(res.status === 204) {
 				setSuccessfullyUpdatedVisible(true)
-				handleClose()
+				modalEditClose()
 				request()
 			}
 		}).catch((err) => {
@@ -198,25 +216,15 @@ function SelectSession() {
 	}
 
 
-	const [columns, setColumns] = useState('')
-	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
-	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
-
-	const handleColumnChange = (event) => {
-
-		const intValue = event.target.value
-		if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
-		setColumns(intValue)
-
-	}
-
-
 
 
 
 	return (
 		<>
-			<dialog id='modal' className='modal'>
+
+			{/* __________________________________________________Dialogs__________________________________________________ */}
+
+			<dialog id='modal-edit' className='modal'>
 				<div 
 					style={{
 						display: 'flex',
@@ -225,7 +233,7 @@ function SelectSession() {
 					}}
 				>
 					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={handleClose} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+						<svg onClick={modalEditClose} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 					
 					<h1>Bearbeiten</h1>
@@ -237,7 +245,7 @@ function SelectSession() {
 						{isMobile ? (
 							<select
 								className='input-mobile'
-								onChange={handleColumnChange}
+								onChange={modalEditHandleColumnChange}
 								value={columns}
 								>
 								<option value='' disabled>
@@ -253,7 +261,7 @@ function SelectSession() {
 									className='input-computer' 
 									list='columns'
 									placeholder={session?.Attributes?.Columns}
-									onChange={handleColumnChange}
+									onChange={modalEditHandleColumnChange}
 									value={columns}
 								/>
 								<datalist id='columns'>
@@ -291,7 +299,7 @@ function SelectSession() {
 						<span/>
 					</div>
 
-					<button className='button' onClick={handleSave} style={{ width: '100%' }}>Speichern</button>
+					<button className='button' onClick={modalEditSave} style={{ width: '100%' }}>Speichern</button>
 
 				</div>
 			</dialog>
@@ -301,14 +309,14 @@ function SelectSession() {
 				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 					<button 
 						className='button' 
-						onClick={submitDelete}
+						onClick={modalDeleteSubmit}
 						style={{
 							width: '50%',
 						}}
 					>Ja</button>
 					<button 
 						className='button' 
-						onClick={cancelDelete}
+						onClick={modalDeleteClose}
 						style={{
 							backgroundColor: 'rgb(255, 0, 0)',
 							color: 'white',
@@ -317,14 +325,20 @@ function SelectSession() {
 				</div>
 			</dialog>
 
+
+
+
+
+			{/* __________________________________________________Page__________________________________________________ */}
+
 			<div className={`trashcan-container`}>
-				<svg style={{ marginLeft: '12px', marginRight: '3px' }} className={`${list.length === 0 ? 'notVisible' : (trashcanDisabled ? 'disabled' : '')}`} onClick={handleDelete} width='25' viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/></g></svg>
+				<svg style={{ marginLeft: '12px', marginRight: '3px' }} className={`${list.length === 0 ? 'notVisible' : (trashcanDisabled ? 'disabled' : '')}`} onClick={modalDeleteShow} width='25' viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/></g></svg>
 				<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
 					<span/>
 					<span/>
 					<span/>
 				</div>
-				<svg style={{ marginRight: '15px' }} className={`${list.length === 0 ? 'notVisible' : (settingsDisabled ? 'disabled' : '')}`} onClick={edit} width='25' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+				<svg style={{ marginRight: '15px' }} className={`${list.length === 0 ? 'notVisible' : (settingsDisabled ? 'disabled' : '')}`} onClick={modalEditShow} width='25' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
 			</div>
 
 			<div style={{ display: successfullyUpdatedVisible ? 'flex' : 'none', justifyContent: 'center', marginTop: '10px' }}>
@@ -344,9 +358,9 @@ function SelectSession() {
 				) : (
 					list.map((s, i) => (
 						<dt className='listElement' index={i} key={i}>
-							<input className='checkbox-delete' style={isMobile ? { marginTop: '7px' } : {}} type='checkbox' onChange={(e) => handleCheckbox(i, e.target.checked)} />
+							<input className='checkbox-delete' style={isMobile ? { marginTop: '7px' } : {}} type='checkbox' onChange={(e) => checkboxClick(i, e.target.checked)} />
 
-							<div className='container' onClick={handleClick}>
+							<div className='container' onClick={listElementClick}>
 								<label className='label'>
 									{s.List_Players.map((p) => p.Name).join(' vs ')}
 								</label>

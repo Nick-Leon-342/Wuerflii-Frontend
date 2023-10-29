@@ -13,8 +13,14 @@ function SessionPreview() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
+
 	const [finalScores, setFinalScores] = useState()
 	const [loaderVisible, setLoaderVisible] = useState(false)
+
+	const firstColumnWidth = '150px'
+	const firstColumnStyle = { width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
+	const columnWidth = session?.List_Players?.length > 8 ? '75px' : (session?.List_Players?.length > 4 ? '125px' : '200px')
+	const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 	
 
@@ -54,6 +60,10 @@ function SessionPreview() {
 
 	}, [])
 	
+
+
+
+
 	const back = () => {
 	
 		clearSessionStorage()
@@ -61,16 +71,13 @@ function SessionPreview() {
 	
 	}
 
-	const firstColumnWidth = '150px'
-	const firstColumnStyle = { width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
-	const columnWidth = session?.List_Players?.length > 8 ? '75px' : (session?.List_Players?.length > 4 ? '125px' : '200px')
-	const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 
 
-
+	
 	return (
 		<>
+
 			<table className='table'>
 				<tbody>
 					<tr>
@@ -114,6 +121,7 @@ function SessionPreview() {
 					<Link to='/selectsession' onClick={back}>Zurück</Link>
 				</p>
 			</div>
+
 		</>
 	)
 }

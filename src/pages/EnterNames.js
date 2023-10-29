@@ -21,16 +21,24 @@ function EnterNames() {
 	const [names, setNames] = useState(players.map((p) => `Player_${p + 1}`))
 	const [colors, setColors] = useState(players.map((p) => (p % 2 === 0 ? '#ffffff' : '#ADD8E6')))
   
+
+
+
+
 	const handleNameChange = (index, n) => {
+
 		const updatedNames = [...names]
 		updatedNames[index] = n
 		setNames(updatedNames)
+
 	}
   
 	const handleColorChange = (index, c) => {
+
 		const updatedColors = [...colors]
 		updatedColors[index] = c
 		setColors(updatedColors)
+
 	}
 
 	useEffect(() => {
@@ -56,6 +64,10 @@ function EnterNames() {
 
 	}, [])
 
+
+
+
+
 	const play = () => {
 
 		const attributes = createAttributes(columns)
@@ -74,12 +86,19 @@ function EnterNames() {
 	}
 
 	const clear = () => {
+
 		sessionStorage.removeItem(sessionStorage_players)
 		sessionStorage.removeItem(sessionStorage_attributes)
+
 	}
+
+
+
+
 
 	return (
 		<>
+		
 			<dl id='enterNamesList'>
 				{players.map((p, index) => (
 					<dt className='enterNamesElement' key={index}>
@@ -104,6 +123,7 @@ function EnterNames() {
 					<Link onClick={clear} to='/creategame'>Zurück</Link>
 				</p>
 			</div>
+
 		</>
 	)
 }

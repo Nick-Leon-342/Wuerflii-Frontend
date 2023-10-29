@@ -68,6 +68,7 @@ const Login = () => {
 	
     return (
 		<>
+
 			<h1>Anmeldung</h1>
 
 			<form onSubmit={handleSubmit}>
@@ -130,6 +131,7 @@ const Login = () => {
 					<Link to='/registration'>Erstellen</Link>
 				</span>
 			</p>
+			
 		</>
     )
 }

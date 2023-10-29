@@ -9,18 +9,23 @@ import { sessionStorage_players, sessionStorage_winner, clearSessionStorage } fr
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
+
+
+
 function EndScreen() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	let players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
-	let winner = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
+
+	const players = JSON.parse(sessionStorage.getItem(sessionStorage_players))
+	const winner = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
+
 	const [header, setHeader] = useState('')
 
-	
-	
-	
-	
+
+
+
+
 	useEffect(() => {
 
 		async function connect() {
@@ -54,7 +59,11 @@ function EndScreen() {
 		}
 
 	}, [])
-	
+
+
+
+
+
 	const ok = () => {
 		
 		clearSessionStorage()
@@ -62,14 +71,13 @@ function EndScreen() {
 	
 	}
 
-	
 
 
 
-	
 
 	return (
 		<>
+		
 			<div className='button-container'><label className='winner'>
 				{header}
 			</label></div>
@@ -94,6 +102,7 @@ function EndScreen() {
 			</table>
 
 			<button className='button' style={{ width: '100%' }} onClick={ok}>Ok</button>
+
 		</>
 	)
 }

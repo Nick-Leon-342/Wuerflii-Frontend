@@ -91,9 +91,11 @@ dialog::backdrop {
 	outline: none;
 	margin-top: 20px;
 	margin-bottom: 20px;
+	transition: all .25s ease;
 }
 
 .button:hover {
+	transform: scale(1.05);
     background-color: rgb(0, 245, 0);
 }
 
