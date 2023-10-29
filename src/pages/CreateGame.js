@@ -7,7 +7,7 @@ import './css/CreateGame.css'
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { sessionStorage_attributes, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX } from './utils'
+import { sessionStorage_attributes, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX, clearSessionStorage, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS } from './utils-env'
@@ -53,6 +53,8 @@ function CreateGame() {
 
 		connect()
 
+		sessionStorage.getItem(sessionStorage_session) && document.getElementById('modal-switchtogame').showModal()
+
 	}, [])
 
 	
@@ -86,6 +88,9 @@ function CreateGame() {
 	}
 
 
+
+
+
 	//____________________Columns____________________
 
 	const maxColumns = REACT_APP_MAX_COLUMNS || 10
@@ -110,6 +115,9 @@ function CreateGame() {
 		})
 
 	}
+
+
+
 
 
 	const [ infoName, setInfoName ] = useState(false)
@@ -174,6 +182,11 @@ function CreateGame() {
 
 		setLoaderVisible(false)
 
+	}
+
+	const handleCancel = () => {
+		clearSessionStorage()
+		document.getElementById('modal-switchtogame').close()
 	}
 
 
@@ -289,6 +302,27 @@ function CreateGame() {
 					
 					<div className='logout'><button className='logout-button' onClick={logout}>Ausloggen</button></div>
 
+				</div>
+			</dialog>
+
+			<dialog id='modal-switchtogame' className='modal'>
+				<p style={{ fontSize: '22px', }}>Es wurde ein Spiel gefunden.{<br/>}Soll es geladen werden?</p>
+				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+					<button 
+						className='button' 
+						onClick={() => navigate('/game', { replace: true })}
+						style={{
+							width: '50%',
+						}}
+					>Ja</button>
+					<button 
+						className='button' 
+						onClick={handleCancel}
+						style={{
+							backgroundColor: 'rgb(255, 0, 0)',
+							color: 'white',
+						}}
+					>Abbrechen</button>
 				</div>
 			</dialog>
 

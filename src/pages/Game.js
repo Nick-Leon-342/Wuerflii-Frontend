@@ -5,6 +5,7 @@ import './css/Game.css'
 
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
@@ -275,7 +276,7 @@ function Games() {
 
 												if(inputType === 1) {
 
-													e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: '20px' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
+													e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: isMobile ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
 														<option></option>
 														{possibleEntries.map((v) => (
 															<option key={v} value={v}>{v}</option>
@@ -735,51 +736,50 @@ function Games() {
 			</div>
 
 			<dialog id='modal' className='modal'>
-					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+				<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
 						<svg onClick={closeSurrender} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+				</div>
+
+				<h1>Gewinner auswählen</h1>
+				<div style={{ display: askIfSurrender !== -1 ? '' : 'none' }}>
+				<label style={{ fontSize: '22px', }}>{`Sicher, dass ${session?.List_Players[askIfSurrender]?.Name} gewinnen soll?`}</label>
+					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+						<button 
+							className='button' 
+							onClick={saveResults}
+							style={{
+								width: '50%',
+							}}
+						>Ja</button>
+						<button 
+							className='button' 
+							onClick={closeSurrender}
+							style={{
+								backgroundColor: 'rgb(255, 0, 0)',
+								color: 'white',
+							}}
+						>Abbrechen</button>
 					</div>
-					<h1>Gewinner auswählen</h1>
+				</div>
 
-					<div style={{ display: askIfSurrender !== -1 ? '' : 'none' }}>
-						<label style={{ fontSize: '22px', }}>{`Sicher, dass ${session?.List_Players[askIfSurrender]?.Name} gewinnen soll?`}</label>
-						<div style={{ display: 'flex', justifyContent: 'space-around' }}>
-							<button 
-								className='button' 
-								onClick={saveResults}
+				<dl>
+					{session?.List_Players?.map((p, i) => (
+						<dt 
+							className='listElement' 
+							onClick={() => setAskIfSurrender(i)} 
+							key={i}
+							style={{
+								padding: '10px',
+							}}
+						>
+							<label
 								style={{
-									width: '50%',
+									fontSize: '20px',
 								}}
-							>Ja</button>
-							<button 
-								className='button' 
-								onClick={closeSurrender}
-								style={{
-									backgroundColor: 'rgb(255, 0, 0)',
-									color: 'white',
-								}}
-							>Abbrechen</button>
-						</div>
-					</div>
-
-					<dl>
-						{session?.List_Players?.map((p, i) => (
-							<dt 
-								className='listElement' 
-								onClick={() => setAskIfSurrender(i)} 
-								key={i}
-								style={{
-									padding: '10px',
-								}}
-							>
-								<label
-									style={{
-										fontSize: '20px',
-									}}
-								>{p.Name}</label>
-							</dt>
-						))}
-					</dl>
-
+							>{p.Name}</label>
+						</dt>
+					))}
+				</dl>
 			</dialog>
 
 			<dialog id='modal-nextPlayer' className='modal'>
