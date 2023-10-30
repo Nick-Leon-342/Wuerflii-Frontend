@@ -9,6 +9,7 @@ import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
 
 
@@ -763,7 +764,7 @@ function Games() {
 
 		session.List_Players = tmpListPlayers
 		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
-		window.location.reload()
+		modalEditClose()
 
 	}
 
@@ -771,6 +772,18 @@ function Games() {
 		setTmpListPlayers(session?.List_Players)
 		document.getElementById('modal-edit').showModal()
 	}
+
+	const handleOnDragEnd = (result) => {
+
+		if(!result.destination) return
+		const tmp = [...tmpListPlayers]
+		const [item] = tmp.splice(result.source.index, 1)
+		tmp.splice(result.destination.index, 0, item)
+
+		setTmpListPlayers(tmp)
+
+	}
+
 
 	
 
@@ -843,22 +856,42 @@ function Games() {
 					<h1>Bearbeiten</h1>
 
 					{/* ______________________________ChangeNames______________________________ */}
-					<dl id='enterNamesList'>
-						{tmpListPlayers?.map((p, index) => (
-							<dt className='enterNamesElement' key={index}>
-								<input
-									defaultValue={p.Name}
-									onChange={(e) => p.Name = e.target.value}
-								/>
-								<input
-									className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
-									type='color'
-									defaultValue={p.Color}
-									onChange={(e) => p.Color = e.target.value}
-								/>
-							</dt>
-						))}
-					</dl>
+					{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
+
+					{tmpListPlayers && <DragDropContext onDragEnd={handleOnDragEnd}>
+						<Droppable droppableId='editplayers'>
+							{(provided) => (
+								<ul {...provided.droppableProps} ref={provided.innerRef} style={{ padding: '0' }}>
+									{tmpListPlayers.map((p, index) => (
+										<Draggable key={p.Alias} draggableId={p.Alias} index={index}>
+											{(provided) => (
+												<li
+													{...provided.draggableProps}
+													{...provided.dragHandleProps}
+													ref={provided.innerRef}
+													className='enterNamesElement'
+												>
+													<svg style={{ marginLeft: '20px', marginRight: '15px' }} height="10px" viewBox="-0.5 -0.5 741 450"><g><rect x="0" y="0" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/><rect x="0" y="260" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/></g></svg>
+													<input
+														defaultValue={p.Name}
+														onChange={(e) => p.Name = e.target.value}
+														
+													/>
+													<input
+														className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
+														type='color'
+														defaultValue={p.Color}
+														onChange={(e) => p.Color = e.target.value}
+													/>
+												</li>
+											)}
+										</Draggable>
+									))}
+									{provided.placeholder}
+								</ul>
+							)}
+						</Droppable>
+					</DragDropContext>}
 
 					<button className='button' onClick={modalEditSave} style={{ width: '100%' }}>Speichern</button>
 
