@@ -126,20 +126,22 @@ function Games() {
 
 	// __________________________________________________TableGeneration__________________________________________________
 
+	const thickBorder = '2px solid var(--text-color)'
+
 	const upperTable_rows = [
 		{ td:
 			<>
-				<td>
+				<td style={{ borderLeft: thickBorder, borderTop: thickBorder }}>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td><label>Nur Einser<br/>zählen</label></td>
+				<td style={{ borderTop: thickBorder }}><label>Nur Einser<br/>zählen</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>
+				<td style={{ borderLeft: thickBorder }}>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
@@ -149,7 +151,7 @@ function Games() {
 		},
 		{ td:
 			<>
-				<td>
+				<td style={{ borderLeft: thickBorder }}>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
@@ -159,7 +161,7 @@ function Games() {
 		},
 		{ td:
 			<>
-				<td>
+				<td style={{ borderLeft: thickBorder }}>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
@@ -169,7 +171,7 @@ function Games() {
 		},
 		{ td:
 			<>
-				<td>
+				<td style={{ borderLeft: thickBorder }}>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='555' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
@@ -179,17 +181,17 @@ function Games() {
 		},
 		{ td:
 			<>
-				<td>
+				<td style={{ borderLeft: thickBorder, borderBottom: thickBorder }}>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='860' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='860' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 					<svg className='kniffelImage' viewBox='-0.5 -0.5 1110 1110'><rect x='30' y='30' width='1050' height='1050' rx='157.5' ry='157.5' fill='none' strokeWidth='60' pointerEvents='all'/><ellipse cx='860' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='555' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='844.5' rx='100' ry='100' pointerEvents='all'/><ellipse cx='250' cy='270' rx='100' ry='100' pointerEvents='all'/><ellipse cx='860' cy='270' rx='100' ry='100' pointerEvents='all'/></svg>
 				</td>
-				<td><label>Nur Sechser<br/>zählen</label></td>
+				<td style={{ borderBottom: thickBorder }}><label>Nur Sechser<br/>zählen</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>gesamt</td>
+				<td style={{ borderLeft: thickBorder }}>gesamt</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' strokeMiterlimit='10' pointerEvents='all'/></svg>
 				</td>
@@ -197,14 +199,14 @@ function Games() {
 		},
 		{ td:
 			<>
-				<td>Bonus bei 63<br/>oder mehr</td>
+				<td style={{ borderLeft: thickBorder }}>Bonus bei 63<br/>oder mehr</td>
 				<td>plus 35</td>
 			</>
 		},
 		{ td:
 			<>
-				<td>gesamt<br/>oberer Teil</td>
-				<td>
+				<td style={{ borderLeft: thickBorder, borderBottom: thickBorder }}>gesamt<br/>oberer Teil</td>
+				<td style={{ borderBottom: thickBorder }}>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' strokeMiterlimit='10' pointerEvents='all'/></svg>
 				</td>
 			</>
@@ -214,49 +216,49 @@ function Games() {
 	const bottomTable_rows = [
 		{ td:
 			<>
-				<td><label>Dreiferpasch</label></td>
+				<td style={{ borderLeft: thickBorder, borderTop: thickBorder }}><label>Dreiferpasch</label></td>
+				<td style={{ borderTop: thickBorder }}><label>alle Augen<br/>zählen</label></td>
+			</>
+		},
+		{ td:
+			<>
+				<td style={{ borderLeft: thickBorder }}><label>Viererpasch</label></td>
 				<td><label>alle Augen<br/>zählen</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td><label>Viererpasch</label></td>
-				<td><label>alle Augen<br/>zählen</label></td>
-			</>
-		},
-		{ td:
-			<>
-				<td><label>Full-House</label></td>
+				<td style={{ borderLeft: thickBorder }}><label>Full-House</label></td>
 				<td><label>25<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td><label>Kleine Straße</label></td>
+				<td style={{ borderLeft: thickBorder }}><label>Kleine Straße</label></td>
 				<td><label>30<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td><label>Große Straße</label></td>
+				<td style={{ borderLeft: thickBorder }}><label>Große Straße</label></td>
 				<td><label>40<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td><label>Kniffel</label></td>
+				<td style={{ borderLeft: thickBorder }}><label>Kniffel</label></td>
 				<td><label>50<br/>Punkte</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td><label>Chance</label></td>
-				<td><label>alle Augen<br/>zählen</label></td>
+				<td style={{ borderLeft: thickBorder, borderBottom: thickBorder }}><label>Chance</label></td>
+				<td style={{ borderBottom: thickBorder }}><label>alle Augen<br/>zählen</label></td>
 			</>
 		},
 		{ td:
 			<>
-				<td>gesamt<br/>unterer Teil</td>
+				<td style={{ borderLeft: thickBorder }}>gesamt<br/>unterer Teil</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' strokeMiterlimit='10' pointerEvents='all'/></svg>
 				</td>
@@ -264,7 +266,7 @@ function Games() {
 		},
 		{ td:
 			<>
-				<td>gesamt<br/>oberer Teil</td>
+				<td style={{ borderLeft: thickBorder }}>gesamt<br/>oberer Teil</td>
 				<td>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' strokeMiterlimit='10' pointerEvents='all'/></svg>
 				</td>
@@ -272,8 +274,8 @@ function Games() {
 		},
 		{ td:
 			<>
-				<td>Endsumme</td>
-				<td>
+				<td style={{ borderLeft: thickBorder, borderBottom: thickBorder }}>Endsumme</td>
+				<td style={{ borderBottom: thickBorder }}>
 					<svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' strokeMiterlimit='10' pointerEvents='all'/></svg>
 				</td>
 			</>
@@ -289,12 +291,12 @@ function Games() {
 			<table id={id_playerTable} className='table playerTable' style={{ width: tableWidth, maxWidth: tableWidth }}>
 				<tbody>
 					<tr>
-						<td>
+						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderTop: thickBorder }}>
 							<span>Spieler </span>
 							<svg onClick={() => document.getElementById('modal-nextPlayer').showModal()} height='18' viewBox='0 -960 960 960'><path d='M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>
 						</td>
 						{session?.List_Players?.map((p, i) => (
-							<td key={i}>
+							<td key={i} style={{ borderTop: thickBorder, borderRight: thickBorder }}>
 								<span style={{ 
 									fontWeight: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'bold' : '',
 									color: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'rgb(0, 255, 0)' : '',
@@ -305,15 +307,15 @@ function Games() {
 						))}
 					</tr>
 					<tr>
-						<td>Spieler gesamt</td>
+						<td style={{ borderLeft: thickBorder, borderRight: thickBorder }}>Spieler gesamt</td>
 						{session?.List_Players?.map((p, i) => (
-							<td key={i}><label>0</label></td>
+							<td key={i} style={{ borderRight: thickBorder }}><label>0</label></td>
 						))}
 					</tr>
 					<tr>
-						<td>Gnadenwurf</td>
+						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderBottom: thickBorder }}>Gnadenwurf</td>
 						{session?.List_Players?.map((p, i) => (
-							<td key={i} ><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[i]} onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} /></td>
+							<td key={i} style={{ borderBottom: thickBorder, borderRight: thickBorder }}><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[i]} onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} /></td>
 						))}
 					</tr>
 				</tbody>
@@ -348,7 +350,7 @@ function Games() {
 												row: currentRowIndex,
 												onInput: inputEvent,
 												defaultValue: sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + currentRowIndex + '.' + (currentColumnIndex  + (currentPlayerIndex * session.Attributes.Columns))),
-												style: { backgroundColor: player.Color },
+												style: { backgroundColor: player.Color,  },
 											}
 
 											const id = `${tableID}_${currentRowIndex}`
@@ -383,11 +385,34 @@ function Games() {
 												}
 
 											} else {
+
 												e = <label {...css}/>
+
+												return (
+													<td 
+														key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} 
+														style={{ 
+															backgroundColor: player.Color, 
+															borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
+															borderRight: currentColumnIndex === session?.Attributes?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
+															borderBottom: currentRowIndex === rows.length - 1 ? thickBorder : '1px solid var(--text-color-light)',
+														}}>
+														{e}
+													</td>
+												)
+
 											}
 
 											return (
-												<td key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} style={{ backgroundColor: player.Color }}>
+												<td 
+													key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} 
+													style={{ 
+														backgroundColor: player.Color, 
+														borderTop: currentRowIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
+														borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
+														borderRight: currentColumnIndex === session?.Attributes?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
+														borderBottom: currentRowIndex === rows.length - 4 ? thickBorder : '1px solid var(--text-color-light)', 
+													}}>
 													{e}
 												</td>
 											)
@@ -648,29 +673,29 @@ function Games() {
 		const playerScores = []
 		for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent)}
 	
-		let winnerIndex = [0] //It's possible that multiple players have the same score, therefore an array
+		let list_winner = [0] //It's possible that multiple players have the same score, therefore an array
 	
 		if(askIfSurrender !== -1) {
 
-			winnerIndex.length = 0
-			winnerIndex.push(askIfSurrender)
+			list_winner.length = 0
+			list_winner.push(askIfSurrender)
 
 		} else {
 
 			for(let i = 1; session.List_Players.length > i; i++) {
 				if(playerScores[i] != null) {
-					if(playerScores[i] > playerScores[winnerIndex[0]]) {
-						winnerIndex.length = 0
-						winnerIndex.push(i)
-					} else if (playerScores[i] === playerScores[winnerIndex[0]]) {
-						winnerIndex.push(i)
+					if(playerScores[i] > playerScores[list_winner[0]]) {
+						list_winner.length = 0
+						list_winner.push(i)
+					} else if (playerScores[i] === playerScores[list_winner[0]]) {
+						list_winner.push(i)
 					}
 				}
 			}
 
 		}
 	
-		for(const i of winnerIndex) {session.List_Players[i].Wins++}
+		for(const i of list_winner) {session.List_Players[i].Wins++}
 	
 	
 		//____________________Attributes____________________
@@ -679,7 +704,7 @@ function Games() {
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, askIfSurrender !== -1)
+		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, askIfSurrender !== -1, list_winner)
 	
 		const json = JSON.stringify({ 
 			id: session.id,
@@ -697,7 +722,7 @@ function Games() {
 		)
 	
 	
-		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(winnerIndex))
+		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winner))
 		sessionStorage.setItem(sessionStorage_players, JSON.stringify(session.List_Players))
 		sessionStorage.removeItem(sessionStorage_session)
 		

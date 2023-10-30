@@ -11,6 +11,7 @@ import EnterNames from './pages/EnterNames'
 
 import SelectSession from './pages/SelectSession'
 import SessionPreview from './pages/SessionPreview'
+import SessionAnalytics from './pages/SessionAnalytics'
 
 import Game from './pages/Game'
 import EndScreen from './pages/EndScreen'
@@ -40,6 +41,7 @@ function App() {
 							
 							<Route path='/SelectSession' element={<SelectSession />} />
 							<Route path='/SessionPreview' element={<SessionPreview />} />
+							<Route path='/SessionAnalytics' element={<SessionAnalytics />} />
 							
 							<Route path='/Game' element={<Game />} />
 							<Route path='/EndScreen' element={<EndScreen />} />

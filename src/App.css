@@ -14,7 +14,9 @@
 }
 
 :root {
-	--text-color: rgb(100, 100, 100)
+	--text-color: rgb(100, 100, 100);
+	--text-color-light: rgb(150, 150, 150);
+	/* --text-color-light: rgb(200, 200, 200); */
 }
 
 body {
