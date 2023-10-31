@@ -7,7 +7,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, clearSessionStorageTables, sessionStorage_gnadenwurf, sessionStorage_upperTable_substring, sessionStorage_bottomTable_substring, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
+import { substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, sessionStorage_gnadenwurf, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
@@ -21,7 +21,8 @@ function Games() {
 	const tableRef = useRef(null)
 	const axiosPrivate = useAxiosPrivate()
 
-	const [ columnsSum ] = useState([])
+	const columnsSum = useState([])
+	const tableColumns = useState([])
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
 
@@ -52,8 +53,8 @@ function Games() {
 		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
 
 		for(let i = 0; session.List_Players.length * session.Attributes.Columns > i; i++) {
-			calculateUpperColumn(i)
-			calculateBottomColumn(i)
+			// calculateUpperColumn(i)
+			// calculateBottomColumn(i)
 		}
 		
 		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
@@ -98,11 +99,23 @@ function Games() {
 	// __________________________________________________Gnadenwurf__________________________________________________
 	// Gnadenwurf is an extra try
 
-	let gnadenwurf = session?.List_Players?.map(() => false)
+	const [gnadenwurf, setGnadenwurf] = useState(() => {
+			const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
+			if(g) return g
+			const tmp = {}
+			session?.List_Players?.map((p) => (
+				tmp[p.Alias] = false
+			))
+			return tmp
+		})
   
-	const handleGnadenwurfChange = (index, g) => {
-		gnadenwurf[index] = g
-		sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(gnadenwurf))
+	const handleGnadenwurfChange = (alias, checked) => {
+
+		const g = {...gnadenwurf}
+		g[alias] = checked
+		setGnadenwurf(g)
+		sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(g))
+
 	}
 
 	
@@ -285,9 +298,6 @@ function Games() {
 
 	const PlayerTable = () => {
 
-		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf)) 
-		gnadenwurf = g ? g : session?.List_Players?.map(() => false)
-
 		return (
 			<table id={id_playerTable} className='table playerTable' style={{ width: tableWidth, maxWidth: tableWidth }}>
 				<tbody>
@@ -316,7 +326,7 @@ function Games() {
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderBottom: thickBorder }}>Gnadenwurf</td>
 						{session?.List_Players?.map((p, i) => (
-							<td key={i} style={{ borderBottom: thickBorder, borderRight: thickBorder }}><input className='checkbox' type='checkbox' defaultChecked={gnadenwurf[i]} onChange={(e) => handleGnadenwurfChange(i, e.target.checked)} /></td>
+							<td key={i} style={{ borderBottom: thickBorder, borderRight: thickBorder }}><input className='checkbox' type='checkbox' checked={gnadenwurf[p.Alias]} onChange={(e) => handleGnadenwurfChange(p.Alias, e.target.checked)} /></td>
 						))}
 					</tr>
 				</tbody>
@@ -326,9 +336,36 @@ function Games() {
 	}
 
 	const Table = (rows, tableID) => {
+		
+		if(tableID === id_upperTable) columnsSum.length = 0
+
+		if(tableColumns.length !== ( session?.List_Players?.length * session?.Attributes?.Columns * 2 ))
+		for(const p of session?.List_Players) {
+			for(let c = 0; session?.Attributes?.Columns > c; c++) {
+
+				let tmp = JSON.parse(sessionStorage.getItem(substring_sessionStorage + p.Alias + '_' + tableID + '_' + c))
+				if(!tmp) {
+					tmp = {
+						Alias: p.Alias,
+						Column: c,
+						TableID: tableID,
+					}
+
+					for(let r = 0; rows.length - 3 > r; r++) {
+						tmp[r] = null
+					}
+				}
+
+				tableColumns.push(tmp)
+
+				if(tableID === id_upperTable) {
+					columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
+				}
+
+			}
+		}
 
 		const columns = Array.from({ length: session?.Attributes?.Columns }, (_, index) => index)
-		if(columnsSum.length === 0 && tableID === id_upperTable) for(let i = 0; session?.List_Players?.length * session?.Attributes?.Columns > i; i++) {columnsSum.push({Upper: 0, Bottom: 0, All: 0})}
 
 		return (
 			<table id={tableID} className='table' ref={tableRef}>
@@ -346,12 +383,13 @@ function Games() {
 												inputMode: 'numeric',
 												tableid: tableID,
 												appearance: 'none',
-												column: currentColumnIndex + (currentPlayerIndex * session.Attributes.Columns),
-												playerindex: currentPlayerIndex,
+												column: currentColumnIndex,
 												row: currentRowIndex,
+												playerindex: currentPlayerIndex,
+												alias: player.Alias,
 												onInput: inputEvent,
-												defaultValue: sessionStorage.getItem((tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + currentRowIndex + '.' + (currentColumnIndex  + (currentPlayerIndex * session.Attributes.Columns))),
-												style: { backgroundColor: player.Color,  },
+												defaultValue: getDefaultValue( tableID, player.Alias, currentColumnIndex, currentRowIndex ),
+												style: { backgroundColor: player.Color },
 											}
 
 											const id = `${tableID}_${currentRowIndex}`
@@ -429,6 +467,14 @@ function Games() {
 
 	}
 
+	const getDefaultValue = (tableID, alias, column, row) => {
+		for(const c of tableColumns) {
+			if(c.TableID === tableID && c.Alias === alias && c.Column === column) {
+				return c[row]
+			}
+		}
+	}
+
 
 
 
@@ -468,18 +514,19 @@ function Games() {
 
 		const e = element.target
 		if(e) {
-			const id = e.getAttribute('tableid')
+			const tableID = e.getAttribute('tableid')
 			const row = Number(e.getAttribute('row'))
 			const column = Number(e.getAttribute('column'))
-			const playerIndex = Number(e.getAttribute('playerindex'))
+			const alias = e.getAttribute('alias')
+			const playerindex = Number(e.getAttribute('playerindex'))
 
 			let value = e.value
-			const r = (id === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
+			const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
 
 			if(r.includes(Number(value)) || value === '') {
 				
 				if(value) {
-					setLastPlayer(playerIndex)
+					setLastPlayer(playerindex)
 					sessionStorage.setItem(sessionStorage_lastPlayer, Number(e.getAttribute('playerIndex')))
 				}
 
@@ -493,13 +540,17 @@ function Games() {
 
 			}
 
-			saveElement(
-				id, 
-				value, 
-				column, 
-				row)
+			let array = []
+			for(const c of tableColumns) {
+				if(c.TableID === tableID && c.Alias === alias && c.Column === column) {
+					c[row] = value
+					array = c
+					break
+				}
+			}
+			sessionStorage.setItem(substring_sessionStorage + alias + '_' + tableID + '_' + column, JSON.stringify(array))
 
-			if(id === id_upperTable) {
+			if(tableID === id_upperTable) {
 				calculateUpperColumn(column)
 			} else {
 				calculateBottomColumn(column)
@@ -606,7 +657,7 @@ function Games() {
 		const up = Number(bottomLabels[0].textContent)
 		const bottom = Number(bottomLabels[1].textContent)
 		const sum = up + bottom
-	
+	console.log(columnsSum)
 		bottomLabels[2].textContent = up !== 0 && bottom !== 0 ? sum : ''
 		columnsSum[columnIndex].All = Number(bottomLabels[2].textContent)
 	
@@ -632,20 +683,6 @@ function Games() {
 			playerTableLabels[i].textContent = sum
 	
 		}
-	
-	}
-
-
-
-
-
-	//__________________________________________________SessionStorage__________________________________________________
-	
-	const saveElement = (tableID, value, column, row) => {
-	
-		const tmp = (tableID === id_upperTable ? sessionStorage_upperTable_substring : sessionStorage_bottomTable_substring) + row + '.' + column
-		if(value === '') {sessionStorage.removeItem(tmp)
-		} else {sessionStorage.setItem(tmp, value)}
 	
 	}
 
@@ -727,7 +764,6 @@ function Games() {
 		sessionStorage.setItem(sessionStorage_players, JSON.stringify(session.List_Players))
 		sessionStorage.removeItem(sessionStorage_session)
 		
-		clearSessionStorageTables()
 		navigate('/endscreen', { replace: true })
 	
 	}
@@ -764,7 +800,7 @@ function Games() {
 
 		session.List_Players = tmpListPlayers
 		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
-		modalEditClose()
+		window.location.reload()
 
 	}
 

@@ -26,7 +26,7 @@ const substring_winner								= 'winner'
 
 //____________________SessionStorage____________________
 
-const substring_sessionStorage						= 'kniffel_sessionStorage_'
+export const substring_sessionStorage						= 'kniffel_sessionStorage_'
 export const sessionStorage_session					= substring_sessionStorage + substring_session
 export const sessionStorage_players					= substring_sessionStorage + substring_players
 export const sessionStorage_attributes				= substring_sessionStorage + substring_attributes
@@ -38,9 +38,6 @@ export const sessionStorage_inputType				= substring_sessionStorage + substring_
 export const sessionStorage_gnadenwurf				= substring_sessionStorage + substring_gnadenwurf
 export const sessionStorage_winner					= substring_sessionStorage + substring_winner
 
-export const sessionStorage_upperTable_substring	= substring_sessionStorage + id_upperTable + '_'
-export const sessionStorage_bottomTable_substring	= substring_sessionStorage + id_bottomTable + '_'
-
 
 
 
@@ -50,13 +47,6 @@ export const sessionStorage_bottomTable_substring	= substring_sessionStorage + i
 export function clearSessionStorage() {
 
     cSS(substring_sessionStorage)
-
-}
-
-export function clearSessionStorageTables() {
-
-    cSS(sessionStorage_upperTable_substring)
-    cSS(sessionStorage_bottomTable_substring)
 
 }
 
