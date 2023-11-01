@@ -21,8 +21,8 @@ function Games() {
 	const tableRef = useRef(null)
 	const axiosPrivate = useAxiosPrivate()
 
-	const columnsSum = useState([])
-	const tableColumns = useState([])
+	const [ columnsSum ] = useState([])
+	const [ tableColumns ] = useState([])
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
 
@@ -52,9 +52,11 @@ function Games() {
 		const elements = document.getElementsByClassName('kniffelInput')
 		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
 
-		for(let i = 0; session.List_Players.length * session.Attributes.Columns > i; i++) {
-			// calculateUpperColumn(i)
-			// calculateBottomColumn(i)
+		for(const p of session?.List_Players) {
+			for(let i = 0; session?.Attributes.Columns > i; i++) {
+				calculateUpperColumn(p.Alias, i)
+				calculateBottomColumn(p.Alias, i)
+			}
 		}
 		
 		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
@@ -320,7 +322,7 @@ function Games() {
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder }}>Spieler gesamt</td>
 						{session?.List_Players?.map((p, i) => (
-							<td key={i} style={{ borderRight: thickBorder }}><label>0</label></td>
+							<td key={i} alias={p.Alias} style={{ borderRight: thickBorder }}></td>
 						))}
 					</tr>
 					<tr>
@@ -336,15 +338,21 @@ function Games() {
 	}
 
 	const Table = (rows, tableID) => {
-		
-		if(tableID === id_upperTable) columnsSum.length = 0
+
+		if(columnsSum.length === 0 && tableID === id_upperTable) {
+			for(const p of session?.List_Players) {
+				for(let c = 0; session?.Attributes?.Columns > c; c++) {
+					columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
+				}
+			}
+		}
 
 		if(tableColumns.length !== ( session?.List_Players?.length * session?.Attributes?.Columns * 2 ))
 		for(const p of session?.List_Players) {
 			for(let c = 0; session?.Attributes?.Columns > c; c++) {
 
 				let tmp = JSON.parse(sessionStorage.getItem(substring_sessionStorage + p.Alias + '_' + tableID + '_' + c))
-				if(!tmp) {
+				if(!tmp || !tmp.Alias) {
 					tmp = {
 						Alias: p.Alias,
 						Column: c,
@@ -357,10 +365,6 @@ function Games() {
 				}
 
 				tableColumns.push(tmp)
-
-				if(tableID === id_upperTable) {
-					columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
-				}
 
 			}
 		}
@@ -540,7 +544,7 @@ function Games() {
 
 			}
 
-			let array = []
+			let array
 			for(const c of tableColumns) {
 				if(c.TableID === tableID && c.Alias === alias && c.Column === column) {
 					c[row] = value
@@ -551,9 +555,9 @@ function Games() {
 			sessionStorage.setItem(substring_sessionStorage + alias + '_' + tableID + '_' + column, JSON.stringify(array))
 
 			if(tableID === id_upperTable) {
-				calculateUpperColumn(column)
+				calculateUpperColumn(alias, column)
 			} else {
-				calculateBottomColumn(column)
+				calculateBottomColumn(alias, column)
 			}
 			
 		}
@@ -575,9 +579,9 @@ function Games() {
 
 	//__________________________________________________Calculating__________________________________________________
 	
-	const calculateUpperColumn = (columnIndex) => {
+	const calculateUpperColumn = (alias, columnIndex) => {
 	
-		const column = document.getElementById(id_upperTable).querySelectorAll(`[column='${columnIndex}']`)
+		const column = document.getElementById(id_upperTable).querySelectorAll(`[alias='${alias}'][column='${columnIndex}']`)
 	
 		let columnCompleted = true
 		let sum = 0
@@ -593,8 +597,8 @@ function Games() {
 	
 		}
 	
-		const bottomLabels = document.getElementById(id_bottomTable).querySelectorAll(`label[column='${columnIndex}']`)
-		column[6].textContent = sum
+		const bottomLabels = document.getElementById(id_bottomTable).querySelectorAll(`label[alias='${alias}'][column='${columnIndex}']`)
+		column[6].innerText = sum
 		if(Boolean(columnCompleted)) {
 	
 			sum = sum >= 63 ? sum + 35 : sum
@@ -611,15 +615,20 @@ function Games() {
 	
 		}
 	
-		calculateBottomLabels(columnIndex, bottomLabels)
-		columnsSum[columnIndex].Upper = sum
-		calculateScores()
+		calculateBottomLabels(alias, columnIndex, bottomLabels)
+		for(const c of columnsSum) {
+			if(c.Alias === alias && c.Column === columnIndex) {
+				c.Upper = sum
+				break
+			}
+		}
+		calculateScore(alias)
 	
 	}
 	
-	const calculateBottomColumn = (columnIndex) => {
+	const calculateBottomColumn = (alias, columnIndex) => {
 	
-		const column = document.getElementById(id_bottomTable).querySelectorAll(`[column='${columnIndex}']`)
+		const column = document.getElementById(id_bottomTable).querySelectorAll(`[alias='${alias}'][column='${columnIndex}']`)
 	
 		let columnCompleted = true
 		let sum = 0
@@ -646,43 +655,43 @@ function Games() {
 	
 		}
 	
-		calculateBottomLabels(columnIndex, document.getElementById(id_bottomTable).querySelectorAll(`label[column='${columnIndex}']`))
-		columnsSum[columnIndex].Bottom = sum
-		calculateScores()
+		calculateBottomLabels(alias, columnIndex, document.getElementById(id_bottomTable).querySelectorAll(`label[alias='${alias}'][column='${columnIndex}']`))
+		for(const c of columnsSum) {
+			if(c.Alias === alias && c.Column === columnIndex) {
+				c.Bottom = sum
+				break
+			}
+		}
+		calculateScore(alias)
 	
 	}
 	
-	const calculateBottomLabels = (columnIndex, bottomLabels) => {
+	const calculateBottomLabels = (alias, columnIndex, bottomLabels) => {
 	
 		const up = Number(bottomLabels[0].textContent)
 		const bottom = Number(bottomLabels[1].textContent)
 		const sum = up + bottom
 	
 		bottomLabels[2].textContent = up !== 0 && bottom !== 0 ? sum : ''
-		columnsSum[columnIndex].All = Number(bottomLabels[2].textContent)
+		for(const c of columnsSum) {
+			if(c.Alias === alias && c.Column === columnIndex) {
+				c.All = Number(bottomLabels[2].textContent)
+			}
+		}
 	
 	}
 	
-	const calculateScores = () => {
-	
-		const playerTableLabels = document.getElementById(id_playerTable).querySelectorAll('label')
-		
-		for(let i = 0; session.List_Players.length > i; i++) {
-	
-			let sum = 0
-			for(let c = 0; session.Attributes.Columns > c; c++) {
-	
-				const column = columnsSum[c + i * session.Attributes.Columns]
-				if(column.All !== 0) {
-					sum += column.All
-				} else {
-					sum += column.Upper + column.Bottom
-				}
-	
+	const calculateScore = (alias) => {
+
+		let sum = 0
+
+		for(const c of columnsSum) {
+			if(c.Alias === alias) {
+				sum += c.All || (c.Upper + c.Bottom)
 			}
-			playerTableLabels[i].textContent = sum
-	
 		}
+
+		document.getElementById(id_playerTable).querySelector(`[alias='${alias}']`).textContent = sum
 	
 	}
 
@@ -707,7 +716,7 @@ function Games() {
 
 
 		//____________________Players____________________
-		const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('label')
+		const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('[alias]')
 		const playerScores = []
 		for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent)}
 	
