@@ -657,7 +657,7 @@ function Games() {
 		const up = Number(bottomLabels[0].textContent)
 		const bottom = Number(bottomLabels[1].textContent)
 		const sum = up + bottom
-	console.log(columnsSum)
+	
 		bottomLabels[2].textContent = up !== 0 && bottom !== 0 ? sum : ''
 		columnsSum[columnIndex].All = Number(bottomLabels[2].textContent)
 	
@@ -757,14 +757,15 @@ function Games() {
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
-		)
-	
-	
-		sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winner))
-		sessionStorage.setItem(sessionStorage_players, JSON.stringify(session.List_Players))
-		sessionStorage.removeItem(sessionStorage_session)
-		
-		navigate('/endscreen', { replace: true })
+		).then(() => {
+			sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winner))
+			sessionStorage.setItem(sessionStorage_players, JSON.stringify(session.List_Players))
+			sessionStorage.removeItem(sessionStorage_session)
+			
+			navigate('/endscreen', { replace: true })
+		}).catch((err) => {
+			console.log(err)
+		})
 	
 	}
 
@@ -796,11 +797,22 @@ function Games() {
 		document.getElementById('modal-edit').close()
 	}
 
-	const modalEditSave = () => {
+	const modalEditSave = async () => {
 
 		session.List_Players = tmpListPlayers
 		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
-		window.location.reload()
+
+		await axiosPrivate.post('/updatelistplayers',
+			{ id: session.id, List_Players: JSON.stringify(session.List_Players) },
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
+			}
+		).then(() => {
+			window.location.reload()
+		}).catch((err) => {
+			console.log(err)
+		})
 
 	}
 
