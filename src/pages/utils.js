@@ -88,16 +88,17 @@ export const createAttributes = (columns) => {
     }
 }
 
-export const createFinalScoreElement = (attributes, surrender, list_winner) => {
+export const createFinalScoreElement = (attributes, surrender, list_winner, playerScores) => {
 
     const finalScore = {
         Played: new Date(),
 		Columns: attributes.Columns,
 		Surrender: surrender, 
 		List_Winner: list_winner,
+		PlayerScores: playerScores,
     }
 
-    return finalScore;
+    return finalScore
 
 }
 

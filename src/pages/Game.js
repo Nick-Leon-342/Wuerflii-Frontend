@@ -759,7 +759,7 @@ function Games() {
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = { ...playerScores, ...createFinalScoreElement(session.Attributes, Boolean(askIfSurrender), list_winnerAlias) }
+		const finalScores = createFinalScoreElement(session.Attributes, Boolean(askIfSurrender), list_winnerAlias, playerScores)
 	
 		const json = JSON.stringify({ 
 			id: session.id,

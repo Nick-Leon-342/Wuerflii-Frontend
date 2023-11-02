@@ -191,7 +191,7 @@ function SessionPreview() {
 							<tr key={i}>
 								<td style={firstColumnStyle}>{formatDate(fs.Played)}</td>
 								{session?.List_Players?.map((p, j) => (
-									<td key={`${i}.${j}`} style={style}>{fs[p.Alias]}</td>
+									<td key={`${i}.${j}`} style={style}>{fs.PlayerScores[p.Alias]}</td>
 								))}
 							</tr>
 						))}
