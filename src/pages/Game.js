@@ -717,19 +717,29 @@ function Games() {
 
 		//____________________Players____________________
 		const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('[alias]')
-		const playerScores = []
-		for(let i = 0; tmp_playerScores.length > i; i++) {playerScores.push(tmp_playerScores[i].textContent)}
+		const playerScores = {}	
+		const list_winner = ['Player_0'] //It's possible that multiple players have the same score, therefore an array
 	
-		let list_winner = [0] //It's possible that multiple players have the same score, therefore an array
-	
-		if(askIfSurrender !== -1) {
+		
+		for(let i = 0; tmp_playerScores.length > i; i++) {
+			playerScores[tmp_playerScores[i].getAttribute('alias')] = tmp_playerScores[i].textContent
+		}
+
+		for(const p of session?.List_Players) {
+
+			playerScores
+
+		}
+
+		if(askIfSurrender) {
 
 			list_winner.length = 0
 			list_winner.push(askIfSurrender)
 
 		} else {
 
-			for(let i = 1; session.List_Players.length > i; i++) {
+			for(const p of p)
+			for(let i = 1; session?.List_Players?.length > i; i++) {
 				if(playerScores[i] != null) {
 					if(playerScores[i] > playerScores[list_winner[0]]) {
 						list_winner.length = 0
@@ -751,7 +761,7 @@ function Games() {
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, askIfSurrender !== -1, list_winner)
+		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, Boolean(askIfSurrender), list_winner)
 	
 		const json = JSON.stringify({ 
 			id: session.id,
@@ -759,7 +769,7 @@ function Games() {
 			List_Players: JSON.stringify(session.List_Players),
 			FinalScores: finalScores
 		})
-
+return console.log(json)
 		await axiosPrivate.post('/game',
 			json,
 			{
@@ -784,13 +794,13 @@ function Games() {
 
 	// __________________________________________________Modal-Surrender__________________________________________________
 
-	const [askIfSurrender, setAskIfSurrender] = useState(-1)	//if -1 then dont ask, else it's the index of the 'winner'
+	const [askIfSurrender, setAskIfSurrender] = useState()	//if -1 then dont ask, else it's the index of the 'winner'
 
 	const handleSurrender = () => {document.getElementById('modal-surrender').showModal()}
 
 	const closeSurrender = () => {
 		document.getElementById('modal-surrender').close()
-		setAskIfSurrender(-1)
+		setAskIfSurrender()
 	}
 
 
@@ -857,7 +867,7 @@ function Games() {
 				</div>
 
 				<h1>Gewinner auswählen</h1>
-				<div style={{ display: askIfSurrender !== -1 ? '' : 'none' }}>
+				<div style={{ display: askIfSurrender ? '' : 'none' }}>
 				<label style={{ fontSize: '22px', }}>{`Sicher, dass ${session?.List_Players[askIfSurrender]?.Name} gewinnen soll?`}</label>
 					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 						<button 
@@ -882,7 +892,7 @@ function Games() {
 					{session?.List_Players?.map((p, i) => (
 						<dt 
 							className='listElement' 
-							onClick={() => setAskIfSurrender(i)} 
+							onClick={() => setAskIfSurrender(p.alias)} 
 							key={i}
 							style={{
 								padding: '10px',
