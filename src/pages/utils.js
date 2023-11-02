@@ -26,7 +26,7 @@ const substring_winner								= 'winner'
 
 //____________________SessionStorage____________________
 
-export const substring_sessionStorage						= 'kniffel_sessionStorage_'
+export const substring_sessionStorage				= 'kniffel_sessionStorage_'
 export const sessionStorage_session					= substring_sessionStorage + substring_session
 export const sessionStorage_players					= substring_sessionStorage + substring_players
 export const sessionStorage_attributes				= substring_sessionStorage + substring_attributes
@@ -91,11 +91,12 @@ export const createAttributes = (columns) => {
 export const createFinalScoreElement = (attributes, surrender, list_winner, playerScores) => {
 
     const finalScore = {
-        Played: new Date(),
+		
 		Columns: attributes.Columns,
 		Surrender: surrender, 
 		List_Winner: list_winner,
 		PlayerScores: playerScores,
+
     }
 
     return finalScore

@@ -42,20 +42,8 @@ function SessionPreview() {
 					withCredentials: true
 				}
 			).then((res) => {
+				console.log(res.data)
 				setFinalScores(JSON.parse(res.data))
-				// setFinalScores([
-				// 	{Played: '2023-10-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [1], Player_0: '9', Player_1: '19'},
-				// 	{Played: '2023-10-29T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [0], Player_0: '420', Player_1: '187'},
-				// 	{Played: '2023-08-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [1], Player_0: '8', Player_1: '18'},
-				// 	{Played: '2023-07-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [0], Player_0: '27', Player_1: '17'},
-				// 	{Played: '2023-05-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [1], Player_0: '6', Player_1: '16'},
-				// 	{Played: '2023-03-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [0,1], Player_0: '25', Player_1: '25'},
-				// 	{Played: '2023-01-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [0], Player_0: '24', Player_1: '14'},
-				// 	{Played: '2022-10-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [0], Player_0: '23', Player_1: '13'},
-				// 	{Played: '2022-09-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [1], Player_0: '2', Player_1: '12'},
-				// 	{Played: '2022-08-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [1], Player_0: '1', Player_1: '11'},
-				// 	{Played: '2022-07-30T10:10:51.710Z', Columns: '1', Surrender: false, List_Winner: [0], Player_0: '11', Player_1: '10'},
-				// ])
 				setShowLastFinalScores('thisYear')
 			}).catch((err) => {
 				const status = err.response.status
