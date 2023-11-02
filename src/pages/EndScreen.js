@@ -103,12 +103,6 @@ function EndScreen() {
 
 			<button className='button' style={{ width: '100%' }} onClick={ok}>Ok</button>
 
-			<div style={{ display: 'flex'}}>
-				<p className='link-switch'>
-					<Link to='/game'>Zurück zum Spiel</Link>
-				</p>
-			</div>
-
 		</>
 	)
 }

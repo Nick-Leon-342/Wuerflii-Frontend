@@ -745,7 +745,7 @@ function Games() {
 	
 		for(const w of list_winnerAlias) {
 			for(const p of session?.List_Players) {
-				if(p.Alias === w.Alias) {
+				if(p.Alias === w) {
 					p.Wins++
 					break
 				}
@@ -818,17 +818,20 @@ function Games() {
 		session.List_Players = tmpListPlayers
 		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
 
-		await axiosPrivate.post('/updatelistplayers',
-			{ id: session.id, List_Players: JSON.stringify(session.List_Players) },
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
-			}
-		).then(() => {
-			window.location.reload()
-		}).catch((err) => {
-			console.log(err)
-		})
+		if(session.id) {
+
+			await axiosPrivate.post('/updatelistplayers',
+				{ id: session.id, List_Players: JSON.stringify(session.List_Players) },
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).catch((err) => {
+				console.log(err)
+				return
+			})
+		}
+		window.location.reload()
 
 	}
 

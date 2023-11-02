@@ -60,7 +60,6 @@ function SessionPreview() {
 			}).catch((err) => {
 				const status = err.response.status
 				if(status === 404) {
-					window.alert('Die Partie wurde nicht gefunden!')
 					navigate('/selectsession', { replace: true })
 				} else {
 					window.alert('Unknown error:', err)
@@ -101,14 +100,19 @@ function SessionPreview() {
 		sessionStorage.removeItem(sessionStorage_finalscores)
 
 		if(showLastFinalScores === 'all') {
-			console.log(session?.List_Players)
-			setWins(session?.List_Players?.map((p) => p.Wins))
+			
+			const allWins = {}
+			session?.List_Players?.map((p) => (allWins[p.Alias] = p.Wins))
+			setWins(allWins)
 			return setList(finalScores)
 
 		}
 
 		const tmp = []
-		const tmp_wins = session?.List_Players?.map(() => 0)
+		const tmp_wins = {}
+		session?.List_Players?.map((p) => (
+			tmp_wins[p.Alias] = 0
+		))
 
 		const today = new Date()
 		const d = today.getDay()
@@ -170,9 +174,9 @@ function SessionPreview() {
 									<option value='thisDay'>Dieser Tag</option>
 								</select>
 							</td>
-							{wins.map((w, i) => (
+							{session?.List_Players?.map((p, i) => (
 								<td key={i} style={style}>
-									{w}
+									{wins[p.Alias]}
 								</td>
 							))}
 						</tr>
