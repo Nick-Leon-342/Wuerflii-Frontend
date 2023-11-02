@@ -88,17 +88,13 @@ export const createAttributes = (columns) => {
     }
 }
 
-export const createFinalScoreElement = (players, scoreList, attributes, surrender, list_winner) => {
+export const createFinalScoreElement = (attributes, surrender, list_winner) => {
 
     const finalScore = {
         Played: new Date(),
 		Columns: attributes.Columns,
 		Surrender: surrender, 
 		List_Winner: list_winner,
-    }
-
-    for(let i = 0; i < players.length; i++) {
-        finalScore[players[i].Alias] = scoreList[i]
     }
 
     return finalScore;

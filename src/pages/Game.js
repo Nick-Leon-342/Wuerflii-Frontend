@@ -48,8 +48,6 @@ function Games() {
 		}
 
 		connect()
-
-		const elements = document.getElementsByClassName('kniffelInput')
 		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
 
 		for(const p of session?.List_Players) {
@@ -62,6 +60,7 @@ function Games() {
 		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
 		if(lastPlayer) setLastPlayer(Number(lastPlayer))
 
+		const elements = document.getElementsByClassName('kniffelInput')
 		if (elements) {
 			for(const e of elements) {
 				e.addEventListener('focus', focusEvent)
@@ -339,8 +338,9 @@ function Games() {
 
 	const Table = (rows, tableID) => {
 
+		if(!session || !session.List_Players) return
 		if(columnsSum.length === 0 && tableID === id_upperTable) {
-			for(const p of session?.List_Players) {
+			for(const p of session.List_Players) {
 				for(let c = 0; session?.Attributes?.Columns > c; c++) {
 					columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
 				}
@@ -716,43 +716,41 @@ function Games() {
 
 
 		//____________________Players____________________
-		const tmp_playerScores = document.getElementById(id_playerTable).querySelectorAll('[alias]')
 		const playerScores = {}	
-		const list_winner = ['Player_0'] //It's possible that multiple players have the same score, therefore an array
-	
-		
-		for(let i = 0; tmp_playerScores.length > i; i++) {
-			playerScores[tmp_playerScores[i].getAttribute('alias')] = tmp_playerScores[i].textContent
-		}
+		const list_winnerAlias = [] //It's possible that multiple players have the same score, therefore an array
+		const list_winnerName = []
 
+		let highestScore = 0
 		for(const p of session?.List_Players) {
 
-			playerScores
+			const v = Number(document.getElementById(id_playerTable).querySelector(`[alias='${p.Alias}']`).textContent)
+			playerScores[p.Alias] = v
+			if(highestScore < v) {
+				list_winnerAlias.length = 0
+				list_winnerAlias.push(p.Alias)
+				list_winnerName.length = 0
+				list_winnerName.push(p.Name)
+				highestScore = v
+			} else if(v === highestScore) {
+				list_winnerAlias.push(p.Alias)
+				list_winnerName.push(p.Name)
+			}
 
 		}
 
 		if(askIfSurrender) {
-
-			list_winner.length = 0
-			list_winner.push(askIfSurrender)
-
-		} else {
-
-			for(const p of p)
-			for(let i = 1; session?.List_Players?.length > i; i++) {
-				if(playerScores[i] != null) {
-					if(playerScores[i] > playerScores[list_winner[0]]) {
-						list_winner.length = 0
-						list_winner.push(i)
-					} else if (playerScores[i] === playerScores[list_winner[0]]) {
-						list_winner.push(i)
-					}
-				}
-			}
-
+			list_winnerAlias.length = 0
+			list_winnerAlias.push(askIfSurrender)
 		}
 	
-		for(const i of list_winner) {session.List_Players[i].Wins++}
+		for(const w of list_winnerAlias) {
+			for(const p of session?.List_Players) {
+				if(p.Alias === w.Alias) {
+					p.Wins++
+					break
+				}
+			}
+		}
 	
 	
 		//____________________Attributes____________________
@@ -761,7 +759,7 @@ function Games() {
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(session.List_Players, playerScores, session.Attributes, Boolean(askIfSurrender), list_winner)
+		const finalScores = { ...playerScores, ...createFinalScoreElement(session.Attributes, Boolean(askIfSurrender), list_winnerAlias) }
 	
 		const json = JSON.stringify({ 
 			id: session.id,
@@ -769,7 +767,7 @@ function Games() {
 			List_Players: JSON.stringify(session.List_Players),
 			FinalScores: finalScores
 		})
-return console.log(json)
+
 		await axiosPrivate.post('/game',
 			json,
 			{
@@ -777,9 +775,8 @@ return console.log(json)
 				withCredentials: true
 			}
 		).then(() => {
-			sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winner))
-			sessionStorage.setItem(sessionStorage_players, JSON.stringify(session.List_Players))
-			sessionStorage.removeItem(sessionStorage_session)
+			sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winnerName))
+			sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
 			
 			navigate('/endscreen', { replace: true })
 		}).catch((err) => {
