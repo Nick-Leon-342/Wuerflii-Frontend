@@ -42,11 +42,10 @@ function SessionPreview() {
 					withCredentials: true
 				}
 			).then((res) => {
-				console.log(res.data)
-				setFinalScores(JSON.parse(res.data))
+				setFinalScores(res.data.slice().reverse())
 				setShowLastFinalScores('thisYear')
 			}).catch((err) => {
-				const status = err.response.status
+				const status = err?.response?.status
 				if(status === 404) {
 					navigate('/selectsession', { replace: true })
 				} else {
