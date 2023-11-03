@@ -101,14 +101,14 @@ function Games() {
 	// Gnadenwurf is an extra try
 
 	const [gnadenwurf, setGnadenwurf] = useState(() => {
-			const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
-			if(g) return g
-			const tmp = {}
-			session?.List_Players?.map((p) => (
-				tmp[p.Alias] = false
-			))
-			return tmp
-		})
+		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
+		if(g) return g
+		const tmp = {}
+		session?.List_Players?.map((p) => (
+			tmp[p.Alias] = false
+		))
+		return tmp
+	})
   
 	const handleGnadenwurfChange = (alias, checked) => {
 
@@ -759,7 +759,7 @@ function Games() {
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = { ...playerScores, ...createFinalScoreElement(session.Attributes, Boolean(askIfSurrender), list_winnerAlias) }
+		const finalScores = createFinalScoreElement(session.Attributes, Boolean(askIfSurrender), list_winnerAlias, playerScores)
 	
 		const json = JSON.stringify({ 
 			id: session.id,
