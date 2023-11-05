@@ -14,7 +14,7 @@ export const id_playerTable							= 'playerTable'
 
 const substring_session								= 'session'
 const substring_players								= 'players'
-const substring_attributes							= 'attributes'
+const substring_columns								= 'columns'
 const substring_finalscores							= 'finalscores'
 
 const substring_lastPlayer							= 'lastPlayer'
@@ -22,14 +22,15 @@ const substring_inputType							= 'inputType'
 
 const substring_gnadenwurf							= 'gnadenwurf'
 const substring_winner								= 'winner'
+const substring_start								= 'start'
 
 
 //____________________SessionStorage____________________
 
-export const substring_sessionStorage						= 'kniffel_sessionStorage_'
+export const substring_sessionStorage				= 'kniffel_sessionStorage_'
 export const sessionStorage_session					= substring_sessionStorage + substring_session
 export const sessionStorage_players					= substring_sessionStorage + substring_players
-export const sessionStorage_attributes				= substring_sessionStorage + substring_attributes
+export const sessionStorage_columns					= substring_sessionStorage + substring_columns
 export const sessionStorage_finalscores				= substring_sessionStorage + substring_finalscores
 
 export const sessionStorage_lastPlayer				= substring_sessionStorage + substring_lastPlayer
@@ -37,6 +38,7 @@ export const sessionStorage_inputType				= substring_sessionStorage + substring_
 
 export const sessionStorage_gnadenwurf				= substring_sessionStorage + substring_gnadenwurf
 export const sessionStorage_winner					= substring_sessionStorage + substring_winner
+export const sessionStorage_start					= substring_sessionStorage + substring_start
 
 
 
@@ -71,28 +73,36 @@ function cSS(substring) {
 //____________________CreateObjects____________________
 
 export const createPlayer = (name, alias, color) => {
+
     return {
         Name: name,
         Alias: alias,
         Color: color,
         Wins: 0
     }
+
 }
 
-export const createAttributes = (columns) => {
+export const createSession = (sessionName, columns, list_playerOrder, list_players) => {
+
     return {
+		SessionName: sessionName,
         Columns: columns,
 		InputType: 3,
         LastPlayed: new Date(),
         CreatedDate: new Date(),
+		List_PlayerOrder: list_playerOrder,
+		List_Players: list_players,
     }
+
 }
 
-export const createFinalScoreElement = (attributes, surrender, list_winner) => {
+export const createFinalScoreElement = (start, columns, surrender, list_winner) => {
 
     const finalScore = {
-        Played: new Date(),
-		Columns: attributes.Columns,
+		Start: start,
+        End: new Date(),
+		Columns: columns,
 		Surrender: surrender, 
 		List_Winner: list_winner,
     }

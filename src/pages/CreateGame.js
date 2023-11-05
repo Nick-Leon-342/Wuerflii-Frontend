@@ -7,7 +7,7 @@ import './css/CreateGame.css'
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { sessionStorage_attributes, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX, clearSessionStorage, sessionStorage_session } from './utils'
+import { sessionStorage_columns, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX, clearSessionStorage, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS } from './utils-env'
@@ -53,7 +53,7 @@ function CreateGame() {
 		if(!players || !columns) return
 
 		sessionStorage.setItem(sessionStorage_players, players)
-		sessionStorage.setItem(sessionStorage_attributes, columns)
+		sessionStorage.setItem(sessionStorage_columns, columns)
 
 		navigate('/enternames', { replace: false })
 

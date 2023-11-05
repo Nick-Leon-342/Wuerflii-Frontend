@@ -38,19 +38,10 @@ function SelectSession() {
 		setLoaderVisible(true)
 
 		await axiosPrivate.get('/selectsession').then((res) => {
-			const l = res.data
-			const tmp = []
 
-			for(const e of l) {
-				tmp.push({ 
-					id: e.id,
-					Attributes: JSON.parse(e.Attributes), 
-					List_Players: JSON.parse(e.List_Players) 
-				})
-			}
-			
-			tmp.sort(sortByTimestampDesc)
-			setList(tmp)
+			const l = res.data
+			l.sort(sortByTimestampDesc)
+			setList(l)
 
 		}).catch((err) => {
 			console.log(err)
@@ -61,7 +52,17 @@ function SelectSession() {
 	}
 
 	const sortByTimestampDesc = (a, b) => {
-		return new Date(b.Attributes.LastPlayed) - new Date(a.Attributes.LastPlayed)
+		return new Date(b.LastPlayed) - new Date(a.LastPlayed)
+	}
+
+	const getPlayer = (alias) => {
+
+		for(const p of session?.List_Players) {
+			if(p.Alias === alias) {
+				return p
+			}
+		}
+
 	}
 	
 
@@ -122,7 +123,6 @@ function SelectSession() {
 
 		for(let i = 0; list_checkbox.length > i; i++) {
 			if(list_checkbox[i]) {
-				console.log(list[i])
 				await axiosPrivate.delete('/selectsession',
 					{
 						headers: { 'Content-Type': 'application/json' },
@@ -132,7 +132,6 @@ function SelectSession() {
 				).catch((err) => {
 					console.log(err)
 				})
-
 
 			}
 		}
@@ -168,8 +167,8 @@ function SelectSession() {
 
 		const tmp = []
 
-		for(let i = 0; session.List_Players.length > i; i++) {
-			tmp.push({ Name: session.List_Players[i].Name, Color: session.List_Players[i].Color })
+		for(const alias of session.List_PlayerOrder) {
+			tmp.push(getPlayer(alias))
 		}
 
 		setSuccessfullyUpdatedVisible(false)
@@ -183,30 +182,39 @@ function SelectSession() {
 		setList_Session([])
 		setColumns('')
 		document.getElementById('modal-edit').close()
+
 	}
 
 	const modalEditSave = async () => {
 
 		setDialog_loaderVisible(true)
 
-		if(columns !== '') session.Attributes.Columns = columns
-		for(let i = 0; session.List_Players.length > i; i++) {
-			session.List_Players[i].Name = list_session[i].Name
-			session.List_Players[i].Color = list_session[i].Color
+		const json = { id: session?.id, List_Players: [] }
+		if(columns !== '') {
+			json['Columns'] = columns
+			session.Columns = columns
+		}
+		for(const p of list_session) {
+			const player = getPlayer(p.Alias)
+			player.Name = p.Name
+			player.Color = p.Color
+			json.List_Players.push({
+				id: p.id,
+				Name: p.Name,
+				Color: p.Color,
+			})
 		}
 
 		await axiosPrivate.post('/selectsession', 
-			JSON.stringify(session),
+			JSON.stringify(json),
 			{
-                   headers: { 'Content-Type': 'application/json' },
-                   withCredentials: true
-               }
-		).then((res) => {
-			if(res.status === 204) {
-				setSuccessfullyUpdatedVisible(true)
-				modalEditClose()
-				request()
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
 			}
+		).then(() => {
+			setSuccessfullyUpdatedVisible(true)
+			modalEditClose()
+			request()
 		}).catch((err) => {
 			return console.log(err)
 		})
@@ -364,7 +372,7 @@ function SelectSession() {
 								<label className='label'>
 									{s.List_Players.map((p) => p.Name).join(' vs ')}
 								</label>
-								<label className='label date'>{formatDate(s.Attributes.LastPlayed)}</label>
+								<label className='label date'>{formatDate(s.LastPlayed)}</label>
 							</div>
 						</dt>
 					))
