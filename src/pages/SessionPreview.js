@@ -14,8 +14,7 @@ function SessionPreview() {
 	const axiosPrivate = useAxiosPrivate()
 	const location = useLocation()
 	const sessionid = new URLSearchParams(location.search).get('sessionid')
-	console.log(sessionid)
-	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session)) || navigate('/creategame', { replace: true })
+	const [ session, setSession ] = useState()
 
 	const [list, setList] = useState([])
 	const [wins, setWins] = useState([])
@@ -41,13 +40,14 @@ function SessionPreview() {
 			await axiosPrivate.get('/sessionpreview',
 				{
 					headers: { 'Content-Type': 'application/json' },
-					params: { id: session.id },
+					params: { id: sessionid },
 					withCredentials: true
 				}
 			).then((res) => {
-				const l = res.data
+				setSession(res.data.Session)
+				const l = res.data.FinalScores
 				l.sort(sortByTimestampDesc)
-				setFinalScores(res.data)
+				setFinalScores(l)
 				setShowLastFinalScores('thisYear')
 			}).catch((err) => {
 				const status = err?.response?.status

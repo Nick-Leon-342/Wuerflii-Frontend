@@ -4,8 +4,8 @@ import '../App.css'
 import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { formatDate, sessionStorage_session } from './utils'
+import { Link, useNavigate } from 'react-router-dom'
+import { formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 
@@ -74,7 +74,6 @@ function SelectSession() {
 	const listElementClick = (element) => {
 		
 		const i = element.target.closest('dt').getAttribute('index')
-		sessionStorage.setItem(sessionStorage_session, JSON.stringify(list[i]))
 		navigate(`/sessionpreview?sessionid=${list[i].id}`, { replace: false })
 
 	}
