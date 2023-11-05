@@ -105,9 +105,11 @@ export const createFinalScoreElement = (start, columns, surrender, list_winner) 
 		Columns: columns,
 		Surrender: surrender, 
 		List_Winner: list_winner,
+		PlayerScores: playerScores,
+
     }
 
-    return finalScore;
+    return finalScore
 
 }
 

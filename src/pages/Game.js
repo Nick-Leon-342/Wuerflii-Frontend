@@ -112,14 +112,14 @@ function Games() {
 	// Gnadenwurf is an extra try
 
 	const [gnadenwurf, setGnadenwurf] = useState(() => {
-			const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
-			if(g) return g
-			const tmp = {}
-			session?.List_Players?.map((p) => (
-				tmp[p.Alias] = false
-			))
-			return tmp
-		})
+		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
+		if(g) return g
+		const tmp = {}
+		session?.List_Players?.map((p) => (
+			tmp[p.Alias] = false
+		))
+		return tmp
+	})
   
 	const handleGnadenwurfChange = (alias, checked) => {
 
