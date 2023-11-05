@@ -42,14 +42,17 @@ function SessionPreview() {
 					withCredentials: true
 				}
 			).then((res) => {
-				setFinalScores(res.data.slice().reverse())
+				const l = res.data
+				l.sort(sortByTimestampDesc)
+				setFinalScores(res.data)
 				setShowLastFinalScores('thisYear')
 			}).catch((err) => {
 				const status = err?.response?.status
 				if(status === 404) {
 					navigate('/selectsession', { replace: true })
 				} else {
-					window.alert('Unknown error:', err)
+					console.log(err)
+					window.alert('Unknown error')
 				}
 			})
 
@@ -60,6 +63,10 @@ function SessionPreview() {
 		request()
 
 	}, [])
+
+	const sortByTimestampDesc = (a, b) => {
+		return new Date(b.End) - new Date(a.End)
+	}
 	
 
 
@@ -89,7 +96,10 @@ function SessionPreview() {
 		if(showLastFinalScores === 'all') {
 			
 			const allWins = {}
-			session?.List_Players?.map((p) => (allWins[p.Alias] = p.Wins))
+			session?.List_PlayerOrder?.map((alias) => {
+				const player = getPlayer(alias)
+				return allWins[player.Alias] = player.Wins
+			})
 			setWins(allWins)
 			return setList(finalScores)
 
@@ -97,9 +107,10 @@ function SessionPreview() {
 
 		const tmp = []
 		const tmp_wins = {}
-		session?.List_Players?.map((p) => (
-			tmp_wins[p.Alias] = 0
-		))
+		session?.List_PlayerOrder?.map((alias) => {
+			const player = getPlayer(alias)
+			return tmp_wins[player.Alias] = 0
+		})
 
 		const today = new Date()
 		const d = today.getDay()
@@ -108,7 +119,7 @@ function SessionPreview() {
 
 		for( const f of finalScores) {
 			
-			const date = new Date(f.Played)
+			const date = new Date(f.End)
 			if(date.getFullYear() === y) {
 				if(showLastFinalScores === 'thisMonth' && date.getMonth() !== m) continue
 				if(showLastFinalScores === 'thisDay' && ( date.getMonth() !== m || date.getDay() !== d ) ) continue
@@ -127,6 +138,16 @@ function SessionPreview() {
 
 	}, [showLastFinalScores])
 
+	const getPlayer = (alias) => {
+
+		for(const p of session?.List_Players) {
+			if(p.Alias === alias) {
+				return p
+			}
+		}
+
+	}
+
 
 
 
@@ -139,9 +160,10 @@ function SessionPreview() {
 					<tbody>
 						<tr>
 							<td style={firstColumnStyle}>Spieler</td>
-							{session?.List_Players?.map((p, i) => (
-								<td key={i} style={style}>{p.Name}</td>
-							))}
+							{session?.List_PlayerOrder?.map((alias, i) => {
+								const player = getPlayer(alias)
+								return (<td key={i} style={style}>{player.Name}</td>)
+							})}
 						</tr>
 						<tr>
 							<td style={{ width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold' }}>
@@ -161,11 +183,10 @@ function SessionPreview() {
 									<option value='thisDay'>Dieser Tag</option>
 								</select>
 							</td>
-							{session?.List_Players?.map((p, i) => (
-								<td key={i} style={style}>
-									{wins[p.Alias]}
-								</td>
-							))}
+							{session?.List_PlayerOrder?.map((alias, i) => {
+								const player = getPlayer(alias)
+								return (<td key={i} style={style}>{wins[player.Alias]}</td>)
+							})}
 						</tr>
 					</tbody>
 				</table>
@@ -176,10 +197,11 @@ function SessionPreview() {
 					<tbody>
 						{list?.map((fs, i) => (
 							<tr key={i}>
-								<td style={firstColumnStyle}>{formatDate(fs.Played)}</td>
-								{session?.List_Players?.map((p, j) => (
-									<td key={`${i}.${j}`} style={style}>{fs.PlayerScores[p.Alias]}</td>
-								))}
+								<td style={firstColumnStyle}>{formatDate(fs.End)}</td>
+								{session?.List_PlayerOrder?.map((alias, j) => {
+									const player = getPlayer(alias)
+									return (<td key={`${i}.${j}`} style={style}>{fs.PlayerScores[player.Alias]}</td>)
+								})}
 							</tr>
 						))}
 					</tbody>

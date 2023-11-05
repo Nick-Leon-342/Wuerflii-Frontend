@@ -7,7 +7,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, sessionStorage_gnadenwurf, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
+import { sessionStorage_start, substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, sessionStorage_gnadenwurf, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
@@ -27,6 +27,17 @@ function Games() {
 	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
 
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
+	const start = (function() {
+		const storedDate = sessionStorage.getItem(sessionStorage_start)
+		if (storedDate) {
+			return new Date(storedDate)
+		} else {
+			const currentDate = new Date()
+			sessionStorage.setItem(sessionStorage_start, currentDate)
+			return currentDate
+		}
+	})()
+
 
 	
 
@@ -43,17 +54,17 @@ function Games() {
 					withCredentials: true
 				}
 			).catch(() => {
-				navigate('/login', { replace: true })
+				return navigate('/login', { replace: true })
 			})
 		}
 
 		connect()
-		if(!session || !session.Attributes || !session.List_Players ) return navigate('/creategame', { replace: true })
+		if(!session || !session.List_Players ) return navigate('/creategame', { replace: true })
 
-		for(const p of session?.List_Players) {
-			for(let i = 0; session?.Attributes.Columns > i; i++) {
-				calculateUpperColumn(p.Alias, i)
-				calculateBottomColumn(p.Alias, i)
+		for(const alias of session?.List_PlayerOrder) {
+			for(let i = 0; session?.Columns > i; i++) {
+				calculateUpperColumn(alias, i)
+				calculateBottomColumn(alias, i)
 			}
 		}
 		
@@ -125,7 +136,7 @@ function Games() {
 
 	// __________________________________________________InputType__________________________________________________
 
-	const [ inputType, setInputType ] = useState(Number(sessionStorage.getItem(sessionStorage_inputType)) || session?.Attributes?.InputType)
+	const [ inputType, setInputType ] = useState(Number(sessionStorage.getItem(sessionStorage_inputType)) || session?.InputType)
 
 	const handleInputTypeChange = (e) => {
 
@@ -307,28 +318,46 @@ function Games() {
 							<span>Spieler </span>
 							<svg onClick={() => document.getElementById('modal-nextPlayer').showModal()} height='18' viewBox='0 -960 960 960'><path d='M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>
 						</td>
-						{session?.List_Players?.map((p, i) => (
-							<td key={i} style={{ borderTop: thickBorder, borderRight: thickBorder }}>
-								<span style={{ 
-									fontWeight: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'bold' : '',
-									color: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'rgb(0, 255, 0)' : '',
-								}}>
-									{p.Name}
-								</span>
-							</td>
-						))}
+						{session?.List_PlayerOrder?.map((alias, i) => {
+							const player = getPlayer(alias)
+
+							return (
+								<td key={i} style={{ borderTop: thickBorder, borderRight: thickBorder }}>
+									<span style={{ 
+										fontWeight: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'bold' : '',
+										color: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'rgb(0, 255, 0)' : '',
+									}}>
+										{player.Name}
+									</span>
+								</td>
+							)
+						})}
 					</tr>
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder }}>Spieler gesamt</td>
-						{session?.List_Players?.map((p, i) => (
-							<td key={i} alias={p.Alias} style={{ borderRight: thickBorder }}></td>
-						))}
+						{session?.List_PlayerOrder?.map((alias, i) => {
+							const player = getPlayer(alias)
+							return (<td key={i} alias={player.Alias} style={{ borderRight: thickBorder }} />)
+						})}
 					</tr>
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderBottom: thickBorder }}>Gnadenwurf</td>
-						{session?.List_Players?.map((p, i) => (
-							<td key={i} style={{ borderBottom: thickBorder, borderRight: thickBorder }}><input className='checkbox' type='checkbox' checked={gnadenwurf[p.Alias]} onChange={(e) => handleGnadenwurfChange(p.Alias, e.target.checked)} /></td>
-						))}
+						{session?.List_PlayerOrder?.map((alias, i) => {
+							const player = getPlayer(alias)
+							return (
+								<td 
+									key={i} 
+									style={{ borderBottom: thickBorder, borderRight: thickBorder }}
+								>
+									<input 
+										className='checkbox' 
+										type='checkbox' 
+										checked={gnadenwurf[player.Alias]} 
+										onChange={(e) => handleGnadenwurfChange(player.Alias, e.target.checked)} 
+									/>
+								</td>
+							)
+						})}
 					</tr>
 				</tbody>
 			</table>
@@ -341,15 +370,15 @@ function Games() {
 		if(!session || !session.List_Players) return
 		if(columnsSum.length === 0 && tableID === id_upperTable) {
 			for(const p of session.List_Players) {
-				for(let c = 0; session?.Attributes?.Columns > c; c++) {
+				for(let c = 0; session?.Columns > c; c++) {
 					columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
 				}
 			}
 		}
 
-		if(tableColumns.length !== ( session?.List_Players?.length * session?.Attributes?.Columns * 2 ))
+		if(tableColumns.length !== ( session?.List_Players?.length * session?.Columns * 2 ))
 		for(const p of session?.List_Players) {
-			for(let c = 0; session?.Attributes?.Columns > c; c++) {
+			for(let c = 0; session?.Columns > c; c++) {
 
 				let tmp = JSON.parse(sessionStorage.getItem(substring_sessionStorage + p.Alias + '_' + tableID + '_' + c))
 				if(!tmp || !tmp.Alias) {
@@ -369,7 +398,7 @@ function Games() {
 			}
 		}
 
-		const columns = Array.from({ length: session?.Attributes?.Columns }, (_, index) => index)
+		const columns = Array.from({ length: session?.Columns }, (_, index) => index)
 
 		return (
 			<table id={tableID} className='table' ref={tableRef}>
@@ -378,7 +407,9 @@ function Games() {
 						return (
 							<tr key={currentRowIndex} className='row'>
 								{r.td}
-								{session?.List_Players?.map((player, currentPlayerIndex) => {
+								{session?.List_PlayerOrder?.map((alias, currentPlayerIndex) => {
+									const player = getPlayer(alias)
+
 									return (
 										columns.map((currentColumnIndex) => {
 
@@ -437,7 +468,7 @@ function Games() {
 														style={{ 
 															backgroundColor: player.Color, 
 															borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
-															borderRight: currentColumnIndex === session?.Attributes?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
+															borderRight: currentColumnIndex === session?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
 															borderBottom: currentRowIndex === rows.length - 1 ? thickBorder : '1px solid var(--text-color-light)',
 														}}>
 														{e}
@@ -453,7 +484,7 @@ function Games() {
 														backgroundColor: player.Color, 
 														borderTop: currentRowIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
 														borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
-														borderRight: currentColumnIndex === session?.Attributes?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
+														borderRight: currentColumnIndex === session?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
 														borderBottom: currentRowIndex === rows.length - 4 ? thickBorder : '1px solid var(--text-color-light)', 
 													}}>
 													{e}
@@ -468,6 +499,16 @@ function Games() {
 				</tbody>
 			</table>
 		)
+
+	}
+
+	const getPlayer = (alias) => {
+
+		for(const p of session?.List_Players) {
+			if(p.Alias === alias) {
+				return p
+			}
+		}
 
 	}
 
@@ -668,14 +709,14 @@ function Games() {
 	
 	const calculateBottomLabels = (alias, columnIndex, bottomLabels) => {
 	
-		const up = Number(bottomLabels[0].textContent)
-		const bottom = Number(bottomLabels[1].textContent)
+		const up = +bottomLabels[0].textContent
+		const bottom = +bottomLabels[1].textContent
 		const sum = up + bottom
 	
 		bottomLabels[2].textContent = up !== 0 && bottom !== 0 ? sum : ''
 		for(const c of columnsSum) {
 			if(c.Alias === alias && c.Column === columnIndex) {
-				c.All = Number(bottomLabels[2].textContent)
+				c.All = +bottomLabels[2].textContent
 			}
 		}
 	
@@ -754,22 +795,21 @@ function Games() {
 	
 	
 		//____________________Attributes____________________
-		session.Attributes.LastPlayed = new Date()
-		session.Attributes.InputType = inputType
+		session.LastPlayed = new Date()
+		session.InputType = inputType
 	
 	
 		//____________________FinalScore____________________
-		const finalScores = createFinalScoreElement(session.Attributes, Boolean(askIfSurrender), list_winnerAlias, playerScores)
-	
-		const json = JSON.stringify({ 
-			id: session.id,
-			Attributes: JSON.stringify(session.Attributes),
-			List_Players: JSON.stringify(session.List_Players),
-			FinalScores: finalScores
-		})
+		const finalScores = { 
+			PlayerScores: playerScores, 
+			...createFinalScoreElement(start, session.Columns, Boolean(askIfSurrender), list_winnerAlias) 
+		}
 
 		await axiosPrivate.post('/game',
-			json,
+			JSON.stringify({ 
+				...session,
+				FinalScores: finalScores
+			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
@@ -815,6 +855,7 @@ function Games() {
 
 	const modalEditSave = async () => {
 
+		session.List_PlayerOrder = tmpListPlayers.map((p) => p.Alias)
 		session.List_Players = tmpListPlayers
 		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
 
@@ -836,8 +877,10 @@ function Games() {
 	}
 
 	const modalEditShow = () => {
-		setTmpListPlayers(session?.List_Players)
+
+		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
 		document.getElementById('modal-edit').showModal()
+
 	}
 
 	const handleOnDragEnd = (result) => {
@@ -1003,6 +1046,7 @@ function Games() {
 						marginRight: '10px',
 						border: '1px solid var(--text-color)',
 						outline: 'none',
+						color: 'var(--text-color)',
 					}}
 				>
 					<option value={1} key='1'>Auswahl</option>
