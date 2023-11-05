@@ -802,7 +802,7 @@ function Games() {
 		//____________________FinalScore____________________
 		const finalScores = { 
 			PlayerScores: playerScores, 
-			...createFinalScoreElement(start, session.Columns, Boolean(askIfSurrender), list_winnerAlias) 
+			...createFinalScoreElement(start, session.Columns, Boolean(askIfSurrender), list_winnerAlias, playerScores) 
 		}
 
 		await axiosPrivate.post('/game',

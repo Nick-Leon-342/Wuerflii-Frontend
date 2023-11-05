@@ -4,7 +4,7 @@ import '../App.css'
 import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { formatDate, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
@@ -75,7 +75,7 @@ function SelectSession() {
 		
 		const i = element.target.closest('dt').getAttribute('index')
 		sessionStorage.setItem(sessionStorage_session, JSON.stringify(list[i]))
-		navigate('/sessionpreview', { replace: false })
+		navigate(`/sessionpreview?sessionid=${list[i].id}`, { replace: false })
 
 	}
 

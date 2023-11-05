@@ -13,8 +13,6 @@ export const id_playerTable							= 'playerTable'
 //____________________Substrings____________________
 
 const substring_session								= 'session'
-const substring_players								= 'players'
-const substring_columns								= 'columns'
 const substring_finalscores							= 'finalscores'
 
 const substring_lastPlayer							= 'lastPlayer'
@@ -29,8 +27,6 @@ const substring_start								= 'start'
 
 export const substring_sessionStorage				= 'kniffel_sessionStorage_'
 export const sessionStorage_session					= substring_sessionStorage + substring_session
-export const sessionStorage_players					= substring_sessionStorage + substring_players
-export const sessionStorage_columns					= substring_sessionStorage + substring_columns
 export const sessionStorage_finalscores				= substring_sessionStorage + substring_finalscores
 
 export const sessionStorage_lastPlayer				= substring_sessionStorage + substring_lastPlayer
@@ -97,7 +93,7 @@ export const createSession = (sessionName, columns, list_playerOrder, list_playe
 
 }
 
-export const createFinalScoreElement = (start, columns, surrender, list_winner) => {
+export const createFinalScoreElement = (start, columns, surrender, list_winner, playerScores) => {
 
     const finalScore = {
 		Start: start,

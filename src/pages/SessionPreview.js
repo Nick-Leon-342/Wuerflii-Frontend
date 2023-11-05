@@ -3,7 +3,7 @@
 import '../App.css'
 
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { clearSessionStorage, sessionStorage_session, sessionStorage_finalscores, formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
@@ -12,6 +12,9 @@ function SessionPreview() {
 	
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
+	const location = useLocation()
+	const sessionid = new URLSearchParams(location.search).get('sessionid')
+	console.log(sessionid)
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session)) || navigate('/creategame', { replace: true })
 
 	const [list, setList] = useState([])

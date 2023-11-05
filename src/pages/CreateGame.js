@@ -51,11 +51,7 @@ function CreateGame() {
 	const next = () => {
 
 		if(!players || !columns) return
-
-		sessionStorage.setItem(sessionStorage_players, players)
-		sessionStorage.setItem(sessionStorage_columns, columns)
-
-		navigate('/enternames', { replace: false })
+		navigate(`/enternames?players=${players}&columns=${columns}`, { replace: false })
 
 	}
 
