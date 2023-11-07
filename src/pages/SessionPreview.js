@@ -4,7 +4,7 @@ import '../App.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { clearSessionStorage, sessionStorage_session, sessionStorage_finalscores, formatDate } from './utils'
+import { formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -16,11 +16,11 @@ function SessionPreview() {
 	const sessionid = new URLSearchParams(location.search).get('sessionid')
 	const [ session, setSession ] = useState()
 
-	const [list, setList] = useState([])
-	const [wins, setWins] = useState([])
-	const [finalScores, setFinalScores] = useState([])
-	const [loaderVisible, setLoaderVisible] = useState(false)
-	const [showLastFinalScores, setShowLastFinalScores] = useState()
+	const [ list, setList ] = useState([])
+	const [ wins, setWins ] = useState([])
+	const [ finalScores, setFinalScores ] = useState([])
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ showLastFinalScores, setShowLastFinalScores ] = useState()
 
 	const firstColumnWidth = '150px'
 	const firstColumnStyle = { width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold' }
@@ -70,31 +70,12 @@ function SessionPreview() {
 	const sortByTimestampDesc = (a, b) => {
 		return new Date(b.End) - new Date(a.End)
 	}
-	
 
 
 
 
-	const back = () => {
-	
-		clearSessionStorage()
-		navigate('/selectsession', { replace: true })
-	
-	}
-
-
-
-
-
-	const showAnalytics = () => {
-
-		sessionStorage.setItem(sessionStorage_finalscores, JSON.stringify(finalScores))
-
-	}
 
 	useEffect(() => {
-
-		sessionStorage.removeItem(sessionStorage_finalscores)
 
 		if(showLastFinalScores === 'all') {
 			
@@ -217,14 +198,14 @@ function SessionPreview() {
 				<span/>
 			</div>
 				
-			<button className='button' style={{ height: '40px', width: '100%', marginBottom: '0px' }} onClick={() => navigate('/game', { replace: true })}>Los geht's!</button>
+			<button className='button' style={{ height: '40px', width: '100%', marginBottom: '0px' }} onClick={() => navigate(`/game?sessionid=${sessionid}`, { replace: true })}>Los geht's!</button>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>
-					<Link to='/selectsession' onClick={back}>Zurück</Link>
+					<Link to='/selectsession' onClick={() => navigate('/selectsession', { replace: true })}>Zurück</Link>
 				</p>
 				<p className='link-switch'>
-					<Link to='/sessionanalytics' onClick={showAnalytics}>Mehr {'>'}</Link>
+					<Link to='/sessionanalytics'>Mehr {'>'}</Link>
 				</p>
 			</div>
 

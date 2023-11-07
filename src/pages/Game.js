@@ -4,10 +4,10 @@ import '../App.css'
 import './css/Game.css'
 
 import React, { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { sessionStorage_start, substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, sessionStorage_gnadenwurf, sessionStorage_session, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_players } from './utils'
+import { substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, sessionStorage_gnadenwurf, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
@@ -26,14 +26,26 @@ function Games() {
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
 
-	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
+	const location = useLocation()
+	const urlParams = new URLSearchParams(location.search)
+	const sessionid = urlParams.get('sessionid') 
+	const [ session, setSession ] = useState()
+
+	const updateURL = () => {
+		
+		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString();
+		window.history.pushState({ path: updatedURL }, '', updatedURL)
+
+	}
+
 	const start = (function() {
-		const storedDate = sessionStorage.getItem(sessionStorage_start)
+		const storedDate = urlParams.get('start')
 		if (storedDate) {
 			return new Date(storedDate)
 		} else {
 			const currentDate = new Date()
-			sessionStorage.setItem(sessionStorage_start, currentDate)
+			urlParams.set('start', currentDate)
+			updateURL()
 			return currentDate
 		}
 	})()
@@ -45,52 +57,60 @@ function Games() {
 
 	useEffect(() => {if(tableRef.current) {setTableWidth(tableRef.current.offsetWidth)}}, [tableRef])
 
-	useEffect(() => {
+	const effectHelp = async () => {
 		
-		async function connect() {
-			await axiosPrivate.get('/game',
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).catch(() => {
-				return navigate('/login', { replace: true })
-			})
-		}
+		console.log(sessionid)
 
-		connect()
-		if(!session || !session.List_Players ) return navigate('/creategame', { replace: true })
-
-		for(const alias of session?.List_PlayerOrder) {
-			for(let i = 0; session?.Columns > i; i++) {
-				calculateUpperColumn(alias, i)
-				calculateBottomColumn(alias, i)
+		await axiosPrivate.get('/game',
+			{
+				headers: { 'Content-Type': 'application/json' },
+				params: { id: sessionid },
+				withCredentials: true
 			}
-		}
+		).then((res) => {
+			if(res?.status === 200 && !sessionid) {
+				return console.log('No sessionid')
+			}
+			return console.log(res?.data)
+		}).catch((err) => {
+			console.log(err)
+			return navigate('/creategame', { replace: true })
+		})
+
+		// if(!session || !session.List_Players ) return navigate('/creategame', { replace: true })
+
+		// for(const alias of session?.List_PlayerOrder) {
+		// 	for(let i = 0; session?.Columns > i; i++) {
+		// 		calculateUpperColumn(alias, i)
+		// 		calculateBottomColumn(alias, i)
+		// 	}
+		// }
 		
-		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
-		if(lastPlayer) setLastPlayer(Number(lastPlayer))
+		// const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
+		// if(lastPlayer) setLastPlayer(Number(lastPlayer))
 
-		const elements = document.getElementsByClassName('kniffelInput')
-		if (elements) {
-			for(const e of elements) {
-				e.addEventListener('focus', focusEvent)
-				if(inputType === 0) {
-					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
-				} else {
-					e.addEventListener('blur', removeFocusEvent)
-				}
-			}
-		}
+		// const elements = document.getElementsByClassName('kniffelInput')
+		// if (elements) {
+		// 	for(const e of elements) {
+		// 		e.addEventListener('focus', focusEvent)
+		// 		if(inputType === 0) {
+		// 			e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
+		// 		} else {
+		// 			e.addEventListener('blur', removeFocusEvent)
+		// 		}
+		// 	}
+		// }
 
-		return () => {
-			for(const e of elements) {
-				e.removeEventListener('focus', focusEvent)
-				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
-			}
-		}
+		// return () => {
+		// 	for(const e of elements) {
+		// 		e.removeEventListener('focus', focusEvent)
+		// 		e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
+		// 	}
+		// }
 
-	}, [])
+	}
+
+	useEffect(() => {effectHelp()}, [])
 
 	const newGame = () => {
 	
@@ -815,10 +835,10 @@ function Games() {
 				withCredentials: true
 			}
 		).then(() => {
-			sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winnerName))
-			sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
-			
-			navigate('/endscreen', { replace: true })
+
+			sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winnerName))			
+			navigate(`/endscreen?sessionid=${sessionid}`, { replace: true })
+
 		}).catch((err) => {
 			console.log(err)
 		})
@@ -857,7 +877,6 @@ function Games() {
 
 		session.List_PlayerOrder = tmpListPlayers.map((p) => p.Alias)
 		session.List_Players = tmpListPlayers
-		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
 
 		if(session.id) {
 

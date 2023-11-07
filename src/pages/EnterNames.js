@@ -69,7 +69,7 @@ function EnterNames() {
 
 
 
-	const play = () => {
+	const play = async () => {
 
 		if(sessionName) {
 
@@ -83,8 +83,18 @@ function EnterNames() {
 			}
 
 			const session = createSession(sessionName, columns, list_playerOrder, list_players)
-			sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
-			navigate('/game', { replace: true })
+			await axiosPrivate.post('/enternames',
+				session,
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).then((res) => {
+				navigate(`/game?sessionid=${res?.data?.sessionid}`)
+			}).catch((err) => {
+				console.log(err)
+				navigate('/creategame', { replace: true })
+			})
 
 		}
 

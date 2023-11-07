@@ -14,8 +14,8 @@ function SessionAnalytics() {
 
 	const navigate = useNavigate()
 
-	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session)) || navigate('/creategame', { replace: true })
-	const finalScores = JSON.parse(sessionStorage.getItem(sessionStorage_finalscores)) || navigate('/creategame', { replace: true })
+	const [session, setSession] = useState()
+	const [finalScores, setFinalScores] = useState()
 
 	const [list, setList] = useState([])
 	const [wins, setWins] = useState([])
@@ -32,7 +32,7 @@ function SessionAnalytics() {
 
 	useEffect(() => {
 
-		if(!session || !session.List_Players) return navigate('/creategame', { replace: true })
+		// if(!session || !session.List_Players) return navigate('/creategame', { replace: true })
 
 
 
