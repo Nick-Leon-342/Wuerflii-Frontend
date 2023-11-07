@@ -90,6 +90,7 @@ function EnterNames() {
 					withCredentials: true
 				}
 			).then((res) => {
+				sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
 				navigate(`/game?sessionid=${res?.data?.sessionid}`)
 			}).catch((err) => {
 				console.log(err)

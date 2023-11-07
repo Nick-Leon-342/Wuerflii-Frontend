@@ -4,7 +4,7 @@ import '../App.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { formatDate } from './utils'
+import { formatDate, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -132,6 +132,15 @@ function SessionPreview() {
 
 	}
 
+	const play = () => {
+
+		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
+		navigate('/game', { replace: true })
+
+	}
+
+
+
 
 
 
@@ -198,7 +207,7 @@ function SessionPreview() {
 				<span/>
 			</div>
 				
-			<button className='button' style={{ height: '40px', width: '100%', marginBottom: '0px' }} onClick={() => navigate(`/game?sessionid=${sessionid}`, { replace: true })}>Los geht's!</button>
+			<button className='button' style={{ height: '40px', width: '100%', marginBottom: '0px' }} onClick={play}>Los geht's!</button>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>
