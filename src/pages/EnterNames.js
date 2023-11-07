@@ -90,8 +90,13 @@ function EnterNames() {
 					withCredentials: true
 				}
 			).then((res) => {
+
+				const data = res?.data
+				session.id = data?.sessionid
+				session.List_Players = data?.List_Players
 				sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
 				navigate(`/game?sessionid=${res?.data?.sessionid}`)
+				
 			}).catch((err) => {
 				console.log(err)
 				navigate('/creategame', { replace: true })

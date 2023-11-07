@@ -211,7 +211,7 @@ function SessionPreview() {
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>
-					<Link to='/selectsession' onClick={() => navigate('/selectsession', { replace: true })}>Zurück</Link>
+					<Link to='/selectsession'>Zurück</Link>
 				</p>
 				<p className='link-switch'>
 					<Link to='/sessionanalytics'>Mehr {'>'}</Link>

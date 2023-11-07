@@ -96,7 +96,7 @@ function EndScreen() {
 				</tbody>
 			</table>
 
-			<button className='button' style={{ width: '100%' }} onClick={() => navigate('/creategame', { replace: true })}>Ok</button>
+			<button className='button' style={{ width: '100%' }} onClick={() => navigate('/creategame', { replace: false })}>Ok</button>
 
 		</>
 	)
