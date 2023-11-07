@@ -753,7 +753,7 @@ function Games() {
 		if(!askIfSurrender) {
 			for(const element of columnsSum) {
 				if(element.All === '0' || element.All === 0) {
-					window.alert('Bitte alle Werte eingeben!')
+					document.getElementById('modal-finishgame').showModal()
 					return
 				}
 			}
@@ -1031,6 +1031,13 @@ function Games() {
 			<dialog id='modal-invalidnumber' className='modal'>
 				<p id='message-invalidnumber' style={{ fontSize: '22px', marginTop: '20px' }}></p>
 				<button className='button' onClick={() => document.getElementById('modal-invalidnumber').close()}>Ok</button>
+			</dialog>
+
+			<dialog id='modal-finishgame' className='modal'>
+				<p id='message-finishgame' style={{ fontSize: '22px', marginTop: '20px' }}>
+					Bitte alle Werte eingeben!
+				</p>
+				<button className='button' onClick={() => document.getElementById('modal-finishgame').close()}>Ok</button>
 			</dialog>
 
 
