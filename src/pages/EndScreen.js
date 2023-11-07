@@ -4,8 +4,7 @@ import '../App.css'
 import './css/EndScreen.css'
 
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { sessionStorage_session, sessionStorage_winner, clearSessionStorage } from './utils'
+import { useLocation, useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
@@ -17,10 +16,13 @@ function EndScreen() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 
-	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
-	const winner = JSON.parse(sessionStorage.getItem(sessionStorage_winner))
-
+	const [session, setSession] = useState()
 	const [header, setHeader] = useState('')
+
+	const location = useLocation()
+	const urlParams = new URLSearchParams(location.search)
+	const winner = JSON.parse(urlParams.get('winner'))
+	const sessionId = +urlParams.get('sessionid')
 
 
 
@@ -32,44 +34,37 @@ function EndScreen() {
 			await axiosPrivate.get('/endscreen',
 				{
 					headers: { 'Content-Type': 'application/json' },
+					params: { id: sessionId },
 					withCredentials: true
 				}
-			).catch(() => {
-				navigate('/login', { replace: true })
+			).then((res) => {
+
+				setSession(res?.data)
+				if(!winner || !res?.data) return navigate('/creategame', { replace: true })
+
+				if(winner.length === 1) {
+					setHeader(`'${winner[0]}' hat gewonnen!`)
+				} else {
+					let string = `'${winner[0]}' `
+					for(let i = 1; winner.length > i; i++) {
+						const p = `'${winner[i]}'`
+						if((i + 1) === winner.length) {
+							string += ` und ${p} haben gewonnen!`
+						} else {
+							string += `, ${p}`
+						}
+					}
+					setHeader(string)
+				}
+
+			}).catch(() => {
+				navigate('/creategame', { replace: true })
 			})
 		}
 
 		connect()
 
-		if(!session || !winner) return navigate('/creategame', { replace: true })
-
-		if(winner.length === 1) {
-			setHeader(`'${winner[0]}' hat gewonnen!`)
-		} else {
-			let string = `'${winner[0]}' `
-			for(let i = 1; winner.length > i; i++) {
-				const p = `'${winner[i]}'`
-				if((i + 1) === winner.length) {
-					string += ` und ${p} haben gewonnen!`
-				} else {
-					string += `, ${p}`
-				}
-			}
-			setHeader(string)
-		}
-
 	}, [])
-
-
-
-
-
-	const ok = () => {
-		
-		clearSessionStorage()
-		navigate('/creategame', { replace: true })
-	
-	}
 
 
 
@@ -101,7 +96,7 @@ function EndScreen() {
 				</tbody>
 			</table>
 
-			<button className='button' style={{ width: '100%' }} onClick={ok}>Ok</button>
+			<button className='button' style={{ width: '100%' }} onClick={() => navigate('/creategame', { replace: true })}>Ok</button>
 
 		</>
 	)

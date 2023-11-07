@@ -28,7 +28,6 @@ function Games() {
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
-	const sessionid = urlParams.get('sessionid') 
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
 
 	const start = (function() {
@@ -38,7 +37,7 @@ function Games() {
 		} else {
 			const currentDate = new Date()
 			urlParams.set('start', currentDate)
-			const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString();
+			const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
 			window.history.pushState({ path: updatedURL }, '', updatedURL)
 			return currentDate
 		}
@@ -821,9 +820,9 @@ function Games() {
 				withCredentials: true
 			}
 		).then(() => {
-
-			sessionStorage.setItem(sessionStorage_winner, JSON.stringify(list_winnerName))			
-			navigate(`/endscreen?sessionid=${sessionid}`, { replace: true })
+	
+			clearSessionStorage()
+			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(list_winnerName)}`, { replace: true })
 
 		}).catch((err) => {
 			console.log(err)
