@@ -313,13 +313,15 @@ function SelectSession() {
 			</dialog>
 
 			<dialog id='modal-delete' className='modal'>
-				<label>Bist du sicher, dass du diese Session(s) löschen möchtest?</label>
-				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+				<p style={{ fontSize: '22px', marginTop: '20px' }}>
+					Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?
+				</p>
+				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					<button 
 						className='button' 
 						onClick={modalDeleteSubmit}
 						style={{
-							width: '50%',
+							width: '60%',
 						}}
 					>Ja</button>
 					<button 
