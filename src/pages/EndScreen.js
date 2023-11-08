@@ -80,9 +80,11 @@ function EndScreen() {
 	return (
 		<>
 		
-			<div className='button-container'><label className='winner'>
-				{header}
-			</label></div>
+			<div className='button-container'>
+				<label className='winner'>
+					{header}
+				</label>
+			</div>
 
 			<br/>
 

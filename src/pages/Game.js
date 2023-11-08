@@ -746,20 +746,25 @@ function Games() {
 
 
 	//__________________________________________________FinishGame/SaveResults__________________________________________________
-	
-	const saveResults = async () => {
+
+	const finishGame = () => {
 	
 		if(!askIfSurrender) {
 			for(const element of columnsSum) {
 				if(element.All === '0' || element.All === 0) {
-					document.getElementById('modal-finishgame').showModal()
+					document.getElementById('modal-error-finishgame').showModal()
 					return
 				}
 			}
 		}
+
+		document.getElementById('modal-finishgame').showModal()
+
+	}
+	
+	const saveResults = async () => {
 		
 		if(session.List_Players.length < 2) return navigate('/creategame', { replace: true })
-
 
 		//____________________Players____________________
 		const playerScores = {}	
@@ -1032,28 +1037,52 @@ function Games() {
 				<button className='button' onClick={() => document.getElementById('modal-invalidnumber').close()}>Ok</button>
 			</dialog>
 
-			<dialog id='modal-finishgame' className='modal'>
+			<dialog id='modal-error-finishgame' className='modal'>
 				<p id='message-finishgame' style={{ fontSize: '22px', marginTop: '20px' }}>
 					Bitte alle Werte eingeben!
 				</p>
-				<button className='button' onClick={() => document.getElementById('modal-finishgame').close()}>Ok</button>
+				<button className='button' onClick={() => document.getElementById('modal-error-finishgame').close()}>Ok</button>
 			</dialog>
 
 			<dialog id='modal-newgame' className='modal'>
 				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					Neues Spiel anfangen und dieses Spiel löschen?
+					Dieses Spiel löschen<br/>und ein neues Spiel anfangen?
 				</p>
 				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					<button 
 						className='button' 
 						onClick={newGame}
 						style={{
-							width: '70%',
+							width: '55%',
 						}}
 					>Ja</button>
 					<button 
 						className='button' 
 						onClick={() => document.getElementById('modal-newgame').close()}
+						style={{
+							backgroundColor: 'rgb(255, 0, 0)',
+							color: 'white',
+						}}
+					>Abbrechen</button>
+				</div>
+			</dialog>
+
+			<dialog id='modal-finishgame' className='modal'>
+				<p style={{ fontSize: '22px', marginTop: '20px' }}>
+					Spiel beenden?
+				</p>
+				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+					<button 
+						className='button' 
+						onClick={saveResults}
+						style={{
+							width: '100px',
+							marginRight: '5px',
+						}}
+					>Ja</button>
+					<button 
+						className='button' 
+						onClick={() => document.getElementById('modal-finishgame').close()}
 						style={{
 							backgroundColor: 'rgb(255, 0, 0)',
 							color: 'white',
@@ -1121,7 +1150,7 @@ function Games() {
 					}}
 				>Neues Spiel</button>
 				<button 
-					onClick={saveResults} 
+					onClick={finishGame}
 					className='button'
 					style={{
 						width: '60%',
