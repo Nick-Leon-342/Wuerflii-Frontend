@@ -8,6 +8,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { createSession, createPlayer, sessionStorage_session } from './utils'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import Loader from '../components/Loader'
 
 
 function EnterNames() {
@@ -23,6 +24,7 @@ function EnterNames() {
 	const [names, setNames] = useState(players.map((p) => `Spieler_${p + 1}`))
 	const [colors, setColors] = useState(players.map((p) => (p % 2 === 0 ? '#ffffff' : '#ADD8E6')))
 	const [sessionName, setSessionName] = useState('Partie')
+	const [loaderVisible, setLoaderVisible] = useState(false)
   
 
 
@@ -73,6 +75,7 @@ function EnterNames() {
 
 		if(sessionName) {
 
+			setLoaderVisible(true)
 			const list_playerOrder = []
 			const list_players = []
 	
@@ -101,6 +104,7 @@ function EnterNames() {
 				console.log(err)
 				navigate('/creategame', { replace: true })
 			})
+			setLoaderVisible(false)
 
 		}
 
@@ -136,6 +140,8 @@ function EnterNames() {
 					</dt>
 				))}
 			</dl>
+
+			<Loader loaderVisible={loaderVisible}/>
 
 			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={play}>Los!</button>
 

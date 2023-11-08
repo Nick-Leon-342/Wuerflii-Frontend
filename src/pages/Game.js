@@ -1039,6 +1039,29 @@ function Games() {
 				<button className='button' onClick={() => document.getElementById('modal-finishgame').close()}>Ok</button>
 			</dialog>
 
+			<dialog id='modal-newgame' className='modal'>
+				<p style={{ fontSize: '22px', marginTop: '20px' }}>
+					Neues Spiel anfangen und dieses Spiel löschen?
+				</p>
+				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+					<button 
+						className='button' 
+						onClick={newGame}
+						style={{
+							width: '70%',
+						}}
+					>Ja</button>
+					<button 
+						className='button' 
+						onClick={() => document.getElementById('modal-newgame').close()}
+						style={{
+							backgroundColor: 'rgb(255, 0, 0)',
+							color: 'white',
+						}}
+					>Abbrechen</button>
+				</div>
+			</dialog>
+
 
 
 
@@ -1085,7 +1108,7 @@ function Games() {
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<button 
-					onClick={newGame} 
+					onClick={() => document.getElementById('modal-newgame').showModal()} 
 					className='button'
 					style={{
 						width: '40%',
