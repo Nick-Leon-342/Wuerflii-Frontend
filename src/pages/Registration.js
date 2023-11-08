@@ -8,9 +8,10 @@ import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
 import { NAME_REGEX, PASSWORD_REGEX } from './utils'
 
-import DialogName from '../dialog/DialogName'
-import DialogPassword from '../dialog/DialogPassword'
-import DialogPasswordMatch from '../dialog/DialogPasswordMatch'
+import DialogName from '../components/dialog/DialogName'
+import DialogPassword from '../components/dialog/DialogPassword'
+import DialogPasswordMatch from '../components/dialog/DialogPasswordMatch'
+import Loader from '../components/Loader'
 
 
 
@@ -186,11 +187,7 @@ const Registration = () => {
 
 				<br/>
 				<br/>
-				<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
-					<span/>
-					<span/>
-					<span/>
-				</div>
+				<Loader loaderVisible={loaderVisible}/>
 
 				<p style={{
 					display: error ? '' : 'none',

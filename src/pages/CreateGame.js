@@ -7,13 +7,14 @@ import './css/CreateGame.css'
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { sessionStorage_columns, sessionStorage_players, NAME_REGEX, PASSWORD_REGEX, clearSessionStorage, sessionStorage_session } from './utils'
+import { NAME_REGEX, PASSWORD_REGEX, clearSessionStorage, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS } from './utils-env'
 
-import DialogName from '../dialog/DialogName'
-import DialogPassword from '../dialog/DialogPassword'
+import DialogName from '../components/dialog/DialogName'
+import DialogPassword from '../components/dialog/DialogPassword'
+import Loader from '../components/Loader'
 
 
 function CreateGame() {
@@ -273,11 +274,7 @@ function CreateGame() {
 						<br/>
 						<br/>
 
-						<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
-							<span/>
-							<span/>
-							<span/>
-						</div>
+						<Loader loaderVisible={loaderVisible}/>
 
 						<p style={{
 							display: error ? '' : 'none',

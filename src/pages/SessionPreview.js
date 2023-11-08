@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { formatDate, sessionStorage_session } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import Loader from '../components/Loader'
 
 
 function SessionPreview() {
@@ -201,11 +202,7 @@ function SessionPreview() {
 				</table>
 			</div>
 			
-			<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
-				<span/>
-				<span/>
-				<span/>
-			</div>
+			<Loader loaderVisible={loaderVisible}/>
 				
 			<button className='button' style={{ height: '40px', width: '100%', marginBottom: '0px' }} onClick={play}>Los geht's!</button>
 

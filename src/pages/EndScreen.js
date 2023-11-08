@@ -7,6 +7,8 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
+import Loader from '../components/Loader'
+
 
 
 
@@ -18,6 +20,7 @@ function EndScreen() {
 
 	const [session, setSession] = useState()
 	const [header, setHeader] = useState('')
+	const [loaderVisible, setLoaderVisible] = useState(false)
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
@@ -29,6 +32,8 @@ function EndScreen() {
 
 
 	useEffect(() => {
+
+		setLoaderVisible(true)
 
 		async function connect() {
 			await axiosPrivate.get('/endscreen',
@@ -56,6 +61,8 @@ function EndScreen() {
 					}
 					setHeader(string)
 				}
+
+				setLoaderVisible(false)
 
 			}).catch(() => {
 				navigate('/creategame', { replace: true })
@@ -95,6 +102,8 @@ function EndScreen() {
 					</tr>
 				</tbody>
 			</table>
+
+			<Loader loaderVisible={loaderVisible}/>
 
 			<button className='button' style={{ width: '100%' }} onClick={() => navigate('/creategame', { replace: false })}>Ok</button>
 

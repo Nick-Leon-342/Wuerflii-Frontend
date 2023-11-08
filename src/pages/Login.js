@@ -7,6 +7,7 @@ import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from '../api/axios'
+import Loader from '../components/Loader'
 
 
 
@@ -100,11 +101,7 @@ const Login = () => {
 
 				<br/>
 				<br/>
-				<div className={`loader ${loaderVisible ? '' : 'notVisible'}`}>
-					<span/>
-					<span/>
-					<span/>
-				</div>
+				<Loader loaderVisible={loaderVisible}/>
 
 				<p style={{
 					display: error ? '' : 'none',

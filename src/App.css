@@ -170,6 +170,39 @@ input {
 
 
 
+/* ____________________Table____________________ */
+
+.loader {
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	opacity: 1;
+}
+  
+.loader span {
+	width: 8px;
+	height: 8px;
+	background: #00FF00;
+	border-radius: 50%;
+	margin: 0 5px;
+	animation: expandShrink 2s linear infinite;
+	animation-delay: 0.1s;
+}
+  
+.loader span:nth-child(1) {animation-delay: 0s;}
+.loader span:nth-child(2) {animation-delay: 0.333s;}
+.loader span:nth-child(3) {animation-delay: 0.667s;}
+
+@keyframes expandShrink {
+	0%, 100% {transform: scale(1.5);}
+	25%, 75% {transform: scale(0.5);}
+}
+
+
+
+
+
 @media (max-width: 390px) {
 
 	input {
