@@ -7,9 +7,10 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_winner, sessionStorage_gnadenwurf, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_session } from './utils'
+import { substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_gnadenwurf, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_session } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import Loader from '../components/Loader'
 
 
 
@@ -25,6 +26,8 @@ function Games() {
 	const [ tableColumns ] = useState([])
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
@@ -764,6 +767,8 @@ function Games() {
 	
 	const saveResults = async () => {
 		
+		setDisableFinishGame(true)
+		setLoaderVisible(true)
 		if(session.List_Players.length < 2) return navigate('/creategame', { replace: true })
 
 		//____________________Players____________________
@@ -828,10 +833,12 @@ function Games() {
 	
 			clearSessionStorage()
 			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(list_winnerName)}`, { replace: true })
+			setLoaderVisible(false)
 
 		}).catch((err) => {
 			console.log(err)
 		})
+		setDisableFinishGame(false)
 	
 	}
 
@@ -1023,7 +1030,7 @@ function Games() {
 						? 'Bis jetzt war noch keiner dran!'
 						: (
 							<>
-								{'\'' + session?.List_Players[lastPlayerIndex].Name + '\'' + ' war als letztes dran.'}<br />
+								{'\'' + session?.List_Players[lastPlayerIndex].Name + '\' war als letztes dran.'}<br />
 								{'Nun kommt \'' + session?.List_Players[(lastPlayerIndex + 1) % session?.List_Players?.length].Name + '\''}
 							</>
 						)
@@ -1041,7 +1048,7 @@ function Games() {
 				<p id='message-finishgame' style={{ fontSize: '22px', marginTop: '20px' }}>
 					Bitte alle Werte eingeben!
 				</p>
-				<button className='button' onClick={() => document.getElementById('modal-error-finishgame').close()}>Ok</button>
+				<button className='button' style={{ width: '100%' }} onClick={() => document.getElementById('modal-error-finishgame').close()}>Verstanden</button>
 			</dialog>
 
 			<dialog id='modal-newgame' className='modal'>
@@ -1071,10 +1078,12 @@ function Games() {
 				<p style={{ fontSize: '22px', marginTop: '20px' }}>
 					Spiel beenden?
 				</p>
+				<Loader loaderVisible={loaderVisible}/>
 				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					<button 
 						className='button' 
 						onClick={saveResults}
+						disabled={disableFinishGame}
 						style={{
 							width: '100px',
 							marginRight: '5px',

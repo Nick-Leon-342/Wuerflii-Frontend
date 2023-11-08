@@ -21,10 +21,11 @@ function EnterNames() {
 	const players = Array.from({ length: params.get('players') }, (_, index) => index)
 	const columns = params.get('columns')
 
-	const [names, setNames] = useState(players.map((p) => `Spieler_${p + 1}`))
-	const [colors, setColors] = useState(players.map((p) => (p % 2 === 0 ? '#ffffff' : '#ADD8E6')))
-	const [sessionName, setSessionName] = useState('Partie')
-	const [loaderVisible, setLoaderVisible] = useState(false)
+	const [ names, setNames ] = useState(players.map((p) => `Spieler_${p + 1}`))
+	const [ colors, setColors ] = useState(players.map((p) => (p % 2 === 0 ? '#ffffff' : '#ADD8E6')))
+	const [ sessionName, setSessionName ] = useState('Partie')
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ disablePlay, setDisablePlay ] = useState(false)
   
 
 
@@ -75,6 +76,7 @@ function EnterNames() {
 
 		if(sessionName) {
 
+			setDisablePlay(true)
 			setLoaderVisible(true)
 			const list_playerOrder = []
 			const list_players = []
@@ -105,6 +107,7 @@ function EnterNames() {
 				navigate('/creategame', { replace: true })
 			})
 			setLoaderVisible(false)
+			setDisablePlay(false)
 
 		}
 
@@ -143,7 +146,15 @@ function EnterNames() {
 
 			<Loader loaderVisible={loaderVisible}/>
 
-			<button className='button' style={{ width: '100%', marginBottom: '0px' }} onClick={play}>Los!</button>
+			<button 
+				className='button' 
+				onClick={play}
+				disabled={disablePlay}
+				style={{ 
+					width: '100%', 
+					marginBottom: '0px' 
+				}}
+			>Los!</button>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>
