@@ -8,9 +8,9 @@ import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
 import { NAME_REGEX, PASSWORD_REGEX } from './utils'
 
-import DialogName from '../components/dialog/DialogName'
-import DialogPassword from '../components/dialog/DialogPassword'
-import DialogPasswordMatch from '../components/dialog/DialogPasswordMatch'
+import InfoName from '../components/info/InfoName'
+import InfoPassword from '../components/info/InfoPassword'
+import InfoPasswordMatch from '../components/info/InfoPasswordMatch'
 import Loader from '../components/Loader'
 
 
@@ -119,7 +119,7 @@ const Registration = () => {
 					onFocus={() => setInfoName(true)}
 					onBlur={() => setInfoName(false)}
 				/>
-				{infoName && Name && !NAME_REGEX.test(Name) && <DialogName/>}
+				{infoName && Name && !NAME_REGEX.test(Name) && <InfoName/>}
 
 
 				<p htmlFor='Password' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
@@ -151,7 +151,7 @@ const Registration = () => {
 					onFocus={() => setInfoPassword(true)}
 					onBlur={() => setInfoPassword(false)}
 				/>
-				{infoPassword && Password && !PASSWORD_REGEX.test(Password) && <DialogPassword/>}
+				{infoPassword && Password && !PASSWORD_REGEX.test(Password) && <InfoPassword/>}
 
 
 				<p htmlFor='matchPassword' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
@@ -183,7 +183,7 @@ const Registration = () => {
 					onFocus={() => setInfoPasswordMatch(true)}
 					onBlur={() => setInfoPasswordMatch(false)}
 				/>
-				{infoPasswordMatch && !PASSWORD_REGEX.test(matchPassword) && Password !== matchPassword && <DialogPasswordMatch/>}
+				{infoPasswordMatch && Password !== matchPassword && <InfoPasswordMatch/>}
 
 				<br/>
 				<br/>

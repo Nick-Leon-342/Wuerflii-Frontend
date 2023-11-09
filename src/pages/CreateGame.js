@@ -12,8 +12,8 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS } from './utils-env'
 
-import DialogName from '../components/dialog/DialogName'
-import DialogPassword from '../components/dialog/DialogPassword'
+import DialogName from '../components/info/InfoName'
+import DialogPassword from '../components/info/InfoPassword'
 import Loader from '../components/Loader'
 
 
