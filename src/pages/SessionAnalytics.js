@@ -3,7 +3,7 @@
 import '../App.css'
 
 import { Link, useNavigate } from 'react-router-dom'
-import { formatDate, sessionStorage_finalscores, sessionStorage_session } from './utils'
+import { formatDate } from './utils'
 import { useEffect, useState } from 'react'
 
 
@@ -40,7 +40,6 @@ function SessionAnalytics() {
 
 	const continueToGame = () => {
 
-		sessionStorage.removeItem(sessionStorage_finalscores)
 		navigate('/game', { replace: true })
 
 	}

@@ -4,7 +4,7 @@ import '../App.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { formatDate, sessionStorage_session } from './utils'
+import { formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
 
@@ -134,10 +134,7 @@ function SessionPreview() {
 	}
 
 	const play = () => {
-
-		sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
-		navigate('/game', { replace: true })
-
+		navigate(`/game?sessionid=${session.id}`, { replace: true })
 	}
 
 

@@ -7,7 +7,7 @@ import './css/CreateGame.css'
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { NAME_REGEX, PASSWORD_REGEX, clearSessionStorage, sessionStorage_session } from './utils'
+import { NAME_REGEX, PASSWORD_REGEX } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS } from './utils-env'
@@ -44,8 +44,6 @@ function CreateGame() {
 		}
 
 		connect()
-
-		sessionStorage.getItem(sessionStorage_session) && document.getElementById('modal-switchtogame').showModal()
 
 	}, [])
 
@@ -182,7 +180,6 @@ function CreateGame() {
 	}
 
 	const handleCancel = () => {
-		clearSessionStorage()
 		document.getElementById('modal-switchtogame').close()
 	}
 

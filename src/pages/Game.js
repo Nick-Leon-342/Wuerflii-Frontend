@@ -3,11 +3,11 @@
 import '../App.css'
 import './css/Game.css'
 
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { substring_sessionStorage, createFinalScoreElement, sessionStorage_inputType, sessionStorage_lastPlayer, sessionStorage_gnadenwurf, id_playerTable, id_bottomTable, id_upperTable, clearSessionStorage, sessionStorage_session } from './utils'
+import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import Loader from '../components/Loader'
@@ -17,26 +17,25 @@ import { REACT_APP_BACKEND_URL } from '../pages/utils-env'
 
 
 
-
+const substring_sessionStorage = 'kniffel_sessionStorage_'
 function Games() {
 
 	const navigate = useNavigate()
-	const tableRef = useRef(null)
 	const axiosPrivate = useAxiosPrivate()
+
+	const location = useLocation()
+	const urlParams = new URLSearchParams(location.search)
+	const [ session, setSession ] = useState()
+	const sessionid = urlParams.get('sessionid')
+	const joincode = urlParams.get('joincode')
 
 	const [ columnsSum ] = useState([])
 	const [ tableColumns ] = useState([])
 	const [ socket, setSocket ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
-	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
+	const [ lastPlayerIndex, setLastPlayerIndex ] = useState(+urlParams.get('lastplayer'))
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
-
-	const location = useLocation()
-	const urlParams = new URLSearchParams(location.search)
-	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
-	const sessionid = +urlParams.get('sessionid')
-	const joincode = +urlParams.get('joincode')
 
 	const updateURL = () => {
 		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
@@ -59,35 +58,20 @@ function Games() {
 	
 
 
+	useLayoutEffect(() => {
+		
+		const pt = document.getElementById(id_playerTable)
+		const ut = document.getElementById(id_upperTable)
 
-	useEffect(() => {if(tableRef.current) {setTableWidth(tableRef.current.offsetWidth)}}, [tableRef])
+		if(!pt || !ut) return
+
+		setTableWidth(ut.offsetWidth)
+
+	})
 
 	useEffect(() => {
 
-		async function connect() {
-			await axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).then((res) => {
-
-			}).catch(() => {
-				return navigate('/creategame', { replace: true })
-			})
-		}
-
-		connect()
-
-		const tmp_socket = io.connect(REACT_APP_BACKEND_URL)
-		setSocket(tmp_socket)
-		tmp_socket.emit('Test', 'Test')
-		tmp_socket.on('chat message', (msg) => {
-			console.log('Nachricht empfangen:', msg)
-		})
-
-
-		if(!session || !session.List_Players ) return navigate('/creategame', { replace: true })
+		if(!session) return
 
 		for(const alias of session?.List_PlayerOrder) {
 			for(let i = 0; session?.Columns > i; i++) {
@@ -95,9 +79,6 @@ function Games() {
 				calculateBottomColumn(alias, i)
 			}
 		}
-		
-		const lastPlayer = sessionStorage.getItem(sessionStorage_lastPlayer)
-		if(lastPlayer) setLastPlayer(Number(lastPlayer))
 
 		const elements = document.getElementsByClassName('kniffelInput')
 		if (elements) {
@@ -112,18 +93,48 @@ function Games() {
 		}
 
 		return () => {
-			tmp_socket.disconnect()
 			for(const e of elements) {
 				e.removeEventListener('focus', focusEvent)
 				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
 			}
 		}
 
+	}, [session])
+
+	useEffect(() => {
+
+		async function connect() {
+			await axiosPrivate.get(`/game?sessionid=${sessionid}`,
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).then((res) => {
+				console.log(res?.data)
+				setSession(res?.data)
+			}).catch(() => {
+				return navigate('/creategame', { replace: true })
+			})
+		}
+
+		if(!sessionid) return navigate('/creategame', { replace: true })
+		
+		connect()
+
+		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
+		setSocket(tmp_socket)
+		tmp_socket.on('chat message', (msg) => {
+			console.log('Nachricht empfangen:', msg)
+		})
+
+		return () => {
+			tmp_socket.disconnect()
+		}
+
 	}, [])
 
 	const newGame = () => {
 	
-		clearSessionStorage()
 		navigate('/creategame', { replace: true })
 	
 	}
@@ -137,16 +148,13 @@ function Games() {
 	}
 
 
+
+
+
 	// __________________________________________________Gnadenwurf__________________________________________________
 	// Gnadenwurf is an extra try
 
-	const [gnadenwurf, setGnadenwurf] = useState(() => {
-		const tmp = {}
-		session?.List_Players?.map((p) => (
-			tmp[p.Alias] = false
-		))
-		return tmp
-	})
+	const [gnadenwurf, setGnadenwurf] = useState({})
   
 	const handleGnadenwurfChange = (alias, checked) => {
 
@@ -339,7 +347,7 @@ function Games() {
 	const PlayerTable = () => {
 
 		return (
-			<table id={id_playerTable} className='table playerTable' style={{ width: tableWidth, maxWidth: tableWidth }}>
+			<table id={id_playerTable} className='table playerTable' style={{ minWidth: tableWidth, width: tableWidth, maxWidth: tableWidth }}>
 				<tbody>
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderTop: thickBorder }}>
@@ -372,6 +380,7 @@ function Games() {
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderBottom: thickBorder }}>Gnadenwurf</td>
 						{session?.List_PlayerOrder?.map((alias, i) => {
 							const player = getPlayer(alias)
+							if(!gnadenwurf[alias]) gnadenwurf[alias] = false
 							return (
 								<td 
 									key={i} 
@@ -380,7 +389,7 @@ function Games() {
 									<input 
 										className='checkbox' 
 										type='checkbox' 
-										checked={gnadenwurf[player.Alias]} 
+										checked={gnadenwurf[alias]}
 										onChange={(e) => handleGnadenwurfChange(player.Alias, e.target.checked)} 
 									/>
 								</td>
@@ -429,7 +438,7 @@ function Games() {
 		const columns = Array.from({ length: session?.Columns }, (_, index) => index)
 
 		return (
-			<table id={tableID} className='table' ref={tableRef}>
+			<table id={tableID} className='table'>
 				<tbody>
 					{rows.map((r, currentRowIndex) => {
 						return (
@@ -599,8 +608,9 @@ function Games() {
 			if(r.includes(Number(value)) || value === '') {
 				
 				if(value) {
-					setLastPlayer(playerindex)
-					sessionStorage.setItem(sessionStorage_lastPlayer, Number(e.getAttribute('playerIndex')))
+					setLastPlayerIndex(playerindex)
+					urlParams.set('lastplayer', playerindex)
+					updateURL()
 				}
 
 			} else {
@@ -853,7 +863,6 @@ function Games() {
 			}
 		).then(() => {
 	
-			clearSessionStorage()
 			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(list_winnerName)}`, { replace: true })
 			setLoaderVisible(false)
 
@@ -1162,7 +1171,7 @@ function Games() {
 				>Aufgeben</button>
 			</div>
 
-			<PlayerTable/>
+			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
 

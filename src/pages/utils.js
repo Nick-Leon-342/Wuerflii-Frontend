@@ -10,59 +10,6 @@ export const id_bottomTable							= 'bottomTable'
 export const id_playerTable							= 'playerTable'
 
 
-//____________________Substrings____________________
-
-const substring_session								= 'session'
-const substring_finalscores							= 'finalscores'
-
-const substring_lastPlayer							= 'lastPlayer'
-const substring_inputType							= 'inputType'
-
-const substring_gnadenwurf							= 'gnadenwurf'
-const substring_winner								= 'winner'
-const substring_start								= 'start'
-
-
-//____________________SessionStorage____________________
-
-export const substring_sessionStorage				= 'kniffel_sessionStorage_'
-export const sessionStorage_session					= substring_sessionStorage + substring_session
-export const sessionStorage_finalscores				= substring_sessionStorage + substring_finalscores
-
-export const sessionStorage_lastPlayer				= substring_sessionStorage + substring_lastPlayer
-export const sessionStorage_inputType				= substring_sessionStorage + substring_inputType
-
-export const sessionStorage_gnadenwurf				= substring_sessionStorage + substring_gnadenwurf
-export const sessionStorage_winner					= substring_sessionStorage + substring_winner
-export const sessionStorage_start					= substring_sessionStorage + substring_start
-
-
-
-
-
-//____________________ClearStorage____________________
-
-export function clearSessionStorage() {
-
-    cSS(substring_sessionStorage)
-
-}
-
-function cSS(substring) {
-
-    const sessionStorage_Keys = [];
-
-    for(let i = 0; i < sessionStorage.length; i++) {sessionStorage_Keys.push(sessionStorage.key(i))}
-    
-    for(const key of sessionStorage_Keys) {
-        if (key.includes(substring)) {
-            sessionStorage.removeItem(key)
-        }
-    }
-
-}
-
-
 
 
 

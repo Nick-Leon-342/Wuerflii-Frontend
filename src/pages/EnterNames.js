@@ -5,7 +5,7 @@ import './css/EnterNames.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { createSession, createPlayer, sessionStorage_session } from './utils'
+import { createSession, createPlayer } from './utils'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
@@ -96,11 +96,7 @@ function EnterNames() {
 				}
 			).then((res) => {
 
-				const data = res?.data
-				session.id = data?.sessionid
-				session.List_Players = data?.List_Players
-				sessionStorage.setItem(sessionStorage_session, JSON.stringify(session))
-				navigate(`/game?sessionid=${res?.data?.sessionid}`)
+				navigate(`/game?sessionid=${res?.data?.SessionID}`)
 				
 			}).catch((err) => {
 				console.log(err)
