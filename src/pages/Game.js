@@ -11,6 +11,8 @@ import { substring_sessionStorage, createFinalScoreElement, sessionStorage_input
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import Loader from '../components/Loader'
+import io from 'socket.io-client'
+import { REACT_APP_BACKEND_URL } from '../pages/utils-env'
 
 
 
@@ -24,6 +26,7 @@ function Games() {
 
 	const [ columnsSum ] = useState([])
 	const [ tableColumns ] = useState([])
+	const [ socket, setSocket ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ lastPlayerIndex, setLastPlayer ] = useState(-1)
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
@@ -40,11 +43,15 @@ function Games() {
 		} else {
 			const currentDate = new Date()
 			urlParams.set('start', currentDate)
-			const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
-			window.history.pushState({ path: updatedURL }, '', updatedURL)
+			updateURL()
 			return currentDate
 		}
 	})()
+
+	const updateURL = () => {
+		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
+		window.history.pushState({ path: updatedURL }, '', updatedURL)
+	}
 
 
 	
@@ -67,6 +74,16 @@ function Games() {
 		}
 
 		connect()
+
+		// const tmp_socket = io(REACT_APP_BACKEND_URL, { auth: { token: auth?.accessToken }})
+		const tmp_socket = io.connect(REACT_APP_BACKEND_URL)
+		setSocket(tmp_socket)
+		tmp_socket.emit('Test', 'Test')
+		tmp_socket.on('chat message', (msg) => {
+			console.log('Nachricht empfangen:', msg)
+		})
+
+
 		if(!session || !session.List_Players ) return navigate('/creategame', { replace: true })
 
 		for(const alias of session?.List_PlayerOrder) {
@@ -92,6 +109,7 @@ function Games() {
 		}
 
 		return () => {
+			tmp_socket.disconnect()
 			for(const e of elements) {
 				e.removeEventListener('focus', focusEvent)
 				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
@@ -134,7 +152,7 @@ function Games() {
 		const g = {...gnadenwurf}
 		g[alias] = checked
 		setGnadenwurf(g)
-		sessionStorage.setItem(sessionStorage_gnadenwurf, JSON.stringify(g))
+		socket.emit('UpdateGnadenwurf', g)
 
 	}
 
@@ -144,12 +162,13 @@ function Games() {
 
 	// __________________________________________________InputType__________________________________________________
 
-	const [ inputType, setInputType ] = useState(Number(sessionStorage.getItem(sessionStorage_inputType)) || session?.InputType)
+	const [ inputType, setInputType ] = useState(+urlParams.get('inputtype') || session?.InputType)
 
 	const handleInputTypeChange = (e) => {
 
 		const v = Number(e.target.value)
-		sessionStorage.setItem(sessionStorage_inputType, v)
+		urlParams.set('inputtype', v)
+		updateURL()
 		setInputType(v)
 
 	}
@@ -460,7 +479,7 @@ function Games() {
 															})}
 														</datalist>
 													</>
-												} else if(inputType === 3) {
+												} else {
 													
 													e = <input {...css} onBlur={onblurEvent}/>
 
@@ -751,6 +770,8 @@ function Games() {
 	//__________________________________________________FinishGame/SaveResults__________________________________________________
 
 	const finishGame = () => {
+
+		socket.emit('Finish', 'FINISH')
 	
 		if(!askIfSurrender) {
 			for(const element of columnsSum) {
@@ -1140,7 +1161,7 @@ function Games() {
 				>Aufgeben</button>
 			</div>
 
-			{PlayerTable()}
+			<PlayerTable/>
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
 
