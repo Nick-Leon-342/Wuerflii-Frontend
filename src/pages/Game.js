@@ -35,6 +35,13 @@ function Games() {
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
 	const session = JSON.parse(sessionStorage.getItem(sessionStorage_session))
+	const sessionid = +urlParams.get('sessionid')
+	const joincode = +urlParams.get('joincode')
+
+	const updateURL = () => {
+		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
+		window.history.pushState({ path: updatedURL }, '', updatedURL)
+	}
 
 	const start = (function() {
 		const storedDate = urlParams.get('start')
@@ -48,11 +55,6 @@ function Games() {
 		}
 	})()
 
-	const updateURL = () => {
-		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
-		window.history.pushState({ path: updatedURL }, '', updatedURL)
-	}
-
 
 	
 
@@ -63,19 +65,20 @@ function Games() {
 	useEffect(() => {
 
 		async function connect() {
-			await axiosPrivate.get('/game',
+			await axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
 				{
 					headers: { 'Content-Type': 'application/json' },
 					withCredentials: true
 				}
-			).catch(() => {
+			).then((res) => {
+
+			}).catch(() => {
 				return navigate('/creategame', { replace: true })
 			})
 		}
 
 		connect()
 
-		// const tmp_socket = io(REACT_APP_BACKEND_URL, { auth: { token: auth?.accessToken }})
 		const tmp_socket = io.connect(REACT_APP_BACKEND_URL)
 		setSocket(tmp_socket)
 		tmp_socket.emit('Test', 'Test')
@@ -138,8 +141,6 @@ function Games() {
 	// Gnadenwurf is an extra try
 
 	const [gnadenwurf, setGnadenwurf] = useState(() => {
-		const g = JSON.parse(sessionStorage.getItem(sessionStorage_gnadenwurf))
-		if(g) return g
 		const tmp = {}
 		session?.List_Players?.map((p) => (
 			tmp[p.Alias] = false
