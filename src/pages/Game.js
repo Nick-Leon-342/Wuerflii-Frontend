@@ -104,7 +104,7 @@ function Games() {
 	useEffect(() => {
 
 		async function connect() {
-			await axiosPrivate.get(`/game?sessionid=${sessionid}`,
+			await axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
 				{
 					headers: { 'Content-Type': 'application/json' },
 					withCredentials: true

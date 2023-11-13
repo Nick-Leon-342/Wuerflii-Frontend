@@ -96,7 +96,7 @@ function EnterNames() {
 				}
 			).then((res) => {
 
-				navigate(`/game?sessionid=${res?.data?.SessionID}`)
+				navigate(`/game?sessionid=${res?.data?.SessionID}&joincode=${res?.data?.JoinCode}`)
 				
 			}).catch((err) => {
 				console.log(err)
