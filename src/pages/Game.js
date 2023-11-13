@@ -441,10 +441,10 @@ function Games() {
 		const e = element.target
 		if(e) {
 			const tableID = e.getAttribute('tableid')
-			const row = Number(e.getAttribute('row'))
-			const column = Number(e.getAttribute('column'))
+			const row = +e.getAttribute('row')
+			const column = +e.getAttribute('column')
 			const alias = e.getAttribute('alias')
-			const playerindex = Number(e.getAttribute('playerindex'))
+			const playerindex = +e.getAttribute('playerindex')
 
 			let value = e.value
 			const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
@@ -475,7 +475,7 @@ function Games() {
 					break
 				}
 			}
-			sessionStorage.setItem(substring_sessionStorage + alias + '_' + tableID + '_' + column, JSON.stringify(array))
+			socket.emit(tableID === id_upperTable ? 'UpdateUpperTableValue' : 'UpdateBottomTableValue', { Alias: alias, Row: row, Column: column, Value: value })
 
 			if(tableID === id_upperTable) {
 				calculateUpperColumn(alias, column)
@@ -625,8 +625,6 @@ function Games() {
 	//__________________________________________________FinishGame/SaveResults__________________________________________________
 
 	const finishGame = () => {
-
-		socket.emit('Finish', 'FINISH')
 	
 		if(!askIfSurrender) {
 			for(const element of columnsSum) {
