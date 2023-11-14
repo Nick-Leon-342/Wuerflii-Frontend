@@ -368,7 +368,15 @@ function SelectSession() {
 
 							<div className='container' onClick={listElementClick}>
 								<label className='label'>
-									{s.List_Players.map((p) => p.Name).join(' vs ')}
+									{s.List_PlayerOrder.map((alias) => {
+										
+										for(const p of s.List_Players) {
+											if(alias === p.Alias) {
+												return p.Name
+											}
+										}
+										return ''
+									}).join(' vs ')}
 								</label>
 								<label className='label date'>{formatDate(s.LastPlayed)}</label>
 							</div>
