@@ -134,7 +134,19 @@ function SessionPreview() {
 	}
 
 	const play = () => {
-		navigate(`/game?sessionid=${session.id}`, { replace: true })
+
+		axiosPrivate.post('/sessionpreview',
+			{ SessionID: sessionid },
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
+			}
+		).then((res) => {
+			navigate(`/game?sessionid=${sessionid}&joincode=${res?.data?.JoinCode}`, { replace: true })
+		}).catch((err) => {
+			console.log(err)
+		})
+
 	}
 
 

@@ -30,7 +30,7 @@ function Games() {
 	const joincode = urlParams.get('joincode')
 
 	const [ columnsSum ] = useState([])
-	const [ tableColumns ] = useState([])
+	const [ tableColumns, setTableColumns ] = useState([])
 	const [ socket, setSocket ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ lastPlayerIndex, setLastPlayerIndex ] = useState(+urlParams.get('lastplayer'))
@@ -111,7 +111,9 @@ function Games() {
 				}
 			).then((res) => {
 				console.log(res?.data)
-				setSession(res?.data)
+				setSession(res?.data?.Session)
+				setTableColumns(res?.data?.TableColumns)
+				setGnadenwurf(res?.data?.Gnadenwürfe)
 			}).catch(() => {
 				return navigate('/creategame', { replace: true })
 			})
@@ -135,7 +137,17 @@ function Games() {
 
 	const newGame = () => {
 	
-		navigate('/creategame', { replace: true })
+		axiosPrivate.delete('/game',
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true,
+				params: { SessionID: sessionid },
+			}
+		).then(() => {
+			navigate('/creategame', { replace: true })
+		}).catch((err) => {
+			console.log(err)
+		})
 	
 	}
 
@@ -467,15 +479,7 @@ function Games() {
 
 			}
 
-			let array
-			for(const c of tableColumns) {
-				if(c.TableID === tableID && c.Alias === alias && c.Column === column) {
-					c[row] = value
-					array = c
-					break
-				}
-			}
-			socket.emit(tableID === id_upperTable ? 'UpdateUpperTableValue' : 'UpdateBottomTableValue', { Alias: alias, Row: row, Column: column, Value: value })
+			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
 
 			if(tableID === id_upperTable) {
 				calculateUpperColumn(alias, column)
