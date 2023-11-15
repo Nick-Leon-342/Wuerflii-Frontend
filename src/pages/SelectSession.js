@@ -47,6 +47,7 @@ function SelectSession() {
 
 		}).catch((err) => {
 			console.log(err)
+			window.alert('Es trat ein unvorhergesehener Fehler auf!')
 		})
 
 		setLoaderVisible(false)
@@ -132,6 +133,7 @@ function SelectSession() {
 					}
 				).catch((err) => {
 					console.log(err)
+					window.alert('Es trat ein unvorhergesehener Fehler auf!')
 				})
 
 			}
