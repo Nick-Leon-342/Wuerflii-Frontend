@@ -53,10 +53,14 @@ function SessionPreview() {
 			}).catch((err) => {
 				const status = err?.response?.status
 				if(status === 404) {
+					window.alert('Die SessionID exisiert nicht (mehr)!')
+					navigate('/selectsession', { replace: true })
+				} else if(status === 400) {
+					window.alert('Die Anfrage ist falsch!')
 					navigate('/selectsession', { replace: true })
 				} else {
 					console.log(err)
-					window.alert('Unknown error')
+					window.alert('Beim Server trat ein Fehler auf!')
 				}
 			})
 
