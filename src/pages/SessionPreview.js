@@ -148,7 +148,13 @@ function SessionPreview() {
 		).then((res) => {
 			navigate(`/game?sessionid=${sessionid}&joincode=${res?.data?.JoinCode}`, { replace: true })
 		}).catch((err) => {
-			console.log(err)
+			const status = err?.response?.status
+			if(status === 400) {
+				window.alert('Fehlerhafte Anfrage!\nIrgendwas stimmt mit der SessionID nicht.')
+			} else {
+				console.log(err)
+				window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			}
 		})
 
 	}
