@@ -45,23 +45,26 @@ function SessionPreview() {
 					withCredentials: true
 				}
 			).then((res) => {
+				
 				setSession(res.data.Session)
 				const l = res.data.FinalScores
 				l.sort(sortByTimestampDesc)
 				setFinalScores(l)
 				setShowLastFinalScores('thisYear')
+
 			}).catch((err) => {
+
 				const status = err?.response?.status
 				if(status === 404) {
-					window.alert('Die SessionID exisiert nicht (mehr)!')
-					navigate('/selectsession', { replace: true })
+					window.alert('Die SessionID exisiert nicht!')
 				} else if(status === 400) {
 					window.alert('Die Anfrage ist falsch!')
-					navigate('/selectsession', { replace: true })
 				} else {
 					console.log(err)
 					window.alert('Beim Server trat ein Fehler auf!')
 				}
+				navigate('/selectsession', { replace: true })
+
 			})
 
 			setLoaderVisible(false)
@@ -146,15 +149,22 @@ function SessionPreview() {
 				withCredentials: true
 			}
 		).then((res) => {
+
 			navigate(`/game?sessionid=${sessionid}&joincode=${res?.data?.JoinCode}`, { replace: true })
+
 		}).catch((err) => {
+
 			const status = err?.response?.status
 			if(status === 400) {
 				window.alert('Fehlerhafte Anfrage!\nIrgendwas stimmt mit der SessionID nicht.')
+			} else if(status === 404) {
+				window.alert('Die Session existiert nicht!')
 			} else {
 				console.log(err)
 				window.alert('Es trat ein unvorhergesehener Fehler auf!')
 			}
+			navigate('/selectsession', { replace: true })
+			
 		})
 
 	}

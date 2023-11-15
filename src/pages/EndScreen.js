@@ -39,13 +39,13 @@ function EndScreen() {
 			await axiosPrivate.get('/endscreen',
 				{
 					headers: { 'Content-Type': 'application/json' },
-					params: { id: sessionId },
+					params: { SessionID: sessionId },
 					withCredentials: true
 				}
 			).then((res) => {
 
-				setSession(res?.data)
 				if(!winner || !res?.data) return navigate('/creategame', { replace: true })
+				setSession(res?.data)
 
 				if(winner.length === 1) {
 					setHeader(`'${winner[0]}' hat gewonnen!`)
@@ -64,8 +64,18 @@ function EndScreen() {
 
 				setLoaderVisible(false)
 
-			}).catch(() => {
+			}).catch((err) => {
+
+				const status = err?.response?.status
+				if(status === 400) {
+					window.alert('Irgendwas stimmt nicht mit der Serverabfrage!')
+				} else if (status === 404) {
+					window.alert('Die Session wurde nicht gefunden!')
+				} else {
+					window.alert('Es trat ein unvorhergesehener Fehler auf!')
+				}
 				navigate('/creategame', { replace: true })
+				
 			})
 		}
 
