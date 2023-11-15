@@ -21,7 +21,6 @@ export const createPlayer = (name, alias, color) => {
         Name: name,
         Alias: alias,
         Color: color,
-        Wins: 0
     }
 
 }
