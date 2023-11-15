@@ -32,27 +32,20 @@ export const createSession = (sessionName, columns, list_playerOrder, list_playe
 		SessionName: sessionName,
         Columns: columns,
 		InputType: 3,
-        LastPlayed: new Date(),
-        CreatedDate: new Date(),
 		List_PlayerOrder: list_playerOrder,
 		List_Players: list_players,
     }
 
 }
 
-export const createFinalScoreElement = (start, columns, surrender, list_winner, playerScores) => {
+export const createFinalScoreElement = (columns, surrender, list_winner, playerScores) => {
 
-    const finalScore = {
-		Start: start,
-        End: new Date(),
+    return {
 		Columns: columns,
 		Surrender: surrender, 
 		List_Winner: list_winner,
 		PlayerScores: playerScores,
-
     }
-
-    return finalScore
 
 }
 

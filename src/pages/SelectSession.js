@@ -250,35 +250,18 @@ function SelectSession() {
 					{/* ______________________________ChangeColumns______________________________ */}
 					<div className='input-container' style={{ marginBottom: '20px' }}>
 						<label className='input-header'>Spalten</label>
-						{isMobile ? (
-							<select
-								className='input-mobile'
-								onChange={modalEditHandleColumnChange}
-								value={columns}
-								>
-								<option value='' disabled>
-									Spaltenanzahl
-								</option>
-								{options_columns.map((c) => (
-									<option key={c} value={c}>{c}</option>
-								))}
-							</select>
-						) : (
-							<>
-								<input 
-									className='input-computer' 
-									list='columns'
-									placeholder={session?.Attributes?.Columns}
-									onChange={modalEditHandleColumnChange}
-									value={columns}
-								/>
-								<datalist id='columns'>
-									{options_columns.map((c) => {
-										return <option key={c} value={c} />
-									})}
-								</datalist>
-							</>
-						)}
+						<select
+							className='input-mobile'
+							onChange={modalEditHandleColumnChange}
+							value={columns}
+							>
+							<option value={session?.Columns}>
+								{'Derzeit: ' + session?.Columns}
+							</option>
+							{options_columns.map((c) => (
+								<option key={c} value={c}>{c}</option>
+							))}
+						</select>
 					</div>
 
 

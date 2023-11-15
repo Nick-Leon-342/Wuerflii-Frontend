@@ -42,29 +42,14 @@ function Games() {
 		window.history.pushState({ path: updatedURL }, '', updatedURL)
 	}
 
-	const start = (function() {
-		const storedDate = urlParams.get('start')
-		if (storedDate) {
-			return new Date(storedDate)
-		} else {
-			const currentDate = new Date()
-			urlParams.set('start', currentDate)
-			updateURL()
-			return currentDate
-		}
-	})()
-
 
 	
 
 
 	useLayoutEffect(() => {
 		
-		const pt = document.getElementById(id_playerTable)
 		const ut = document.getElementById(id_upperTable)
-
-		if(!pt || !ut) return
-
+		if(!ut) return
 		setTableWidth(ut.offsetWidth)
 
 	})
@@ -110,10 +95,11 @@ function Games() {
 					withCredentials: true
 				}
 			).then((res) => {
-				console.log(res?.data)
+				
 				setSession(res?.data?.Session)
 				setTableColumns(res?.data?.TableColumns)
 				setGnadenwurf(res?.data?.Gnadenwürfe)
+
 			}).catch(() => {
 				return navigate('/creategame', { replace: true })
 			})
@@ -397,7 +383,7 @@ function Games() {
 
 	const getPlayer = (alias) => {
 
-		for(const p of session?.List_Players) {
+		for(const p of session.List_Players) {
 			if(p.Alias === alias) {
 				return p
 			}
@@ -657,7 +643,7 @@ function Games() {
 		let highestScore = 0
 		for(const p of session?.List_Players) {
 
-			const v = Number(document.getElementById(id_playerTable).querySelector(`[alias='${p.Alias}']`).textContent)
+			const v = +document.getElementById(id_playerTable).querySelector(`[alias='${p.Alias}']`).textContent
 			playerScores[p.Alias] = v
 			if(highestScore < v) {
 				list_winnerAlias.length = 0
@@ -688,21 +674,20 @@ function Games() {
 	
 	
 		//____________________Attributes____________________
-		session.LastPlayed = new Date()
 		session.InputType = inputType
 	
 	
 		//____________________FinalScore____________________
 		const finalScores = { 
 			PlayerScores: playerScores, 
-			...createFinalScoreElement(start, session.Columns, Boolean(askIfSurrender), list_winnerAlias, playerScores) 
+			...createFinalScoreElement(session.Columns, Boolean(askIfSurrender), list_winnerAlias, playerScores) 
 		}
-
+		
 		await axiosPrivate.post('/game',
-			JSON.stringify({ 
+			{
 				...session,
-				FinalScores: finalScores
-			}),
+				FinalScores: finalScores,
+			},
 			{
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
@@ -749,13 +734,10 @@ function Games() {
 
 	const modalEditSave = async () => {
 
-		session.List_PlayerOrder = tmpListPlayers.map((p) => p.Alias)
-		session.List_Players = tmpListPlayers
-
 		if(session.id) {
 
 			await axiosPrivate.post('/updatelistplayers',
-				{ id: session.id, List_Players: JSON.stringify(session.List_Players) },
+				{ id: session.id, List_Players: tmpListPlayers },
 				{
 					headers: { 'Content-Type': 'application/json' },
 					withCredentials: true
@@ -803,8 +785,8 @@ function Games() {
 				</div>
 
 				<h1>Gewinner auswählen</h1>
-				<div style={{ display: askIfSurrender ? '' : 'none' }}>
-				<label style={{ fontSize: '22px', }}>{`Sicher, dass ${session?.List_Players[askIfSurrender]?.Name} gewinnen soll?`}</label>
+				{askIfSurrender && <div>
+					<label style={{ fontSize: '22px', }}>{`Sicher, dass ${getPlayer(askIfSurrender).Name} gewinnen soll?`}</label>
 					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 						<button 
 							className='button' 
@@ -822,13 +804,13 @@ function Games() {
 							}}
 						>Abbrechen</button>
 					</div>
-				</div>
+				</div>}
 
 				<dl>
 					{session?.List_Players?.map((p, i) => (
 						<dt 
 							className='listElement' 
-							onClick={() => setAskIfSurrender(p.alias)} 
+							onClick={() => setAskIfSurrender(p.Alias)}
 							key={i}
 							style={{
 								padding: '10px',
