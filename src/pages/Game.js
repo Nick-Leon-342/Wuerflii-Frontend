@@ -13,6 +13,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from '../pages/utils-env'
+import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 
 
 
@@ -736,7 +737,7 @@ function Games() {
 
 		if(session.id) {
 
-			await axiosPrivate.post('/updatelistplayers',
+			await axiosPrivate.post('/updatesession',
 				{ id: session.id, List_Players: tmpListPlayers },
 				{
 					headers: { 'Content-Type': 'application/json' },
@@ -755,17 +756,6 @@ function Games() {
 
 		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
 		document.getElementById('modal-edit').showModal()
-
-	}
-
-	const handleOnDragEnd = (result) => {
-
-		if(!result.destination) return
-		const tmp = [...tmpListPlayers]
-		const [item] = tmp.splice(result.source.index, 1)
-		tmp.splice(result.destination.index, 0, item)
-
-		setTmpListPlayers(tmp)
 
 	}
 
@@ -843,40 +833,7 @@ function Games() {
 					{/* ______________________________ChangeNames______________________________ */}
 					{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
 
-					{tmpListPlayers && <DragDropContext onDragEnd={handleOnDragEnd}>
-						<Droppable droppableId='editplayers'>
-							{(provided) => (
-								<ul {...provided.droppableProps} ref={provided.innerRef} style={{ padding: '0' }}>
-									{tmpListPlayers.map((p, index) => (
-										<Draggable key={p.Alias} draggableId={p.Alias} index={index}>
-											{(provided) => (
-												<li
-													{...provided.draggableProps}
-													{...provided.dragHandleProps}
-													ref={provided.innerRef}
-													className='enterNamesElement'
-												>
-													<svg style={{ marginLeft: '20px', marginRight: '15px' }} height="10px" viewBox="-0.5 -0.5 741 450"><g><rect x="0" y="0" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/><rect x="0" y="260" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/></g></svg>
-													<input
-														defaultValue={p.Name}
-														onChange={(e) => p.Name = e.target.value}
-														
-													/>
-													<input
-														className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
-														type='color'
-														defaultValue={p.Color}
-														onChange={(e) => p.Color = e.target.value}
-													/>
-												</li>
-											)}
-										</Draggable>
-									))}
-									{provided.placeholder}
-								</ul>
-							)}
-						</Droppable>
-					</DragDropContext>}
+					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 
 					<button className='button' onClick={modalEditSave} style={{ width: '100%' }}>Speichern</button>
 

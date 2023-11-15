@@ -9,6 +9,7 @@ import { formatDate } from './utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 import Loader from '../components/Loader'
+import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 
 
 function SelectSession() {
@@ -21,7 +22,7 @@ function SelectSession() {
 	const [trashcanDisabled, setTrashcanDisabled] = useState(true)
 	const [settingsDisabled, setSettingsDisabled] = useState(true)
 	const [session, setSession] = useState('')
-	const [list_session, setList_Session] = useState([])
+	const [tmpListPlayers, setTmpListPlayers] = useState([])
 	const [loaderVisible, setLoaderVisible] = useState(false)
 	const [dialog_loaderVisible, setDialog_loaderVisible] = useState(false)
 	const [successfullyUpdatedVisible, setSuccessfullyUpdatedVisible] = useState(false)
@@ -165,21 +166,15 @@ function SelectSession() {
 
 	const modalEditShow = () => {
 
-		const tmp = []
-
-		for(const alias of session.List_PlayerOrder) {
-			tmp.push(getPlayer(alias))
-		}
-
 		setSuccessfullyUpdatedVisible(false)
-		setList_Session(tmp)
+		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
 		document.getElementById('modal-edit').showModal()
 
 	}
 
 	const modalEditClose = () => {
 		
-		setList_Session([])
+		setTmpListPlayers([])
 		setColumns('')
 		document.getElementById('modal-edit').close()
 
@@ -189,32 +184,18 @@ function SelectSession() {
 
 		setDialog_loaderVisible(true)
 
-		const json = { id: session?.id, List_Players: [] }
-		if(columns !== '') {
-			json['Columns'] = columns
-			session.Columns = columns
-		}
-		for(const p of list_session) {
-			const player = getPlayer(p.Alias)
-			player.Name = p.Name
-			player.Color = p.Color
-			json.List_Players.push({
-				id: p.id,
-				Name: p.Name,
-				Color: p.Color,
-			})
-		}
-
-		await axiosPrivate.post('/selectsession', 
-			JSON.stringify(json),
+		await axiosPrivate.post('/updatesession', 
+			{ id: session.id, Columns: columns, List_Players: tmpListPlayers },
 			{
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
 		).then(() => {
+
 			setSuccessfullyUpdatedVisible(true)
 			modalEditClose()
 			request()
+
 		}).catch((err) => {
 			return console.log(err)
 		})
@@ -266,22 +247,8 @@ function SelectSession() {
 
 
 					{/* ______________________________ChangeNames______________________________ */}
-					<dl id='enterNamesList'>
-						{list_session.map((p, index) => (
-							<dt className='enterNamesElement' key={index}>
-								<input
-									defaultValue={p.Name}
-									onChange={(e) => p.Name = e.target.value}
-								/>
-								<input
-									className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
-									type='color'
-									defaultValue={p.Color}
-									onChange={(e) => p.Color = e.target.value}
-								/>
-							</dt>
-						))}
-					</dl>
+					
+					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 
 					
 					<div className={`loader ${dialog_loaderVisible ? '' : 'notVisible'}`}>
