@@ -28,7 +28,7 @@ function Games() {
 	const urlParams = new URLSearchParams(location.search)
 	const [ session, setSession ] = useState()
 	const sessionid = urlParams.get('sessionid')
-	const joincode = urlParams.get('joincode')
+	const joincode = +urlParams.get('joincode')
 
 	const [ columnsSum ] = useState([])
 	const [ tableColumns, setTableColumns ] = useState([])
@@ -112,8 +112,8 @@ function Games() {
 
 		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
 		setSocket(tmp_socket)
-		tmp_socket.on('chat message', (msg) => {
-			console.log('Nachricht empfangen:', msg)
+		tmp_socket.on('UpdateValueResponse', (res) => {
+			console.log('Nachricht empfangen:', res.Response)
 		})
 
 		return () => {
@@ -467,7 +467,7 @@ function Games() {
 			}
 
 			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
-
+			
 			if(tableID === id_upperTable) {
 				calculateUpperColumn(alias, column)
 			} else {
