@@ -13,6 +13,7 @@ import SelectSession from './pages/SelectSession'
 import SessionPreview from './pages/SessionPreview'
 import SessionAnalytics from './pages/SessionAnalytics'
 
+import JoinGame from './pages/JoinGame'
 import Game from './pages/Game'
 import EndScreen from './pages/EndScreen'
 
@@ -28,6 +29,8 @@ function App() {
 						<Route path='/' element={<Login />} />
 						<Route path='/login' element={<Login />} />
 						<Route path='/registration' element={<Registration />} />
+						<Route path='/joingame' element={<JoinGame />} />
+
 
 
 						{/* 

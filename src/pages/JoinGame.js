@@ -11,14 +11,14 @@ import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable,
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
-import { REACT_APP_BACKEND_URL } from '../pages/utils-env'
+import { REACT_APP_BACKEND_URL } from './utils-env'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 
 
 
 
 
-function Game() {
+function JoinGame() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -26,7 +26,6 @@ function Game() {
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
 	const [ session, setSession ] = useState()
-	const sessionid = urlParams.get('sessionid')
 	const joincode = +urlParams.get('joincode')
 
 	const [ columnsSum ] = useState([])
@@ -34,8 +33,6 @@ function Game() {
 	const [ socket, setSocket ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ lastPlayerIndex, setLastPlayerIndex ] = useState(+urlParams.get('lastplayer'))
-	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
 
 	const updateURL = () => {
 		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
@@ -89,23 +86,21 @@ function Game() {
 	useEffect(() => {
 
 		async function connect() {
-			await axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
+			await axiosPrivate.get(`/joingame?joincode=${joincode}`,
 				{
 					headers: { 'Content-Type': 'application/json' },
 					withCredentials: true
 				}
 			).then((res) => {
-				
+				console.log(res)
 				setSession(res?.data?.Session)
 				setTableColumns(res?.data?.TableColumns)
 				setGnadenwurf(res?.data?.Gnadenwürfe)
 
 			}).catch(() => {
-				return navigate('/creategame', { replace: true })
+				// return navigate('/creategame', { replace: true })
 			})
 		}
-
-		if(!sessionid) return navigate('/creategame', { replace: true })
 		
 		connect()
 
@@ -133,22 +128,6 @@ function Game() {
 		}
 
 	}, [])
-
-	const newGame = () => {
-	
-		axiosPrivate.delete('/game',
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true,
-				params: { SessionID: sessionid },
-			}
-		).then(() => {
-			navigate('/creategame', { replace: true })
-		}).catch((err) => {
-			console.log(err)
-		})
-	
-	}
 
 	const isIOS = () => {
 
@@ -600,156 +579,6 @@ function Game() {
 	}
 
 
-
-
-
-	//__________________________________________________FinishGame/SaveResults__________________________________________________
-
-	const finishGame = () => {
-	
-		if(!askIfSurrender) {
-			for(const element of columnsSum) {
-				if(element.All === '0' || element.All === 0) {
-					document.getElementById('modal-error-finishgame').showModal()
-					return
-				}
-			}
-		}
-
-		document.getElementById('modal-finishgame').showModal()
-
-	}
-	
-	const saveResults = async () => {
-		
-		setDisableFinishGame(true)
-		setLoaderVisible(true)
-		if(session.List_Players.length < 2) return navigate('/creategame', { replace: true })
-
-		//____________________Players____________________
-		const playerScores = {}	
-		const list_winnerAlias = [] //It's possible that multiple players have the same score, therefore an array
-		const list_winnerName = []
-
-		let highestScore = 0
-		for(const p of session?.List_Players) {
-
-			const v = +document.getElementById(id_playerTable).querySelector(`[alias='${p.Alias}']`).textContent
-			playerScores[p.Alias] = v
-			if(highestScore < v) {
-				list_winnerAlias.length = 0
-				list_winnerAlias.push(p.Alias)
-				list_winnerName.length = 0
-				list_winnerName.push(p.Name)
-				highestScore = v
-			} else if(v === highestScore) {
-				list_winnerAlias.push(p.Alias)
-				list_winnerName.push(p.Name)
-			}
-
-		}
-
-		if(askIfSurrender) {
-			list_winnerAlias.length = 0
-			list_winnerAlias.push(askIfSurrender)
-		}
-	
-		for(const w of list_winnerAlias) {
-			for(const p of session?.List_Players) {
-				if(p.Alias === w) {
-					p.Wins++
-					break
-				}
-			}
-		}
-	
-	
-		//____________________Attributes____________________
-		session.InputType = inputType
-	
-	
-		//____________________FinalScore____________________
-		const finalScores = { 
-			PlayerScores: playerScores, 
-			...createFinalScoreElement(session.Columns, Boolean(askIfSurrender), list_winnerAlias, playerScores) 
-		}
-		
-		await axiosPrivate.post('/game',
-			{
-				...session,
-				FinalScores: finalScores,
-			},
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
-			}
-		).then(() => {
-	
-			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(list_winnerName)}`, { replace: true })
-			setLoaderVisible(false)
-
-		}).catch((err) => {
-			console.log(err)
-		})
-		setDisableFinishGame(false)
-	
-	}
-
-
-	
-
-
-	// __________________________________________________Modal-Surrender__________________________________________________
-
-	const [askIfSurrender, setAskIfSurrender] = useState()	//if null then dont ask, else it's the index of the 'winner'
-
-	const handleSurrender = () => {document.getElementById('modal-surrender').showModal()}
-
-	const closeSurrender = () => {
-		document.getElementById('modal-surrender').close()
-		setAskIfSurrender()
-	}
-
-
-
-
-
-	// __________________________________________________Modal-Edit__________________________________________________
-
-	const [ tmpListPlayers, setTmpListPlayers ] = useState()
-
-	const modalEditClose = () => {
-		setTmpListPlayers()
-		document.getElementById('modal-edit').close()
-	}
-
-	const modalEditSave = async () => {
-
-		if(session.id) {
-
-			await axiosPrivate.post('/updatesession',
-				{ id: session.id, List_Players: tmpListPlayers },
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).catch((err) => {
-				console.log(err)
-				return
-			})
-		}
-		window.location.reload()
-
-	}
-
-	const modalEditShow = () => {
-
-		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
-		document.getElementById('modal-edit').showModal()
-
-	}
-
-
 	
 
 
@@ -758,77 +587,6 @@ function Game() {
 		<>
 
 			{/* __________________________________________________Dialogs__________________________________________________ */}
-
-			<dialog id='modal-surrender' className='modal'>
-				<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={closeSurrender} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
-				</div>
-
-				<h1>Gewinner auswählen</h1>
-				{askIfSurrender && <div>
-					<label style={{ fontSize: '22px', }}>{`Sicher, dass ${getPlayer(askIfSurrender).Name} gewinnen soll?`}</label>
-					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
-						<button 
-							className='button' 
-							onClick={saveResults}
-							style={{
-								width: '50%',
-							}}
-						>Ja</button>
-						<button 
-							className='button' 
-							onClick={closeSurrender}
-							style={{
-								backgroundColor: 'rgb(255, 0, 0)',
-								color: 'white',
-							}}
-						>Abbrechen</button>
-					</div>
-				</div>}
-
-				<dl>
-					{session?.List_Players?.map((p, i) => (
-						<dt 
-							className='listElement' 
-							onClick={() => setAskIfSurrender(p.Alias)}
-							key={i}
-							style={{
-								padding: '10px',
-							}}
-						>
-							<label
-								style={{
-									fontSize: '20px',
-								}}
-							>{p.Name}</label>
-						</dt>
-					))}
-				</dl>
-			</dialog>
-
-			<dialog id='modal-edit' className='modal'>
-				<div 
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						width: '',
-					}}
-				>
-					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={modalEditClose} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
-					</div>
-					
-					<h1>Bearbeiten</h1>
-
-					{/* ______________________________ChangeNames______________________________ */}
-					{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
-
-					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
-
-					<button className='button' onClick={modalEditSave} style={{ width: '100%' }}>Speichern</button>
-
-				</div>
-			</dialog>
 
 			<dialog id='modal-nextPlayer' className='modal'>
 				<p style={{ fontSize: '22px', marginTop: '20px' }}>
@@ -850,67 +608,9 @@ function Game() {
 				<button className='button' onClick={() => document.getElementById('modal-invalidnumber').close()}>Ok</button>
 			</dialog>
 
-			<dialog id='modal-error-finishgame' className='modal'>
-				<p id='message-finishgame' style={{ fontSize: '22px', marginTop: '20px' }}>
-					Bitte alle Werte eingeben!
-				</p>
-				<button className='button' style={{ width: '100%' }} onClick={() => document.getElementById('modal-error-finishgame').close()}>Verstanden</button>
-			</dialog>
-
-			<dialog id='modal-newgame' className='modal'>
-				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					Dieses Spiel löschen<br/>und ein neues Spiel anfangen?
-				</p>
-				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-					<button 
-						className='button' 
-						onClick={newGame}
-						style={{
-							width: '55%',
-						}}
-					>Ja</button>
-					<button 
-						className='button' 
-						onClick={() => document.getElementById('modal-newgame').close()}
-						style={{
-							backgroundColor: 'rgb(255, 0, 0)',
-							color: 'white',
-						}}
-					>Abbrechen</button>
-				</div>
-			</dialog>
-
-			<dialog id='modal-finishgame' className='modal'>
-				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					Spiel beenden?
-				</p>
-				<Loader loaderVisible={loaderVisible}/>
-				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-					<button 
-						className='button' 
-						onClick={saveResults}
-						disabled={disableFinishGame}
-						style={{
-							width: '100px',
-							marginRight: '5px',
-						}}
-					>Ja</button>
-					<button 
-						className='button' 
-						onClick={() => document.getElementById('modal-finishgame').close()}
-						style={{
-							backgroundColor: 'rgb(255, 0, 0)',
-							color: 'white',
-						}}
-					>Abbrechen</button>
-				</div>
-			</dialog>
 
 
 
-
-
-			{/* __________________________________________________Page__________________________________________________ */}
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<select
@@ -931,52 +631,14 @@ function Game() {
 					<option value={2} key='2'>Auswahl und Eingabe</option>
 					<option value={3} key='3'>Eingabe</option>
 				</select>
-
-				<svg onClick={modalEditShow} width='25' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-
-				<button 
-					className='button'
-					onClick={handleSurrender}
-					style={{
-						margin: '0',
-						marginRight: '5px',
-						background: 'none',
-						boxShadow: 'none',
-					}}
-				>Aufgeben</button>
 			</div>
 
 			{PlayerTable()}
 			{Table(upperTable_rows, id_upperTable)}
 			{Table(bottomTable_rows, id_bottomTable)}
 
-			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-				<button 
-					onClick={() => document.getElementById('modal-newgame').showModal()} 
-					className='button'
-					style={{
-						width: '40%',
-						textWrap: 'nowrap',
-						background: 'none',
-						border: 'none',
-						boxShadow: 'none',
-						height: '40px',
-						fontSize: '17px',
-					}}
-				>Neues Spiel</button>
-				<button 
-					onClick={finishGame}
-					className='button'
-					style={{
-						width: '60%',
-						padding: '10px',
-						marginRight: '5px',
-					}}
-				>Spiel beenden</button>
-			</div>
-
 		</>
 	)
 }
 
-export default Game
+export default JoinGame
