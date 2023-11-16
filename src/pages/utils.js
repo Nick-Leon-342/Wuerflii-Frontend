@@ -15,11 +15,10 @@ export const id_playerTable							= 'playerTable'
 
 //____________________CreateObjects____________________
 
-export const createPlayer = (name, alias, color) => {
+export const createPlayer = (name, color) => {
 
     return {
         Name: name,
-        Alias: alias,
         Color: color,
     }
 

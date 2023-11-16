@@ -82,9 +82,7 @@ function EnterNames() {
 			const list_players = []
 	
 			for(let i = 0; names.length > i; i++) {
-				const alias = `Player_${i}`
-				list_playerOrder.push(alias)
-				list_players.push(createPlayer(names[i], alias, colors[i]))
+				list_players.push(createPlayer(names[i], colors[i]))
 			}
 
 			const session = createSession(sessionName, columns, list_playerOrder, list_players)
