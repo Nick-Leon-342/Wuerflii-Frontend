@@ -4,15 +4,13 @@ import '../App.css'
 import './css/Game.css'
 
 import React, { useEffect, useState, useLayoutEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from './utils'
+import { id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
-import Loader from '../components/Loader'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from './utils-env'
-import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 
 
 
@@ -20,7 +18,6 @@ import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 
 function JoinGame() {
 
-	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 
 	const location = useLocation()
@@ -32,7 +29,7 @@ function JoinGame() {
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ socket, setSocket ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
-	const [ lastPlayerIndex, setLastPlayerIndex ] = useState(+urlParams.get('lastplayer'))
+	const [ lastPlayerAlias, setLastPlayerAlias ] = useState(urlParams.get('lastplayer'))
 
 	const updateURL = () => {
 		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
@@ -194,8 +191,8 @@ function JoinGame() {
 							return (
 								<td key={i} style={{ borderTop: thickBorder, borderRight: thickBorder }}>
 									<span style={{ 
-										fontWeight: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'bold' : '',
-										color: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'rgb(0, 255, 0)' : '',
+										fontWeight: lastPlayerAlias === alias ? 'bold' : '',
+										color: lastPlayerAlias === alias ? 'rgb(0, 255, 0)' : '',
 									}}>
 										{player.Name}
 									</span>
@@ -206,14 +203,12 @@ function JoinGame() {
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder }}>Spieler gesamt</td>
 						{session?.List_PlayerOrder?.map((alias, i) => {
-							const player = getPlayer(alias)
-							return (<td key={i} alias={player.Alias} style={{ borderRight: thickBorder }} />)
+							return (<td key={i} alias={alias} style={{ borderRight: thickBorder }} />)
 						})}
 					</tr>
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderBottom: thickBorder }}>Gnadenwurf</td>
 						{session?.List_PlayerOrder?.map((alias, i) => {
-							const player = getPlayer(alias)
 							if(!gnadenwurf[alias]) gnadenwurf[alias] = false
 							return (
 								<td 
@@ -224,7 +219,7 @@ function JoinGame() {
 										className='checkbox' 
 										type='checkbox' 
 										checked={gnadenwurf[alias]}
-										onChange={(e) => handleGnadenwurfChange(player.Alias, e.target.checked)} 
+										onChange={(e) => handleGnadenwurfChange(alias, e.target.checked)} 
 									/>
 								</td>
 							)
@@ -269,7 +264,6 @@ function JoinGame() {
 												appearance: 'none',
 												column: currentColumnIndex,
 												row: currentRowIndex,
-												playerindex: currentPlayerIndex,
 												alias: player.Alias,
 												onInput: inputEvent,
 												defaultValue: getDefaultValue( tableID, player.Alias, currentColumnIndex, currentRowIndex ),
@@ -353,7 +347,8 @@ function JoinGame() {
 
 	const getPlayer = (alias) => {
 
-		for(const p of session.List_Players) {
+		if(session)
+		for(const p of session?.List_Players) {
 			if(p.Alias === alias) {
 				return p
 			}
@@ -412,7 +407,6 @@ function JoinGame() {
 			const row = +e.getAttribute('row')
 			const column = +e.getAttribute('column')
 			const alias = e.getAttribute('alias')
-			const playerindex = +e.getAttribute('playerindex')
 
 			let value = e.value
 			const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
@@ -420,8 +414,8 @@ function JoinGame() {
 			if(r.includes(Number(value)) || value === '') {
 				
 				if(value) {
-					setLastPlayerIndex(playerindex)
-					urlParams.set('lastplayer', playerindex)
+					setLastPlayerAlias(alias)
+					urlParams.set('lastplayer', alias)
 					updateURL()
 				}
 
@@ -590,12 +584,11 @@ function JoinGame() {
 
 			<dialog id='modal-nextPlayer' className='modal'>
 				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					{lastPlayerIndex === -1 
+					{!lastPlayerAlias
 						? 'Bis jetzt war noch keiner dran!'
 						: (
 							<>
-								{'\'' + session?.List_Players[lastPlayerIndex].Name + '\' war als letztes dran.'}<br />
-								{'Nun kommt \'' + session?.List_Players[(lastPlayerIndex + 1) % session?.List_Players?.length].Name + '\''}
+								{'\'' + getPlayer(lastPlayerAlias)?.Name + '\' war als letztes dran.'}
 							</>
 						)
 					}

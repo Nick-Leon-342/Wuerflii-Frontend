@@ -27,13 +27,13 @@ function Game() {
 	const urlParams = new URLSearchParams(location.search)
 	const [ session, setSession ] = useState()
 	const sessionid = urlParams.get('sessionid')
-	const joincode = +urlParams.get('joincode')
+	const joincode = urlParams.get('joincode')
 
 	const [ columnsSum ] = useState([])
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ socket, setSocket ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
-	const [ lastPlayerIndex, setLastPlayerIndex ] = useState(+urlParams.get('lastplayer'))
+	const [ lastPlayerAlias, setLastPlayerAlias ] = useState(urlParams.get('lastplayer'))
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
 
@@ -112,20 +112,22 @@ function Game() {
 		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
 		setSocket(tmp_socket)
 		tmp_socket.emit('JoinSession', '')
-		tmp_socket.on('UpdateValueResponse', (res) => {
-			console.log('Nachricht empfangen:', res.Response)
-			const r = res.Response
-			if(r.UpperTable) {
-				document.getElementById(id_upperTable).querySelector(`.kniffelInput[alias='${r.Alias}'][column='${r.Column}'][row='${r.Row}']`).value = r.Value
-				calculateUpperColumn(r.Alias, r.Column)
+		tmp_socket.on('UpdateValueResponse', (msg) => {
+
+			const m = msg.Data
+			if(m.UpperTable) {
+				document.getElementById(id_upperTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+				calculateUpperColumn(m.Alias, m.Column)
 			} else {
-				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${r.Alias}'][column='${r.Column}'][row='${r.Row}']`).value = r.Value
-				calculateBottomColumn(r.Alias, r.Column)
+				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+				calculateBottomColumn(m.Alias, m.Column)
 			}
+
 		})
-		tmp_socket.on('UpdateGnadenwurf', (res) => {
-			console.log('Nachricht empfangen:', res.Response)
-			setGnadenwurf(res.Response)
+		tmp_socket.on('UpdateGnadenwurf', (msg) => {
+
+			setGnadenwurf(msg.Data)
+
 		})
 
 		return () => {
@@ -215,8 +217,8 @@ function Game() {
 							return (
 								<td key={i} style={{ borderTop: thickBorder, borderRight: thickBorder }}>
 									<span style={{ 
-										fontWeight: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'bold' : '',
-										color: (( lastPlayerIndex + 1 ) % session?.List_Players?.length) === i ? 'rgb(0, 255, 0)' : '',
+										fontWeight: lastPlayerAlias === alias ? 'bold' : '',
+										color: lastPlayerAlias === alias ? 'rgb(0, 255, 0)' : '',
 									}}>
 										{player.Name}
 									</span>
@@ -227,14 +229,12 @@ function Game() {
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder }}>Spieler gesamt</td>
 						{session?.List_PlayerOrder?.map((alias, i) => {
-							const player = getPlayer(alias)
-							return (<td key={i} alias={player.Alias} style={{ borderRight: thickBorder }} />)
+							return (<td key={i} alias={alias} style={{ borderRight: thickBorder }} />)
 						})}
 					</tr>
 					<tr>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder, borderBottom: thickBorder }}>Gnadenwurf</td>
 						{session?.List_PlayerOrder?.map((alias, i) => {
-							const player = getPlayer(alias)
 							if(!gnadenwurf[alias]) gnadenwurf[alias] = false
 							return (
 								<td 
@@ -245,7 +245,7 @@ function Game() {
 										className='checkbox' 
 										type='checkbox' 
 										checked={gnadenwurf[alias]}
-										onChange={(e) => handleGnadenwurfChange(player.Alias, e.target.checked)} 
+										onChange={(e) => handleGnadenwurfChange(alias, e.target.checked)} 
 									/>
 								</td>
 							)
@@ -374,6 +374,7 @@ function Game() {
 
 	const getPlayer = (alias) => {
 
+		if(session)
 		for(const p of session.List_Players) {
 			if(p.Alias === alias) {
 				return p
@@ -433,7 +434,6 @@ function Game() {
 			const row = +e.getAttribute('row')
 			const column = +e.getAttribute('column')
 			const alias = e.getAttribute('alias')
-			const playerindex = +e.getAttribute('playerindex')
 
 			let value = e.value
 			const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
@@ -441,8 +441,8 @@ function Game() {
 			if(r.includes(Number(value)) || value === '') {
 				
 				if(value) {
-					setLastPlayerIndex(playerindex)
-					urlParams.set('lastplayer', playerindex)
+					setLastPlayerAlias(alias)
+					urlParams.set('lastplayer', alias)
 					updateURL()
 				}
 
@@ -832,12 +832,11 @@ function Game() {
 
 			<dialog id='modal-nextPlayer' className='modal'>
 				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					{lastPlayerIndex === -1 
+					{!lastPlayerAlias 
 						? 'Bis jetzt war noch keiner dran!'
 						: (
 							<>
-								{'\'' + session?.List_Players[lastPlayerIndex].Name + '\' war als letztes dran.'}<br />
-								{'Nun kommt \'' + session?.List_Players[(lastPlayerIndex + 1) % session?.List_Players?.length].Name + '\''}
+								{'\'' + getPlayer(lastPlayerAlias)?.Name + '\' war als letztes dran.'}<br />
 							</>
 						)
 					}
