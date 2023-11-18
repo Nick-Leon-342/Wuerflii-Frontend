@@ -78,14 +78,13 @@ function EnterNames() {
 
 			setDisablePlay(true)
 			setLoaderVisible(true)
-			const list_playerOrder = []
 			const list_players = []
 	
 			for(let i = 0; names.length > i; i++) {
 				list_players.push(createPlayer(names[i], colors[i]))
 			}
 
-			const session = createSession(sessionName, columns, list_playerOrder, list_players)
+			const session = createSession(sessionName, columns, list_players)
 			await axiosPrivate.post('/enternames',
 				session,
 				{
@@ -100,6 +99,7 @@ function EnterNames() {
 				console.log(err)
 				navigate('/creategame', { replace: true })
 			})
+			
 			setLoaderVisible(false)
 			setDisablePlay(false)
 

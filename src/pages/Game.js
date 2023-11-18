@@ -97,6 +97,7 @@ function Game() {
 			).then((res) => {
 				
 				setSession(res?.data?.Session)
+				setInputType(urlParams.get('inputtype') || res?.data?.Session?.InputType)
 				setTableColumns(res?.data?.TableColumns)
 				setGnadenwurf(res?.data?.Gnadenwürfe)
 
@@ -184,11 +185,11 @@ function Game() {
 
 	// __________________________________________________InputType__________________________________________________
 
-	const [ inputType, setInputType ] = useState(+urlParams.get('inputtype') || session?.InputType)
+	const [ inputType, setInputType ] = useState()
 
 	const handleInputTypeChange = (e) => {
 
-		const v = Number(e.target.value)
+		const v = e.target.value
 		urlParams.set('inputtype', v)
 		updateURL()
 		setInputType(v)
@@ -284,7 +285,7 @@ function Game() {
 										columns.map((currentColumnIndex) => {
 
 											const css = {
-												className: `kniffelInput ${inputType === 1 ? 'select' : ''}`,
+												className: `kniffelInput ${inputType === 'select' ? 'select' : ''}`,
 												inputMode: 'numeric',
 												tableid: tableID,
 												appearance: 'none',
@@ -303,7 +304,7 @@ function Game() {
 											let e
 											if(currentRowIndex < rows.length - 3) {
 
-												if(inputType === 1) {
+												if(inputType === 'select') {
 
 													e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
 														<option></option>
@@ -312,7 +313,7 @@ function Game() {
 													))}
 													</select>
 
-												} else if(inputType === 2) {
+												} else if(inputType === 'typeselect') {
 
 													e = <>
 														<input list={id} {...css} onBlur={onblurEvent}/>
@@ -926,9 +927,9 @@ function Game() {
 						color: 'var(--text-color)',
 					}}
 				>
-					<option value={1} key='1'>Auswahl</option>
-					<option value={2} key='2'>Auswahl und Eingabe</option>
-					<option value={3} key='3'>Eingabe</option>
+					<option value='select' key='select'>Auswahl</option>
+					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
+					<option value='type' key='type'>Eingabe</option>
 				</select>
 
 				<svg onClick={modalEditShow} width='25' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>

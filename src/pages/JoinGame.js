@@ -4,7 +4,7 @@ import '../App.css'
 import './css/Game.css'
 
 import React, { useEffect, useState, useLayoutEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from './utils'
@@ -20,6 +20,7 @@ function JoinGame() {
 
 	const axiosPrivate = useAxiosPrivate()
 
+	const navigate = useNavigate()
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
 	const [ session, setSession ] = useState()
@@ -89,13 +90,14 @@ function JoinGame() {
 					withCredentials: true
 				}
 			).then((res) => {
-				console.log(res)
+				
 				setSession(res?.data?.Session)
+				setInputType(urlParams.get('inputtype') || res?.data?.Session?.InputType)
 				setTableColumns(res?.data?.TableColumns)
 				setGnadenwurf(res?.data?.Gnadenwürfe)
 
 			}).catch(() => {
-				// return navigate('/creategame', { replace: true })
+				return navigate('/creategame', { replace: true })
 			})
 		}
 		
@@ -104,20 +106,22 @@ function JoinGame() {
 		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
 		setSocket(tmp_socket)
 		tmp_socket.emit('JoinSession', '')
-		tmp_socket.on('UpdateValueResponse', (res) => {
-			console.log('Nachricht empfangen:', res.Response)
-			const r = res.Response
-			if(r.UpperTable) {
-				document.getElementById(id_upperTable).querySelector(`.kniffelInput[alias='${r.Alias}'][column='${r.Column}'][row='${r.Row}']`).value = r.Value
-				calculateUpperColumn(r.Alias, r.Column)
+		tmp_socket.on('UpdateValueResponse', (msg) => {
+
+			const m = msg.Data
+			if(m.UpperTable) {
+				document.getElementById(id_upperTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+				calculateUpperColumn(m.Alias, m.Column)
 			} else {
-				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${r.Alias}'][column='${r.Column}'][row='${r.Row}']`).value = r.Value
-				calculateBottomColumn(r.Alias, r.Column)
+				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+				calculateBottomColumn(m.Alias, m.Column)
 			}
+
 		})
-		tmp_socket.on('UpdateGnadenwurf', (res) => {
-			console.log('Nachricht empfangen:', res.Response)
-			setGnadenwurf(res.Response)
+		tmp_socket.on('UpdateGnadenwurf', (msg) => {
+
+			setGnadenwurf(msg.Data)
+
 		})
 
 		return () => {
@@ -158,11 +162,11 @@ function JoinGame() {
 
 	// __________________________________________________InputType__________________________________________________
 
-	const [ inputType, setInputType ] = useState(+urlParams.get('inputtype') || session?.InputType)
+	const [ inputType, setInputType ] = useState()
 
 	const handleInputTypeChange = (e) => {
 
-		const v = Number(e.target.value)
+		const v = e.target.value
 		urlParams.set('inputtype', v)
 		updateURL()
 		setInputType(v)
@@ -258,7 +262,7 @@ function JoinGame() {
 										columns.map((currentColumnIndex) => {
 
 											const css = {
-												className: `kniffelInput ${inputType === 1 ? 'select' : ''}`,
+												className: `kniffelInput ${inputType === 'select' ? 'select' : ''}`,
 												inputMode: 'numeric',
 												tableid: tableID,
 												appearance: 'none',
@@ -276,7 +280,7 @@ function JoinGame() {
 											let e
 											if(currentRowIndex < rows.length - 3) {
 
-												if(inputType === 1) {
+												if(inputType === 'select') {
 
 													e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
 														<option></option>
@@ -285,7 +289,7 @@ function JoinGame() {
 													))}
 													</select>
 
-												} else if(inputType === 2) {
+												} else if(inputType === 'typeSelect') {
 
 													e = <>
 														<input list={id} {...css} onBlur={onblurEvent}/>
@@ -620,9 +624,9 @@ function JoinGame() {
 						color: 'var(--text-color)',
 					}}
 				>
-					<option value={1} key='1'>Auswahl</option>
-					<option value={2} key='2'>Auswahl und Eingabe</option>
-					<option value={3} key='3'>Eingabe</option>
+					<option value='select' key='select'>Auswahl</option>
+					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
+					<option value='type' key='type'>Eingabe</option>
 				</select>
 			</div>
 

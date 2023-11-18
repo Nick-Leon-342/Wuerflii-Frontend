@@ -24,13 +24,11 @@ export const createPlayer = (name, color) => {
 
 }
 
-export const createSession = (sessionName, columns, list_playerOrder, list_players) => {
+export const createSession = (sessionName, columns, list_players) => {
 
     return {
 		SessionName: sessionName,
         Columns: columns,
-		InputType: 3,
-		List_PlayerOrder: list_playerOrder,
 		List_Players: list_players,
     }
 
