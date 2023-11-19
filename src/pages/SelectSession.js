@@ -10,6 +10,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 import Loader from '../components/Loader'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
+import JoinGameInput from '../components/JoinGameInput'
 
 
 function SelectSession() {
@@ -336,6 +337,10 @@ function SelectSession() {
 					))
 				)}
 			</dl>
+
+			<div style={{ display: 'flex', justifyContent: 'center' }}>
+				<JoinGameInput width='200px' margin='20px'/>
+			</div>
 			
 			<div style={{ display: 'flex'}}>
 				<p className='link-switch'>

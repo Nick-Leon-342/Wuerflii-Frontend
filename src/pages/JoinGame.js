@@ -6,19 +6,17 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from './utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from './utils-env'
+import axios from '../api/axios'
 
 
 
 
 
 function JoinGame() {
-
-	const axiosPrivate = useAxiosPrivate()
 
 	const navigate = useNavigate()
 	const location = useLocation()
@@ -84,7 +82,7 @@ function JoinGame() {
 	useEffect(() => {
 
 		async function connect() {
-			await axiosPrivate.get(`/joingame?joincode=${joincode}`,
+			await axios.get(`/joingame?joincode=${joincode}`,
 				{
 					headers: { 'Content-Type': 'application/json' },
 					withCredentials: true
@@ -116,6 +114,8 @@ function JoinGame() {
 				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
 				calculateBottomColumn(m.Alias, m.Column)
 			}
+			setLastPlayerAlias(m.Alias)
+			updateURL()
 
 		})
 		tmp_socket.on('UpdateGnadenwurf', (msg) => {

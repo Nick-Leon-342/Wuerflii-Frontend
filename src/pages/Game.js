@@ -123,6 +123,8 @@ function Game() {
 				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
 				calculateBottomColumn(m.Alias, m.Column)
 			}
+			setLastPlayerAlias(m.Alias)
+			updateURL()
 
 		})
 		tmp_socket.on('UpdateGnadenwurf', (msg) => {
