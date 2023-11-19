@@ -3,7 +3,7 @@
 import '../App.css'
 
 import { Link, useNavigate } from 'react-router-dom'
-import { formatDate } from './utils'
+import { formatDate } from '../logic/utils'
 import { useEffect, useState } from 'react'
 
 

@@ -5,7 +5,7 @@ import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { formatDate } from './utils'
+import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 import Loader from '../components/Loader'

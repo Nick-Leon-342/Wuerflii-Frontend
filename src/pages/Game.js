@@ -7,12 +7,13 @@ import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from './utils'
-import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
+import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from '../logic/utils'
+import { possibleEntries_upperTable, possibleEntries_bottomTable} from '../logic/PossibleEntries'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
-import { REACT_APP_BACKEND_URL } from '../pages/utils-env'
+import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
+import { calculateUpperColumn, calculateBottomColumn } from '../logic/Calculating'
 
 
 
@@ -60,8 +61,8 @@ function Game() {
 
 		for(const alias of session?.List_PlayerOrder) {
 			for(let i = 0; session?.Columns > i; i++) {
-				calculateUpperColumn(alias, i)
-				calculateBottomColumn(alias, i)
+				calculateUpperColumn(alias, i, columnsSum)
+				calculateBottomColumn(alias, i, columnsSum)
 			}
 		}
 
@@ -116,13 +117,17 @@ function Game() {
 		tmp_socket.on('UpdateValueResponse', (msg) => {
 
 			const m = msg.Data
-			if(m.UpperTable) {
-				document.getElementById(id_upperTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-				calculateUpperColumn(m.Alias, m.Column)
-			} else {
-				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-				calculateBottomColumn(m.Alias, m.Column)
+			const tableID = m.UpperTable ? id_upperTable : id_bottomTable
+			document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+			if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column)
+			} else {calculateBottomColumn(m.Alias, m.Column)}
+
+			for(const e of tableColumns) {
+				if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
+					e[m.Row] = m.Value
+				}
 			}
+
 			setLastPlayerAlias(m.Alias)
 			updateURL()
 
@@ -194,6 +199,7 @@ function Game() {
 		const v = e.target.value
 		urlParams.set('inputtype', v)
 		updateURL()
+		return window.location.reload()
 		setInputType(v)
 
 	}
@@ -462,9 +468,9 @@ function Game() {
 			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
 			
 			if(tableID === id_upperTable) {
-				calculateUpperColumn(alias, column)
+				calculateUpperColumn(alias, column, columnsSum)
 			} else {
-				calculateBottomColumn(alias, column)
+				calculateBottomColumn(alias, column, columnsSum)
 			}
 			
 		}
@@ -477,128 +483,6 @@ function Game() {
 		if (isNaN(parseFloat(e.value)) || !isFinite(e.value) || e.value.length > 2) {
 			e.value = e.value.slice(0, -1)
 		}
-	
-	}
-
-
-
-
-
-	//__________________________________________________Calculating__________________________________________________
-	
-	const calculateUpperColumn = (alias, columnIndex) => {
-	
-		const column = document.getElementById(id_upperTable).querySelectorAll(`[alias='${alias}'][column='${columnIndex}']`)
-	
-		let columnCompleted = true
-		let sum = 0
-	
-		for(let i = 0; 6 > i; i++) {
-	
-			const n = column[i].value
-			if(n === '') {
-				columnCompleted = false
-			} else {
-				sum += Number(n)
-			}
-	
-		}
-	
-		const bottomLabels = document.getElementById(id_bottomTable).querySelectorAll(`label[alias='${alias}'][column='${columnIndex}']`)
-		column[6].innerText = sum
-		if(Boolean(columnCompleted)) {
-	
-			sum = sum >= 63 ? sum + 35 : sum
-			column[7].textContent = sum >= 63 ? 35 : '-'
-			column[8].textContent = sum
-			
-			bottomLabels[1].textContent = sum
-			
-		} else {
-	
-			column[7].textContent = ''
-			column[8].textContent = ''
-			bottomLabels[1].textContent = ''
-	
-		}
-	
-		calculateBottomLabels(alias, columnIndex, bottomLabels)
-		for(const c of columnsSum) {
-			if(c.Alias === alias && c.Column === columnIndex) {
-				c.Upper = sum
-				break
-			}
-		}
-		calculateScore(alias)
-	
-	}
-	
-	const calculateBottomColumn = (alias, columnIndex) => {
-	
-		const column = document.getElementById(id_bottomTable).querySelectorAll(`[alias='${alias}'][column='${columnIndex}']`)
-	
-		let columnCompleted = true
-		let sum = 0
-	
-		for(let i = 0; 7 > i; i++) {
-	
-			const n = column[i].value
-			if(n === '') {
-				columnCompleted = false
-			} else {
-				sum += Number(n)
-			}
-	
-		}
-	
-		if(Boolean(columnCompleted)) {
-	
-			column[7].textContent = sum
-			
-		} else {
-	
-			column[7].textContent = ''
-			column[9].textContent = ''
-	
-		}
-	
-		calculateBottomLabels(alias, columnIndex, document.getElementById(id_bottomTable).querySelectorAll(`label[alias='${alias}'][column='${columnIndex}']`))
-		for(const c of columnsSum) {
-			if(c.Alias === alias && c.Column === columnIndex) {
-				c.Bottom = sum
-				break
-			}
-		}
-		calculateScore(alias)
-	
-	}
-	
-	const calculateBottomLabels = (alias, columnIndex, bottomLabels) => {
-	
-		const up = +bottomLabels[0].textContent
-		const bottom = +bottomLabels[1].textContent
-		const sum = up + bottom
-	
-		bottomLabels[2].textContent = up !== 0 && bottom !== 0 ? sum : ''
-		for(const c of columnsSum) {
-			if(c.Alias === alias && c.Column === columnIndex) {
-				c.All = +bottomLabels[2].textContent
-			}
-		}
-	
-	}
-	
-	const calculateScore = (alias) => {
-
-		let sum = 0
-
-		for(const c of columnsSum) {
-			if(c.Alias === alias) {
-				sum += c.All || (c.Upper + c.Bottom)
-			}
-		}
-
-		document.getElementById(id_playerTable).querySelector(`[alias='${alias}']`).textContent = sum
 	
 	}
 

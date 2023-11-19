@@ -6,10 +6,10 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
-import { id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from './utils'
-import { possibleEntries_upperTable, possibleEntries_bottomTable} from './PossibleEntries'
+import { id_playerTable, id_bottomTable, id_upperTable, upperTable_rows, bottomTable_rows, thickBorder } from '../logic/utils'
+import { possibleEntries_upperTable, possibleEntries_bottomTable} from '../logic/PossibleEntries'
 import io from 'socket.io-client'
-import { REACT_APP_BACKEND_URL } from './utils-env'
+import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
 import axios from '../api/axios'
 
 
@@ -82,7 +82,7 @@ function JoinGame() {
 	useEffect(() => {
 
 		async function connect() {
-			await axios.get(`/joingame?joincode=${joincode}`,
+			axios.get(`/joingame?joincode=${joincode}`,
 				{
 					headers: { 'Content-Type': 'application/json' },
 					withCredentials: true
@@ -94,26 +94,31 @@ function JoinGame() {
 				setTableColumns(res?.data?.TableColumns)
 				setGnadenwurf(res?.data?.Gnadenwürfe)
 
-			}).catch(() => {
+			}).catch((err) => {
+				console.log(err)
 				return navigate('/creategame', { replace: true })
 			})
 		}
 		
 		connect()
 
-		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
+		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode } })
 		setSocket(tmp_socket)
 		tmp_socket.emit('JoinSession', '')
 		tmp_socket.on('UpdateValueResponse', (msg) => {
 
 			const m = msg.Data
-			if(m.UpperTable) {
-				document.getElementById(id_upperTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-				calculateUpperColumn(m.Alias, m.Column)
-			} else {
-				document.getElementById(id_bottomTable).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-				calculateBottomColumn(m.Alias, m.Column)
+			const tableID = m.UpperTable ? id_upperTable : id_bottomTable
+			document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+			if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column)
+			} else {calculateBottomColumn(m.Alias, m.Column)}
+
+			for(const e of tableColumns) {
+				if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
+					e[m.Row] = m.Value
+				}
 			}
+
 			setLastPlayerAlias(m.Alias)
 			updateURL()
 

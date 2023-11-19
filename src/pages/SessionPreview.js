@@ -4,7 +4,7 @@ import '../App.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { formatDate } from './utils'
+import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
 

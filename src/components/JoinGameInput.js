@@ -25,26 +25,34 @@ export default function JoinGameInput({ width, margin }) {
 
 	const joinGame = ()  => {
 
-		axios.post('/joingame', 
-			{ JoinCode: +joinCode },
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true,
-			}
-		).then(() => {
+		const JoinCode = +joinCode
 
-			navigate(`/joingame?joincode=${joinCode}`, { replace: false })
+		if(JoinCode && 10000000 < JoinCode && 99999999 > JoinCode) {
 
-		}).catch((err) => {
+			axios.post('/joingame', 
+				{ JoinCode },
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true,
+				}
+			).then(() => {
 
-			const status = err?.response?.status
-			if(status === 404) {
-				window.alert('Der Code wurde nicht gefunden!')
-			} else {
-				window.alert('Es trat ein Fehler beim Server auf!')
-			}
+				navigate(`/joingame?joincode=${joinCode}`, { replace: false })
 
-		})
+			}).catch((err) => {
+
+				const status = err?.response?.status
+				if(status === 404) {
+					window.alert('Der Code wurde nicht gefunden!')
+				} else {
+					window.alert('Es trat ein Fehler beim Server auf!')
+				}
+
+			})
+
+		} else {
+			window.alert('Bitte 8 Zahlen eingeben!')
+		}
 
 	}
 
@@ -54,8 +62,7 @@ export default function JoinGameInput({ width, margin }) {
 
 	return (
 
-		<form 
-			onSubmit={joinGame} 
+		<div 
 			style={{ 
 				width: width 
 			}}
@@ -75,6 +82,7 @@ export default function JoinGameInput({ width, margin }) {
 
 			<button 
 				className='button' 
+				onClick={joinGame}
 				style={{ 
 					width: '100%', 
 					marginBottom: '0', 
@@ -82,7 +90,7 @@ export default function JoinGameInput({ width, margin }) {
 				}}
 			>Spiel beitreten</button>
 
-		</form>
+		</div>
 		
 	)
 

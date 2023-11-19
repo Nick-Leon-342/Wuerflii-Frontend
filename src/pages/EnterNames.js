@@ -5,7 +5,7 @@ import './css/EnterNames.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { createSession, createPlayer } from './utils'
+import { createSession, createPlayer } from '../logic/utils'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'

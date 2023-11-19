@@ -3,7 +3,7 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
 import Login from './pages/Login'
-import PersistLogin from './pages/PersistLogin'
+import PersistLogin from './logic/PersistLogin'
 import Registration from './pages/Registration'
 
 import CreateGame from './pages/CreateGame'

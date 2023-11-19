@@ -6,7 +6,7 @@ import { useState } from 'react'
 import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
-import { NAME_REGEX, PASSWORD_REGEX } from './utils'
+import { NAME_REGEX, PASSWORD_REGEX } from '../logic/utils'
 
 import InfoName from '../components/info/InfoName'
 import InfoPassword from '../components/info/InfoPassword'
