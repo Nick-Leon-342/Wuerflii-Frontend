@@ -28,15 +28,17 @@ function Game() {
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
-	const [ session, setSession ] = useState()
-	const sessionid = urlParams.get('sessionid')
 	const joincode = urlParams.get('joincode')
-
-	const [ columnsSum ] = useState([])
-	const [ tableColumns, setTableColumns ] = useState([])
-	const [ socket, setSocket ] = useState()
-	const [ tableWidth, setTableWidth ] = useState(0)
+	const sessionid = urlParams.get('sessionid')
 	const [ lastPlayerAlias, setLastPlayerAlias ] = useState(urlParams.get('lastplayer'))
+	
+	const columnsSum = []
+	
+	const [ socket, setSocket ] = useState()
+	const [ session, setSession ] = useState()
+
+	const [ tableWidth, setTableWidth ] = useState(0)
+	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
 
@@ -99,10 +101,18 @@ function Game() {
 				}
 			).then((res) => {
 				
-				setSession(res?.data?.Session)
-				setInputType(urlParams.get('inputtype') || res?.data?.Session?.InputType)
+				const tmp_session = res?.data?.Session
+				setSession(tmp_session)
+				setInputType(urlParams.get('inputtype') || tmp_session?.InputType)
 				setTableColumns(res?.data?.TableColumns)
 				setGnadenwurf(res?.data?.Gnadenwürfe)
+
+				columnsSum.length = 0
+				for(const p of tmp_session?.List_Players) {
+					for(let c = 0; tmp_session?.Columns > c; c++) {
+						columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
+					}
+				}
 
 			}).catch(() => {
 				return navigate('/creategame', { replace: true })
@@ -121,8 +131,9 @@ function Game() {
 			const m = msg.Data
 			const tableID = m.UpperTable ? id_upperTable : id_bottomTable
 			document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-			if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column)
-			} else {calculateBottomColumn(m.Alias, m.Column)}
+			console.log(columnsSum)
+			if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column, columnsSum)
+			} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
 
 			for(const e of tableColumns) {
 				if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
@@ -638,7 +649,6 @@ function Game() {
 				tableID={id_upperTable}
 				session={session}
 				tableColumns={tableColumns}
-				columnsSum={columnsSum}
 				getPlayer={getPlayer}
 				inputType={inputType}
 				onblurEvent={onblurEvent}
@@ -648,7 +658,6 @@ function Game() {
 				tableID={id_bottomTable}
 				session={session}
 				tableColumns={tableColumns}
-				columnsSum={columnsSum}
 				getPlayer={getPlayer}
 				inputType={inputType}
 				onblurEvent={onblurEvent}

@@ -4,11 +4,10 @@ import { possibleEntries_bottomTable, possibleEntries_upperTable } from '../logi
 import { bottomTable_rows, id_upperTable, upperTable_rows } from '../logic/utils'
 import { isMobile } from 'react-device-detect'
 import { thickBorder } from '../logic/utils'
-import { useEffect } from 'react'
 
 
 
-export default function Table({ tableID, session, tableColumns, columnsSum, getPlayer, inputType, onblurEvent, removeFocusEvent }) {
+export default function Table({ tableID, session, tableColumns, getPlayer, inputType, onblurEvent, removeFocusEvent }) {
 
 	const rows = tableID === id_upperTable ? upperTable_rows : bottomTable_rows
 
@@ -38,22 +37,6 @@ export default function Table({ tableID, session, tableColumns, columnsSum, getP
 		}
 	
 	}
-
-
-
-
-	useEffect(() => {
-
-		if(!session || !session.List_Players) return
-		if(columnsSum.length === 0 && tableID === id_upperTable) {
-			for(const p of session.List_Players) {
-				for(let c = 0; session?.Columns > c; c++) {
-					columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
-				}
-			}
-		}
-
-	}, [])
 
 	const columns = Array.from({ length: session?.Columns }, (_, index) => index)
 
