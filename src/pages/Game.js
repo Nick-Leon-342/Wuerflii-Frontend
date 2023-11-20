@@ -32,7 +32,7 @@ function Game() {
 	const sessionid = urlParams.get('sessionid')
 	const [ lastPlayerAlias, setLastPlayerAlias ] = useState(urlParams.get('lastplayer'))
 	
-	const columnsSum = []
+	const [ columnsSum, setColumnsSum ] = useState([])
 	
 	const [ socket, setSocket ] = useState()
 	const [ session, setSession ] = useState()
@@ -102,24 +102,24 @@ function Game() {
 			).then((res) => {
 				
 				const tmp_session = res?.data?.Session
+				const tmp = []
+				for(const p of tmp_session?.List_Players) {
+					for(let c = 0; tmp_session?.Columns > c; c++) {
+						tmp.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
+					}
+				}
+				setColumnsSum(tmp)
 				setSession(tmp_session)
 				setInputType(urlParams.get('inputtype') || tmp_session?.InputType)
 				setTableColumns(res?.data?.TableColumns)
 				setGnadenwurf(res?.data?.Gnadenwürfe)
-
-				columnsSum.length = 0
-				for(const p of tmp_session?.List_Players) {
-					for(let c = 0; tmp_session?.Columns > c; c++) {
-						columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
-					}
-				}
 
 			}).catch(() => {
 				return navigate('/creategame', { replace: true })
 			})
 		}
 
-		if(!sessionid) return navigate('/creategame', { replace: true })
+		if(!sessionid || !joincode) return navigate('/creategame', { replace: true })
 		
 		connect()
 
@@ -130,8 +130,8 @@ function Game() {
 
 			const m = msg.Data
 			const tableID = m.UpperTable ? id_upperTable : id_bottomTable
+
 			document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-			console.log(columnsSum)
 			if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column, columnsSum)
 			} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
 
@@ -258,7 +258,7 @@ function Game() {
 			let value = e.value
 			const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
 
-			if(r.includes(Number(value)) || value === '') {
+			if(r.includes(+value) || value === '') {
 				
 				if(value) {
 					setLastPlayerAlias(alias)
@@ -276,7 +276,7 @@ function Game() {
 
 			}
 
-			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
+			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: +value })
 			
 			if(tableID === id_upperTable) {
 				calculateUpperColumn(alias, column, columnsSum)
