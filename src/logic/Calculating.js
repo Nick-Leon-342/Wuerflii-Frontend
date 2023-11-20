@@ -43,12 +43,14 @@ export const calculateUpperColumn = (alias, columnIndex, columnsSum) => {
 	}
 
 	calculateBottomLabels(alias, columnIndex, bottomLabels, columnsSum)
+
 	for(const c of columnsSum) {
 		if(c.Alias === alias && c.Column === columnIndex) {
 			c.Upper = sum
 			break
 		}
 	}
+
 	calculateScore(alias, columnsSum)
 
 }
@@ -83,12 +85,14 @@ export const calculateBottomColumn = (alias, columnIndex, columnsSum) => {
 	}
 
 	calculateBottomLabels(alias, columnIndex, document.getElementById(id_bottomTable).querySelectorAll(`label[alias='${alias}'][column='${columnIndex}']`), columnsSum)
+
 	for(const c of columnsSum) {
 		if(c.Alias === alias && c.Column === columnIndex) {
 			c.Bottom = sum
 			break
 		}
 	}
+
 	calculateScore(alias, columnsSum)
 
 }
@@ -100,6 +104,7 @@ export const calculateBottomLabels = (alias, columnIndex, bottomLabels, columnsS
 	const sum = up + bottom
 
 	bottomLabels[2].textContent = up !== 0 && bottom !== 0 ? sum : ''
+
 	for(const c of columnsSum) {
 		if(c.Alias === alias && c.Column === columnIndex) {
 			c.All = +bottomLabels[2].textContent

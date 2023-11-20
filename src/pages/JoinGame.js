@@ -28,7 +28,7 @@ function Game() {
 	const joincode = urlParams.get('joincode')
 	const [ lastPlayerAlias, setLastPlayerAlias ] = useState(urlParams.get('lastplayer'))
 	
-	const [ columnsSum, setColumnsSum ] = useState([])
+	const [ columnsSum ] = useState([])
 	
 	const [ socket, setSocket ] = useState()
 	const [ session, setSession ] = useState()
@@ -96,13 +96,12 @@ function Game() {
 			).then((res) => {
 				
 				const tmp_session = res?.data?.Session
-				const tmp = []
+				columnsSum.length = 0
 				for(const p of tmp_session?.List_Players) {
 					for(let c = 0; tmp_session?.Columns > c; c++) {
-						tmp.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
+						columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
 					}
 				}
-				setColumnsSum(tmp)
 				setSession(tmp_session)
 				setInputType(urlParams.get('inputtype') || tmp_session?.InputType)
 				setTableColumns(res?.data?.TableColumns)
