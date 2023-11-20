@@ -254,7 +254,7 @@ function Game() {
 
 			}
 
-			value = value ? value : null
+			value = value ? +value : null
 			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
 			
 			if(tableID === id_upperTable) {
