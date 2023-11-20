@@ -196,7 +196,6 @@ function Game() {
 		urlParams.set('inputtype', v)
 		updateURL()
 		return window.location.reload()
-		setInputType(v)
 
 	}
 
@@ -276,7 +275,8 @@ function Game() {
 
 			}
 
-			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: +value })
+			value = value ? value : null
+			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
 			
 			if(tableID === id_upperTable) {
 				calculateUpperColumn(alias, column, columnsSum)
