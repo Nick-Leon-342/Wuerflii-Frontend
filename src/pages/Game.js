@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, thickBorder } from '../logic/utils'
+import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL } from '../logic/utils'
 import { possibleEntries_upperTable, possibleEntries_bottomTable} from '../logic/PossibleEntries'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
@@ -41,11 +41,6 @@ function Game() {
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
-
-	const updateURL = () => {
-		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
-		window.history.pushState({ path: updatedURL }, '', updatedURL)
-	}
 
 
 	
@@ -143,7 +138,7 @@ function Game() {
 
 			setLastPlayerAlias(m.Alias)
 			urlParams.set('lastplayer', m.Alias)
-			updateURL()
+			updateURL(urlParams)
 
 		})
 		tmp_socket.on('UpdateGnadenwurf', (msg) => {
@@ -195,19 +190,8 @@ function Game() {
 
 		const v = e.target.value
 		urlParams.set('inputtype', v)
-		updateURL()
+		updateURL(urlParams)
 		return window.location.reload()
-
-	}
-
-	const getPlayer = (alias) => {
-
-		if(session)
-		for(const p of session.List_Players) {
-			if(p.Alias === alias) {
-				return p
-			}
-		}
 
 	}
 
@@ -263,7 +247,7 @@ function Game() {
 				if(value) {
 					setLastPlayerAlias(alias)
 					urlParams.set('lastplayer', alias)
-					updateURL()
+					updateURL(urlParams)
 				}
 
 			} else {
@@ -434,7 +418,7 @@ function Game() {
 
 	const modalEditShow = () => {
 
-		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
+		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias, session)))
 		document.getElementById('modal-edit').showModal()
 
 	}
@@ -456,7 +440,7 @@ function Game() {
 
 				<h1>Gewinner auswählen</h1>
 				{askIfSurrender && <div>
-					<label style={{ fontSize: '22px', }}>{`Sicher, dass ${getPlayer(askIfSurrender).Name} gewinnen soll?`}</label>
+					<label style={{ fontSize: '22px', }}>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</label>
 					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 						<button 
 							className='button' 
@@ -536,7 +520,7 @@ function Game() {
 						? 'Bis jetzt war noch keiner dran!'
 						: (
 							<>
-								{'\'' + getPlayer(lastPlayerAlias)?.Name + '\' war als letztes dran.'}<br />
+								{'\'' + getPlayer(lastPlayerAlias, session)?.Name + '\' war als letztes dran.'}<br />
 							</>
 						)
 					}

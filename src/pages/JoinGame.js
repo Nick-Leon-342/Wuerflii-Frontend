@@ -6,8 +6,8 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../api/axios'
-import { id_bottomTable, id_upperTable, thickBorder } from '../logic/utils'
-import { possibleEntries_upperTable, possibleEntries_bottomTable} from '../logic/PossibleEntries'
+import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL } from '../logic/utils'
+import { possibleEntries_upperTable, possibleEntries_bottomTable } from '../logic/PossibleEntries'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
 import { calculateUpperColumn, calculateBottomColumn } from '../logic/Calculating'
@@ -35,11 +35,6 @@ function Game() {
 
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ tableColumns, setTableColumns ] = useState([])
-
-	const updateURL = () => {
-		const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
-		window.history.pushState({ path: updatedURL }, '', updatedURL)
-	}
 
 
 	
@@ -137,7 +132,7 @@ function Game() {
 
 			setLastPlayerAlias(m.Alias)
 			urlParams.set('lastplayer', m.Alias)
-			updateURL()
+			updateURL(urlParams)
 
 		})
 		tmp_socket.on('UpdateGnadenwurf', (msg) => {
@@ -173,19 +168,8 @@ function Game() {
 
 		const v = e.target.value
 		urlParams.set('inputtype', v)
-		updateURL()
+		updateURL(urlParams)
 		return window.location.reload()
-
-	}
-
-	const getPlayer = (alias) => {
-
-		if(session)
-		for(const p of session.List_Players) {
-			if(p.Alias === alias) {
-				return p
-			}
-		}
 
 	}
 
@@ -241,7 +225,7 @@ function Game() {
 				if(value) {
 					setLastPlayerAlias(alias)
 					urlParams.set('lastplayer', alias)
-					updateURL()
+					updateURL(urlParams)
 				}
 
 			} else {
@@ -267,7 +251,7 @@ function Game() {
 
 	}
 
-	
+
 
 
 
@@ -292,7 +276,7 @@ function Game() {
 						? 'Bis jetzt war noch keiner dran!'
 						: (
 							<>
-								{'\'' + getPlayer(lastPlayerAlias)?.Name + '\' war als letztes dran.'}<br />
+								{'\'' + getPlayer(lastPlayerAlias, session)?.Name + '\' war als letztes dran.'}<br />
 							</>
 						)
 					}

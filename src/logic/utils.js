@@ -59,6 +59,24 @@ export const formatDate = (date) => {
 
 }
 
+export const getPlayer = (alias, session) => {
+
+	if(session)
+	for(const p of session.List_Players) {
+		if(p.Alias === alias) {
+			return p
+		}
+	}
+
+}
+
+export const updateURL = (urlParams) => {
+
+	const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
+	window.history.pushState({ path: updatedURL }, '', updatedURL)
+
+}
+
 
 
 

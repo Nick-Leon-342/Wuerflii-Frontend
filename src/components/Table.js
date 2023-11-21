@@ -52,7 +52,7 @@ export default function Table({ tableID, session, tableColumns, getPlayer, input
 						<tr key={currentRowIndex} className='row'>
 							{r.td}
 							{session?.List_PlayerOrder?.map((alias, currentPlayerIndex) => {
-								const player = getPlayer(alias)
+								const player = getPlayer(alias, session)
 
 								return (
 									columns.map((currentColumnIndex) => {
