@@ -136,6 +136,7 @@ function Game() {
 			}
 
 			setLastPlayerAlias(m.Alias)
+			urlParams.set('lastplayer', m.Alias)
 			updateURL()
 
 		})

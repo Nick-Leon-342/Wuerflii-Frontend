@@ -142,6 +142,7 @@ function Game() {
 			} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
 
 			setLastPlayerAlias(m.Alias)
+			urlParams.set('lastplayer', m.Alias)
 			updateURL()
 
 		})
