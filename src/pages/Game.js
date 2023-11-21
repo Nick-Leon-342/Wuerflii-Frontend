@@ -7,7 +7,7 @@ import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL } from '../logic/utils'
-import { possibleEntries_upperTable, possibleEntries_bottomTable} from '../logic/PossibleEntries'
+import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
@@ -70,7 +70,7 @@ function Game() {
 			for(const e of elements) {
 				e.addEventListener('focus', focusEvent)
 				if(inputType === 0) {
-					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
+					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)))
 				} else {
 					e.addEventListener('blur', removeFocusEvent)
 				}
@@ -80,7 +80,7 @@ function Game() {
 		return () => {
 			for(const e of elements) {
 				e.removeEventListener('focus', focusEvent)
-				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent))
+				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)))
 			}
 		}
 
@@ -192,84 +192,6 @@ function Game() {
 		urlParams.set('inputtype', v)
 		updateURL(urlParams)
 		return window.location.reload()
-
-	}
-
-
-
-
-
-	// __________________________________________________Events__________________________________________________
-
-	const focusEvent = (element) => {
-
-		const h = 'highlighted'
-	
-		const r = element.target.closest('tr')
-		if(!r.classList.contains(h)) {
-			r.classList.add(h)
-		}
-	
-		removeFocusEvent(r)
-
-	}
-	
-	const removeFocusEvent = (r) => {
-	
-		const h = 'highlighted'
-	
-		const u = document.getElementById(id_upperTable).rows
-		for(const e of u) {
-			if(e !== r) {e.classList.remove(h)}
-		}
-	
-		const b = document.getElementById(id_bottomTable).rows
-		for(const e of b) {
-			if(e !== r) {e.classList.remove(h)}
-		}
-	
-	}
-
-	const onblurEvent = (element) => {
-
-		const e = element.target
-		if(e) {
-			const tableID = e.getAttribute('tableid')
-			const row = +e.getAttribute('row')
-			const column = +e.getAttribute('column')
-			const alias = e.getAttribute('alias')
-
-			let value = e.value
-			const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
-
-			if(r.includes(+value) || value === '') {
-				
-				if(value) {
-					setLastPlayerAlias(alias)
-					urlParams.set('lastplayer', alias)
-					updateURL(urlParams)
-				}
-
-			} else {
-				
-				document.getElementById('modal-invalidnumber').showModal()
-				document.getElementById('message-invalidnumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
-
-				e.value = ''
-				value = ''
-
-			}
-
-			value = value ? +value : null
-			socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
-			
-			if(tableID === id_upperTable) {
-				calculateUpperColumn(alias, column, columnsSum)
-			} else {
-				calculateBottomColumn(alias, column, columnsSum)
-			}
-			
-		}
 
 	}
 
@@ -646,7 +568,7 @@ function Game() {
 				tableColumns={tableColumns}
 				getPlayer={getPlayer}
 				inputType={inputType}
-				onblurEvent={onblurEvent}
+				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
 				removeFocusEvent={removeFocusEvent}
 			/>
 			<Table 
@@ -655,7 +577,7 @@ function Game() {
 				tableColumns={tableColumns}
 				getPlayer={getPlayer}
 				inputType={inputType}
-				onblurEvent={onblurEvent}
+				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
 				removeFocusEvent={removeFocusEvent}
 			/>
 
