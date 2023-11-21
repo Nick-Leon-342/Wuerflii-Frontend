@@ -267,9 +267,18 @@ function Game() {
 
 	}
 
-
 	
 
+
+
+	const handleLeave = () => {
+
+		navigate('/creategame', { replace: false })
+
+	}
+
+
+	
 
 
 	return (
@@ -321,6 +330,17 @@ function Game() {
 					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
 					<option value='type' key='type'>Eingabe</option>
 				</select>
+
+				<button 
+					className='button'
+					onClick={handleLeave}
+					style={{
+						margin: '0',
+						marginRight: '5px',
+						background: 'none',
+						boxShadow: 'none',
+					}}
+				>Verlassen</button>
 			</div>
 
 			<PlayerTable 

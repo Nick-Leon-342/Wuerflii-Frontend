@@ -505,13 +505,23 @@ function Game() {
 					}}
 				>
 					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={modalEditClose} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+						<svg onClick={modalEditClose} className='button-responsive' height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 					
 					<h1>Bearbeiten</h1>
 
 					{/* ______________________________ChangeNames______________________________ */}
 					{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
+
+					<div
+						style={{
+							display: 'flex', 
+							fontWeight: 'bold', 
+						}}
+					>
+						<label style={{ marginLeft: '50px' }}>Beitrittscode</label>
+						<label style={{ marginLeft: '30px' }}>{joincode}</label>
+					</div>
 
 					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 

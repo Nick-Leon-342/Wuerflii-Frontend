@@ -105,18 +105,14 @@ dialog::backdrop {
 }
 
 
-.button-responsive:hover {
-	transform: scale(1.08);
-}
-
-.button-responsive:active {
-	transform: scale(0.92);
-}
+.button-responsive {			transition: all .25s ease;	}
+.button-responsive:hover {		transform: scale(1.15);		}
+.button-responsive:active {		transform: scale(0.92);		}
 
 
-.reglog-link-switch {text-align: end;}
-.reglog-link-switch a {color: rgb(0, 255, 0);}
-.reglog-link-switch a:hover {opacity: .6;}
+.reglog-link-switch {			text-align: end;			}
+.reglog-link-switch a {			color: rgb(0, 255, 0);	   }
+.reglog-link-switch a:hover {	opacity: .6;				}
 
 .link-switch a {color: rgb(0, 255, 0);}
 .link-switch a:hover {opacity: .6;}
