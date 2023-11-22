@@ -164,7 +164,10 @@ function Game() {
 				params: { SessionID: sessionid },
 			}
 		).then(() => {
+
+			socket.emit('EndGame', '')
 			navigate('/creategame', { replace: true })
+
 		}).catch((err) => {
 			console.log(err)
 		})
@@ -257,6 +260,7 @@ function Game() {
 			}
 		).then(() => {
 	
+			socket.emit('EndGame', '')
 			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(list_winnerName)}`, { replace: true })
 			setLoaderVisible(false)
 
@@ -310,6 +314,8 @@ function Game() {
 				return
 			})
 		}
+
+		socket.emit('RefreshGame', '')
 		window.location.reload()
 
 	}

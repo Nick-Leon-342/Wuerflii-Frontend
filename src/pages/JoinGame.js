@@ -142,6 +142,16 @@ function Game() {
 			setGnadenwurf(msg.Data)
 
 		})
+		tmp_socket.on('RefreshGame', () => {
+
+			window.location.reload()
+
+		})
+		tmp_socket.on('EndGame', () => {
+
+			navigate('/creategame', { replace: true })
+
+		})
 
 		return () => {
 			tmp_socket.disconnect()
