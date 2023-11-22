@@ -197,12 +197,17 @@ function Game() {
 				<select
 					value={inputType}
 					onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
+					className='button'
 					style={{
+						fontSize: '13px', 
 						borderRadius: '10px',
 						height: '30px',
 						padding: '5px',
 						marginLeft: '5px',
 						marginRight: '10px',
+						marginTop: '0',
+						marginBottom: '0',
+						background: 'none', 
 						border: '1px solid var(--text-color)',
 						outline: 'none',
 						color: 'var(--text-color)',

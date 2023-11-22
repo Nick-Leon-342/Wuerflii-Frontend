@@ -495,19 +495,24 @@ function Game() {
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<select
-					value={inputType}
-					onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
-					style={{
-						borderRadius: '10px',
-						height: '30px',
-						padding: '5px',
-						marginLeft: '5px',
-						marginRight: '10px',
-						border: '1px solid var(--text-color)',
-						outline: 'none',
-						color: 'var(--text-color)',
-					}}
-				>
+						value={inputType}
+						onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
+						className='button'
+						style={{
+							fontSize: '13px', 
+							borderRadius: '10px',
+							height: '30px',
+							padding: '5px',
+							marginLeft: '5px',
+							marginRight: '10px',
+							marginTop: '0',
+							marginBottom: '0',
+							background: 'none', 
+							border: '1px solid var(--text-color)',
+							outline: 'none',
+							color: 'var(--text-color)',
+						}}
+					>
 					<option value='select' key='select'>Auswahl</option>
 					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
 					<option value='type' key='type'>Eingabe</option>
