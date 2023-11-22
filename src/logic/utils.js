@@ -85,6 +85,28 @@ export const handleInputTypeChange = (v, urlParams) => {
 
 }
 
+export const successfullyConnected = (data, columnsSum, urlParams, setSession, setInputType, setTableColumns, setGnadenwurf) => {
+
+	const tmp_session = data.Session
+	const tmp_listPlayers = []
+	columnsSum.length = 0
+	for(const Alias of tmp_session?.List_PlayerOrder) {
+
+		tmp_listPlayers.push(getPlayer(Alias, tmp_session))
+		for(let c = 0; tmp_session?.Columns > c; c++) {
+			columnsSum.push({Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
+		}
+
+	}
+	tmp_session.List_Players = tmp_listPlayers
+	
+	setSession(tmp_session)
+	setInputType(urlParams.get('inputtype') || tmp_session.InputType)
+	setTableColumns(data.TableColumns)
+	setGnadenwurf(data.Gnadenwürfe)
+
+}
+
 
 
 

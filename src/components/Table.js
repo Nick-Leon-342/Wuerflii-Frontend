@@ -7,7 +7,7 @@ import { thickBorder } from '../logic/utils'
 
 
 
-export default function Table({ tableID, session, tableColumns, getPlayer, inputType, onblurEvent, removeFocusEvent }) {
+export default function Table({ tableID, session, tableColumns, inputType, onblurEvent, removeFocusEvent }) {
 
 	const rows = tableID === id_upperTable ? upperTable_rows : bottomTable_rows
 
@@ -51,9 +51,7 @@ export default function Table({ tableID, session, tableColumns, getPlayer, input
 					return (
 						<tr key={currentRowIndex} className='row'>
 							{r.td}
-							{session?.List_PlayerOrder?.map((alias, currentPlayerIndex) => {
-								const player = getPlayer(alias, session)
-
+							{session?.List_Players?.map((p, currentPlayerIndex) => {
 								return (
 									columns.map((currentColumnIndex) => {
 
@@ -65,10 +63,10 @@ export default function Table({ tableID, session, tableColumns, getPlayer, input
 											column: currentColumnIndex,
 											row: currentRowIndex,
 											playerindex: currentPlayerIndex,
-											alias: player.Alias,
+											alias: p.Alias,
 											onInput: inputEvent,
-											defaultValue: getDefaultValue( tableID, player.Alias, currentColumnIndex, currentRowIndex ),
-											style: { backgroundColor: player.Color },
+											defaultValue: getDefaultValue( tableID, p.Alias, currentColumnIndex, currentRowIndex ),
+											style: { backgroundColor: p.Color },
 										}
 
 										const id = `${tableID}_${currentRowIndex}`
@@ -79,7 +77,7 @@ export default function Table({ tableID, session, tableColumns, getPlayer, input
 
 											if(inputType === 'select') {
 
-												e = <select {...css} style={{ backgroundColor: player.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
+												e = <select {...css} style={{ backgroundColor: p.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
 													<option></option>
 													{possibleEntries.map((v) => (
 														<option key={v} value={v}>{v}</option>
@@ -110,7 +108,7 @@ export default function Table({ tableID, session, tableColumns, getPlayer, input
 												<td 
 													key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} 
 													style={{ 
-														backgroundColor: player.Color, 
+														backgroundColor: p.Color, 
 														borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
 														borderRight: currentColumnIndex === session?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
 														borderBottom: currentRowIndex === rows.length - 1 ? thickBorder : '1px solid var(--text-color-light)',
@@ -125,7 +123,7 @@ export default function Table({ tableID, session, tableColumns, getPlayer, input
 											<td 
 												key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} 
 												style={{ 
-													backgroundColor: player.Color, 
+													backgroundColor: p.Color, 
 													borderTop: currentRowIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
 													borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
 													borderRight: currentColumnIndex === session?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',

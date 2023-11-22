@@ -6,6 +6,7 @@ import './css/EndScreen.css'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { getPlayer } from '../logic/utils'
 
 import Loader from '../components/Loader'
 
@@ -44,8 +45,16 @@ function EndScreen() {
 				}
 			).then((res) => {
 
-				if(!winner || !res?.data) return navigate('/creategame', { replace: true })
-				setSession(res?.data)
+				const tmp_session = res.data
+				if(!winner || !tmp_session) return navigate('/creategame', { replace: true })
+
+				const tmp_listPlayers = []
+				for(const alias of tmp_session.List_PlayerOrder) {
+					tmp_listPlayers.push(getPlayer(alias, tmp_session))
+				}
+				tmp_session.List_Players = tmp_listPlayers
+
+				setSession(tmp_session)
 
 				if(winner.length === 1) {
 					setHeader(`'${winner[0]}' hat gewonnen!`)
@@ -65,7 +74,7 @@ function EndScreen() {
 				setLoaderVisible(false)
 
 			}).catch((err) => {
-
+				
 				const status = err?.response?.status
 				if(status === 400) {
 					window.alert('Irgendwas stimmt nicht mit der Serverabfrage!')

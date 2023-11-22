@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../api/axios'
-import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange } from '../logic/utils'
+import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange, successfullyConnected } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
@@ -92,17 +92,15 @@ function Game() {
 				}
 			).then((res) => {
 				
-				const tmp_session = res?.data?.Session
-				columnsSum.length = 0
-				for(const p of tmp_session?.List_Players) {
-					for(let c = 0; tmp_session?.Columns > c; c++) {
-						columnsSum.push({Alias: p.Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
-					}
-				}
-				setSession(tmp_session)
-				setInputType(urlParams.get('inputtype') || tmp_session?.InputType)
-				setTableColumns(res?.data?.TableColumns)
-				setGnadenwurf(res?.data?.Gnadenwürfe)
+				successfullyConnected(
+					res.data, 
+					columnsSum, 
+					urlParams, 
+					setSession, 
+					setInputType, 
+					setTableColumns, 
+					setGnadenwurf, 
+				)
 
 
 			}).catch(() => {
@@ -245,7 +243,6 @@ function Game() {
 				socket={socket}
 				tableWidth={tableWidth}
 				thickBorder={thickBorder}
-				getPlayer={getPlayer}
 				lastPlayerAlias={lastPlayerAlias}
 				gnadenwurf={gnadenwurf}
 				setGnadenwurf={setGnadenwurf}
@@ -255,7 +252,6 @@ function Game() {
 				tableID={id_upperTable}
 				session={session}
 				tableColumns={tableColumns}
-				getPlayer={getPlayer}
 				inputType={inputType}
 				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
 				removeFocusEvent={removeFocusEvent}
@@ -264,7 +260,6 @@ function Game() {
 				tableID={id_bottomTable}
 				session={session}
 				tableColumns={tableColumns}
-				getPlayer={getPlayer}
 				inputType={inputType}
 				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
 				removeFocusEvent={removeFocusEvent}
