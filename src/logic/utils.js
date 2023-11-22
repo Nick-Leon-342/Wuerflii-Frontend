@@ -77,6 +77,14 @@ export const updateURL = (urlParams) => {
 
 }
 
+export const handleInputTypeChange = (v, urlParams) => {
+
+	urlParams.set('inputtype', v)
+	updateURL(urlParams)
+	return window.location.reload()
+
+}
+
 
 
 

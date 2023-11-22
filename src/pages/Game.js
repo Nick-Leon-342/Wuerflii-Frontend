@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL } from '../logic/utils'
+import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
@@ -37,7 +37,9 @@ function Game() {
 	const [ socket, setSocket ] = useState()
 	const [ session, setSession ] = useState()
 
+	const [ inputType, setInputType ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
+	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
@@ -168,33 +170,7 @@ function Game() {
 		})
 	
 	}
-
-
-
-
-
-	// __________________________________________________Gnadenwurf__________________________________________________
-	// Gnadenwurf is an extra try
 	
-	const [gnadenwurf, setGnadenwurf] = useState({})
-
-	
-
-
-
-	// __________________________________________________InputType__________________________________________________
-
-	const [ inputType, setInputType ] = useState()
-
-	const handleInputTypeChange = (e) => {
-
-		const v = e.target.value
-		urlParams.set('inputtype', v)
-		updateURL(urlParams)
-		return window.location.reload()
-
-	}
-
 
 
 
@@ -520,7 +496,7 @@ function Game() {
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<select
 					value={inputType}
-					onChange={handleInputTypeChange}
+					onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
 					style={{
 						borderRadius: '10px',
 						height: '30px',

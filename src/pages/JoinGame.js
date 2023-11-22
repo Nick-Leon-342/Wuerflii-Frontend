@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../api/axios'
-import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL } from '../logic/utils'
+import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
@@ -33,7 +33,9 @@ function Game() {
 	const [ socket, setSocket ] = useState()
 	const [ session, setSession ] = useState()
 
+	const [ inputType, setInputType ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
+	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
 	const [ tableColumns, setTableColumns ] = useState([])
 
 
@@ -151,32 +153,6 @@ function Game() {
 
 
 
-	// __________________________________________________Gnadenwurf__________________________________________________
-	// Gnadenwurf is an extra try
-	
-	const [gnadenwurf, setGnadenwurf] = useState({})
-
-	
-
-
-
-	// __________________________________________________InputType__________________________________________________
-
-	const [ inputType, setInputType ] = useState()
-
-	const handleInputTypeChange = (e) => {
-
-		const v = e.target.value
-		urlParams.set('inputtype', v)
-		updateURL(urlParams)
-		return window.location.reload()
-
-	}
-
-
-
-
-
 	const handleLeave = () => {
 
 		navigate('/creategame', { replace: false })
@@ -220,7 +196,7 @@ function Game() {
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<select
 					value={inputType}
-					onChange={handleInputTypeChange}
+					onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
 					style={{
 						borderRadius: '10px',
 						height: '30px',
