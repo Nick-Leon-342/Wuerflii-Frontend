@@ -1,13 +1,12 @@
 
 
-#enterNamesList {
-    justify-self: center;
-}
-
 .enterNamesElement {
     display: flex;
     align-items: center;
+	justify-content: space-between;
     height: 40px;
+	margin-bottom: 5px;
+	outline: none;
 }
 
 
@@ -15,29 +14,30 @@
 
 
 .colorbox-computer {
-    width: 35px;
-	block-size: 37px;
+    width: 40px;
+	block-size: 40px;
+	height: 44px;
 	padding: 0px;
 	border: none;
-	margin-left: 20px;
+	outline: none;
 }
 
 .colorbox-computer::-webkit-color-swatch {
-	border: 2px solid;
+	border: 1px solid var(--text-color-light);
     border-radius: 5px;
 }
 
 .colorbox-mobile {
-    width: 31px;
-	block-size: 31px;
+    width: 40px;
+	block-size: 40px;
 	padding: 0px;
 	border: none;
-	margin-left: 20px;
+	outline: none;
 }
 
 
 .colorbox-mobile::-webkit-color-swatch {
-	border: 1px solid;
+	border: 1px solid var(--text-color-light);
     border-radius: 5px;
 }
 

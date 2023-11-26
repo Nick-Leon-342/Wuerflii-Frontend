@@ -233,7 +233,7 @@ function SessionPreview() {
 			
 			<Loader loaderVisible={loaderVisible}/>
 				
-			<button className='button' style={{ height: '40px', width: '100%', marginBottom: '0px' }} onClick={play}>Los geht's!</button>
+			<button className='button' style={{ height: '50px', width: '100%', marginBottom: '0px' }} onClick={play}>Los geht's!</button>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>

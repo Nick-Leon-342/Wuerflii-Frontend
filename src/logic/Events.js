@@ -58,8 +58,8 @@ export const onblurEvent = (element, setLastPlayerAlias, urlParams, socket, colu
 
 		} else {
 			
-			document.getElementById('modal-invalidnumber').showModal()
-			document.getElementById('message-invalidnumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
+			document.getElementById('modal-invalidNumber').showModal()
+			document.getElementById('message-invalidNumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
 
 			e.value = ''
 			value = ''

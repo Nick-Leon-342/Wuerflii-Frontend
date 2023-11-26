@@ -16,6 +16,8 @@ import { calculateUpperColumn, calculateBottomColumn } from '../logic/Calculatin
 
 import PlayerTable from '../components/PlayerTable'
 import Table from '../components/Table'
+import LastPlayerDialog from '../components/Dialog/LastPlayerDialog'
+import InvalidNumberDialog from '../components/Dialog/InvalidNumberDialog'
 
 
 
@@ -322,7 +324,7 @@ function Game() {
 
 	const modalEditShow = () => {
 
-		setTmpListPlayers(session?.List_Players.map((p) => p))
+		setTmpListPlayers(session?.List_Players.map((p) => { return { ...p } }))
 		document.getElementById('modal-edit').showModal()
 
 	}
@@ -339,18 +341,20 @@ function Game() {
 
 			<dialog id='modal-surrender' className='modal'>
 				<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={closeSurrender} height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+						<svg onClick={closeSurrender} height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 				</div>
 
-				<h1>Gewinner auswählen</h1>
+				<h1 style={{ fontSize: '50px' }}>Gewinner auswählen</h1>
+
 				{askIfSurrender && <div>
 					<label style={{ fontSize: '22px', }}>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</label>
-					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+					<div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
 						<button 
 							className='button' 
 							onClick={saveResults}
 							style={{
-								width: '50%',
+								width: '60%',
+								height: '40px', 
 							}}
 						>Ja</button>
 						<button 
@@ -394,11 +398,11 @@ function Game() {
 						width: '',
 					}}
 				>
-					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={modalEditClose} className='button-responsive' height='24' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+					<div style={{ width: '530px', display: 'flex', justifyContent: 'flex-end' }}>
+						<svg onClick={modalEditClose} className='button-responsive' height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 					
-					<h1>Bearbeiten</h1>
+					<h1 style={{ fontSize: '50px' }}>Bearbeiten</h1>
 
 					{/* ______________________________ChangeNames______________________________ */}
 					{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
@@ -407,57 +411,51 @@ function Game() {
 						style={{
 							display: 'flex', 
 							fontWeight: 'bold', 
+							marginBottom: '20px', 
+							fontSize: '20px', 
 						}}
 					>
-						<label style={{ marginLeft: '50px' }}>Beitrittscode</label>
-						<label style={{ marginLeft: '30px' }}>{joincode}</label>
+						<label style={{ marginLeft: '60px' }}>Beitrittscode</label>
+						<label style={{ marginLeft: '27px' }}>{joincode}</label>
 					</div>
 
 					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 
-					<button className='button' onClick={modalEditSave} style={{ width: '100%' }}>Speichern</button>
+					<button className='button' onClick={modalEditSave} style={{ width: '530px', height: '50px' }}>Speichern</button>
 
 				</div>
 			</dialog>
 
-			<dialog id='modal-nextPlayer' className='modal'>
-				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					{!lastPlayerAlias 
-						? 'Bis jetzt war noch keiner dran!'
-						: (
-							<>
-								{'\'' + getPlayer(lastPlayerAlias, session)?.Name + '\' war als letztes dran.'}<br />
-							</>
-						)
-					}
-				</p>
-				<button className='button' onClick={() => document.getElementById('modal-nextPlayer').close()}>Ok</button>
-			</dialog>
+			<LastPlayerDialog id='modal-lastPlayer' lastPlayerAlias={lastPlayerAlias} session={session}/>
 
-			<dialog id='modal-invalidnumber' className='modal'>
-				<p id='message-invalidnumber' style={{ fontSize: '22px', marginTop: '20px' }}></p>
-				<button className='button' onClick={() => document.getElementById('modal-invalidnumber').close()}>Ok</button>
-			</dialog>
+			<InvalidNumberDialog id='modal-invalidNumber'/>
 
 			<dialog id='modal-error-finishgame' className='modal'>
-				<p id='message-finishgame' style={{ fontSize: '22px', marginTop: '20px' }}>
+
+				<p id='message-finishgame' style={{ fontSize: '25px', marginTop: '20px' }}>
 					Bitte alle Werte eingeben!
 				</p>
-				<button className='button' style={{ width: '100%' }} onClick={() => document.getElementById('modal-error-finishgame').close()}>Verstanden</button>
+
+				<button className='button' style={{ width: '100%', height: '40px' }} onClick={() => document.getElementById('modal-error-finishgame').close()}>Verstanden</button>
+
 			</dialog>
 
 			<dialog id='modal-newgame' className='modal'>
-				<p style={{ fontSize: '22px', marginTop: '20px' }}>
+
+				<p style={{ fontSize: '25px', marginTop: '20px' }}>
 					Dieses Spiel löschen<br/>und ein neues Spiel anfangen?
 				</p>
+
 				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					<button 
 						className='button' 
 						onClick={newGame}
 						style={{
-							width: '55%',
+							width: '60%', 
+							height: '50px', 
 						}}
 					>Ja</button>
+
 					<button 
 						className='button' 
 						onClick={() => document.getElementById('modal-newgame').close()}
@@ -467,32 +465,42 @@ function Game() {
 						}}
 					>Abbrechen</button>
 				</div>
+
 			</dialog>
 
 			<dialog id='modal-finishgame' className='modal'>
-				<p style={{ fontSize: '22px', marginTop: '20px' }}>
+
+				<h1 style={{ fontSize: '40px', padding: '0 30px', marginTop: '20px', marginBottom: '10px' }}>
 					Spiel beenden?
-				</p>
+				</h1>
+
 				<Loader loaderVisible={loaderVisible}/>
+
 				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					<button 
 						className='button' 
 						onClick={saveResults}
 						disabled={disableFinishGame}
 						style={{
-							width: '100px',
+							width: '60%',
 							marginRight: '5px',
+							height: '50px', 
 						}}
-					>Ja</button>
+					>Ja
+					</button>
+
 					<button 
 						className='button' 
 						onClick={() => document.getElementById('modal-finishgame').close()}
 						style={{
+							width: '37%', 
 							backgroundColor: 'rgb(255, 0, 0)',
 							color: 'white',
 						}}
-					>Abbrechen</button>
+					>Abbrechen
+					</button>
 				</div>
+
 			</dialog>
 
 
@@ -501,7 +509,7 @@ function Game() {
 
 			{/* __________________________________________________Page__________________________________________________ */}
 
-			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+			<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
 				<select
 						value={inputType}
 						onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
@@ -519,6 +527,7 @@ function Game() {
 							border: '1px solid var(--text-color)',
 							outline: 'none',
 							color: 'var(--text-color)',
+							boxShadow: 'none',
 						}}
 					>
 					<option value='select' key='select'>Auswahl</option>
@@ -536,8 +545,10 @@ function Game() {
 						marginRight: '5px',
 						background: 'none',
 						boxShadow: 'none',
+						color: 'var(--text-color)', 
 					}}
-				>Aufgeben</button>
+				>Aufgeben
+				</button>
 			</div>
 
 			<PlayerTable 
@@ -577,10 +588,12 @@ function Game() {
 						background: 'none',
 						border: 'none',
 						boxShadow: 'none',
-						height: '40px',
+						height: '50px',
 						fontSize: '17px',
+						color: 'var(--text-color)'
 					}}
-				>Neues Spiel</button>
+				>Neues Spiel
+				</button>
 				<button 
 					onClick={finishGame}
 					className='button'
@@ -589,7 +602,8 @@ function Game() {
 						padding: '10px',
 						marginRight: '5px',
 					}}
-				>Spiel beenden</button>
+				>Spiel beenden
+				</button>
 			</div>
 
 		</>

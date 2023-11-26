@@ -14,6 +14,8 @@ import { calculateUpperColumn, calculateBottomColumn } from '../logic/Calculatin
 
 import PlayerTable from '../components/PlayerTable'
 import Table from '../components/Table'
+import LastPlayerDialog from '../components/Dialog/LastPlayerDialog'
+import InvalidNumberDialog from '../components/Dialog/InvalidNumberDialog'
 
 
 
@@ -104,7 +106,9 @@ function Game() {
 
 
 			}).catch(() => {
+				
 				return navigate('/creategame', { replace: true })
+				
 			})
 		}
 
@@ -176,24 +180,9 @@ function Game() {
 
 			{/* __________________________________________________Dialogs__________________________________________________ */}
 
-			<dialog id='modal-nextPlayer' className='modal'>
-				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					{!lastPlayerAlias 
-						? 'Bis jetzt war noch keiner dran!'
-						: (
-							<>
-								{'\'' + getPlayer(lastPlayerAlias, session)?.Name + '\' war als letztes dran.'}<br />
-							</>
-						)
-					}
-				</p>
-				<button className='button' onClick={() => document.getElementById('modal-nextPlayer').close()}>Ok</button>
-			</dialog>
+			<LastPlayerDialog id='modal-lastPlayer' lastPlayerAlias={lastPlayerAlias} session={session}/>
 
-			<dialog id='modal-invalidnumber' className='modal'>
-				<p id='message-invalidnumber' style={{ fontSize: '22px', marginTop: '20px' }}></p>
-				<button className='button' onClick={() => document.getElementById('modal-invalidnumber').close()}>Ok</button>
-			</dialog>
+			<InvalidNumberDialog id='modal-invalidNumber'/>
 
 
 
@@ -234,6 +223,7 @@ function Game() {
 						marginRight: '5px',
 						background: 'none',
 						boxShadow: 'none',
+						color: 'var(--text-color)', 
 					}}
 				>Verlassen</button>
 			</div>

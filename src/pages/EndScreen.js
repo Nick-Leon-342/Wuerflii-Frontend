@@ -126,7 +126,7 @@ function EndScreen() {
 
 			<Loader loaderVisible={loaderVisible}/>
 
-			<button className='button' style={{ width: '100%' }} onClick={() => navigate('/creategame', { replace: false })}>Ok</button>
+			<button className='button' style={{ width: '100%', height: '60px' }} onClick={() => navigate('/creategame', { replace: false })}>Ok</button>
 
 		</>
 	)

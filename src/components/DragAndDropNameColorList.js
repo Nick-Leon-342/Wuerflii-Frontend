@@ -33,12 +33,23 @@ export default function DragAndDropNameColorList({ List_Players, setList_Players
 										{...provided.dragHandleProps}
 										ref={provided.innerRef}
 										className='enterNamesElement'
+										style={{ width: '530px' }}
 									>
-									<svg style={{ marginLeft: '20px', marginRight: '15px' }} height="10px" viewBox="-0.5 -0.5 741 450"><g><rect x="0" y="0" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/><rect x="0" y="260" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/></g></svg>
+										<svg style={{ marginLeft: '20px', marginRight: '15px' }} height="10px" viewBox="-0.5 -0.5 741 450"><g><rect x="0" y="0" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/><rect x="0" y="260" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/></g></svg>
 										<input
 											defaultValue={p.Name}
 											onChange={(e) => p.Name = e.target.value}
-											
+											style={{
+												height: '30px', 
+												margin: '5px 0', 
+												width: '400px',
+												fontSize: '18px', 
+												color: 'var(--text-color)', 
+												border: '1px solid var(--text-color-light)', 
+												borderRadius: '5px', 
+												padding: '2px 10px', 
+												outline: 'none', 
+											}}
 										/>
 										<input
 											className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}

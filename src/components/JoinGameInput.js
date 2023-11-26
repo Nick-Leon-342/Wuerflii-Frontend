@@ -3,55 +3,60 @@
 import { useState } from 'react'
 import axios from '../api/axios'
 import { useNavigate } from 'react-router-dom'
+import FancyInput from './FancyInput'
+import Loader from './Loader'
+import ErrorMessage from './ErrorMessage'
 
 
 
 
 
-export default function JoinGameInput({ width, margin }) {
+export default function JoinGameInput({ width, marginBetween, marginBottom, marginTop }) {
 
 	const navigate = useNavigate()
+	const [ error, setError ] = useState('')
 	const [ joinCode, setJoinCode ] = useState('')
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
 
 
 
 
 
-	const handleJoinCodeInput = (e) => {
-
-		setJoinCode(e.target.value)
-
-	}
-
-	const joinGame = ()  => {
+	const joinGame = async ()  => {
 
 		const JoinCode = +joinCode
+		setError('')
 
 		if(JoinCode && 10000000 < JoinCode && 99999999 > JoinCode) {
 
-			axios.post('/joingame', 
+			setLoaderVisible(true)
+
+			await axios.post('/joingame', 
 				{ JoinCode },
 				{
 					headers: { 'Content-Type': 'application/json' },
 					withCredentials: true,
 				}
 			).then(() => {
-
-				navigate(`/joingame?joincode=${joinCode}`, { replace: false })
+				
+				navigate(`/joingame?joincode=${joinCode}`, { replace: true })
 
 			}).catch((err) => {
-
-				const status = err?.response?.status
-				if(status === 404) {
-					window.alert('Der Code wurde nicht gefunden!')
+				
+				if(!err?.response) {
+					setError('Der Server antwortet nicht!')
+				} else if (err?.response?.status === 404) {
+					setError('Der Code wurde nicht gefunden!')
 				} else {
-					window.alert('Es trat ein Fehler beim Server auf!')
+					setError('Es trat ein Fehler beim Server auf!')
 				}
 
 			})
 
+			setLoaderVisible(false)
+
 		} else {
-			window.alert('Bitte 8 Zahlen eingeben!')
+			setError('Bitte 8 Zahlen eingeben!')
 		}
 
 	}
@@ -64,29 +69,36 @@ export default function JoinGameInput({ width, margin }) {
 
 		<div 
 			style={{ 
-				width: width 
+				width: width + 'px', 
+				display: 'flex', 
+				flexDirection: 'column',
+				marginTop: marginTop, 
+				marginBottom: marginBottom, 
 			}}
 		>
 
-			<input 
-				style={{ 
-					boxSizing: 'border-box', 
-					width: '100%', 
-					textAlign: 'center', 
-				}} 
-				placeholder='8-stelliger Beitrittscode' 
+			<FancyInput
+				id='JoinCode'
+				type='text'
+				text='Beitrittscode'
 				maxLength={8}
 				value={joinCode}
-				onInput={handleJoinCodeInput}
+				setValue={setJoinCode}
+				isRequired={true}
 			/>
+
+			<Loader loaderVisible={loaderVisible}/>
+
+			<ErrorMessage error={error}/>
 
 			<button 
 				className='button' 
 				onClick={joinGame}
 				style={{ 
 					width: '100%', 
+					height: '60px',
 					marginBottom: '0', 
-					marginTop: margin, 
+					marginTop: marginBetween, 
 				}}
 			>Spiel beitreten</button>
 

@@ -18,7 +18,7 @@
 .container {
     margin-right: 10px;
     margin-left: 10px;
-	height: 30px;
+	height: 45px;
     display: flex;
     justify-content: space-between;
 	width: 100%;
@@ -30,13 +30,13 @@
 
 .label {
 	height: 100%;
-	padding-top: 5px;
-	font-size: 18px;
+	padding-top: 11px;
+	font-size: 23px;
 	width: max-content;
 }
 
 .checkbox-delete {
-	width: 20px;
+	width: 30px;
 	margin-left: 10px;
 }
 
@@ -56,16 +56,15 @@
 }
 
 .trashcan-container svg:not(.disabled):hover {
-	height: 25px;
+	height: 30px;
 }
 
 .trashcan-container svg:not(.disabled):hover rect {
 	stroke: rgb(95, 95, 95);
-
 }
 
 .trashcan-container svg {
-	height: 25px;
+	height: 30px;
 }
 
 

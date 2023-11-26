@@ -113,20 +113,35 @@ function EnterNames() {
 
 	return (
 		<>
-		
-			<div style={{ display: 'flex', flexDirection: 'column', marginBottom: '40px' }}>
-				<p htmlFor='Username' className='input-header' style={{ color: 'black', height: '25px', marginTop: '20px', display: 'flex' }}>
-					<span style={{ height: '100%', marginLeft: '7px', marginRight: '5px' }}>Name für die Partie</span>
-				</p>
-				<input required value={sessionName} onChange={(e) => setSessionName(e.target.value)} style={{ width: '455px' }}/>
+
+			<div className='inputfield' style={{ marginBottom: '40px' }}>
+				<input
+					type='text'
+					id='SessionName'
+					autoComplete='off'
+					onChange={(e) => setSessionName(e.target.value)}
+					value={sessionName}
+					required
+				/>
+				<label htmlFor='SessionName'>Name für die Partie</label>
 			</div>
 
-			<dl id='enterNamesList'>
+			<dl>
 				{players.map((p, index) => (
 					<dt className='enterNamesElement' key={index}>
 						<input
 							defaultValue={names[index]}
 							onChange={(e) => handleNameChange(index, e.target.value)}
+							style={{
+								height: '30px', 
+								margin: '5px 0', 
+								width: '85%',
+								color: 'var(--text-color)', 
+								border: '1px solid var(--text-color-light)', 
+								borderRadius: '5px', 
+								padding: '2px 10px', 
+								outline: 'none', 
+							}}
 						/>
 						<input
 							className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
@@ -146,9 +161,11 @@ function EnterNames() {
 				disabled={disablePlay}
 				style={{ 
 					width: '100%', 
-					marginBottom: '0px' 
+					marginBottom: '0px', 
+					height: '50px', 
 				}}
-			>Los!</button>
+			>Los!
+			</button>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>
