@@ -44,7 +44,6 @@ function Game() {
 	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ disableFinishGame, setDisableFinishGame ] = useState(false)
 
 
 	
@@ -180,6 +179,8 @@ function Game() {
 
 	//__________________________________________________FinishGame/SaveResults__________________________________________________
 
+	const [ saveResultsDisabled, setSaveResultsDisabled ] = useState(false)
+
 	const finishGame = () => {
 	
 		if(!askIfSurrender) {
@@ -197,8 +198,8 @@ function Game() {
 	
 	const saveResults = async () => {
 		
-		setDisableFinishGame(true)
 		setLoaderVisible(true)
+		setSaveResultsDisabled(true)
 		if(session.List_Players.length < 2) return navigate('/creategame', { replace: true })
 
 		//____________________Players____________________
@@ -269,7 +270,8 @@ function Game() {
 		}).catch((err) => {
 			console.log(err)
 		})
-		setDisableFinishGame(false)
+
+		setSaveResultsDisabled(false)
 	
 	}
 
@@ -284,8 +286,10 @@ function Game() {
 	const handleSurrender = () => {document.getElementById('modal-surrender').showModal()}
 
 	const closeSurrender = () => {
+
 		document.getElementById('modal-surrender').close()
 		setAskIfSurrender()
+
 	}
 
 
@@ -295,6 +299,7 @@ function Game() {
 	// __________________________________________________Modal-Edit__________________________________________________
 
 	const [ tmpListPlayers, setTmpListPlayers ] = useState()
+	const [ editDisabled, setEditDisabled ] = useState(false)
 
 	const modalEditClose = () => {
 		setTmpListPlayers()
@@ -302,6 +307,8 @@ function Game() {
 	}
 
 	const modalEditSave = async () => {
+
+		setEditDisabled(true)
 
 		if(session.id) {
 
@@ -318,6 +325,7 @@ function Game() {
 		}
 
 		socket.emit('RefreshGame', '')
+		setEditDisabled(false)
 		window.location.reload()
 
 	}
@@ -351,6 +359,7 @@ function Game() {
 					<div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
 						<button 
 							className='button' 
+							disabled={saveResultsDisabled}
 							onClick={saveResults}
 							style={{
 								width: '60%',
@@ -421,7 +430,16 @@ function Game() {
 
 					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 
-					<button className='button' onClick={modalEditSave} style={{ width: '530px', height: '50px' }}>Speichern</button>
+					<button 
+						className='button' 
+						onClick={modalEditSave} 
+						disabled={editDisabled}
+						style={{ 
+							width: '530px', 
+							height: '50px' 
+						}}
+					>Speichern
+					</button>
 
 				</div>
 			</dialog>
@@ -479,8 +497,8 @@ function Game() {
 				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					<button 
 						className='button' 
+						disabled={saveResultsDisabled}
 						onClick={saveResults}
-						disabled={disableFinishGame}
 						style={{
 							width: '60%',
 							marginRight: '5px',

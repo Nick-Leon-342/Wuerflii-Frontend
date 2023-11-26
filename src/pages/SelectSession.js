@@ -112,6 +112,8 @@ function SelectSession() {
 
 	// __________________________________________________Modal-Delete__________________________________________________
 
+	const [ deleteDisabled, setDeleteDisabled ] = useState(false)
+
 	const modalDeleteShow = async () => {
 
 		if(trashcanDisabled) return
@@ -123,6 +125,7 @@ function SelectSession() {
 
 		modalDeleteClose()
 		setLoaderVisible(true)
+		setDeleteDisabled(true)
 
 		for(let i = 0; list_checkbox.length > i; i++) {
 			if(list_checkbox[i]) {
@@ -140,6 +143,7 @@ function SelectSession() {
 			}
 		}
 
+		setDeleteDisabled(false)
 		setLoaderVisible(false)
 		window.location.reload()
 
@@ -155,7 +159,8 @@ function SelectSession() {
 
 	// __________________________________________________Modal-Edit__________________________________________________
 
-	const [columns, setColumns] = useState('')
+	const [ columns, setColumns ] = useState('')
+	const [ saveDisabled, setSaveDisabled ] = useState(false)
 	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
 	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
 
@@ -186,6 +191,7 @@ function SelectSession() {
 	const modalEditSave = async () => {
 
 		setDialog_loaderVisible(true)
+		setSaveDisabled(true)
 
 		await axiosPrivate.post('/updatesession', 
 			{ id: session.id, Columns: columns, List_Players: tmpListPlayers },
@@ -200,9 +206,11 @@ function SelectSession() {
 			request()
 
 		}).catch((err) => {
+			//TODO add some error-handling
 			return console.log(err)
 		})
 		
+		setSaveDisabled(false)
 		setDialog_loaderVisible(false)
 
 	}
@@ -261,7 +269,17 @@ function SelectSession() {
 						<span/>
 					</div>
 
-					<button className='button' onClick={modalEditSave} style={{ width: '100%', height: '60px', marginBottom: '30px' }}>Speichern</button>
+					<button 
+						className='button' 
+						disabled={saveDisabled} 
+						onClick={modalEditSave} 
+						style={{ 
+							width: '100%', 
+							height: '60px', 
+							marginBottom: '30px' 
+						}}
+					>Speichern
+					</button>
 
 				</div>
 			</dialog>
@@ -285,6 +303,7 @@ function SelectSession() {
 					<button 
 						className='button' 
 						onClick={modalDeleteClose}
+						disabled={deleteDisabled}
 						style={{
 							backgroundColor: 'rgb(255, 0, 0)',
 							color: 'white',

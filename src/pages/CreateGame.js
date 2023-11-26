@@ -91,14 +91,20 @@ function CreateGame() {
 		
 	}
 
-	const logout = () => {
+	const [ logoutDisabled, setLogoutDisalbed ] = useState(false)
 
-		axiosPrivate.delete('/logout').then((res) => {
+	const logout = async () => {
+
+		setLogoutDisalbed(true)
+
+		await axiosPrivate.delete('/logout').then((res) => {
 			if(res.status === 204) {
 				setAuth({ accessToken: '' })
 				navigate('/login', { replace: true })
 			}
 		})
+		
+		setLogoutDisalbed(false)
 
 	}
 
@@ -110,6 +116,7 @@ function CreateGame() {
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
 	const [ error, setError ] = useState('')
+	const [ settingsDisabled, setSettingsDisabled ] = useState(false)
 
 
 	const modalSettingsShow = () => {
@@ -128,6 +135,7 @@ function CreateGame() {
 
 		e.preventDefault()
 		setLoaderVisible(true)
+		setSettingsDisabled(true)
 
 		if ((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) {
 			return
@@ -172,6 +180,7 @@ function CreateGame() {
 			}
 		}
 
+		setSettingsDisabled(false)
 		setLoaderVisible(false)
 
 	}
@@ -235,6 +244,7 @@ function CreateGame() {
 
 							<button 
 								className='button' 
+								disabled={settingsDisabled}
 								style={{ 
 									height: '60px', 
 									width: '100%', 
@@ -249,6 +259,7 @@ function CreateGame() {
 					
 					<button 
 						className='button' 
+						disabled={logoutDisabled}
 						style={{ 
 							width: '100px', 
 							boxShadow: 'none', 

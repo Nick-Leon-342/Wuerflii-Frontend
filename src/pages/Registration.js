@@ -26,6 +26,7 @@ const Registration = () => {
 
 	const [error, setError] = useState('')
 	const [loaderVisible, setLoaderVisible] = useState(false)
+	const [ registrationDisabled, setRegistrationDisabled ] = useState(false)
 
 
 
@@ -33,6 +34,7 @@ const Registration = () => {
 
 	const handleSubmit = async (e) => {
 		
+		setRegistrationDisabled(true)
 		setLoaderVisible(true)
 		setError('')
 		e.preventDefault()
@@ -69,6 +71,7 @@ const Registration = () => {
 
 		}
 
+		setRegistrationDisabled(false)
 		setLoaderVisible(false)
 
 	}
@@ -90,7 +93,16 @@ const Registration = () => {
 
 				<ErrorMessage error={error}/>
 
-				<button className='button' style={{ height: '60px', width: '100%', fontSize: '23px' }}>Registrieren</button>
+				<button 
+					className='button' 
+					disabled={registrationDisabled}
+					style={{ 
+						height: '60px', 
+						width: '100%', 
+						fontSize: '23px' 
+					}}
+				>Registrieren
+				</button>
 
 			</form>
 			

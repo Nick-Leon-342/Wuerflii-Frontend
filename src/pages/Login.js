@@ -28,6 +28,7 @@ const Login = () => {
     const [ Password, setPassword ] = useState('')
     const [ error, setError ] = useState('')
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ loginDisabled, setLoginDisabled ] = useState(false)
 
 
 
@@ -35,6 +36,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
 
+		setLoginDisabled(true)
 		setLoaderVisible(true)
 		setError('')
         e.preventDefault()
@@ -64,6 +66,8 @@ const Login = () => {
                 setError('Die Anmeldung hat nicht funktioniert!')
             }
         }
+
+		setLoginDisabled(false)
 		setLoaderVisible(false)
 
     }
@@ -131,7 +135,16 @@ const Login = () => {
 
 					<ErrorMessage error={error}/>
 
-					<button className='button' style={{ height: '60px', width: '100%', fontSize: '23px' }}>Anmelden</button>
+					<button 
+						className='button' 
+						disabled={loginDisabled}
+						style={{ 
+							height: '60px', 
+							width: '100%', 
+							fontSize: '23px' 
+						}}
+					>Anmelden
+					</button>
 
 				</form>
 

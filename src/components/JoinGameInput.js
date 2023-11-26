@@ -17,6 +17,7 @@ export default function JoinGameInput({ width, marginBetween, marginBottom, marg
 	const [ error, setError ] = useState('')
 	const [ joinCode, setJoinCode ] = useState('')
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ joinGameDisabled, setJoinGameDisabled ] = useState(false)
 
 
 
@@ -24,6 +25,7 @@ export default function JoinGameInput({ width, marginBetween, marginBottom, marg
 
 	const joinGame = async ()  => {
 
+		setJoinGameDisabled(true)
 		const JoinCode = +joinCode
 		setError('')
 
@@ -58,6 +60,8 @@ export default function JoinGameInput({ width, marginBetween, marginBottom, marg
 		} else {
 			setError('Bitte 8 Zahlen eingeben!')
 		}
+
+		setJoinGameDisabled(false)
 
 	}
 
@@ -94,6 +98,7 @@ export default function JoinGameInput({ width, marginBetween, marginBottom, marg
 			<button 
 				className='button' 
 				onClick={joinGame}
+				disabled={joinGameDisabled}
 				style={{ 
 					width: '100%', 
 					height: '60px',
