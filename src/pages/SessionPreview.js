@@ -105,7 +105,7 @@ function SessionPreview() {
 		})
 
 		const today = new Date()
-		const d = today.getDay()
+		const d = today.getDate()
 		const m = today.getMonth()
 		const y = today.getFullYear()
 
@@ -114,7 +114,7 @@ function SessionPreview() {
 			const date = new Date(f.End)
 			if(date.getFullYear() === y) {
 				if(showLastFinalScores === 'thisMonth' && date.getMonth() !== m) continue
-				if(showLastFinalScores === 'thisDay' && ( date.getMonth() !== m || date.getDay() !== d ) ) continue
+				if(showLastFinalScores === 'thisDay' && ( date.getMonth() !== m || date.getDate() !== d ) ) continue
 				
 				for(const w of f.List_Winner) {
 					tmp_wins[w]++
