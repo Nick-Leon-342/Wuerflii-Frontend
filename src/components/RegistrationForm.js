@@ -1,7 +1,7 @@
 
 
 import { useState } from "react"
-import { NAME_REGEX, NAME_REGEX_MINMAX, NAME_REGEX_LETTERFIRST, NAME_REGEX_ALLOWEDCHARS, PASSWORD_REGEX, PASSWORD_REGEX_MINMAX, PASSWORD_REGEX_ALLOWEDCHARS, PASSWORD_REGEX_ALLOWEDSYMBOLS } from "../logic/utils"
+import { NAME_REGEX, NAME_REGEX_MINMAX, NAME_REGEX_LETTERFIRST, NAME_REGEX_ALLOWEDCHARS, PASSWORD_REGEX, PASSWORD_REGEX_MINMAX, PASSWORD_REGEX_ALLOWEDCHARS, PASSWORD_REGEX_ALLOWEDSYMBOLS, REACT_APP_USERNAME_MIN_CHARACTER, REACT_APP_USERNAME_MAX_CHARACTER, REACT_APP_PASSWORD_MIN_CHARACTER, REACT_APP_PASSWORD_MAX_CHARACTER } from "../logic/utils-env"
 import FancyInput from "./FancyInput"
 
 
@@ -68,13 +68,13 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 
 			{infoName ? <>
 
-				{row(NAME_REGEX_MINMAX, Name, '4 - 50 Zeichen')}
+				{row(NAME_REGEX_MINMAX, Name, `${REACT_APP_USERNAME_MIN_CHARACTER} - ${REACT_APP_USERNAME_MAX_CHARACTER} Zeichen`)}
 				{row(NAME_REGEX_LETTERFIRST, Name, 'Angefangen mit Buchstaben')}
 				{row(NAME_REGEX_ALLOWEDCHARS, Name, 'Buchstaben, Zahlen, Binde- oder Unterstriche')}
 
 			</> : <>
 
-				{row(PASSWORD_REGEX_MINMAX, Password, '8 - 128 Zeichen')}
+				{row(PASSWORD_REGEX_MINMAX, Password, `${REACT_APP_PASSWORD_MIN_CHARACTER} - ${REACT_APP_PASSWORD_MAX_CHARACTER} Zeichen`)}
 				{row(PASSWORD_REGEX_ALLOWEDCHARS, Password, 'Kleinbuchstaben, Großuchstaben und Zahlen')}
 				{row(PASSWORD_REGEX_ALLOWEDSYMBOLS, Password, 'Zeichen: ! @ # $ % - _')}
 

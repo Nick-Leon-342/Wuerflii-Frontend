@@ -1,15 +1,5 @@
 
 
-export const NAME_REGEX = /^[A-z][A-z0-9-_]{3,49}$/
-export const NAME_REGEX_MINMAX = /^.{4,50}$/
-export const NAME_REGEX_LETTERFIRST = /^[A-z]/
-export const NAME_REGEX_ALLOWEDCHARS = /^[a-zA-Z0-9_-]+$/
-
-export const PASSWORD_REGEX = /^(?=.*[-_!#%@$])[a-zA-Z0-9-_!#%@$]{8,128}$/
-export const PASSWORD_REGEX_MINMAX = /^.{8,128}$/
-export const PASSWORD_REGEX_ALLOWEDCHARS = /[a-zA-Z0-9]+/
-export const PASSWORD_REGEX_ALLOWEDSYMBOLS = /[-_!#%@$]+/
-
 //____________________IDs____________________
 
 export const id_upperTable							= 'upperTable'

@@ -2,9 +2,10 @@
 
 import '../App.css'
 
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { formatDate } from '../logic/utils'
 import { useEffect, useState } from 'react'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
 
@@ -12,7 +13,11 @@ import { useEffect, useState } from 'react'
 
 function SessionAnalytics() {
 
+	
 	const navigate = useNavigate()
+	const axiosPrivate = useAxiosPrivate()
+	const location = useLocation()
+	const sessionid = new URLSearchParams(location.search).get('sessionid')
 
 	const [session, setSession] = useState()
 	const [finalScores, setFinalScores] = useState()
@@ -104,7 +109,7 @@ function SessionAnalytics() {
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>
-					<Link to='/sessionpreview' onClick={''}>Zurück</Link>
+					<Link to={`/sessionpreview?sessionid=${sessionid}`} onClick={''}>Zurück</Link>
 				</p>
 			</div>
 		

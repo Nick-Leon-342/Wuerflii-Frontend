@@ -6,7 +6,7 @@ import { useState } from 'react'
 import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
-import { NAME_REGEX, PASSWORD_REGEX } from '../logic/utils'
+import { NAME_REGEX, PASSWORD_REGEX } from '../logic/utils-env'
 
 import Loader from '../components/Loader'
 import RegistrationForm from '../components/RegistrationForm'

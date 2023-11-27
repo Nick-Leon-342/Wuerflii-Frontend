@@ -6,10 +6,9 @@ import './css/CreateGame.css'
 
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
-import { NAME_REGEX, PASSWORD_REGEX } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
-import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS } from '../logic/utils-env'
+import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS, NAME_REGEX, PASSWORD_REGEX } from '../logic/utils-env'
 
 import Loader from '../components/Loader'
 import JoinGameInput from '../components/JoinGameInput'

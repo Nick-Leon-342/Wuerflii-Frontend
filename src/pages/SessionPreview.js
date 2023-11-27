@@ -240,7 +240,7 @@ function SessionPreview() {
 					<Link to='/selectsession'>Zurück</Link>
 				</p>
 				<p className='link-switch'>
-					<Link to='/sessionanalytics'>Mehr {'>'}</Link>
+					<Link to={`/sessionanalytics?sessionid=${sessionid}`}>Mehr {'>'}</Link>
 				</p>
 			</div>
 
