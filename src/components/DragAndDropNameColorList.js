@@ -33,7 +33,6 @@ export default function DragAndDropNameColorList({ List_Players, setList_Players
 										{...provided.dragHandleProps}
 										ref={provided.innerRef}
 										className='enterNamesElement'
-										style={{ width: '530px' }}
 									>
 										<svg style={{ marginLeft: '20px', marginRight: '15px' }} height="10px" viewBox="-0.5 -0.5 741 450"><g><rect x="0" y="0" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/><rect x="0" y="260" width="740" height="150" rx="16.5" ry="16.5" pointerEvents="all"/></g></svg>
 										<input

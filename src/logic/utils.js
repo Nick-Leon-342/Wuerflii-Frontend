@@ -31,17 +31,6 @@ export const createSession = (sessionName, columns, list_players) => {
 
 }
 
-export const createFinalScoreElement = (columns, surrender, list_winner, playerScores) => {
-
-    return {
-		Columns: columns,
-		Surrender: surrender, 
-		List_Winner: list_winner,
-		PlayerScores: playerScores,
-    }
-
-}
-
 export const formatDate = (date) => {
 
 	const d = new Date(date)

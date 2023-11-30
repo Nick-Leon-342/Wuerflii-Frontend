@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { createFinalScoreElement, id_playerTable, id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange, successfullyConnected } from '../logic/utils'
+import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange, successfullyConnected } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
@@ -201,70 +201,31 @@ function Game() {
 		setLoaderVisible(true)
 		setSaveResultsDisabled(true)
 		if(session.List_Players.length < 2) return navigate('/creategame', { replace: true })
-
-		//____________________Players____________________
-		const playerScores = {}	
-		const list_winnerAlias = [] //It's possible that multiple players have the same score, therefore an array
-		const list_winnerName = []
-
-		let highestScore = 0
-		for(const p of session?.List_Players) {
-
-			const v = +document.getElementById(id_playerTable).querySelector(`[alias='${p.Alias}']`).textContent
-			playerScores[p.Alias] = v
-			if(highestScore < v) {
-				list_winnerAlias.length = 0
-				list_winnerAlias.push(p.Alias)
-				list_winnerName.length = 0
-				list_winnerName.push(p.Name)
-				highestScore = v
-			} else if(v === highestScore) {
-				list_winnerAlias.push(p.Alias)
-				list_winnerName.push(p.Name)
-			}
-
-		}
-
-		if(askIfSurrender) {
-			list_winnerAlias.length = 0
-			list_winnerAlias.push(askIfSurrender)
-			list_winnerName.length = 0
-			list_winnerName.push(getPlayer(askIfSurrender, session).Name)
-		}
-	
-		for(const w of list_winnerAlias) {
-			for(const p of session?.List_Players) {
-				if(p.Alias === w) {
-					p.Wins++
-					break
-				}
-			}
-		}
 	
 	
 		//____________________Attributes____________________
 		session.InputType = inputType
 	
-	
-		//____________________FinalScore____________________
-		const finalScores = { 
-			PlayerScores: playerScores, 
-			...createFinalScoreElement(session.Columns, Boolean(askIfSurrender), list_winnerAlias, playerScores) 
-		}
-		
 		await axiosPrivate.post('/game',
 			{
-				...session,
-				FinalScores: finalScores,
+				SessionID: session.id, 
+				JoinCode: joincode, 
+				SessionName: session.SessionName, 
+				InputType: inputType, 
+				WinnerAlias: askIfSurrender,
+				List_PlayerOrder: session.List_PlayerOrder,
+				List_Players: session.List_Players, 
 			},
 			{
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
-		).then(() => {
-	
+		).then((res) => {
+
+			console.log(res.data, 'Data:', res.data.List_WinnerNames)
+
 			socket.emit('EndGame', '')
-			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(list_winnerName)}`, { replace: true })
+			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(res.data.List_WinnerNames)}`, { replace: true })
 			setLoaderVisible(false)
 
 		}).catch((err) => {
