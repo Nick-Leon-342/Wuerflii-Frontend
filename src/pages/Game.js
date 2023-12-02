@@ -18,6 +18,7 @@ import PlayerTable from '../components/PlayerTable'
 import Table from '../components/Table'
 import LastPlayerDialog from '../components/Dialog/LastPlayerDialog'
 import InvalidNumberDialog from '../components/Dialog/InvalidNumberDialog'
+import ToggleSlider from '../components/ToggleSlider'
 
 
 
@@ -42,6 +43,7 @@ function Game() {
 	const [ inputType, setInputType ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
+	const [ showScores, setShowScores ] = useState(true)
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 
@@ -201,10 +203,6 @@ function Game() {
 		setLoaderVisible(true)
 		setSaveResultsDisabled(true)
 		if(session.List_Players.length < 2) return navigate('/creategame', { replace: true })
-	
-	
-		//____________________Attributes____________________
-		session.InputType = inputType
 	
 		await axiosPrivate.post('/game',
 			{
@@ -389,6 +387,17 @@ function Game() {
 						<label style={{ marginLeft: '27px' }}>{joincode}</label>
 					</div>
 
+					<div
+						style={{
+							display: 'flex', 
+							fontWeight: 'bold', 
+							fontSize: '20px', 
+						}}
+					>
+						<label style={{ marginLeft: '60px', paddingTop: '5px' }}>Gesamtsumme anzeigen</label>
+						<ToggleSlider marginLeft='20px' toggled={showScores} setToggled={setShowScores}/>
+					</div>
+
 					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 
 					<button 
@@ -538,6 +547,7 @@ function Game() {
 				lastPlayerAlias={lastPlayerAlias}
 				gnadenwurf={gnadenwurf}
 				setGnadenwurf={setGnadenwurf}
+				showScores={showScores}
 			/>
 			
 			<Table 

@@ -7,7 +7,7 @@ import { thickBorder } from '../logic/utils'
 
 
 
-export default function PlayerTable({ session, socket, tableWidth, lastPlayerAlias, gnadenwurf, setGnadenwurf }) {
+export default function PlayerTable({ session, socket, tableWidth, lastPlayerAlias, gnadenwurf, setGnadenwurf, showScores }) {
   
 	const handleGnadenwurfChange = (alias, checked) => {
 
@@ -44,7 +44,7 @@ export default function PlayerTable({ session, socket, tableWidth, lastPlayerAli
 							)
 						})}
 					</tr>
-					<tr>
+					<tr style={{ display: showScores ? '' : 'none' }}>
 						<td style={{ borderLeft: thickBorder, borderRight: thickBorder }}>Spieler gesamt</td>
 						{session?.List_Players?.map((p, i) => {
 							return (<td key={i} alias={p.Alias} style={{ borderRight: thickBorder }} />)
