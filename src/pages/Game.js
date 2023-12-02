@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange, successfullyConnected } from '../logic/utils'
+import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleShowScoresChange, handleInputTypeChange, successfullyConnected } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
 import io from 'socket.io-client'
@@ -41,9 +41,9 @@ function Game() {
 	const [ session, setSession ] = useState()
 
 	const [ inputType, setInputType ] = useState()
+	const [ showScores, setShowScores ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
-	const [ showScores, setShowScores ] = useState(true)
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 
@@ -107,6 +107,7 @@ function Game() {
 					urlParams, 
 					setSession, 
 					setInputType, 
+					setShowScores, 
 					setTableColumns, 
 					setGnadenwurf, 
 				)
@@ -210,6 +211,7 @@ function Game() {
 				JoinCode: joincode, 
 				SessionName: session.SessionName, 
 				InputType: inputType, 
+				ShowScores: showScores, 
 				WinnerAlias: askIfSurrender,
 				List_PlayerOrder: session.List_PlayerOrder,
 				List_Players: session.List_Players, 
@@ -379,7 +381,7 @@ function Game() {
 						style={{
 							display: 'flex', 
 							fontWeight: 'bold', 
-							marginBottom: '20px', 
+							marginBottom: '10px', 
 							fontSize: '20px', 
 						}}
 					>
@@ -392,10 +394,11 @@ function Game() {
 							display: 'flex', 
 							fontWeight: 'bold', 
 							fontSize: '20px', 
+							marginBottom: '10px', 
 						}}
 					>
 						<label style={{ marginLeft: '60px', paddingTop: '5px' }}>Gesamtsumme anzeigen</label>
-						<ToggleSlider marginLeft='20px' toggled={showScores} setToggled={setShowScores}/>
+						<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
 					</div>
 
 					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}

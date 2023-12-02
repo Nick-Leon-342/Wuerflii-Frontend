@@ -1,6 +1,6 @@
 
 
-export default function ToggleSlider({ toggled, setToggled, marginLeft, marginTop, marginRight, marginBottom }) {
+export default function ToggleSlider({ scale, toggled, setToggled, marginLeft, marginTop, marginRight, marginBottom }) {
 
 	return (
 		<label 
@@ -10,10 +10,14 @@ export default function ToggleSlider({ toggled, setToggled, marginLeft, marginTo
 				marginTop: marginTop, 
 				marginRight: marginRight, 
 				marginBottom: marginBottom, 
+				scale: scale, 
 			}}
 		>
+
 			<input type='checkbox' checked={toggled} onChange={() => setToggled(!toggled)}/>
+
 			<span className='toggleButton-slider'/>
+
 		</label>
 	)
 

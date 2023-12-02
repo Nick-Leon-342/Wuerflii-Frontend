@@ -6,7 +6,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../api/axios'
-import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleInputTypeChange, successfullyConnected } from '../logic/utils'
+import { id_bottomTable, id_upperTable, thickBorder, updateURL, handleInputTypeChange, successfullyConnected, handleShowScoresChange } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import io from 'socket.io-client'
 import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
@@ -16,6 +16,7 @@ import PlayerTable from '../components/PlayerTable'
 import Table from '../components/Table'
 import LastPlayerDialog from '../components/Dialog/LastPlayerDialog'
 import InvalidNumberDialog from '../components/Dialog/InvalidNumberDialog'
+import ToggleSlider from '../components/ToggleSlider'
 
 
 
@@ -36,6 +37,7 @@ function Game() {
 	const [ session, setSession ] = useState()
 
 	const [ inputType, setInputType ] = useState()
+	const [ showScores, setShowScores ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
 	const [ tableColumns, setTableColumns ] = useState([])
@@ -100,6 +102,7 @@ function Game() {
 					urlParams, 
 					setSession, 
 					setInputType, 
+					setShowScores, 
 					setTableColumns, 
 					setGnadenwurf, 
 				)
@@ -215,6 +218,8 @@ function Game() {
 					<option value='type' key='type'>Eingabe</option>
 				</select>
 
+				<ToggleSlider scale='.9' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
+
 				<button 
 					className='button'
 					onClick={handleLeave}
@@ -236,6 +241,7 @@ function Game() {
 				lastPlayerAlias={lastPlayerAlias}
 				gnadenwurf={gnadenwurf}
 				setGnadenwurf={setGnadenwurf}
+				showScores={showScores}
 			/>
 			
 			<Table 

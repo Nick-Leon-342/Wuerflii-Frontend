@@ -71,7 +71,14 @@ export const handleInputTypeChange = (v, urlParams) => {
 
 }
 
-export const successfullyConnected = (data, columnsSum, urlParams, setSession, setInputType, setTableColumns, setGnadenwurf) => {
+export const handleShowScoresChange = (v, urlParams) => {
+	
+	urlParams.set('showscores', v)
+	updateURL(urlParams)
+
+}
+
+export const successfullyConnected = (data, columnsSum, urlParams, setSession, setInputType, setShowScores, setTableColumns, setGnadenwurf) => {
 
 	const tmp_session = data.Session
 	const tmp_listPlayers = []
@@ -88,6 +95,7 @@ export const successfullyConnected = (data, columnsSum, urlParams, setSession, s
 	
 	setSession(tmp_session)
 	setInputType(urlParams.get('inputtype') || tmp_session.InputType)
+	setShowScores(urlParams.get('showscores') === 'true' || tmp_session.ShowScores)
 	setTableColumns(data.TableColumns)
 	setGnadenwurf(data.Gnadenwürfe)
 
