@@ -95,7 +95,7 @@ export const successfullyConnected = (data, columnsSum, urlParams, setSession, s
 	
 	setSession(tmp_session)
 	setInputType(urlParams.get('inputtype') || tmp_session.InputType)
-	setShowScores(urlParams.get('showscores') === 'true' || tmp_session.ShowScores)
+	setShowScores(urlParams.get('showscores') ? urlParams.get('showscores') === 'true' : tmp_session.ShowScores)
 	setTableColumns(data.TableColumns)
 	setGnadenwurf(data.Gnadenwürfe)
 

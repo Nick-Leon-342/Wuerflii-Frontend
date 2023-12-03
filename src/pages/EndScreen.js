@@ -27,6 +27,7 @@ function EndScreen() {
 	const urlParams = new URLSearchParams(location.search)
 	const winner = JSON.parse(urlParams.get('winner'))
 	const sessionId = +urlParams.get('sessionid')
+	const playerScores = JSON.parse(urlParams.get('playerscores'))
 
 
 
@@ -119,6 +120,12 @@ function EndScreen() {
 						<td>Gewonnen</td>
 						{session?.List_Players.map((p, i) => (
 							<td key={i}>{p.Wins}</td>
+						))}
+					</tr>
+					<tr>
+						<td>Punkte</td>
+						{session?.List_Players.map((p, i) => (
+							<td key={i}>{playerScores[p.Alias]}</td>
 						))}
 					</tr>
 				</tbody>

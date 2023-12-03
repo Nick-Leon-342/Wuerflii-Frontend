@@ -222,10 +222,10 @@ function Game() {
 			}
 		).then((res) => {
 
-			console.log(res.data, 'Data:', res.data.List_WinnerNames)
+			console.log(res.data)
 
 			socket.emit('EndGame', '')
-			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(res.data.List_WinnerNames)}`, { replace: true })
+			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(res.data.List_WinnerNames)}&playerscores=${JSON.stringify(res.data.PlayerScores)}`, { replace: true })
 			setLoaderVisible(false)
 
 		}).catch((err) => {

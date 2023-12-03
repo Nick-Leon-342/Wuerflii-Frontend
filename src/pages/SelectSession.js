@@ -10,7 +10,6 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 import Loader from '../components/Loader'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
-import JoinGameInput from '../components/JoinGameInput'
 
 
 function SelectSession() {
@@ -18,15 +17,17 @@ function SelectSession() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 
-	const [list, setList] = useState([])
-	const [list_checkbox] = useState([])
-	const [trashcanDisabled, setTrashcanDisabled] = useState(true)
-	const [settingsDisabled, setSettingsDisabled] = useState(true)
-	const [session, setSession] = useState('')
-	const [tmpListPlayers, setTmpListPlayers] = useState([])
-	const [loaderVisible, setLoaderVisible] = useState(false)
-	const [dialog_loaderVisible, setDialog_loaderVisible] = useState(false)
-	const [successfullyUpdatedVisible, setSuccessfullyUpdatedVisible] = useState(false)
+	const [ list, setList ] = useState([])
+	const [ list_checkbox ] = useState([])
+	const [ trashcanDisabled, setTrashcanDisabled ] = useState(true)
+	const [ settingsDisabled, setSettingsDisabled ] = useState(true)
+	const [ listDisabled, setListDisabled ] = useState(false)
+
+	const [ session, setSession ] = useState('')
+	const [ tmpListPlayers, setTmpListPlayers ] = useState([])
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ dialog_loaderVisible, setDialog_loaderVisible ] = useState(false)
+	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
 	
 	const message = 'Es gibt noch keine Partie!'
 
@@ -75,10 +76,40 @@ function SelectSession() {
 
 	// __________________________________________________ListElement__________________________________________________
 
-	const listElementClick = (element) => {
+	const listElementClick = async (element) => {
 		
-		const i = element.target.closest('dt').getAttribute('index')
-		navigate(`/sessionpreview?sessionid=${list[i].id}`, { replace: false })
+		if(!listDisabled) {
+
+			setListDisabled(true)
+			setLoaderVisible(true)
+			const i = element.target.closest('dt').getAttribute('index')
+	
+			await axiosPrivate.post('/selectsession', {
+					SessionID: list[i].id
+				}, 
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).then((res) => {
+
+				console.log(res.data)
+	
+				if(res.data.Exists) {
+					navigate(`/game?sessionid=${list[i].id}&joincode=${res.data.JoinCode}`, { replace: true })
+				} else {
+					navigate(`/sessionpreview?sessionid=${list[i].id}`, { replace: false })
+				}
+	
+			}).catch((err) => {
+				console.log(err)
+				window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			})
+	
+			setLoaderVisible(false)
+			setListDisabled(false)
+
+		}
 
 	}
 
