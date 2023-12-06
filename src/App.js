@@ -11,7 +11,7 @@ import EnterNames from './pages/EnterNames'
 
 import SelectSession from './pages/SelectSession'
 import SessionPreview from './pages/SessionPreview'
-import SessionAnalytics from './pages/SessionAnalytics'
+import SessionPreviewTable from './pages/SessionPreview-Table'
 
 import JoinGame from './pages/JoinGame'
 import Game from './pages/Game'
@@ -44,8 +44,8 @@ function App() {
 							
 							<Route path='/SelectSession' element={<SelectSession />} />
 							<Route path='/SessionPreview' element={<SessionPreview />} />
-							<Route path='/SessionAnalytics' element={<SessionAnalytics />} />
-							
+							<Route path='/SessionPreview/Table' element={<SessionPreviewTable />} />
+
 							<Route path='/Game' element={<Game />} />
 							<Route path='/EndScreen' element={<EndScreen />} />
 							

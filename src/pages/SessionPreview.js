@@ -1,6 +1,7 @@
 
 
 import '../App.css'
+import './css/SessionAnalytics.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
@@ -169,6 +170,12 @@ function SessionPreview() {
 
 	}
 
+	const handleClick = (finalScore) => {
+
+		navigate(`/sessionpreview/table?sessionid=${sessionid}&finalscoreid=${finalScore.id}`, { replace: false })
+
+	}
+
 
 
 
@@ -177,6 +184,30 @@ function SessionPreview() {
 
 	return (
 		<>
+
+			{/* <select
+					// value={inputType}
+					// onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
+					style={{
+						fontSize: '13px', 
+						borderRadius: '10px',
+						height: '30px',
+						padding: '5px',
+						marginLeft: '5px',
+						marginRight: '10px',
+						marginTop: '0',
+						marginBottom: '0',
+						background: 'none', 
+						border: '1px solid var(--text-color)',
+						outline: 'none',
+						color: 'var(--text-color)',
+						boxShadow: 'none',
+					}}
+				>
+				<option value='select' key='select'>Auswahl</option>
+				<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
+				<option value='type' key='type'>Eingabe</option>
+			</select> */}
 
 			<div style={{ overflow: 'hidden', scrollbarGutter: 'stable both-edges' }}>
 				<table className='table'>
@@ -219,7 +250,7 @@ function SessionPreview() {
 				<table className='table'>
 					<tbody>
 						{list?.map((fs, i) => (
-							<tr key={i}>
+							<tr key={i} className='sessionAnalytics-listElement' onClick={() => handleClick(fs)}>
 								<td style={firstColumnStyle}>{formatDate(fs.End)}</td>
 								{session?.List_PlayerOrder?.map((alias, j) => {
 									const player = getPlayer(alias)
@@ -232,15 +263,12 @@ function SessionPreview() {
 			</div>
 			
 			<Loader loaderVisible={loaderVisible}/>
-				
+			
 			<button className='button' style={{ height: '50px', width: '100%', marginBottom: '0px' }} onClick={play}>Los geht's!</button>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<p className='link-switch'>
 					<Link to='/selectsession'>Zurück</Link>
-				</p>
-				<p className='link-switch'>
-					<Link to={`/sessionanalytics?sessionid=${sessionid}`}>Mehr {'>'}</Link>
 				</p>
 			</div>
 

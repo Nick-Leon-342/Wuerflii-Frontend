@@ -7,7 +7,7 @@ import { thickBorder } from '../logic/utils'
 
 
 
-export default function Table({ tableID, session, tableColumns, inputType, onblurEvent, removeFocusEvent }) {
+export default function Table({ tableID, list_Players, columns, tableColumns, inputType, onblurEvent, removeFocusEvent, disabled }) {
 
 	const rows = tableID === id_upperTable ? upperTable_rows : bottomTable_rows
 
@@ -38,7 +38,7 @@ export default function Table({ tableID, session, tableColumns, inputType, onblu
 	
 	}
 
-	const columns = Array.from({ length: session?.Columns }, (_, index) => index)
+	const list_columns = Array.from({ length: columns }, (_, index) => index)
 
 
 
@@ -51,9 +51,9 @@ export default function Table({ tableID, session, tableColumns, inputType, onblu
 					return (
 						<tr key={currentRowIndex} className='row'>
 							{r.td}
-							{session?.List_Players?.map((p, currentPlayerIndex) => {
+							{list_Players?.map((p, currentPlayerIndex) => {
 								return (
-									columns.map((currentColumnIndex) => {
+									list_columns.map((currentColumnIndex) => {
 
 										const css = {
 											className: `kniffelInput ${inputType === 'select' ? 'select' : ''}`,
@@ -75,7 +75,11 @@ export default function Table({ tableID, session, tableColumns, inputType, onblu
 										let e
 										if(currentRowIndex < rows.length - 3) {
 
-											if(inputType === 'select') {
+											if(disabled) {
+
+												e = <input {...css} disabled/>
+
+											} else if(inputType === 'select') {
 
 												e = <select {...css} style={{ backgroundColor: p.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
 													<option></option>
@@ -106,11 +110,11 @@ export default function Table({ tableID, session, tableColumns, inputType, onblu
 
 											return (
 												<td 
-													key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} 
+													key={`${p.Alias}.${currentRowIndex}.${currentColumnIndex}`} 
 													style={{ 
 														backgroundColor: p.Color, 
 														borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
-														borderRight: currentColumnIndex === session?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
+														borderRight: currentColumnIndex === columns -1 ? thickBorder : '1px solid var(--text-color-light)',
 														borderBottom: currentRowIndex === rows.length - 1 ? thickBorder : '1px solid var(--text-color-light)',
 													}}>
 													{e}
@@ -121,12 +125,12 @@ export default function Table({ tableID, session, tableColumns, inputType, onblu
 
 										return (
 											<td 
-												key={`${currentPlayerIndex}.${currentRowIndex}.${currentColumnIndex}`} 
+												key={`${p.Alias}.${currentRowIndex}.${currentColumnIndex}`} 
 												style={{ 
 													backgroundColor: p.Color, 
 													borderTop: currentRowIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
 													borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
-													borderRight: currentColumnIndex === session?.Columns -1 ? thickBorder : '1px solid var(--text-color-light)',
+													borderRight: currentColumnIndex === columns -1 ? thickBorder : '1px solid var(--text-color-light)',
 													borderBottom: currentRowIndex === rows.length - 4 ? thickBorder : '1px solid var(--text-color-light)', 
 												}}>
 												{e}

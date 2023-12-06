@@ -543,7 +543,7 @@ function Game() {
 			</div>
 
 			<PlayerTable 
-				session={session}
+				list_Players={session?.List_Players}
 				socket={socket}
 				tableWidth={tableWidth}
 				thickBorder={thickBorder}
@@ -555,7 +555,8 @@ function Game() {
 			
 			<Table 
 				tableID={id_upperTable}
-				session={session}
+				columns={session?.Columns}
+				list_Players={session?.List_Players}
 				tableColumns={tableColumns}
 				inputType={inputType}
 				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
@@ -563,7 +564,8 @@ function Game() {
 			/>
 			<Table 
 				tableID={id_bottomTable}
-				session={session}
+				columns={session?.Columns}
+				list_Players={session?.List_Players}
 				tableColumns={tableColumns}
 				inputType={inputType}
 				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
