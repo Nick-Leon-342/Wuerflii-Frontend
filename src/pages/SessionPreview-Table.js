@@ -146,29 +146,31 @@ export default function SessionPreviewTable() {
 	return (
 		<>
 
-			<PlayerTable
-				disabled={true}
-				list_Players={List_Players}
-				playerScores={finalScores?.PlayerScores}
-				showScores={true}
-				tableWidth={tableWidth}
-			/>
+			{List_Players && <>
+				<PlayerTable
+					disabled={true}
+					list_Players={List_Players}
+					playerScores={finalScores?.PlayerScores}
+					showScores={true}
+					tableWidth={tableWidth}
+				/>
 
-			<Table
-				tableID={id_upperTable}
-				tableColumns={table}
-				columns={finalScores?.Columns}
-				list_Players={List_Players}
-				disabled={true}
-			/>
+				<Table
+					tableID={id_upperTable}
+					tableColumns={table}
+					columns={finalScores?.Columns}
+					list_Players={List_Players}
+					disabled={true}
+				/>
 
-			<Table
-				tableID={id_bottomTable}
-				tableColumns={table}
-				columns={finalScores?.Columns}
-				list_Players={List_Players}
-				disabled={true}
-			/>
+				<Table
+					tableID={id_bottomTable}
+					tableColumns={table}
+					columns={finalScores?.Columns}
+					list_Players={List_Players}
+					disabled={true}
+				/> 
+			</>}
 
 			<Loader loaderVisible={loaderVisible} />
 			
