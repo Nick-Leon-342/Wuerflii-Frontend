@@ -46,7 +46,7 @@ export default function SessionPreviewTable() {
 
 			setLoaderVisible(true)
 
-			await axiosPrivate.get('/sessionanalytics-table',
+			await axiosPrivate.get('/sessionpreview-table',
 				{
 					headers: { 'Content-Type': 'application/json' },
 					params: { SessionID: sessionid, FinalScoreID: finalscoreid },
@@ -54,7 +54,6 @@ export default function SessionPreviewTable() {
 				}
 			).then((res) => {
 
-				console.log(res.data)
 				const tmpList_Players = []
 				for(const alias of res.data.List_PlayerOrder) {
 					for(const p of res.data.List_Players) {
@@ -72,14 +71,14 @@ export default function SessionPreviewTable() {
 
 				const status = err?.response?.status
 				if(status === 404) {
-					window.alert('Die SessionID exisiert nicht!')
+					window.alert('Dieser Spielstand exisiert nicht!')
 				} else if(status === 400) {
 					window.alert('Die Anfrage ist falsch!')
 				} else {
 					console.log(err)
 					window.alert('Beim Server trat ein Fehler auf!')
 				}
-				navigate('/selectsession', { replace: true })
+				navigate(`/sessionpreview?sessionid=${sessionid}`, { replace: true })
 
 			})
 

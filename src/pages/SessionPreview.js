@@ -22,7 +22,12 @@ function SessionPreview() {
 	const [ wins, setWins ] = useState([])
 	const [ finalScores, setFinalScores ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ showLastFinalScores, setShowLastFinalScores ] = useState()
+
+	const [ view, setView ] = useState()
+	const [ year, setYear ] = useState()
+	const [ list_year, setList_year ] = useState([])
+	const [ month, setMonth ] = useState()
+	const list_month = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
 	const firstColumnWidth = '150px'
 	const firstColumnStyle = { width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold' }
@@ -46,12 +51,33 @@ function SessionPreview() {
 					withCredentials: true
 				}
 			).then((res) => {
-				
-				setSession(res.data.Session)
+
+				const tmp_session = res.data.Session
+				const tmpList_Players = []
+				for(const alias of tmp_session.List_PlayerOrder) {
+					for(const p of tmp_session.List_Players) {
+						if(alias === p.Alias) {
+							tmpList_Players.push(p)
+							break
+						}
+					}
+				}
+				tmp_session.ListPlayers = tmpList_Players
+				setSession(tmp_session)
 				const l = res.data.FinalScores
+
+				const tmp = []
+				for(const e of l) {
+					const y = new Date(e.End).getFullYear()
+					if(!tmp.includes(y)) tmp.push(y)
+				}
+				setMonth(new Date().getMonth())
+				setYear(tmp[tmp.length - 1])
+				setList_year(tmp.slice().sort((a, b) => a - b))
+
 				l.sort(sortByTimestampDesc)
 				setFinalScores(l)
-				setShowLastFinalScores('thisYear')
+				setView('showYear')
 
 			}).catch((err) => {
 
@@ -80,18 +106,15 @@ function SessionPreview() {
 		return new Date(b.End) - new Date(a.End)
 	}
 
-
-
-
-
 	useEffect(() => {
 
-		if(showLastFinalScores === 'all') {
+		if(!session) return
+
+		if(view === 'all') {
 			
 			const allWins = {}
-			session?.List_PlayerOrder?.map((alias) => {
-				const player = getPlayer(alias)
-				return allWins[player.Alias] = player.Wins
+			session.List_Players.map(p => {
+				return allWins[p.Alias] = p.Wins
 			})
 			setWins(allWins)
 			return setList(finalScores)
@@ -100,22 +123,15 @@ function SessionPreview() {
 
 		const tmp = []
 		const tmp_wins = {}
-		session?.List_PlayerOrder?.map((alias) => {
-			const player = getPlayer(alias)
-			return tmp_wins[player.Alias] = 0
-		})
-
-		const today = new Date()
-		const d = today.getDate()
-		const m = today.getMonth()
-		const y = today.getFullYear()
+		session.List_Players.map(p => 
+			 tmp_wins[p.Alias] = 0
+		)
 
 		for( const f of finalScores) {
 			
 			const date = new Date(f.End)
-			if(date.getFullYear() === y) {
-				if(showLastFinalScores === 'thisMonth' && date.getMonth() !== m) continue
-				if(showLastFinalScores === 'thisDay' && ( date.getMonth() !== m || date.getDate() !== d ) ) continue
+			if(date.getFullYear() === +year) {
+				if(view === 'showMonth' && date.getMonth() !== +month) continue
 				
 				for(const w of f.List_Winner) {
 					tmp_wins[w]++
@@ -129,7 +145,7 @@ function SessionPreview() {
 		setWins(tmp_wins)
 		setList(tmp)
 
-	}, [showLastFinalScores])
+	}, [view, year, month])
 
 	const getPlayer = (alias) => {
 
@@ -176,6 +192,27 @@ function SessionPreview() {
 
 	}
 
+	const css = () => {
+
+		return { 
+			width: '150px', 
+			fontSize: '15px', 
+			borderRadius: '10px',
+			height: '30px',
+			padding: '5px',
+			marginLeft: '5px',
+			marginRight: '10px',
+			marginTop: '0',
+			marginBottom: '10px',
+			background: 'none', 
+			border: '1px solid var(--text-color)',
+			outline: 'none',
+			color: 'var(--text-color)',
+			boxShadow: 'none',
+		}
+
+	}
+
 
 
 
@@ -184,30 +221,37 @@ function SessionPreview() {
 
 	return (
 		<>
+			
+			<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 
-			{/* <select
-					// value={inputType}
-					// onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
-					style={{
-						fontSize: '13px', 
-						borderRadius: '10px',
-						height: '30px',
-						padding: '5px',
-						marginLeft: '5px',
-						marginRight: '10px',
-						marginTop: '0',
-						marginBottom: '0',
-						background: 'none', 
-						border: '1px solid var(--text-color)',
-						outline: 'none',
-						color: 'var(--text-color)',
-						boxShadow: 'none',
-					}}
-				>
-				<option value='select' key='select'>Auswahl</option>
-				<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
-				<option value='type' key='type'>Eingabe</option>
-			</select> */}
+				<select 
+					value={view}
+					onChange={(e) => setView(e.target.value)}
+					style={css()}>
+					<option value='all'>Gesamtansicht</option>
+					<option value='showYear'>Jahresansicht</option>
+					<option value='showMonth'>Monatsansicht</option>
+				</select>
+
+				{view !== 'all' && <select 
+					value={year}
+					onChange={(e) => setYear(e.target.value)}
+					style={css()}>
+					{list_year.map((y) => 
+						<option value={y}>{y}</option>
+					)}
+				</select>}
+				
+				{view === 'showMonth' && <select 
+					value={month}
+					onChange={(e) => setMonth(e.target.value)}
+					style={css()}>
+					{list_month.map((m, i) => 
+						<option value={i}>{m}</option>
+					)}
+				</select>}
+
+			</div>
 
 			<div style={{ overflow: 'hidden', scrollbarGutter: 'stable both-edges' }}>
 				<table className='table'>
@@ -221,21 +265,7 @@ function SessionPreview() {
 						</tr>
 						<tr>
 							<td style={{ width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold' }}>
-								Gewonnen<br/>
-								<select 
-									value={showLastFinalScores}
-									onChange={(e) => setShowLastFinalScores(e.target.value)}
-									style={{ 
-										color: 'var(--text-color)', 
-										border: 'none', 
-										outline: 'none',
-										background: 'none',
-									}}>
-									<option value='all'>Gesamt</option>
-									<option value='thisYear'>Dieses Jahr</option>
-									<option value='thisMonth'>Dieser Monat</option>
-									<option value='thisDay'>Dieser Tag</option>
-								</select>
+								Gewonnen
 							</td>
 							{session?.List_PlayerOrder?.map((alias, i) => {
 								const player = getPlayer(alias)
