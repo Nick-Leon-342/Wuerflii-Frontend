@@ -155,14 +155,14 @@ dialog::backdrop {
 	color: var(--text-color-light);
 	text-align: end;
 }
-.reglog-link-switch a {			color: var(--green-lighter);	   }
-.reglog-link-switch a:hover {	opacity: .6;				}
+.reglog-link-switch a {			color: var(--green);	   	}
+.reglog-link-switch a:hover {	color: var(--green-lighter);}
 
 .link-switch a {
-	color: var(--green-lighter);
+	color: var(--green);
 	font-size: 18px;
 }
-.link-switch a:hover {			opacity: .6;				}
+.link-switch a:hover {			color: var(--green-lighter);}
 
 .toggleButton {
 	position: relative;

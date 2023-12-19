@@ -15,7 +15,7 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 	const getIcon = (correct) => {
 
 		return correct ?
-			<svg height='25' viewBox='0 -960 960 960' style={{ marginRight: '10px', fill: 'rgb(0, 255, 0)' }}><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
+			<svg height='25' viewBox='0 -960 960 960' style={{ marginRight: '10px', fill: 'var(--green)' }}><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
 			:
 			<svg height='25' viewBox='0 -960 960 960' style={{ marginRight: '10px', fill: textColor }}><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 	
