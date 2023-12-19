@@ -332,7 +332,6 @@ function Game() {
 							onClick={closeSurrender}
 							style={{
 								backgroundColor: 'rgb(255, 0, 0)',
-								color: 'white',
 							}}
 						>Abbrechen</button>
 					</div>
@@ -452,7 +451,6 @@ function Game() {
 						onClick={() => document.getElementById('modal-newgame').close()}
 						style={{
 							backgroundColor: 'rgb(255, 0, 0)',
-							color: 'white',
 						}}
 					>Abbrechen</button>
 				</div>
@@ -514,7 +512,7 @@ function Game() {
 							marginRight: '10px',
 							marginTop: '0',
 							marginBottom: '0',
-							background: 'none', 
+							backgroundColor: 'var(--background-color)', 
 							border: '1px solid var(--text-color)',
 							outline: 'none',
 							color: 'var(--text-color)',

@@ -50,7 +50,7 @@
     outline: none;
     text-align: center;
     font-size: 20px;
-	color: var(--text-color);
+	color: var(--text-color-static);
 }
 
 .kniffelInput::-webkit-calendar-picker-indicator {

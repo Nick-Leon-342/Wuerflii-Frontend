@@ -48,6 +48,7 @@ export default function DragAndDropNameColorList({ List_Players, setList_Players
 												borderRadius: '5px', 
 												padding: '2px 10px', 
 												outline: 'none', 
+												backgroundColor: 'var(--background-color)',
 											}}
 										/>
 										<input

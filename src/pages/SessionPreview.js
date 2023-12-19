@@ -204,7 +204,7 @@ function SessionPreview() {
 			marginRight: '10px',
 			marginTop: '0',
 			marginBottom: '10px',
-			background: 'none', 
+			backgroundColor: 'var(--background-color)', 
 			border: '1px solid var(--text-color)',
 			outline: 'none',
 			color: 'var(--text-color)',

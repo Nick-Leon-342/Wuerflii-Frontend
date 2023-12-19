@@ -337,7 +337,6 @@ function SelectSession() {
 						disabled={deleteDisabled}
 						style={{
 							backgroundColor: 'rgb(255, 0, 0)',
-							color: 'white',
 						}}
 					>Abbrechen</button>
 				</div>
@@ -375,7 +374,12 @@ function SelectSession() {
 				) : (
 					list.map((s, i) => (
 						<dt className='listElement' index={i} key={i}>
-							<input className='checkbox-delete button-responsive' style={isMobile ? { marginTop: '10px', width: '27px', height: '27px' } : {}} type='checkbox' onChange={(e) => checkboxClick(i, e.target.checked)} />
+							<input 
+								className='button-responsive checkbox-delete'
+								style={isMobile ? { marginTop: '10px', width: '27px', height: '27px' } : {}} 
+								type='checkbox' 
+								onChange={(e) => checkboxClick(i, e.target.checked)} 
+							/>
 
 							<div className='container' onClick={listElementClick}>
 								<label className='label'>

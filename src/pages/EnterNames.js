@@ -137,6 +137,7 @@ function EnterNames() {
 								margin: '5px 0', 
 								width: '85%',
 								color: 'var(--text-color)', 
+								backgroundColor: 'var(--background-color', 
 								border: '1px solid var(--text-color-light)', 
 								borderRadius: '5px', 
 								padding: '2px 10px', 

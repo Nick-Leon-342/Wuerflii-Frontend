@@ -17,16 +17,11 @@
 	place-items: center;
 }
 
-:root {
-	--text-color: rgb(100, 100, 100);
-	--text-color-light: rgb(150, 150, 150);
-}
-
 body {
 	margin: 0;
 	padding: 0;
 	display: flex;
-	width: 100%;
+width: 100%;
 	height: 100vh;
 	justify-content: center;
 	align-items: center;
@@ -39,6 +34,47 @@ body {
 	stroke: var(--text-color);
 	border-color: var(--text-color);
 	color: var(--text-color);
+	
+	--text-color: rgb(100, 100, 100);
+	--text-color-static: rgb(100, 100, 100);
+	--text-color-light: rgb(150, 150, 150);
+
+	--background-color: rgb(255, 255, 255);
+	--box-shadow-color: rgb(200, 200, 200);
+	--button-shadow-color: var(--box-shadow-color);
+	--list-element-hover-color: rgb(230, 230, 230);
+
+	--red: rgb(255, 0, 0);
+	--green: rgb(0, 230, 0);
+	--green-light: rgb(0, 240, 0);
+	--green-lighter: rgb(0, 255, 0);
+
+	--button-text-color: var(--background-color);
+	--modal-backdrop-color: rgb(150, 150, 150);
+
+	--toggle-button-color: var(--background-color);
+	--toggle-button-background-color: var(--text-color);
+}
+
+.dark {
+	background-color: rgb(50, 50, 50);
+	--background-color: rgb(75, 75, 75);
+	--text-color: rgb(210, 210, 210);
+	--text-color-light: rgb(220, 220, 220);
+	--box-shadow-color: rgb(40, 40, 40);
+	--button-shadow-color: rgb(100, 100, 100);
+	--list-element-hover-color: rgb(90, 90, 90);
+
+	--red: rgb(255, 100, 100);
+	--green: rgb(0, 200, 0);
+	--green-light: rgb(0, 180, 0);
+	--green-lighter: rgb(0, 190, 0);
+
+	--button-text-color: var(--text-color-light);
+	--modal-backdrop-color: rgb(0, 0, 0);
+
+	--toggle-button-color: var(--background-color);
+	--toggle-button-background-color: var(--text-color);
 }
 
 dialog {color: var(--text-color);}
@@ -58,10 +94,10 @@ svg {
 
 .App {
 	text-align: center;
-	background-color: white;
+	background-color: var(--background-color);
 	padding: 25px;
 	border-radius: 20px;
-	box-shadow: 0px 0px 20px 0px rgb(200, 200, 200);
+	box-shadow: 0px 0px 20px -5px var(--box-shadow-color);
 	margin: 20px;
 
 	align-self: center;
@@ -72,10 +108,11 @@ svg {
 	border: none;
 	padding: 20px;
 	outline: none;
+	background-color: var(--background-color);
 }
 
 dialog::backdrop {
-	background-color: rgb(150, 150, 150);
+	background-color: rgb(40, 40, 40);
 	opacity: .5;
 }
 
@@ -89,11 +126,10 @@ dialog::backdrop {
 	font-size: 20px;
 	border-radius: 5px;
 	border: none;
-	box-shadow: 0px 0px 4px 0px rgb(200, 200, 200);
+	box-shadow: 0px 0px 4px 0px var(--button-shadow-color);
 	padding: 5px 15px;
-	background-color: rgb(0, 230, 0);
-	color: var(--text-color);
-	color: white;
+	background-color: var(--green);
+	color: var(--button-text-color);
 	outline: none;
 	margin-top: 20px;
 	margin-bottom: 20px;
@@ -102,7 +138,7 @@ dialog::backdrop {
 
 .button:hover {
 	transform: scale(1.02);
-    background-color: rgb(0, 240, 0);
+    background-color: var(--green-light);
 }
 
 .button:active {
@@ -119,11 +155,11 @@ dialog::backdrop {
 	color: var(--text-color-light);
 	text-align: end;
 }
-.reglog-link-switch a {			color: rgb(0, 255, 0);	   }
+.reglog-link-switch a {			color: var(--green-lighter);	   }
 .reglog-link-switch a:hover {	opacity: .6;				}
 
 .link-switch a {
-	color: rgb(0, 255, 0); 
+	color: var(--green-lighter);
 	font-size: 18px;
 }
 .link-switch a:hover {			opacity: .6;				}
@@ -133,6 +169,7 @@ dialog::backdrop {
 	display: inherit-block;
 	width: 60px;
 	height: 34px;
+	outline: none;
 }
 
 .toggleButton input {
@@ -151,7 +188,7 @@ dialog::backdrop {
 	border-radius: 20px;
 	transition: .5s;
 
-	background-color: var(--text-color);
+	background-color: var(--toggle-button-background-color);
 }
 
 .toggleButton-slider::before {
@@ -161,7 +198,7 @@ dialog::backdrop {
 	width: 26px;
 	left: 4px;
 	bottom: 4px;
-	background-color: white;
+	background-color: var(--toggle-button-color);
 	border-radius: 50%;
 	transition: .5s;
 }
@@ -171,7 +208,7 @@ dialog::backdrop {
 }
 
 .toggleButton input:checked + .toggleButton-slider {
-	background-color: rgb(0, 230, 0);
+	background-color: var(--green);
 }
 
 
@@ -215,14 +252,14 @@ dialog::backdrop {
 .inputfield input:not(:placeholder-shown)~label {
 	top: 0;
 	font-size: 12px;
-	background-color: white;
+	background-color: var(--background-color);
 }
 
-.inputfield.green label {	color: rgb(0, 230, 0);			}
-.inputfield.green input {	border-color: rgb(0, 230, 0);	}
+.inputfield.green label {	color: var(--green);			}
+.inputfield.green input {	border-color: var(--green);		}
 
-.inputfield.red label {		color: rgb(255, 0, 0);			}
-.inputfield.red input {		border-color: rgb(255, 0, 0);	}
+.inputfield.red label {		color: var(--red);			}
+.inputfield.red input {		border-color: var(--red);	}
 
 
 
@@ -262,7 +299,7 @@ dialog::backdrop {
 .loader span {
 	width: 8px;
 	height: 8px;
-	background: #00FF00;
+	background: var(--green);
 	border-radius: 50%;
 	margin: 0 5px;
 	animation: expandShrink 2s linear infinite;
@@ -273,28 +310,12 @@ dialog::backdrop {
 .loader span:nth-child(2) {animation-delay: 0.333s;}
 .loader span:nth-child(3) {animation-delay: 0.667s;}
 
+.notVisible {
+	opacity: 0;
+}
+
 @keyframes expandShrink {
 	0%, 100% {transform: scale(1.5);}
 	25%, 75% {transform: scale(0.5);}
 }
 
-
-
-
-
-@media (max-width: 390px) {
-
-	input {
-		width: 300px;
-	}
-
-	body {
-		justify-content: left;
-	}
-
-	.App {
-		margin: 200px;
-		margin-top: 200px;
-	}
-
-}
