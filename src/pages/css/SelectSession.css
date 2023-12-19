@@ -38,12 +38,6 @@
 .checkbox-delete {
 	width: 30px;
 	margin-left: 10px;
-	color: black;
-	background-color: rgba(0, 0, 0, 0.08);
-}
-
-.checkbox-delete::before{
-	background-color: transparent;
 }
 
 
