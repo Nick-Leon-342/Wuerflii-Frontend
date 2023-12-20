@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 
 export default function OptionsDialog() {
 	
-	const [ darkModeToggled, setDarkModeToggled ] = useState(sessionStorage.getItem('darkMode') === 'true' || false)
+	const [ darkModeToggled, setDarkModeToggled ] = useState(localStorage.getItem('darkMode') === 'true' || false)
 	const closeOptions = () => {document.getElementById('modal-options').close()	}
 
 
@@ -20,7 +20,7 @@ export default function OptionsDialog() {
 
 	useEffect(() => {
 
-		sessionStorage.setItem('darkMode', darkModeToggled)
+		localStorage.setItem('darkMode', darkModeToggled)
 		if(darkModeToggled) {document.body.classList.add('dark')
 		} else {document.body.classList.remove('dark')}
 
