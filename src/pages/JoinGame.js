@@ -17,6 +17,7 @@ import Table from '../components/Table'
 import LastPlayerDialog from '../components/Dialog/LastPlayerDialog'
 import InvalidNumberDialog from '../components/Dialog/InvalidNumberDialog'
 import ToggleSlider from '../components/ToggleSlider'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 
@@ -186,6 +187,8 @@ function Game() {
 			<LastPlayerDialog id='modal-lastPlayer' lastPlayerAlias={lastPlayerAlias} session={session}/>
 
 			<InvalidNumberDialog id='modal-invalidNumber'/>
+
+			<OptionsDialog/>
 
 
 

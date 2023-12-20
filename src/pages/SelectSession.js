@@ -10,6 +10,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 import Loader from '../components/Loader'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 function SelectSession() {
@@ -254,6 +255,8 @@ function SelectSession() {
 		<>
 
 			{/* __________________________________________________Dialogs__________________________________________________ */}
+
+			<OptionsDialog/>
 
 			<dialog id='modal-edit' className='modal'>
 				<div 

@@ -8,6 +8,7 @@ import Loader from '../components/Loader'
 import PlayerTable from '../components/PlayerTable'
 import Table from '../components/Table'
 import { id_bottomTable, id_upperTable } from "../logic/utils"
+import OptionsDialog from "../components/Dialog/OptionsDialog"
 
 
 
@@ -145,6 +146,8 @@ export default function SessionPreviewTable() {
 
 	return (
 		<>
+
+			<OptionsDialog/>
 
 			{List_Players && <>
 				<PlayerTable

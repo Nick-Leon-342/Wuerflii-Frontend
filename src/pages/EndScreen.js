@@ -9,6 +9,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { getPlayer } from '../logic/utils'
 
 import Loader from '../components/Loader'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 
@@ -99,6 +100,8 @@ function EndScreen() {
 
 	return (
 		<>
+
+			<OptionsDialog/>
 		
 			<div className='button-container'>
 				<label className='winner'>

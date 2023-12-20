@@ -9,6 +9,7 @@ import { createSession, createPlayer } from '../logic/utils'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 function EnterNames() {
@@ -113,6 +114,8 @@ function EnterNames() {
 
 	return (
 		<>
+
+			<OptionsDialog/>
 
 			<div className='inputfield' style={{ marginBottom: '40px' }}>
 				<input

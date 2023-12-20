@@ -11,6 +11,7 @@ import { NAME_REGEX, PASSWORD_REGEX } from '../logic/utils-env'
 import Loader from '../components/Loader'
 import RegistrationForm from '../components/RegistrationForm'
 import ErrorMessage from '../components/ErrorMessage'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 
@@ -82,6 +83,8 @@ const Registration = () => {
 
 	return (
 		<>
+
+			<OptionsDialog/>
 
 			<h1>Registrierung</h1>
 

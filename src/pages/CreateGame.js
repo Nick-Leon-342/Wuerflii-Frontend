@@ -14,6 +14,7 @@ import Loader from '../components/Loader'
 import JoinGameInput from '../components/JoinGameInput'
 import RegistrationForm from '../components/RegistrationForm'
 import ErrorMessage from '../components/ErrorMessage'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 function CreateGame() {
@@ -204,57 +205,31 @@ function CreateGame() {
 						flexDirection: 'column',
 					}}
 				>
-					<div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-						<button
-							onClick={() => setShowJoinGame(!showJoinGame)}
-							className='button'
-							style={{
-								color: 'var(--text-color-light)',
-								display: 'flex',
-								background: 'none', 
-								boxShadow: 'none', 
-								fontSize: '18px', 
-								padding: '3px 0',
-								margin: '0', 
-							}}
-						>
-							{showJoinGame ? 'Daten ändern' : 'Spiel beitreten'}
-						</button>
-
+					<div style={{ display: 'flex', justifyContent: 'right', width: '100%' }}>
 						<svg className='button-responsive' onClick={modalSettingsClose} height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 					</div>
 
+					<h1 style={{ fontSize: '50px', fontWeight: 'bold' }}>Einstellungen</h1>
+					
+					<form onSubmit={handleSubmit}>
 
-					{showJoinGame && <JoinGameInput marginBottom='20px' marginTop='20px' />}
+						<RegistrationForm Name={Name} setName={setName} Password={Password} setPassword={setPassword} isRequired={false}/>
 
+						<Loader loaderVisible={loaderVisible} marginTop='10px'/>
 
+						<ErrorMessage error={error}/>
 
-					{!showJoinGame && <>
-
-						<h1 style={{ fontSize: '50px', fontWeight: 'bold' }}>Einstellungen</h1>
-						
-						<form onSubmit={handleSubmit}>
-
-							<RegistrationForm Name={Name} setName={setName} Password={Password} setPassword={setPassword} isRequired={false}/>
-
-							<Loader loaderVisible={loaderVisible} marginTop='10px'/>
-
-							<ErrorMessage error={error}/>
-
-							<button 
-								className='button' 
-								disabled={settingsDisabled}
-								style={{ 
-									height: '60px', 
-									width: '100%', 
-								}}
-							>Speichern
-							</button>
-						
-						</form>
-
-					</>}
-
+						<button 
+							className='button' 
+							disabled={settingsDisabled}
+							style={{ 
+								height: '60px', 
+								width: '100%', 
+							}}
+						>Speichern
+						</button>
+					
+					</form>
 					
 					<button 
 						className='button' 
@@ -294,6 +269,8 @@ function CreateGame() {
 					>Abbrechen</button>
 				</div>
 			</dialog>
+
+			<OptionsDialog/>
 
 
 

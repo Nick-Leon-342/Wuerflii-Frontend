@@ -1,13 +1,13 @@
 
 
 import '../App.css'
-import './css/SessionAnalytics.css'
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 function SessionPreview() {
@@ -221,6 +221,8 @@ function SessionPreview() {
 
 	return (
 		<>
+
+			<OptionsDialog/>
 			
 			<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 
@@ -228,17 +230,17 @@ function SessionPreview() {
 					value={view}
 					onChange={(e) => setView(e.target.value)}
 					style={css()}>
-					<option value='all'>Gesamtansicht</option>
-					<option value='showYear'>Jahresansicht</option>
-					<option value='showMonth'>Monatsansicht</option>
+					<option key={0} value='all'>Gesamtansicht</option>
+					<option key={1} value='showYear'>Jahresansicht</option>
+					<option key={2} value='showMonth'>Monatsansicht</option>
 				</select>
 
 				{view !== 'all' && <select 
 					value={year}
 					onChange={(e) => setYear(e.target.value)}
 					style={css()}>
-					{list_year.map((y) => 
-						<option value={y}>{y}</option>
+					{list_year.map((y, i) => 
+						<option key={i} value={y}>{y}</option>
 					)}
 				</select>}
 				
@@ -247,7 +249,7 @@ function SessionPreview() {
 					onChange={(e) => setMonth(e.target.value)}
 					style={css()}>
 					{list_month.map((m, i) => 
-						<option value={i}>{m}</option>
+						<option key={i} value={i}>{m}</option>
 					)}
 				</select>}
 
@@ -280,7 +282,7 @@ function SessionPreview() {
 				<table className='table'>
 					<tbody>
 						{list?.map((fs, i) => (
-							<tr key={i} className='sessionAnalytics-listElement' onClick={() => handleClick(fs)}>
+							<tr key={i} className='listElement' style={{ display: 'block' }} onClick={() => handleClick(fs)}>
 								<td style={firstColumnStyle}>{formatDate(fs.End)}</td>
 								{session?.List_PlayerOrder?.map((alias, j) => {
 									const player = getPlayer(alias)
