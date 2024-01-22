@@ -36,7 +36,7 @@ export const removeFocusEvent = (r) => {
 
 }
 
-export const onblurEvent = (element, setLastPlayerAlias, urlParams, socket, columnsSum ) => {
+export const onblurEvent = ( element, setLastPlayerAlias, urlParams, socket, columnsSum, sentDataPackages, saveSentDataPackages ) => {
 
 	const e = element.target
 	if(e) {
@@ -67,7 +67,12 @@ export const onblurEvent = (element, setLastPlayerAlias, urlParams, socket, colu
 		}
 
 		value = value ? +value : null
-		socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
+		const json = { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value }
+		sentDataPackages.push(json)
+		saveSentDataPackages()
+		socket.emit('UpdateValue', json, (response) => {
+			console.log('Response', response)
+		})
 		
 		if(tableID === id_upperTable) {
 			calculateUpperColumn(alias, column, columnsSum)
