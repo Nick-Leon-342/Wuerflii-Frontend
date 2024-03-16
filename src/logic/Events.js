@@ -1,9 +1,10 @@
 
 
-import { id_upperTable, id_bottomTable } from "./utils"
-import { possibleEntries_upperTable, possibleEntries_bottomTable } from "./PossibleEntries"
-import { updateURL } from "./utils"
-import { calculateUpperColumn, calculateBottomColumn } from "./Calculating"
+import { id_upperTable, id_bottomTable } from './utils'
+import { possibleEntries_upperTable, possibleEntries_bottomTable } from './PossibleEntries'
+import { updateURL } from './utils'
+import { calculateUpperColumn, calculateBottomColumn } from './Calculating'
+
 
 
 
@@ -36,7 +37,7 @@ export const removeFocusEvent = (r) => {
 
 }
 
-export const onblurEvent = (element, setLastPlayerAlias, urlParams, socket, columnsSum ) => {
+export const onblurEvent = ( element, setLastPlayerAlias, urlParams, axiosPrivate, joincode, columnsSum ) => {
 
 	const e = element.target
 	if(e) {
@@ -67,7 +68,23 @@ export const onblurEvent = (element, setLastPlayerAlias, urlParams, socket, colu
 		}
 
 		value = value ? +value : null
-		socket.emit('UpdateValue', { UpperTable: tableID === id_upperTable, Alias: alias, Row: row, Column: column, Value: value })
+
+		const json = { 
+			isUpperTable: tableID === id_upperTable, 
+			Alias: alias, 
+			Row: row, 
+			Column: column, 
+			Value: value, 
+			JoinCode: +joincode 
+		}
+
+		axiosPrivate.post('/game/entry', json).then(() => {
+
+			console.log('Axios')
+
+		}).catch((err) => {
+			console.log(err)
+		})
 		
 		if(tableID === id_upperTable) {
 			calculateUpperColumn(alias, column, columnsSum)

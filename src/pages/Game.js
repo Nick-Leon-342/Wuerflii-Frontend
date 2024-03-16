@@ -52,6 +52,18 @@ function Game() {
 	
 
 
+	const local_onBlurEvent = ( element ) => {
+
+		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, joincode, columnsSum)
+
+	}
+
+
+
+
+
+
+
 	useLayoutEffect(() => {
 		
 		const ut = document.getElementById(id_upperTable)
@@ -76,7 +88,7 @@ function Game() {
 			for(const e of elements) {
 				e.addEventListener('focus', focusEvent)
 				if(inputType === 0) {
-					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)))
+					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
 				} else {
 					e.addEventListener('blur', removeFocusEvent)
 				}
@@ -86,7 +98,7 @@ function Game() {
 		return () => {
 			for(const e of elements) {
 				e.removeEventListener('focus', focusEvent)
-				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)))
+				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
 			}
 		}
 
@@ -560,7 +572,7 @@ function Game() {
 				list_Players={session?.List_Players}
 				tableColumns={tableColumns}
 				inputType={inputType}
-				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
+				onblurEvent={local_onBlurEvent}
 				removeFocusEvent={removeFocusEvent}
 			/>
 			<Table 
@@ -569,11 +581,12 @@ function Game() {
 				list_Players={session?.List_Players}
 				tableColumns={tableColumns}
 				inputType={inputType}
-				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)}
+				onblurEvent={local_onBlurEvent}
 				removeFocusEvent={removeFocusEvent}
 			/>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
 				<button 
 					onClick={() => document.getElementById('modal-newgame').showModal()} 
 					className='button'
@@ -589,6 +602,7 @@ function Game() {
 					}}
 				>Neues Spiel
 				</button>
+
 				<button 
 					onClick={finishGame}
 					className='button'
@@ -599,6 +613,7 @@ function Game() {
 					}}
 				>Spiel beenden
 				</button>
+				
 			</div>
 
 		</>
