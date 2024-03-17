@@ -9,8 +9,6 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleShowScoresChange, handleInputTypeChange, successfullyConnected } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
-import io from 'socket.io-client'
-import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 import { calculateUpperColumn, calculateBottomColumn } from '../logic/Calculating'
 
@@ -40,7 +38,6 @@ function Game() {
 	
 	const [ columnsSum ] = useState([])
 	
-	const [ socket, setSocket ] = useState()
 	const [ session, setSession ] = useState()
 
 	const [ inputType, setInputType ] = useState()
@@ -54,11 +51,17 @@ function Game() {
 	
 
 
-	const saveSentDataPackages = () => {
+	const local_onBlurEvent = ( element ) => {
 
-		localStorage.setItem('kniffel_sentDataPackages', JSON.stringify(sentDataPackages))
+		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, joincode, columnsSum)
 
 	}
+
+
+
+
+
+
 
 	useLayoutEffect(() => {
 		
@@ -84,7 +87,7 @@ function Game() {
 			for(const e of elements) {
 				e.addEventListener('focus', focusEvent)
 				if(inputType === 0) {
-					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)))
+					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
 				} else {
 					e.addEventListener('blur', removeFocusEvent)
 				}
@@ -94,7 +97,7 @@ function Game() {
 		return () => {
 			for(const e of elements) {
 				e.removeEventListener('focus', focusEvent)
-				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum)))
+				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
 			}
 		}
 
@@ -102,85 +105,63 @@ function Game() {
 
 	useEffect(() => {
 
-		async function connect() {
-			await axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).then((res) => {
-				
-				successfullyConnected(
-					res.data, 
-					columnsSum, 
-					urlParams, 
-					setSession, 
-					setInputType, 
-					setShowScores, 
-					setTableColumns, 
-					setGnadenwurf, 
-				)
-
-			}).catch(() => {
-				return navigate('/creategame', { replace: true })
-			})
-		}
-
 		if(!sessionid || !joincode) return navigate('/creategame', { replace: true })
-		
-		connect()
 
-		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
-		setSocket(tmp_socket)
-		tmp_socket.emit('JoinSession', '')
-		//TODO Sent all unsend datapackages
-		//Maybe loading animation until response/joined session
-		tmp_socket.on('SuccessfullyJoinedSession', () => {
-
-			for(const dp of sentDataPackages) {
-				tmp_socket.emit('UpdateValue', dp)
+		axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
 			}
-
-		})
-		tmp_socket.on('UpdateValueResponse-Success', (msg) => {
-
-			console.log('Before:', [...sentDataPackages])
-			const tmp = sentDataPackages.filter(item => JSON.stringify(item) !== JSON.stringify(msg))
-			sentDataPackages.length = 0
-			tmp.map((e) => sentDataPackages.push(e))
-			console.log('Result:', sentDataPackages)
-
-		})
-		tmp_socket.on('UpdateValueResponse', (msg) => {
-
-			const m = msg.Data
-			const tableID = m.UpperTable ? id_upperTable : id_bottomTable
-
-			document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+		).then((res) => {
 			
-			for(const e of tableColumns) {
-				if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
-					e[m.Row] = m.Value
-				}
-			}
+			successfullyConnected(
+				res.data, 
+				columnsSum, 
+				urlParams, 
+				setSession, 
+				setInputType, 
+				setShowScores, 
+				setTableColumns, 
+				setGnadenwurf, 
+			)
 
-			if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column, columnsSum)
-			} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
-
-			setLastPlayerAlias(m.Alias)
-			urlParams.set('lastplayer', m.Alias)
-			updateURL(urlParams)
-
-		})
-		tmp_socket.on('UpdateGnadenwurf', (msg) => {
-
-			setGnadenwurf(msg.Data)
-
+		}).catch(() => {
+			return navigate('/creategame', { replace: true })
 		})
 
-		return () => {
-			tmp_socket.disconnect()
-		}
+		// const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
+		// setSocket(tmp_socket)
+		// tmp_socket.emit('JoinSession', '')
+		// tmp_socket.on('UpdateValueResponse', (msg) => {
+
+		// 	const m = msg.Data
+		// 	const tableID = m.UpperTable ? id_upperTable : id_bottomTable
+
+		// 	document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+			
+		// 	for(const e of tableColumns) {
+		// 		if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
+		// 			e[m.Row] = m.Value
+		// 		}
+		// 	}
+
+		// 	if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column, columnsSum)
+		// 	} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
+
+		// 	setLastPlayerAlias(m.Alias)
+		// 	urlParams.set('lastplayer', m.Alias)
+		// 	updateURL(urlParams)
+
+		// })
+		// tmp_socket.on('UpdateGnadenwurf', (msg) => {
+
+		// 	setGnadenwurf(msg.Data)
+
+		// })
+
+		// return () => {
+		// 	tmp_socket.disconnect()
+		// }
 
 	}, [])
 
@@ -194,7 +175,6 @@ function Game() {
 			}
 		).then(() => {
 
-			socket.emit('EndGame', '')
 			navigate('/creategame', { replace: true })
 
 		}).catch((err) => {
@@ -247,12 +227,11 @@ function Game() {
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
-		).then((res) => {
+		).then(({ data }) => {
 
-			console.log(res.data)
+			console.log(data)
 
-			socket.emit('EndGame', '')
-			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(res.data.List_WinnerNames)}&playerscores=${JSON.stringify(res.data.PlayerScores)}`, { replace: true })
+			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(data.List_WinnerNames)}&playerscores=${JSON.stringify(data.PlayerScores)}`, { replace: true })
 			setLoaderVisible(false)
 
 		}).catch((err) => {
@@ -312,7 +291,8 @@ function Game() {
 			})
 		}
 
-		socket.emit('RefreshGame', '')
+		//TODO
+		// socket.emit('RefreshGame', '')
 		setEditDisabled(false)
 		window.location.reload()
 
@@ -571,7 +551,8 @@ function Game() {
 
 			<PlayerTable 
 				list_Players={session?.List_Players}
-				socket={socket}
+				axiosPrivate={axiosPrivate}
+				joincode={+joincode}
 				tableWidth={tableWidth}
 				thickBorder={thickBorder}
 				lastPlayerAlias={lastPlayerAlias}
@@ -588,7 +569,7 @@ function Game() {
 				list_Players={session?.List_Players}
 				tableColumns={tableColumns}
 				inputType={inputType}
-				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum, sentDataPackages, saveSentDataPackages)}
+				onblurEvent={local_onBlurEvent}
 				removeFocusEvent={removeFocusEvent}
 			/>
 			<Table 
@@ -597,11 +578,12 @@ function Game() {
 				list_Players={session?.List_Players}
 				tableColumns={tableColumns}
 				inputType={inputType}
-				onblurEvent={(e) => onblurEvent(e, setLastPlayerAlias, urlParams, socket, columnsSum, sentDataPackages, saveSentDataPackages)}
+				onblurEvent={local_onBlurEvent}
 				removeFocusEvent={removeFocusEvent}
 			/>
 
 			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
 				<button 
 					onClick={() => document.getElementById('modal-newgame').showModal()} 
 					className='button'
@@ -617,6 +599,7 @@ function Game() {
 					}}
 				>Neues Spiel
 				</button>
+
 				<button 
 					onClick={finishGame}
 					className='button'
@@ -627,6 +610,7 @@ function Game() {
 					}}
 				>Spiel beenden
 				</button>
+				
 			</div>
 
 		</>
