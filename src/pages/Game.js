@@ -210,22 +210,16 @@ function Game() {
 		
 		setLoaderVisible(true)
 		setSaveResultsDisabled(true)
-		if(session.List_Players.length < 2) return navigate('/creategame', { replace: true })
+
+		if(session.List_Players.length === 1) return navigate('/selectsession', { replace: true })
 	
 		await axiosPrivate.post('/game',
 			{
 				SessionID: session.id, 
 				JoinCode: joincode, 
-				SessionName: session.SessionName, 
-				InputType: inputType, 
-				ShowScores: showScores, 
 				WinnerAlias: askIfSurrender,
 				List_PlayerOrder: session.List_PlayerOrder,
 				List_Players: session.List_Players, 
-			},
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
 			}
 		).then(({ data }) => {
 
@@ -235,7 +229,13 @@ function Game() {
 			setLoaderVisible(false)
 
 		}).catch((err) => {
-			console.log(err)
+
+			if(err.response.status === 409) {
+				window.alert('Es gibt einen Synchronisations-Fehler!')
+			} else {
+				console.log(err)
+			}
+
 		})
 
 		setSaveResultsDisabled(false)
@@ -560,7 +560,6 @@ function Game() {
 				setGnadenwurf={setGnadenwurf}
 				showScores={showScores}
 				sentDataPackages={sentDataPackages}
-				saveSentDataPackages={saveSentDataPackages}
 			/>
 			
 			<Table 
