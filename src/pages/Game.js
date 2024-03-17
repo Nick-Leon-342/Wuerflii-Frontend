@@ -9,8 +9,6 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleShowScoresChange, handleInputTypeChange, successfullyConnected } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
-import io from 'socket.io-client'
-import { REACT_APP_BACKEND_URL } from '../logic/utils-env'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 import { calculateUpperColumn, calculateBottomColumn } from '../logic/Calculating'
 
@@ -38,7 +36,6 @@ function Game() {
 	
 	const [columnsSum] = useState([])
 	
-	const [ socket, setSocket ] = useState()
 	const [ session, setSession ] = useState()
 
 	const [ inputType, setInputType ] = useState()
@@ -106,67 +103,63 @@ function Game() {
 
 	useEffect(() => {
 
-		async function connect() {
-			await axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).then((res) => {
-				
-				successfullyConnected(
-					res.data, 
-					columnsSum, 
-					urlParams, 
-					setSession, 
-					setInputType, 
-					setShowScores, 
-					setTableColumns, 
-					setGnadenwurf, 
-				)
-
-			}).catch(() => {
-				return navigate('/creategame', { replace: true })
-			})
-		}
-
 		if(!sessionid || !joincode) return navigate('/creategame', { replace: true })
-		
-		connect()
 
-		const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
-		setSocket(tmp_socket)
-		tmp_socket.emit('JoinSession', '')
-		tmp_socket.on('UpdateValueResponse', (msg) => {
-
-			const m = msg.Data
-			const tableID = m.UpperTable ? id_upperTable : id_bottomTable
-
-			document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-			
-			for(const e of tableColumns) {
-				if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
-					e[m.Row] = m.Value
-				}
+		axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
 			}
+		).then((res) => {
+			
+			successfullyConnected(
+				res.data, 
+				columnsSum, 
+				urlParams, 
+				setSession, 
+				setInputType, 
+				setShowScores, 
+				setTableColumns, 
+				setGnadenwurf, 
+			)
 
-			if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column, columnsSum)
-			} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
-
-			setLastPlayerAlias(m.Alias)
-			urlParams.set('lastplayer', m.Alias)
-			updateURL(urlParams)
-
+		}).catch(() => {
+			return navigate('/creategame', { replace: true })
 		})
-		tmp_socket.on('UpdateGnadenwurf', (msg) => {
 
-			setGnadenwurf(msg.Data)
+		// const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
+		// setSocket(tmp_socket)
+		// tmp_socket.emit('JoinSession', '')
+		// tmp_socket.on('UpdateValueResponse', (msg) => {
 
-		})
+		// 	const m = msg.Data
+		// 	const tableID = m.UpperTable ? id_upperTable : id_bottomTable
 
-		return () => {
-			tmp_socket.disconnect()
-		}
+		// 	document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
+			
+		// 	for(const e of tableColumns) {
+		// 		if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
+		// 			e[m.Row] = m.Value
+		// 		}
+		// 	}
+
+		// 	if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column, columnsSum)
+		// 	} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
+
+		// 	setLastPlayerAlias(m.Alias)
+		// 	urlParams.set('lastplayer', m.Alias)
+		// 	updateURL(urlParams)
+
+		// })
+		// tmp_socket.on('UpdateGnadenwurf', (msg) => {
+
+		// 	setGnadenwurf(msg.Data)
+
+		// })
+
+		// return () => {
+		// 	tmp_socket.disconnect()
+		// }
 
 	}, [])
 
@@ -180,7 +173,8 @@ function Game() {
 			}
 		).then(() => {
 
-			socket.emit('EndGame', '')
+			//TODO
+			// socket.emit('EndGame', '')
 			navigate('/creategame', { replace: true })
 
 		}).catch((err) => {
@@ -237,7 +231,8 @@ function Game() {
 
 			console.log(res.data)
 
-			socket.emit('EndGame', '')
+			//TODO
+			// socket.emit('EndGame', '')
 			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(res.data.List_WinnerNames)}&playerscores=${JSON.stringify(res.data.PlayerScores)}`, { replace: true })
 			setLoaderVisible(false)
 
@@ -298,7 +293,8 @@ function Game() {
 			})
 		}
 
-		socket.emit('RefreshGame', '')
+		//TODO
+		// socket.emit('RefreshGame', '')
 		setEditDisabled(false)
 		window.location.reload()
 
@@ -557,7 +553,7 @@ function Game() {
 
 			<PlayerTable 
 				list_Players={session?.List_Players}
-				socket={socket}
+				// socket={socket}
 				tableWidth={tableWidth}
 				thickBorder={thickBorder}
 				lastPlayerAlias={lastPlayerAlias}

@@ -37,61 +37,85 @@ export const removeFocusEvent = (r) => {
 
 }
 
-export const onblurEvent = ( element, setLastPlayerAlias, urlParams, axiosPrivate, joincode, columnsSum ) => {
+export const onblurEvent = async ( element, setLastPlayerAlias, urlParams, axiosPrivate, joincode, columnsSum ) => {
 
 	const e = element.target
-	if(e) {
-		const tableID = e.getAttribute('tableid')
-		const row = +e.getAttribute('row')
-		const column = +e.getAttribute('column')
-		const alias = e.getAttribute('alias')
+	if(!e) return
 
-		let value = e.value
-		const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
+	const tableID = e.getAttribute('tableid')
+	const row = +e.getAttribute('row')
+	const column = +e.getAttribute('column')
+	const alias = e.getAttribute('alias')
 
-		if(r.includes(+value) || value === '') {
-			
-			if(value) {
-				setLastPlayerAlias(alias)
-				urlParams.set('lastplayer', alias)
-				updateURL(urlParams)
-			}
+	let value = e.value
+	const r = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[row]
 
-		} else {
-			
-			document.getElementById('modal-invalidNumber').showModal()
-			document.getElementById('message-invalidNumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
-
-			e.value = ''
-			value = ''
-
+	if(r.includes(+value) || value === '') {
+		
+		if(value) {
+			setLastPlayerAlias(alias)
+			urlParams.set('lastplayer', alias)
+			updateURL(urlParams)
 		}
 
-		value = value ? +value : null
+	} else {
+		
+		document.getElementById('modal-invalidNumber').showModal()
+		document.getElementById('message-invalidNumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
 
-		const json = { 
-			isUpperTable: tableID === id_upperTable, 
-			Alias: alias, 
-			Row: row, 
-			Column: column, 
-			Value: value, 
-			JoinCode: +joincode 
-		}
+		e.value = ''
+		value = ''
 
-		axiosPrivate.post('/game/entry', json).then(() => {
+	}
 
+	value = value ? +value : null
+
+
+
+	const json = { 
+		isUpperTable: tableID === id_upperTable, 
+		Alias: alias, 
+		Row: row, 
+		Column: column, 
+		Value: value, 
+		JoinCode: +joincode 
+	}
+
+	for(let i = 0; 100 > i; i++) {
+
+		let response = false
+
+		await axiosPrivate.post('/game/entry', json).then(() => {
+	
 			console.log('Axios')
-
+	
 		}).catch((err) => {
-			console.log(err)
+	
+			if(err.response.status === 400) {
+				window.alert('Falsche Client-Anfrage')
+			} else if(err.response.status === 409) {
+				document.getElementById('modal-invalidNumber').showModal()
+				document.getElementById('message-invalidNumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
+			} else {
+				response = window.confirm(`Unbekannter Fehler!\nDer Eintrag '${value === null ? '' : value}' wurde nicht gespeichert!\nErneut versuchen?`)
+				console.log(err)
+				if(!response) e.value = ''
+			}
+				
 		})
 		
-		if(tableID === id_upperTable) {
-			calculateUpperColumn(alias, column, columnsSum)
-		} else {
-			calculateBottomColumn(alias, column, columnsSum)
-		}
-		
+		if(response) continue
+		break
+
+	}
+
+	
+
+
+	if(tableID === id_upperTable) {
+		calculateUpperColumn(alias, column, columnsSum)
+	} else {
+		calculateBottomColumn(alias, column, columnsSum)
 	}
 
 }
