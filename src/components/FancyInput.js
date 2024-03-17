@@ -1,25 +1,25 @@
 
 
-export default function FancyInput({ id, type, classNames, text, value, setValue, isRequired, onFocus, onBlur, maxLength, marginBottom, marginTop }) {
-
-	const className= classNames ? `inputfield ${classNames}` : 'inputfield'
+import './css/FancyInput.css'
 
 
 
 
+
+export default function FancyInput({ id, type, classNames, text, value, setValue, isRequired, onFocus, onBlur, maxLength }) {
 
 	return (
 
-		<div className={ className } style={{ marginBottom: marginBottom, marginTop: marginTop }}>
+		<div className={`fancyinput ${classNames ? classNames : ''}`}>
 
 			<input
 				id={id}
 				type={type}
 				autoComplete='off'
-				onChange={(e) => setValue(e.target.value)}
+				onChange={({ target }) => setValue(target.value)}
 				value={value}
 				maxLength={maxLength}
-				placeholder=""
+				placeholder=''
 				required={isRequired}
 				onFocus={onFocus}
 				onBlur={onBlur}

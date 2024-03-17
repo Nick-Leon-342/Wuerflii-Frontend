@@ -1,5 +1,7 @@
 
 
+import './App.css'
+
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
 import Login from './pages/Login'
@@ -16,7 +18,6 @@ import SessionPreviewTable from './pages/SessionPreview-Table'
 import JoinGame from './pages/JoinGame'
 import Game from './pages/Game'
 import EndScreen from './pages/EndScreen'
-import OptionsDialog from './components/Dialog/OptionsDialog'
 
 
 function App() {

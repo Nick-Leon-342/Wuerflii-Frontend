@@ -1,6 +1,8 @@
 
 
-import '../App.css'
+
+import './css/SessionPreview.css'
+
 
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
@@ -20,7 +22,7 @@ function SessionPreview() {
 
 	const [ list, setList ] = useState([])
 	const [ wins, setWins ] = useState([])
-	const [ finalScores, setFinalScores ] = useState([])
+	const [ finalScores, setList_FinalScores ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 
 	const [ view, setView ] = useState()
@@ -30,7 +32,6 @@ function SessionPreview() {
 	const list_month = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
 	const firstColumnWidth = '150px'
-	const firstColumnStyle = { width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold' }
 	const columnWidth = session?.List_Players?.length > 8 ? '75px' : (session?.List_Players?.length > 4 ? '125px' : '200px')
 	const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
@@ -50,9 +51,11 @@ function SessionPreview() {
 					params: { id: sessionid },
 					withCredentials: true
 				}
-			).then((res) => {
+			).then(({ data }) => {
 
-				const tmp_session = res.data.Session
+				const tmp_session = data.Session
+
+				//Order players
 				const tmpList_Players = []
 				for(const alias of tmp_session.List_PlayerOrder) {
 					for(const p of tmp_session.List_Players) {
@@ -63,21 +66,25 @@ function SessionPreview() {
 					}
 				}
 				tmp_session.ListPlayers = tmpList_Players
-				setSession(tmp_session)
-				const l = res.data.FinalScores
 
-				const tmp = []
+
+				setSession(tmp_session)
+
+				const l = data.FinalScores
+				l.sort((a, b) => new Date(b.End) - new Date(a.End))
+				setList_FinalScores(l)
+
+				const tmp_list_years = []
 				for(const e of l) {
 					const y = new Date(e.End).getFullYear()
-					if(!tmp.includes(y)) tmp.push(y)
+					if(!tmp_list_years.includes(y)) tmp_list_years.push(y)
 				}
 				setMonth(new Date().getMonth())
-				setYear(tmp[tmp.length - 1])
-				setList_year(tmp.slice().sort((a, b) => a - b))
-
-				l.sort(sortByTimestampDesc)
-				setFinalScores(l)
+				setYear(tmp_list_years[tmp_list_years.length - 1])
+				setList_year(tmp_list_years.slice().sort((a, b) => a - b))
 				setView('showYear')
+
+
 
 			}).catch((err) => {
 
@@ -102,9 +109,32 @@ function SessionPreview() {
 
 	}, [])
 
-	const sortByTimestampDesc = (a, b) => {
-		return new Date(b.End) - new Date(a.End)
+	const editList = ( list_toEdit, setList_toEdit ) => {
+
+		if(!list_toEdit || list_toEdit.length === 0) return
+
+		const list = []
+
+		const first = new Date(list_toEdit[0].End)
+		list.push({ Group_Date: first })
+		let currentDate = first
+	
+		list_toEdit.forEach(e => {
+			const d = new Date(e.End)
+			if(d.toDateString() !== currentDate.toDateString()) {
+				list.push({ Group_Date: d })
+				currentDate = d
+			}
+			list.push(e)
+		})
+		
+		setList_toEdit(list)
+
 	}
+
+
+
+
 
 	useEffect(() => {
 
@@ -117,7 +147,7 @@ function SessionPreview() {
 				return allWins[p.Alias] = p.Wins
 			})
 			setWins(allWins)
-			return setList(finalScores)
+			return editList(finalScores, setList)
 
 		}
 
@@ -143,7 +173,7 @@ function SessionPreview() {
 		}
 
 		setWins(tmp_wins)
-		setList(tmp)
+		editList(tmp, setList)
 
 	}, [view, year, month])
 
@@ -213,6 +243,12 @@ function SessionPreview() {
 
 	}
 
+	useEffect(() => {
+
+		console.log(list)
+
+	}, [list])
+
 
 
 
@@ -259,16 +295,12 @@ function SessionPreview() {
 				<table className='table'>
 					<tbody>
 						<tr>
-							<td style={firstColumnStyle}>Spieler</td>
 							{session?.List_PlayerOrder?.map((alias, i) => {
 								const player = getPlayer(alias)
 								return (<td key={i} style={style}>{player.Name}</td>)
 							})}
 						</tr>
 						<tr>
-							<td style={{ width: firstColumnWidth, minWidth: firstColumnWidth, maxWidth: firstColumnWidth, padding: '5px', fontWeight: 'bold' }}>
-								Gewonnen
-							</td>
 							{session?.List_PlayerOrder?.map((alias, i) => {
 								const player = getPlayer(alias)
 								return (<td key={i} style={style}>{wins[player.Alias]}</td>)
@@ -279,17 +311,28 @@ function SessionPreview() {
 			</div>
 
 			<div style={{ maxHeight: '305px', overflowY: 'auto', overflowX: 'hidden', scrollbarGutter: 'stable both-edges' }}>
-				<table className='table'>
+				<table className='table sessionpreview_table'>
 					<tbody>
-						{list?.map((fs, i) => (
-							<tr key={i} className='listElement' style={{ display: 'block' }} onClick={() => handleClick(fs)}>
-								<td style={firstColumnStyle}>{formatDate(fs.End)}</td>
-								{session?.List_PlayerOrder?.map((alias, j) => {
-									const player = getPlayer(alias)
-									return (<td key={`${i}.${j}`} style={style}>{fs.PlayerScores[player.Alias]}</td>)
-								})}
-							</tr>
-						))}
+						{list?.map((fs, i) => {
+							if(fs.Group_Date) {
+
+								return <tr className='date-row'>
+									<td><label className='date'>{formatDate(fs.Group_Date)}</label></td>
+								</tr>
+
+							} else {
+
+								return (
+									<tr key={i} className='listElement' style={{ display: 'block' }} onClick={() => handleClick(fs)}>
+										{session?.List_PlayerOrder?.map((alias, j) => {
+											const player = getPlayer(alias)
+											return (<td key={`${i}.${j}`} style={style}>{fs.PlayerScores[player.Alias]}</td>)
+										})}
+									</tr>
+								)
+
+							}
+						})}
 					</tbody>
 				</table>
 			</div>

@@ -8,6 +8,7 @@
 
 * {
 	user-select: none;
+	box-sizing: border-box;
 }
 
 #root {
@@ -21,7 +22,7 @@ body {
 	margin: 0;
 	padding: 0;
 	display: flex;
-width: 100%;
+/* width: 100%; */
 	height: 100vh;
 	justify-content: center;
 	align-items: center;
@@ -215,51 +216,6 @@ dialog::backdrop {
 
 
 
-/* ____________________Input____________________ */
-
-.inputfield {
-	position: relative;
-	display: flex;
-	height: 62px;
-	width: 450px;
-	margin: 15px 0;
-}
-
-.inputfield input {
-	width: 408px;
-	height: 30px;
-	font-size: 20px;
-	color: var(--text-color);
-    padding: 15px 20px;
-    background: transparent;
-	border: 1px solid var(--text-color-light);
-	outline: none;
-    border-radius: 5px;
-}
-
-.inputfield label {
-	position: absolute;
-	top: 50%;
-	margin-left: 15px;
-	transform: translateY(-50%);
-	font-size: 16px;
-	pointer-events: none;
-	padding: 0 5px;
-	transition: font-size .5s, top .5s;
-}
-
-.inputfield input:focus~label, 
-.inputfield input:not(:placeholder-shown)~label {
-	top: 0;
-	font-size: 12px;
-	background-color: var(--background-color);
-}
-
-.inputfield.green label {	color: var(--green);			}
-.inputfield.green input {	border-color: var(--green);		}
-
-.inputfield.red label {		color: var(--red);			}
-.inputfield.red input {		border-color: var(--red);	}
 
 
 

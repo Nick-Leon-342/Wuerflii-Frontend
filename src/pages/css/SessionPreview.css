@@ -1,0 +1,40 @@
+
+
+.sessionpreview_table td {
+	border: none;
+}
+
+.sessionpreview_table td {
+	border-right: 1px solid;
+}
+
+.sessionpreview_table td:first-child {
+	border-left: 1px solid;
+}
+
+
+
+.sessionpreview_table tr:not(:first-child) {
+	border-radius: 0;
+	border-top: 1px solid;
+}
+
+.sessionpreview_table tr:last-child {
+	border-bottom: 1px solid;
+}
+
+
+
+.sessionpreview_table .date-row td {
+	border: none;
+	height: 40px;
+}
+
+.sessionpreview_table .date {
+	margin: 0;
+	padding-left: 10px;
+	display: flex;
+	font-weight: bold;
+	text-align: left;
+	width: 100%;
+}
