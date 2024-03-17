@@ -7,14 +7,18 @@ import { thickBorder } from '../logic/utils'
 
 
 
-export default function PlayerTable({ list_Players, socket, tableWidth, lastPlayerAlias, gnadenwurf, setGnadenwurf, showScores, disabled, playerScores }) {
+export default function PlayerTable({ list_Players, socket, tableWidth, lastPlayerAlias, gnadenwurf, setGnadenwurf, showScores, disabled, playerScores, sentDataPackages, saveSentDataPackages }) {
   
 	const handleGnadenwurfChange = (alias, checked) => {
 
 		const g = {...gnadenwurf}
 		g[alias] = checked
 		setGnadenwurf(g)
-		socket.emit('UpdateGnadenwurf', { ...g, Valid: 'v' })
+
+		const json = { ...g, Valid: 'v' }
+		sentDataPackages.push(json)
+		saveSentDataPackages()
+		socket.emit('UpdateGnadenwurf', json)
 
 	}
 
