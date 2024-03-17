@@ -51,7 +51,7 @@ function Game() {
 
 	const local_onBlurEvent = ( element ) => {
 
-		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, joincode, columnsSum)
+		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, joincode, columnsSum)
 
 	}
 
@@ -173,8 +173,6 @@ function Game() {
 			}
 		).then(() => {
 
-			//TODO
-			// socket.emit('EndGame', '')
 			navigate('/creategame', { replace: true })
 
 		}).catch((err) => {
@@ -227,13 +225,11 @@ function Game() {
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
-		).then((res) => {
+		).then(({ data }) => {
 
-			console.log(res.data)
+			console.log(data)
 
-			//TODO
-			// socket.emit('EndGame', '')
-			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(res.data.List_WinnerNames)}&playerscores=${JSON.stringify(res.data.PlayerScores)}`, { replace: true })
+			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(data.List_WinnerNames)}&playerscores=${JSON.stringify(data.PlayerScores)}`, { replace: true })
 			setLoaderVisible(false)
 
 		}).catch((err) => {
@@ -553,7 +549,8 @@ function Game() {
 
 			<PlayerTable 
 				list_Players={session?.List_Players}
-				// socket={socket}
+				axiosPrivate={axiosPrivate}
+				joincode={+joincode}
 				tableWidth={tableWidth}
 				thickBorder={thickBorder}
 				lastPlayerAlias={lastPlayerAlias}

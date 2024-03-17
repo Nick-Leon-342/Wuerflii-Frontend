@@ -37,7 +37,7 @@ export const removeFocusEvent = (r) => {
 
 }
 
-export const onblurEvent = async ( element, setLastPlayerAlias, urlParams, axiosPrivate, joincode, columnsSum ) => {
+export const onblurEvent = async ( element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, joincode, columnsSum ) => {
 
 	const e = element.target
 	if(!e) return
@@ -83,28 +83,27 @@ export const onblurEvent = async ( element, setLastPlayerAlias, urlParams, axios
 
 	for(let i = 0; 100 > i; i++) {
 
-		let response = false
+		let tryagain = false
 
-		await axiosPrivate.post('/game/entry', json).then(() => {
-	
-			console.log('Axios')
-	
-		}).catch((err) => {
+		await axiosPrivate.post('/game/entry', json).catch((err) => {
 	
 			if(err.response.status === 400) {
 				window.alert('Falsche Client-Anfrage')
+			} else if(err.response.status === 404) {
+				window.alert('Das Spiel wurde nicht gefunden!')
+				return navigate('/selectsession', { replace: true })
 			} else if(err.response.status === 409) {
 				document.getElementById('modal-invalidNumber').showModal()
 				document.getElementById('message-invalidNumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
 			} else {
-				response = window.confirm(`Unbekannter Fehler!\nDer Eintrag '${value === null ? '' : value}' wurde nicht gespeichert!\nErneut versuchen?`)
+				tryagain = window.confirm(`Unbekannter Fehler!\nDer Eintrag '${value === null ? '' : value}' wurde nicht gespeichert!\nErneut versuchen?`)
 				console.log(err)
-				if(!response) e.value = ''
+				if(!tryagain) e.value = ''
 			}
 				
 		})
 		
-		if(response) continue
+		if(tryagain) continue
 		break
 
 	}
