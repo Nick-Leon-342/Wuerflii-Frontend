@@ -157,7 +157,7 @@ function CreateGame() {
 
 		try {
 
-			await axiosPrivate.post('/changecredentials', 
+			await axiosPrivate.patch('/auth/login', 
 				JSON.stringify(json),
 				{
                     headers: { 'Content-Type': 'application/json' },

@@ -27,6 +27,8 @@ function Game() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
+	
+	const [ sentDataPackages ] = useState(JSON.parse(localStorage.getItem('kniffel_sentDataPackages')) || [])
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
@@ -34,7 +36,7 @@ function Game() {
 	const sessionid = urlParams.get('sessionid')
 	const [ lastPlayerAlias, setLastPlayerAlias ] = useState(urlParams.get('lastplayer'))
 	
-	const [columnsSum] = useState([])
+	const [ columnsSum ] = useState([])
 	
 	const [ session, setSession ] = useState()
 
@@ -557,6 +559,8 @@ function Game() {
 				gnadenwurf={gnadenwurf}
 				setGnadenwurf={setGnadenwurf}
 				showScores={showScores}
+				sentDataPackages={sentDataPackages}
+				saveSentDataPackages={saveSentDataPackages}
 			/>
 			
 			<Table 
