@@ -1,6 +1,5 @@
 
 
-import '../App.css'
 import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
@@ -11,9 +10,11 @@ import { isMobile } from 'react-device-detect'
 import Loader from '../components/Loader'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
+import Close from '../components/NavigationElements/Close'
+import CustomLink from '../components/NavigationElements/CustomLink'
 
 
-function SelectSession() {
+export default function SelectSession() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -29,8 +30,6 @@ function SelectSession() {
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ dialog_loaderVisible, setDialog_loaderVisible ] = useState(false)
 	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
-	
-	const message = 'Es gibt noch keine Partie!'
 
 
 
@@ -85,19 +84,10 @@ function SelectSession() {
 			setLoaderVisible(true)
 			const i = element.target.closest('dt').getAttribute('index')
 	
-			await axiosPrivate.post('/selectsession', {
-					SessionID: list[i].id
-				}, 
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).then((res) => {
-
-				console.log(res.data)
+			await axiosPrivate.post('/selectsession', { SessionID: list[i].id }).then(({ data }) => {
 	
-				if(res.data.Exists) {
-					navigate(`/game?sessionid=${list[i].id}&joincode=${res.data.JoinCode}`, { replace: true })
+				if(data.Exists) {
+					navigate(`/game?sessionid=${list[i].id}&joincode=${data.JoinCode}`, { replace: true })
 				} else {
 					navigate(`/sessionpreview?sessionid=${list[i].id}`, { replace: false })
 				}
@@ -259,23 +249,15 @@ function SelectSession() {
 			<OptionsDialog/>
 
 			<dialog id='modal-edit' className='modal'>
-				<div 
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						width: '',
-					}}
-				>
-					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg className='button-responsive' onClick={modalEditClose} height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
-					</div>
+				<div className='selectsession_modal-edit'>
+					<Close onClick={modalEditClose}/>
 					
-					<h1 style={{ fontSize: '50px', fontWeight: 'bold' }}>Bearbeiten</h1>
+					<h1>Bearbeiten</h1>
 					
 
 					{/* ______________________________ChangeColumns______________________________ */}
 					
-					<div className='select-container' style={{ width: '100%' }}>
+					<div className='change-columns-container'>
 						<label>Spalten</label>
 						<select
 							className='select-input'
@@ -296,22 +278,12 @@ function SelectSession() {
 					
 					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 
-					
-					<div className={`loader ${dialog_loaderVisible ? '' : 'notVisible'}`}>
-						<span/>
-						<span/>
-						<span/>
-					</div>
+					<Loader loaderVisible={dialog_loaderVisible}/>
 
 					<button 
-						className='button' 
+						className='button button-thick' 
 						disabled={saveDisabled} 
-						onClick={modalEditSave} 
-						style={{ 
-							width: '100%', 
-							height: '60px', 
-							marginBottom: '30px' 
-						}}
+						onClick={modalEditSave}
 					>Speichern
 					</button>
 
@@ -319,31 +291,24 @@ function SelectSession() {
 			</dialog>
 
 			<dialog id='modal-delete' className='modal'>
+				<div className='selectsession_modal-delete'>
 
-				<p style={{ fontSize: '22px', marginTop: '20px' }}>
-					Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?
-				</p>
+					<h1>Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?</h1>
 
-				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-					<button 
-						className='button' 
-						onClick={modalDeleteSubmit}
-						style={{
-							width: '60%',
-							height: '40px', 
-						}}
-					>Ja</button>
+					<div>
+						<button 
+							className='button button-thick' 
+							onClick={modalDeleteSubmit}
+						>Ja</button>
 
-					<button 
-						className='button' 
-						onClick={modalDeleteClose}
-						disabled={deleteDisabled}
-						style={{
-							backgroundColor: 'rgb(255, 0, 0)',
-						}}
-					>Abbrechen</button>
+						<button 
+							className='button button-red' 
+							onClick={modalDeleteClose}
+							disabled={deleteDisabled}
+						>Abbrechen</button>
+					</div>
+				
 				</div>
-
 			</dialog>
 
 
@@ -352,40 +317,41 @@ function SelectSession() {
 
 			{/* __________________________________________________Page__________________________________________________ */}
 
-			<div className={`trashcan-container`}>
-				<svg style={{ marginLeft: '12px', marginRight: '3px' }} className={`${list.length === 0 ? 'notVisible' : (trashcanDisabled ? 'disabled' : 'button-responsive')}`} onClick={modalDeleteShow} width='30' viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/></g></svg>
+			<div className='selectsession_trashcan-container'>
+
+				<svg className={`trashcan ${list.length === 0 ? 'notvisible' : (trashcanDisabled ? 'disabled' : 'button-responsive')}`} onClick={modalDeleteShow} width='30' viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/></g></svg>
+
 				<Loader loaderVisible={loaderVisible}/>
-				<svg style={{ marginRight: '15px' }} className={`${list.length === 0 ? 'notVisible' : (settingsDisabled ? 'disabled' : 'button-responsive')}`} onClick={modalEditShow} width='30' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+
+				<svg className={`edit ${list.length === 0 ? 'notvisible' : (settingsDisabled ? 'disabled' : 'button-responsive')}`} onClick={modalEditShow} width='30' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+
 			</div>
 
-			<div style={{ display: successfullyUpdatedVisible ? 'flex' : 'none', justifyContent: 'center', marginTop: '10px' }}>
-				<svg 
-					height='25' 
-					viewBox='0 -960 960 960'
-					style={{
-						fill: 'rgb(0, 255, 0)',
-					}}
-				><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
-				<p style={{ width: 'max-content', height: '100%', fontSize: '23px', margin: '0', marginLeft: '5px', color: 'rgb(0, 255, 0)' }}>Erfolgreich gespeichert!</p>
+
+
+			<div className={`selectsession_successfully-saved ${successfullyUpdatedVisible ? '' : 'notvisible'}`}>
+				<p>Erfolgreich gespeichert!</p>
 			</div>
 
-			<dl className='sessionList'>
-				{list.length === 0 ? (
-					<dt style={{ width: '100%', fontSize: '33px', textAlign: 'center' }}>
-						{message}
-					</dt>
-				) : (
-					list.map((s, i) => (
-						<dt className='listElement' index={i} key={i}>
+
+
+			{list.length === 0 ? <>
+				
+				<h1 className='selectsession_no-game'>Es gibt noch keine Partie!</h1>
+
+			</>:<>
+			
+				<dl className='selectsession_list'>
+					{list.map((s, i) => (
+						<dt index={i} key={i}>
 							<input 
-								className='button-responsive checkbox-delete'
-								style={isMobile ? { marginTop: '10px', width: '27px', height: '27px' } : {}} 
+								className={`button-responsive checkbox-delete ${isMobile ? 'ismobile' : ''}`}
 								type='checkbox' 
 								onChange={(e) => checkboxClick(i, e.target.checked)} 
 							/>
 
-							<div className='container' onClick={listElementClick}>
-								<label className='label'>
+							<div className='names-and-date' onClick={listElementClick}>
+								<label className='names'>
 									{s.List_PlayerOrder.map((alias) => {
 										
 										for(const p of s.List_Players) {
@@ -396,21 +362,18 @@ function SelectSession() {
 										return ''
 									}).join(' vs ')}
 								</label>
-								<label className='label date'>{formatDate(s.LastPlayed)}</label>
+								<label className='date'>{formatDate(s.LastPlayed)}</label>
 							</div>
 						</dt>
-					))
-				)}
-			</dl>
-			
-			<div style={{ display: 'flex'}}>
-				<p className='link-switch'>
-					<Link to='/creategame'>Erstelle Spiel</Link>
-				</p>
-			</div>
+					))}
+				</dl>
+
+			</>}
+		
+
+
+			<CustomLink linkTo='/creategame' text='Erstelle Spiel'/>
 
 		</>
 	)
 }
-
-export default SelectSession

@@ -31,7 +31,6 @@ function SessionPreview() {
 	const [ month, setMonth ] = useState()
 	const list_month = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
-	const firstColumnWidth = '150px'
 	const columnWidth = session?.List_Players?.length > 8 ? '75px' : (session?.List_Players?.length > 4 ? '125px' : '200px')
 	const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
@@ -222,33 +221,6 @@ function SessionPreview() {
 
 	}
 
-	const css = () => {
-
-		return { 
-			width: '150px', 
-			fontSize: '15px', 
-			borderRadius: '10px',
-			height: '30px',
-			padding: '5px',
-			marginLeft: '5px',
-			marginRight: '10px',
-			marginTop: '0',
-			marginBottom: '10px',
-			backgroundColor: 'var(--background-color)', 
-			border: '1px solid var(--text-color)',
-			outline: 'none',
-			color: 'var(--text-color)',
-			boxShadow: 'none',
-		}
-
-	}
-
-	useEffect(() => {
-
-		console.log(list)
-
-	}, [list])
-
 
 
 
@@ -260,12 +232,11 @@ function SessionPreview() {
 
 			<OptionsDialog/>
 			
-			<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+			<div className='sessionpreview_select-container'>
 
 				<select 
 					value={view}
-					onChange={(e) => setView(e.target.value)}
-					style={css()}>
+					onChange={(e) => setView(e.target.value)}>
 					<option key={0} value='all'>Gesamtansicht</option>
 					<option key={1} value='showYear'>Jahresansicht</option>
 					<option key={2} value='showMonth'>Monatsansicht</option>
@@ -273,8 +244,7 @@ function SessionPreview() {
 
 				{view !== 'all' && <select 
 					value={year}
-					onChange={(e) => setYear(e.target.value)}
-					style={css()}>
+					onChange={(e) => setYear(e.target.value)}>
 					{list_year.map((y, i) => 
 						<option key={i} value={y}>{y}</option>
 					)}
@@ -282,8 +252,7 @@ function SessionPreview() {
 				
 				{view === 'showMonth' && <select 
 					value={month}
-					onChange={(e) => setMonth(e.target.value)}
-					style={css()}>
+					onChange={(e) => setMonth(e.target.value)}>
 					{list_month.map((m, i) => 
 						<option key={i} value={i}>{m}</option>
 					)}
@@ -291,7 +260,7 @@ function SessionPreview() {
 
 			</div>
 
-			<div style={{ overflow: 'hidden', scrollbarGutter: 'stable both-edges' }}>
+			<div className='sessionpreview_table-container'>
 				<table className='table'>
 					<tbody>
 						<tr>
@@ -310,23 +279,23 @@ function SessionPreview() {
 				</table>
 			</div>
 
-			<div style={{ maxHeight: '305px', overflowY: 'auto', overflowX: 'hidden', scrollbarGutter: 'stable both-edges' }}>
+			<div className='sessionpreview_table-container'>
 				<table className='table sessionpreview_table'>
 					<tbody>
-						{list?.map((fs, i) => {
-							if(fs.Group_Date) {
+						{list?.map((e, i) => {
+							if(e.Group_Date) {
 
-								return <tr className='date-row'>
-									<td><label className='date'>{formatDate(fs.Group_Date)}</label></td>
+								return <tr className='date-row' key={i}>
+									<td><label className='date'>{formatDate(e.Group_Date)}</label></td>
 								</tr>
 
 							} else {
 
 								return (
-									<tr key={i} className='listElement' style={{ display: 'block' }} onClick={() => handleClick(fs)}>
+									<tr key={i} className='listElement' style={{ display: 'block' }} onClick={() => handleClick(e)}>
 										{session?.List_PlayerOrder?.map((alias, j) => {
 											const player = getPlayer(alias)
-											return (<td key={`${i}.${j}`} style={style}>{fs.PlayerScores[player.Alias]}</td>)
+											return (<td key={`${i}.${j}`} style={style}>{e.PlayerScores[player.Alias]}</td>)
 										})}
 									</tr>
 								)

@@ -1,21 +1,105 @@
- 
 
-.sessionList {
-	border-radius: 5px;
-	padding: 5px;
+
+/* __________________________________________________ Trashcan-Container __________________________________________________ */
+
+.selectsession_trashcan-container {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	opacity: 1;
+	margin-bottom: 20px;
 }
 
-.listElement {
+.selectsession_trashcan-container .disabled {
+	opacity: 0.2;
+	pointer-events: none;
+}
+
+.selectsession_trashcan-container svg:not(.disabled):hover {
+	height: 30px;
+}
+
+.selectsession_trashcan-container svg {
+	height: 30px;
+}
+
+
+/* ____________________ Trashcan ____________________ */
+
+.selectsession_trashcan-container .trashcan {
+	margin-left: 12px; 
+	margin-right: 3px;
+}
+
+.selectsession_trashcan-container .trashcan.notvisible {opacity: 0;}
+
+
+/* ____________________ Edit ____________________ */
+
+.selectsession_trashcan-container .edit {
+	margin-right: 15px;
+}
+
+.selectsession_trashcan-container .edit.notvisible {opacity: 0;}
+
+
+
+
+
+/* __________________________________________________ Successfully Saved __________________________________________________ */
+
+.selectsession_successfully-saved {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 10px;
+}
+
+.selectsession_successfully-saved p {
+	color: var(--green);
+	font-size: 25px;
+}
+
+.selectsession_successfully-saved.notvisible {
+	display: none;
+}
+
+
+
+
+
+/* __________________________________________________ List __________________________________________________ */
+
+.selectsession_no-game {
+	padding: 15px;
+	margin-bottom: 20px;
+}
+
+.selectsession_list {
+	margin-bottom: 20px;
+}
+
+.selectsession_list dt {
     display: flex;
     justify-content: space-between;
     border-radius: 5px;
 }
 
-.listElement:hover {
+.selectsession_list dt:hover {
     background-color: var(--list-element-hover-color);
 }
 
-.container {
+.selectsession_list .checkbox-delete {
+	width: 30px;
+	margin-left: 10px;
+}
+
+.selectsession_list .checkbox-delete.ismobile {
+	margin-top: 10px;
+	width: 27px;
+	height: 27px;
+}
+
+.selectsession_list .names-and-date {
     margin-right: 10px;
     margin-left: 10px;
 	height: 45px;
@@ -24,47 +108,74 @@
 	width: 100%;
 }
 
-.date {
-	margin-left: 30px;
-}
-
-.label {
+.selectsession_list .names-and-date .names,
+.selectsession_list .names-and-date .date {
 	height: 100%;
 	padding-top: 11px;
 	font-size: 23px;
 	width: max-content;
 }
 
-.checkbox-delete {
-	width: 30px;
-	margin-left: 10px;
-}
-
-
-
-
-.trashcan-container {
-	width: 100%;
+.selectsession_list .names-and-date .names {
 	display: flex;
-	align-items: center;
-	opacity: 1;
+	overflow: hidden;
+	text-wrap: nowrap;
+	max-width: 450px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
-.trashcan-container .disabled {
-	opacity: 0.2;
-	pointer-events: none;
-}
-
-.trashcan-container svg:not(.disabled):hover {
-	height: 30px;
-}
-
-.trashcan-container svg {
-	height: 30px;
+.selectsession_list .names-and-date .date {
+	margin-left: 30px;
 }
 
 
 
-.notVisible {
-	opacity: 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* __________________________________________________ Modal-Edit __________________________________________________ */
+
+.selectsession_modal-edit {
+	display: flex;
+	flex-direction: column;
+}
+
+.selectsession_modal-edit h1 {
+	font-size: 50px;
+}
+
+.selectsession_modal-edit .change-columns-container {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	margin: 30px 0;
+}
+
+.selectsession_modal-edit .change-columns-container label {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	font-size: 20px;
+}
+
+
+
+ 
+
+/* __________________________________________________ Modal-Delete __________________________________________________ */
+
+.selectsession_modal-delete div {
+	display: flex;
+	gap: 15px;
 }

@@ -1,0 +1,14 @@
+
+
+.customlink_container {
+	display: flex;
+}
+
+.customlink_container a {
+	color: var(--green);
+	font-size: 18px;
+}
+
+.customlink_container a:hover {
+	color: var(--green-lighter);
+}

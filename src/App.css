@@ -1,13 +1,18 @@
 
-
-.button-container {
-    display: flex;
-    align-content: center;
-    justify-content: center;
+::-webkit-scrollbar {
+	width: 0;
 }
 
 * {
 	user-select: none;
+	
+    margin: 0;
+    padding: 0;
+
+	/* fill: var(--text-color); */
+	color: var(--text-color);
+    border-color: var(--text-color);
+	font-family: 'Roboto', sans-serif;
 	box-sizing: border-box;
 }
 
@@ -19,22 +24,12 @@
 }
 
 body {
-	margin: 0;
-	padding: 0;
 	display: flex;
-/* width: 100%; */
 	height: 100vh;
 	justify-content: center;
 	align-items: center;
 	overflow-x: auto;
 	background-color: rgb(240, 240, 240);
-	
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-	fill: var(--text-color);
-	stroke: var(--text-color);
-	border-color: var(--text-color);
-	color: var(--text-color);
 	
 	--text-color: rgb(100, 100, 100);
 	--text-color-static: rgb(100, 100, 100);
@@ -137,6 +132,15 @@ dialog::backdrop {
 	transition: all .25s ease;
 }
 
+.button-thick {
+	height: 60px;
+	width: 100%;
+}
+
+.button-red {
+	background-color: var(--red);
+}
+
 .button:hover {
 	transform: scale(1.02);
     background-color: var(--green-light);
@@ -158,12 +162,6 @@ dialog::backdrop {
 }
 .reglog-link-switch a {			color: var(--green);	   	}
 .reglog-link-switch a:hover {	color: var(--green-lighter);}
-
-.link-switch a {
-	color: var(--green);
-	font-size: 18px;
-}
-.link-switch a:hover {			color: var(--green-lighter);}
 
 .toggleButton {
 	position: relative;
@@ -212,6 +210,23 @@ dialog::backdrop {
 	background-color: var(--green);
 }
 
+
+
+
+
+
+
+input, 
+select, 
+textarea {
+	display: flex;
+	outline: none;
+	border-radius: 10px;
+	border: 1px solid var(--text-color);
+	color: var();
+	padding: 5px 10px;
+	font-size: 15px;
+}
 
 
 

@@ -1,5 +1,41 @@
 
 
+
+
+
+.sessionpreview_select-container {
+	display: flex;
+	justify-content: space-between;
+	overflow-y: auto;
+	scrollbar-gutter: stable both-edges;
+}
+
+
+
+
+
+
+.sessionpreview_table-container {
+	max-height: 305px; 
+	overflow-y: auto;
+	overflow-x: hidden;
+	scrollbar-gutter: stable both-edges;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sessionpreview_table td {
 	border: none;
 }
