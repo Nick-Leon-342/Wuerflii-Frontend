@@ -1,10 +1,8 @@
 
 
-
-import '../App.css'
 import './css/CreateGame.css'
 
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
@@ -15,6 +13,12 @@ import JoinGameInput from '../components/JoinGameInput'
 import RegistrationForm from '../components/RegistrationForm'
 import ErrorMessage from '../components/ErrorMessage'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
+
+import Close from '../components/NavigationElements/Close'
+import CustomLink from '../components/NavigationElements/CustomLink'
+
+
+
 
 
 function CreateGame() {
@@ -205,12 +209,12 @@ function CreateGame() {
 						flexDirection: 'column',
 					}}
 				>
-					<div style={{ display: 'flex', justifyContent: 'right', width: '100%' }}>
-						<svg className='button-responsive' onClick={modalSettingsClose} height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
-					</div>
+					<Close onClick={modalSettingsClose}/>
 
 					<h1 style={{ fontSize: '50px', fontWeight: 'bold' }}>Einstellungen</h1>
 					
+
+
 					<form onSubmit={handleSubmit}>
 
 						<RegistrationForm Name={Name} setName={setName} Password={Password} setPassword={setPassword} isRequired={false}/>
@@ -220,12 +224,8 @@ function CreateGame() {
 						<ErrorMessage error={error}/>
 
 						<button 
-							className='button' 
+							className='button button-thick' 
 							disabled={settingsDisabled}
-							style={{ 
-								height: '60px', 
-								width: '100%', 
-							}}
 						>Speichern
 						</button>
 					
@@ -250,6 +250,7 @@ function CreateGame() {
 			</dialog>
 
 			<dialog id='modal-switchtogame' className='modal'>
+
 				<p style={{ fontSize: '22px', }}>Es wurde ein Spiel gefunden.{<br/>}Soll es geladen werden?</p>
 				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 					<button 
@@ -268,6 +269,7 @@ function CreateGame() {
 						}}
 					>Abbrechen</button>
 				</div>
+
 			</dialog>
 
 			<OptionsDialog/>
@@ -317,13 +319,11 @@ function CreateGame() {
 				</select>
 			</div>
 
-			<button className='button' style={{ width: '100%', height: '50px', marginBottom: '0px' }} onClick={next}>Weiter</button>
 
-			<div style={{ display: 'flex', marginTop: '10px' }}>
-				<p className='link-switch'>
-					<Link to='/selectsession'>Lade Spiel</Link>
-				</p>
-			</div>
+
+			<button className='button button-thick' onClick={next}>Weiter</button>
+
+			<CustomLink linkTo='/selectsession' text='Lade Spiel'/>
 
 		</>
 	)

@@ -38,6 +38,9 @@ export default function SessionPreview() {
 	const columnWidth = session?.List_Players?.length > 8 ? '75px' : (session?.List_Players?.length > 4 ? '125px' : '200px')
 	const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
+	const height_dateElement = 40
+	const height_element = 51
+
 	
 
 	
@@ -117,6 +120,7 @@ export default function SessionPreview() {
 		if(!list_toEdit || list_toEdit.length === 0) return
 
 		const list = []
+		const rowHeights = []
 
 		const first = new Date(list_toEdit[0].End)
 		list.push({ Group_Date: first, ScoresAfter: list_toEdit[0].ScoresAfter })
@@ -125,12 +129,15 @@ export default function SessionPreview() {
 		list_toEdit.forEach(e => {
 			const d = new Date(e.End)
 			if(d.toDateString() !== currentDate.toDateString()) {
+				rowHeights.push(height_dateElement)
 				list.push({ Group_Date: d, ScoresAfter: e.ScoresAfter })
 				currentDate = d
 			}
+			rowHeights.push(height_element)
 			list.push(e)
 		})
 
+		setRowHeights(rowHeights)
 		setList_toEdit(list)
 
 	}
@@ -236,21 +243,6 @@ export default function SessionPreview() {
 	const table_ref = useRef(null)
 	const listelement_ref = useRef(null)
 	const [ rowHeights, setRowHeights ] = useState([])
-
-
-
-	useEffect(() => {
-		if (table_ref.current) {
-
-			const rows = table_ref.current.querySelectorAll('tr')
-			const heights = Array.from(rows).map(row => row.getBoundingClientRect().height)
-			console.log('Effect', heights)
-			setRowHeights(heights)
-
-		}
-	}, [table_ref])
-
-
 
 	const handleScroll = () => {
 
