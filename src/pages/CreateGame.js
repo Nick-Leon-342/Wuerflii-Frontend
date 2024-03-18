@@ -9,7 +9,6 @@ import useAuth from '../hooks/useAuth'
 import { REACT_APP_MAX_PLAYERS, REACT_APP_MAX_COLUMNS, NAME_REGEX, PASSWORD_REGEX } from '../logic/utils-env'
 
 import Loader from '../components/Loader'
-import JoinGameInput from '../components/JoinGameInput'
 import RegistrationForm from '../components/RegistrationForm'
 import ErrorMessage from '../components/ErrorMessage'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
@@ -27,7 +26,6 @@ export default function CreateGame() {
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
 
-	const [ showJoinGame, setShowJoinGame ] = useState(false)
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
 

@@ -165,6 +165,12 @@ dialog::backdrop {
 
 
 
+.responsive {			transition: all .3s;}
+.responsive:hover {		transform: scale(1.02);}
+.responsive:active {	transform: scale(0.98);}
+
+
+
 
 
 

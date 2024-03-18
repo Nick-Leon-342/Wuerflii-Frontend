@@ -86,3 +86,40 @@
 .newGame:active {
 	background-color: lightgray;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* __________________________________________________  Modal Surrender __________________________________________________ */
+
+.game_modal-surrender-askifsurrender {
+	margin-top: 20px;
+}
+
+.game_modal-surrender-askifsurrender div {
+	display: flex;
+	gap: 10px;
+}
+
+.game_modal-surrender-list {
+	margin-top: 20px;
+	list-style-type: none;
+}
+
+.game_modal-surrender-list li {
+	padding: 20px 0;
+	font-size: 20px;
+	border-radius: 5px;
+	box-shadow: 0 0 10px -3px gray;
+	margin-bottom: 15px;
+}

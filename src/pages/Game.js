@@ -1,6 +1,5 @@
 
 
-import '../App.css'
 import './css/Game.css'
 
 import React, { useEffect, useState, useLayoutEffect } from 'react'
@@ -18,6 +17,7 @@ import LastPlayerDialog from '../components/Dialog/LastPlayerDialog'
 import InvalidNumberDialog from '../components/Dialog/InvalidNumberDialog'
 import ToggleSlider from '../components/ToggleSlider'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
+import Close from '../components/NavigationElements/Close'
 
 
 
@@ -318,54 +318,41 @@ function Game() {
 			<OptionsDialog/>
 
 			<dialog id='modal-surrender' className='modal'>
-				<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={closeSurrender} height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
-				</div>
 
-				<h1 style={{ fontSize: '50px' }}>Gewinner auswählen</h1>
+				<Close onClick={closeSurrender}/>
 
-				{askIfSurrender && <div>
-					<label style={{ fontSize: '22px', }}>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</label>
-					<div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+				<h1>Gewinner auswählen</h1>
+
+				{askIfSurrender && 
+				<div className='game_modal-surrender-askifsurrender'>
+
+					<h2>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</h2>
+
+					<div>
+
 						<button 
-							className='button' 
+							className='button button-thick' 
 							disabled={saveResultsDisabled}
 							onClick={saveResults}
-							style={{
-								width: '60%',
-								height: '40px', 
-							}}
 						>Ja</button>
+
 						<button 
-							className='button' 
+							className='button button-red' 
 							onClick={closeSurrender}
-							style={{
-								backgroundColor: 'rgb(255, 0, 0)',
-							}}
 						>Abbrechen</button>
 					</div>
-				</div>}
 
-				<dl>
-					{session?.List_Players?.map((p, i) => {
-						return (
-							<dt 
-								className='listElement' 
-								onClick={() => setAskIfSurrender(p.Alias)}
-								key={i}
-								style={{
-									padding: '10px',
-								}}
-							>
-								<label
-									style={{
-										fontSize: '20px',
-									}}
-								>{p.Name}</label>
-							</dt>
-						)
-					})}
-				</dl>
+				</div>
+				}
+
+				<ul className='game_modal-surrender-list'>
+					{session?.List_Players?.map((p, i) => (
+						<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
+							<label>{p.Name}</label>
+						</li>
+					))}
+				</ul>
+				
 			</dialog>
 
 			<dialog id='modal-edit' className='modal'>
@@ -601,7 +588,7 @@ function Game() {
 
 				<button 
 					onClick={finishGame}
-					className='button'
+					className='button button-thick'
 					style={{
 						width: '60%',
 						padding: '10px',
