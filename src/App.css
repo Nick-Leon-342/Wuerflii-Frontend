@@ -241,7 +241,7 @@ textarea {
 .table {
     table-layout: fixed;
     border-collapse: collapse;
-    margin: 5px;
+    margin: 5px 0;
 }
 
 .table td {

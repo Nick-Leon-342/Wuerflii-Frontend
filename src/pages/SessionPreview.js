@@ -4,15 +4,19 @@
 import './css/SessionPreview.css'
 
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
+import CustomLink from '../components/NavigationElements/CustomLink'
 
 
-function SessionPreview() {
+
+
+
+export default function SessionPreview() {
 	
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -115,18 +119,18 @@ function SessionPreview() {
 		const list = []
 
 		const first = new Date(list_toEdit[0].End)
-		list.push({ Group_Date: first })
+		list.push({ Group_Date: first, ScoresAfter: list_toEdit[0].ScoresAfter })
 		let currentDate = first
 	
 		list_toEdit.forEach(e => {
 			const d = new Date(e.End)
 			if(d.toDateString() !== currentDate.toDateString()) {
-				list.push({ Group_Date: d })
+				list.push({ Group_Date: d, ScoresAfter: e.ScoresAfter })
 				currentDate = d
 			}
 			list.push(e)
 		})
-		
+
 		setList_toEdit(list)
 
 	}
@@ -221,6 +225,53 @@ function SessionPreview() {
 
 	}
 
+	
+
+
+
+	// __________________________________________________ Scroll __________________________________________________
+
+	const [ visibleRowIndex, setVisibleRowIndex ] = useState(0)
+	const div_ref = useRef(null)
+	const table_ref = useRef(null)
+	const listelement_ref = useRef(null)
+	const [ rowHeights, setRowHeights ] = useState([])
+
+
+
+	useEffect(() => {
+		if (table_ref.current) {
+
+			const rows = table_ref.current.querySelectorAll('tr')
+			const heights = Array.from(rows).map(row => row.getBoundingClientRect().height)
+			console.log('Effect', heights)
+			setRowHeights(heights)
+
+		}
+	}, [table_ref])
+
+
+
+	const handleScroll = () => {
+
+		if (!div_ref.current || !table_ref.current) return
+
+		const scrollTop = div_ref.current.scrollTop
+		let totalHeight = 0
+		let newVisibleRowIndex = 0
+
+		for (let i = 0; i < rowHeights.length; i++) {
+			totalHeight += rowHeights[i]
+			if (totalHeight > scrollTop) {
+				newVisibleRowIndex = i
+				break
+			}
+		}
+
+		setVisibleRowIndex(newVisibleRowIndex)
+
+	}
+
 
 
 
@@ -260,7 +311,9 @@ function SessionPreview() {
 
 			</div>
 
-			<div className='sessionpreview_table-container'>
+
+
+			<div className='sessionpreview_table-container sessionpreview_player-table'>
 				<table className='table'>
 					<tbody>
 						<tr>
@@ -271,16 +324,21 @@ function SessionPreview() {
 						</tr>
 						<tr>
 							{session?.List_PlayerOrder?.map((alias, i) => {
-								const player = getPlayer(alias)
-								return (<td key={i} style={style}>{wins[player.Alias]}</td>)
+								return (
+									<td key={i} style={style}>
+										{list && list.at(visibleRowIndex)?.ScoresAfter[alias]}
+									</td>
+								)
 							})}
 						</tr>
 					</tbody>
 				</table>
 			</div>
 
-			<div className='sessionpreview_table-container'>
-				<table className='table sessionpreview_table'>
+
+
+			<div className='sessionpreview_table-container' ref={div_ref} onScroll={handleScroll}>
+				<table className='table sessionpreview_table' ref={table_ref}>
 					<tbody>
 						{list?.map((e, i) => {
 							if(e.Group_Date) {
@@ -302,22 +360,19 @@ function SessionPreview() {
 
 							}
 						})}
+						<tr ref={listelement_ref}/>
 					</tbody>
 				</table>
 			</div>
 			
+
+
 			<Loader loaderVisible={loaderVisible}/>
 			
-			<button className='button' style={{ height: '50px', width: '100%', marginBottom: '0px' }} onClick={play}>Los geht's!</button>
+			<button className='button button-thick' onClick={play}>Los geht's!</button>
 
-			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-				<p className='link-switch'>
-					<Link to='/selectsession'>Zurück</Link>
-				</p>
-			</div>
+			<CustomLink linkTo='/selectsession' text='Zurück'/>
 
 		</>
 	)
 }
-
-export default SessionPreview
