@@ -21,7 +21,7 @@ import CustomLink from '../components/NavigationElements/CustomLink'
 
 
 
-function CreateGame() {
+export default function CreateGame() {
 
 	const { setAuth } = useAuth()
 	const axiosPrivate = useAxiosPrivate()
@@ -37,18 +37,9 @@ function CreateGame() {
 
 	useEffect(() => {
 
-		async function connect() {
-			await axiosPrivate.get('/creategame',
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).catch(() => {
-				navigate('/login', { replace: true })
-			})
-		}
-
-		connect()
+		axiosPrivate.get('/creategame').catch(() => {
+			navigate('/login', { replace: true })
+		})
 
 	}, [])
 
@@ -189,8 +180,30 @@ function CreateGame() {
 
 	}
 
-	const handleCancel = () => {
-		document.getElementById('modal-switchtogame').close()
+
+
+
+
+	// __________________________________________________ SelectComponent __________________________________________________
+
+	const SelectComponent = ({ text, value, handleValueChange, defaultText, list }) => {
+
+		return (
+			<div className='creategame_select'>
+
+				<label>{text}</label>
+
+				<select value={value} onChange={handleValueChange}>
+
+					<option value='' disabled>{defaultText}</option>
+					
+					{list.map((e) => <option key={e} value={e}>{e}</option>)}
+
+				</select>
+
+			</div>
+		)
+
 	}
 
 
@@ -203,16 +216,12 @@ function CreateGame() {
 			{/* __________________________________________________Dialogs__________________________________________________ */}
 
 			<dialog id='modal-settings' className='modal'>
-				<div 
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-					}}
-				>
+				<div className='creategame_modal-settings'>
+
 					<Close onClick={modalSettingsClose}/>
 
-					<h1 style={{ fontSize: '50px', fontWeight: 'bold' }}>Einstellungen</h1>
-					
+					<h1>Einstellungen</h1>
+
 
 
 					<form onSubmit={handleSubmit}>
@@ -226,50 +235,19 @@ function CreateGame() {
 						<button 
 							className='button button-thick' 
 							disabled={settingsDisabled}
-						>Speichern
-						</button>
+						>Speichern</button>
 					
 					</form>
 					
+
+
 					<button 
-						className='button' 
+						className='button logout' 
 						disabled={logoutDisabled}
-						style={{ 
-							width: '100px', 
-							boxShadow: 'none', 
-							background: 'none', 
-							color: 'rgb(255, 0, 0)', 
-							margin: '0', 
-							padding: '0', 
-						}} 
 						onClick={logout}
-					>Ausloggen
-					</button>
+					>Ausloggen</button>
 
 				</div>
-			</dialog>
-
-			<dialog id='modal-switchtogame' className='modal'>
-
-				<p style={{ fontSize: '22px', }}>Es wurde ein Spiel gefunden.{<br/>}Soll es geladen werden?</p>
-				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
-					<button 
-						className='button' 
-						onClick={() => navigate('/game', { replace: true })}
-						style={{
-							width: '50%',
-						}}
-					>Ja</button>
-					<button 
-						className='button' 
-						onClick={handleCancel}
-						style={{
-							backgroundColor: 'rgb(255, 0, 0)',
-							color: 'white',
-						}}
-					>Abbrechen</button>
-				</div>
-
 			</dialog>
 
 			<OptionsDialog/>
@@ -280,44 +258,29 @@ function CreateGame() {
 
 			{/* __________________________________________________Page__________________________________________________ */}
 
-			<svg className='button-responsive' style={{ marginBottom: '30px' }} onClick={modalSettingsShow} height="30" viewBox="0 -960 960 960" ><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
+			<svg className='button-responsive creategame_showsettings' onClick={modalSettingsShow} height='30' viewBox='0 -960 960 960' ><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
 
-			<div style={{ display: successfullyUpdatedVisible ? 'flex' : 'none', justifyContent: 'center', marginBottom: '25px' }}>
-				<svg height='25' viewBox='0 -960 960 960' style={{ fill: 'rgb(0, 255, 0)' }}><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
-				<p style={{ width: 'max-content', height: '100%', fontSize: '23px', margin: '0', marginLeft: '5px', color: 'rgb(0, 255, 0)' }}>Erfolgreich gespeichert!</p>
+			<div className={`creategame_successfullysaved ${successfullyUpdatedVisible ? '' : 'notvisible'}`}>
+				<p>Erfolgreich gespeichert!</p>
 			</div>
 
-			<div className='select-container'>
-				<label>Spieler</label>
-				<select
-					className='select-input'
-					value={players}
-					onChange={handleInputChange_players}
-				>
-					<option value='' disabled>
-						Spieleranzahl
-					</option>
-					{options_players.map((p) => (
-						<option key={p} value={p}>{p}</option>
-					))}
-				</select>
-			</div>
 
-			<div className='select-container'>
-				<label>Spalten</label>
-				<select
-					className='select-input'
-					value={columns}
-					onChange={handleInputChange_columns}
-					>
-					<option value='' disabled>
-						Spaltenanzahl
-					</option>
-					{options_columns.map((c) => (
-						<option key={c} value={c}>{c}</option>
-					))}
-				</select>
-			</div>
+
+			<SelectComponent 
+				text='Spieler' 
+				value={players} 
+				handleValueChange={handleInputChange_players} 
+				defaultText='Spieleranzahl' 
+				list={options_players}
+			/>
+			
+			<SelectComponent 
+				text='Spalten' 
+				value={columns} 
+				handleValueChange={handleInputChange_columns} 
+				defaultText='Spaltenanzahl' 
+				list={options_columns}
+			/>
 
 
 
@@ -328,5 +291,3 @@ function CreateGame() {
 		</>
 	)
 }
-
-export default CreateGame

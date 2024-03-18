@@ -1,58 +1,83 @@
 
 
-.logout {display: flex;}
-.logout-button {
-	background: none;
-	border: none;
-	color: var(--red);
-	padding: 0;
-	font-size: 17px;
-}
-.logout-button:hover {opacity: .5;}
-.logout-button:active {transform: scale(.9);}
-
-
-
-.input-computer {
-	width: 75px;
-	margin-left: 50px;
+.creategame_showsettings {
+	margin-bottom: 30px;
 }
 
-.input-mobile {
-	width: 150px;
-	margin-left: 20px;
-	border-radius: 5px;
-	border: 1px solid var(--text-color);
-	color: var(--text-color);
-}
-
-
-
-.select-container {
+.creategame_showsettings {
+	width: 100%;
 	display: flex;
-	justify-content: space-between;
-	font-size: 23px;
-	width: 300px;
+	justify-content: center;
+	margin-bottom: 25px;
+}
+
+
+
+
+
+/* __________________________________________________ Successfully Saved __________________________________________________ */
+
+.creategame_successfullysaved p {
+	font-size: 25px;
+	color: rgb(0, 255, 0);
 	margin-bottom: 20px;
 }
 
-.select-container label {
-	padding: 4px 0; 
+.creategame_successfullysaved.notvisible {
+	display: none;
 }
 
 
-.select-input {
+
+
+
+/* __________________________________________________ Select __________________________________________________ */
+
+.creategame_select {
+	display: flex;
+	justify-content: space-between;
+	gap: 50px;
+	font-size: 25px;
+	margin-bottom: 20px;
+}
+
+.creategame_select label {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.creategame_select select {
 	border-radius: 5px;
 	width: 170px;
-	height: 35px;
-	font-size: 18px;
+	height: 50px;
+	font-size: 20px;
 	color: var(--text-color);
 	background-color: var(--background-color);
 	outline: none;
 }
 
 
-.select-input option {
-	font-size: 18px;
-	text-align: center;
+
+
+
+
+
+
+
+
+/* __________________________________________________ Modal-Settings __________________________________________________ */
+
+.creategame_modal-settings {
+	display: flex;
+	flex-direction: column;
+}
+
+.creategame_modal-settings .logout {
+	width: 100px; 
+	box-shadow: none;
+	background: none; 
+	color: var(--red);
+	margin: 0; 
+	padding: 0;
 }
