@@ -1,0 +1,27 @@
+
+
+.registrationform_input {
+	margin-top: 30px;
+}
+
+
+
+.registrationform_error-row {
+	display: flex; 
+	height: 25px;
+	padding: 0;
+}
+
+.registrationform_error-row label {
+	padding: 3px 0; 
+	font-size: 18px; 
+	color: var(--text-color-light)
+}
+
+.registrationform_error-row svg {
+	margin-right: 10px; 
+	height: 25px;
+}
+
+.registrationform_error-row .valid {	fill: var(--green);}
+.registrationform_error-row .invalid {	fill: var(--text-color-light);}
