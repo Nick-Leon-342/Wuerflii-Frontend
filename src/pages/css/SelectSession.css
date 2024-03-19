@@ -29,6 +29,7 @@
 .selectsession_trashcan-container .trashcan {
 	margin-left: 8px; 
 	margin-right: 7px;
+	width: 30px;
 }
 
 .selectsession_trashcan-container .trashcan.notvisible {opacity: 0;}
@@ -38,9 +39,15 @@
 
 .selectsession_trashcan-container .edit {
 	margin-right: 15px;
+	width: 30px;
 }
 
 .selectsession_trashcan-container .edit.notvisible {opacity: 0;}
+
+
+
+
+
 
 
 
@@ -62,6 +69,11 @@
 .selectsession_successfully-saved.notvisible {
 	display: none;
 }
+
+
+
+
+
 
 
 
@@ -144,7 +156,7 @@
 
 
 
-/* __________________________________________________ Modal-Edit __________________________________________________ */
+/* __________________________________________________ Popup Edit __________________________________________________ */
 
 .selectsession_modal-edit {
 	display: flex;
@@ -173,9 +185,18 @@
 
  
 
-/* __________________________________________________ Modal-Delete __________________________________________________ */
+/* __________________________________________________ Popup Delete __________________________________________________ */
 
-.selectsession_modal-delete div {
+.selectsession_popup-delete {
+	display: grid;
+	justify-content: center;
+}
+
+.selectsession_popup-delete div {
 	display: flex;
-	gap: 15px;
+	flex-direction: column;
+}
+
+.selectsession_popup-delete .button-red-reverse {
+	margin-top: 0;
 }

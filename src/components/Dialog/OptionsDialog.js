@@ -52,7 +52,11 @@ export default function OptionsDialog() {
 				<div className='optionsdialog_joincode'>
 					
 					<label>Dark mode</label>
-					<ToggleSlider toggled={darkModeToggled} setToggled={setDarkModeToggled} scale='.7'/>
+					<ToggleSlider 
+						toggled={darkModeToggled} 
+						setToggled={setDarkModeToggled} 
+						scale='.7'
+					/>
 					
 				</div>
 

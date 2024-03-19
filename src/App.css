@@ -135,10 +135,6 @@ dialog::backdrop {
 	width: 100%;
 }
 
-.button-red {
-	background-color: var(--red);
-}
-
 .button:hover {
 	transform: scale(1.02);
     background-color: var(--green-light);
@@ -147,6 +143,23 @@ dialog::backdrop {
 .button:active {
     transform: scale(0.98);
 }
+
+
+
+/* __________________________________________________ Button-Red __________________________________________________ */
+
+.button-red {
+	background-color: var(--red);
+}
+
+.button-red-reverse {
+	background: none;
+	color: var(--red);
+	box-shadow: none;
+}
+
+.button-red-reverse:hover {background: none;}
+.button-red-reverse:active {background: none;}
 
 
 .button-responsive {			transition: all .25s ease;	}

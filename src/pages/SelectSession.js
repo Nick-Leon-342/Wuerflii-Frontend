@@ -12,6 +12,7 @@ import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
 import Close from '../components/NavigationElements/Close'
 import CustomLink from '../components/NavigationElements/CustomLink'
+import Popup from '../components/Popup'
 
 
 export default function SelectSession() {
@@ -30,6 +31,9 @@ export default function SelectSession() {
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ dialog_loaderVisible, setDialog_loaderVisible ] = useState(false)
 	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
+
+	const [ show_editSession, setShow_editSession ] = useState(false)
+	const [ show_deleteSession, setShow_deleteSession ] = useState(false)
 
 
 
@@ -136,16 +140,9 @@ export default function SelectSession() {
 
 	const [ deleteDisabled, setDeleteDisabled ] = useState(false)
 
-	const modalDeleteShow = async () => {
-
-		if(trashcanDisabled) return
-		document.getElementById('modal-delete').showModal()
-		
-	}
-
 	const modalDeleteSubmit = async () => {
 
-		modalDeleteClose()
+		setShow_deleteSession(false)
 		setLoaderVisible(true)
 		setDeleteDisabled(true)
 
@@ -169,10 +166,6 @@ export default function SelectSession() {
 		setLoaderVisible(false)
 		window.location.reload()
 
-	}
-
-	const modalDeleteClose = () => {
-		document.getElementById('modal-delete').close()
 	}
 
 
@@ -291,24 +284,7 @@ export default function SelectSession() {
 			</dialog>
 
 			<dialog id='modal-delete' className='modal'>
-				<div className='selectsession_modal-delete'>
-
-					<h1>Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?</h1>
-
-					<div>
-						<button 
-							className='button button-thick' 
-							onClick={modalDeleteSubmit}
-						>Ja</button>
-
-						<button 
-							className='button button-red' 
-							onClick={modalDeleteClose}
-							disabled={deleteDisabled}
-						>Abbrechen</button>
-					</div>
 				
-				</div>
 			</dialog>
 
 
@@ -319,11 +295,19 @@ export default function SelectSession() {
 
 			<div className='selectsession_trashcan-container'>
 
-				<svg className={`trashcan ${list.length === 0 ? 'notvisible' : (trashcanDisabled ? 'disabled' : 'button-responsive')}`} onClick={modalDeleteShow} width='30' viewBox="-0.5 -0.5 458 510"><g><rect x="58" y="55" width="340" height="440" rx="51" ry="51" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="15" y="55" width="427" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/><rect x="125" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="275" y="145" width="50" height="280" rx="9" ry="9" fill="none" strokeWidth="50" pointerEvents="all"/><rect x="158" y="15" width="142" height="30" rx="4.5" ry="4.5" fill="none" strokeWidth="30" pointerEvents="all"/></g></svg>
+				<svg 
+					className={`trashcan ${list.length === 0 ? 'notvisible' : (trashcanDisabled ? 'disabled' : 'button-responsive')}`} 
+					onClick={() => !trashcanDisabled && setShow_deleteSession(true)} 
+					viewBox='-0.5 -0.5 458 510'
+				><g><rect x='58' y='55' width='340' height='440' rx='51' ry='51' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='15' y='55' width='427' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='125' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='275' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='158' y='15' width='142' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/></g></svg>
 
 				<Loader loaderVisible={loaderVisible}/>
 
-				<svg className={`edit ${list.length === 0 ? 'notvisible' : (settingsDisabled ? 'disabled' : 'button-responsive')}`} onClick={modalEditShow} width='30' viewBox="0 -960 960 960" ><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+				<svg 
+					className={`edit ${list.length === 0 ? 'notvisible' : (settingsDisabled ? 'disabled' : 'button-responsive')}`} 
+					onClick={modalEditShow} 
+					viewBox='0 -960 960 960'
+				><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
 
 			</div>
 
@@ -344,6 +328,7 @@ export default function SelectSession() {
 				<dl className='selectsession_list'>
 					{list.map((s, i) => (
 						<dt index={i} key={i}>
+
 							<input 
 								className={`button-responsive checkbox-delete ${isMobile ? 'ismobile' : ''}`}
 								type='checkbox' 
@@ -351,6 +336,7 @@ export default function SelectSession() {
 							/>
 
 							<div className='names-and-date' onClick={listElementClick}>
+
 								<label className='names'>
 									{s.List_PlayerOrder.map((alias) => {
 										
@@ -362,8 +348,11 @@ export default function SelectSession() {
 										return ''
 									}).join(' vs ')}
 								</label>
+
 								<label className='date'>{formatDate(s.LastPlayed)}</label>
+
 							</div>
+
 						</dt>
 					))}
 				</dl>
@@ -373,6 +362,36 @@ export default function SelectSession() {
 
 
 			<CustomLink linkTo='/creategame' text='Erstelle Spiel'/>
+
+
+
+
+
+
+
+			<Popup
+				showPopup={show_deleteSession}
+				setShowPopup={setShow_deleteSession}
+			>
+				<div className='selectsession_popup-delete'>
+					<div>
+
+						<h1>Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?</h1>
+
+						<button 
+							className='button button-thick' 
+							onClick={modalDeleteSubmit}
+						>Ja</button>
+
+						<button 
+							className='button button-red-reverse' 
+							onClick={() => setShow_deleteSession(false)}
+							disabled={deleteDisabled}
+						>Abbrechen</button>
+
+					</div>
+				</div>
+			</Popup>
 
 		</>
 	)
