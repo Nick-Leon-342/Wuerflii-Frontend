@@ -86,7 +86,6 @@ export default function Login() {
 
 				<FancyInput 
 					id='Username' 
-					classNames='login_input'
 					type='text' 
 					text='Benutzername' 
 					value={Name} 
@@ -97,6 +96,7 @@ export default function Login() {
 				<FancyInput 
 					id='Password' 
 					type='password' 
+					classNames='login_input'
 					text='Passwort' 
 					value={Password} 
 					setValue={setPassword} 

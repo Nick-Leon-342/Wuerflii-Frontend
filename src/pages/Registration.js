@@ -87,7 +87,7 @@ export default function Registration() {
 
 
 
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} className='registration_container'>
 
 				<RegistrationForm 
 					Name={Name} 
@@ -96,7 +96,7 @@ export default function Registration() {
 					setPassword={setPassword} isRequired={true}
 				/>
 
-				<Loader loaderVisible={loaderVisible} marginTop='10px'/>
+				<Loader loaderVisible={loaderVisible}/>
 
 				<ErrorMessage error={error}/>
 
