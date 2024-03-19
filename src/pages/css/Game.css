@@ -100,7 +100,7 @@
 
 
 
-/* __________________________________________________  Modal Surrender __________________________________________________ */
+/* __________________________________________________ Modal Surrender __________________________________________________ */
 
 .game_modal-surrender-askifsurrender {
 	margin-top: 20px;
@@ -122,4 +122,26 @@
 	border-radius: 5px;
 	box-shadow: 0 0 10px -3px gray;
 	margin-bottom: 15px;
+}
+
+
+
+
+
+
+
+
+/* __________________________________________________ Modal Edit __________________________________________________ */
+
+.game_modal-edit-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.game_modal-edit-container .container {
+	display: flex;
+	font-weight: bold; 
+	margin-bottom: 10px; 
+	font-size: 20px;
+	padding-left: 60px;
 }

@@ -81,3 +81,14 @@
 	margin: 0; 
 	padding: 0;
 }
+
+
+
+
+
+/* __________________________________________________ Popup EnterNames __________________________________________________ */
+
+.creategame_popup-enternames {
+	display: grid;
+	justify-content: center;
+}

@@ -1,22 +1,47 @@
 
 
-.enterNamesElement {
-    display: flex;
-    align-items: center;
-	justify-content: space-between;
-    height: 40px;
-	margin-bottom: 5px;
-	outline: none;
+.enternames_container {
+	width: 500px;
 }
 
 
 
 
+.enternames_list-container {
+	overflow-y: auto;
+	max-height: 500px;
+}
+
+.enternames_list li {
+    display: flex;
+	justify-content: space-between;
+	margin-bottom: 15px;
+}
+
+.enternames_list li input[type='text'] {
+	height: 45px;
+	width: 450px;
+	border-radius: 5px;
+	border: 1px solid var(--text-color-light);
+	font-size: 20px;
+}
+
+.enternames_list li input[type='color'] {
+    background-color: transparent;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+	width: 40px;
+}
+
+
+
 
 .colorbox-computer {
-    width: 40px;
-	block-size: 40px;
-	height: 44px;
+    width: 45px;
+	block-size: 45px;
+	height: 45px;
 	padding: 0px;
 	border: none;
 	outline: none;
@@ -45,14 +70,4 @@
 
 
 
-input[type="color"] {
-    background-color: transparent;
-    box-shadow: none;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
 
-.go {
-	width: 100%;
-}

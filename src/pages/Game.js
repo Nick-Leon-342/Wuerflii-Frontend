@@ -352,62 +352,36 @@ function Game() {
 						</li>
 					))}
 				</ul>
-				
+
 			</dialog>
 
 			<dialog id='modal-edit' className='modal'>
-				<div 
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						width: '',
-					}}
-				>
-					<div style={{ width: '530px', display: 'flex', justifyContent: 'flex-end' }}>
-						<svg onClick={modalEditClose} className='button-responsive' height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
-					</div>
+				<div className='game_modal-edit-container'>
+
+					<Close onClick={modalEditClose}/>
 					
-					<h1 style={{ fontSize: '50px' }}>Bearbeiten</h1>
+					<h1>Bearbeiten</h1>
 
 					{/* ______________________________ChangeNames______________________________ */}
 					{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
 
-					<div
-						style={{
-							display: 'flex', 
-							fontWeight: 'bold', 
-							marginBottom: '10px', 
-							fontSize: '20px', 
-						}}
-					>
-						<label style={{ marginLeft: '60px' }}>Beitrittscode</label>
+					<div className='container'>
+						<label>Beitrittscode</label>
 						<label style={{ marginLeft: '27px' }}>{joincode}</label>
 					</div>
 
-					<div
-						style={{
-							display: 'flex', 
-							fontWeight: 'bold', 
-							fontSize: '20px', 
-							marginBottom: '10px', 
-						}}
-					>
-						<label style={{ marginLeft: '60px', paddingTop: '5px' }}>Gesamtsumme anzeigen</label>
+					<div className='container'>
+						<label>Gesamtsumme anzeigen</label>
 						<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
 					</div>
 
 					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
 
 					<button 
-						className='button' 
+						className='button button-thick' 
 						onClick={modalEditSave} 
 						disabled={editDisabled}
-						style={{ 
-							width: '530px', 
-							height: '50px' 
-						}}
-					>Speichern
-					</button>
+					>Speichern</button>
 
 				</div>
 			</dialog>

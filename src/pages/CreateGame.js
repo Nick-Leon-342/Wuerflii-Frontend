@@ -15,6 +15,8 @@ import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 import Close from '../components/NavigationElements/Close'
 import CustomLink from '../components/NavigationElements/CustomLink'
+import Popup from '../components/Popup'
+import EnterNames from './EnterNames'
 
 
 
@@ -28,6 +30,8 @@ export default function CreateGame() {
 
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
+
+	const [ show_enterNames, setShow_enterNames ] = useState(false)
 
 
 
@@ -44,7 +48,8 @@ export default function CreateGame() {
 	const next = () => {
 
 		if(!players || !columns) return
-		navigate(`/enternames?players=${players}&columns=${columns}`, { replace: false })
+		// navigate(`/enternames?players=${players}&columns=${columns}`, { replace: false })
+		setShow_enterNames(true)
 
 	}
 
@@ -285,6 +290,25 @@ export default function CreateGame() {
 			<button className='button button-thick' onClick={next}>Weiter</button>
 
 			<CustomLink linkTo='/selectsession' text='Lade Spiel'/>
+
+
+
+
+
+
+
+
+			<Popup 
+				showPopup={show_enterNames} 
+				setShowPopup={setShow_enterNames}
+			>
+				<div className='creategame_popup-enternames'>
+					<EnterNames 
+						columns={columns} 
+						players={players}
+					/>
+				</div>
+			</Popup>
 
 		</>
 	)
