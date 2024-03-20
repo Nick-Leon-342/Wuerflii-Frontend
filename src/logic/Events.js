@@ -37,7 +37,7 @@ export const removeFocusEvent = (r) => {
 
 }
 
-export const onblurEvent = async ( element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, joincode, columnsSum ) => {
+export const onblurEvent = async ( element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, joincode, columnsSum, setShow_invalidNumber, setInvalidNumberText ) => {
 
 	const e = element.target
 	if(!e) return
@@ -60,8 +60,8 @@ export const onblurEvent = async ( element, setLastPlayerAlias, urlParams, axios
 
 	} else {
 		
-		document.getElementById('modal-invalidNumber').showModal()
-		document.getElementById('message-invalidNumber').innerText = `${value} ist nicht zulässig!\nZulässig sind: ${r}`
+		setShow_invalidNumber(true)
+		setInvalidNumberText(`${value} ist nicht zulässig! Zulässig sind:\n${r}`)
 
 		e.value = ''
 		value = ''

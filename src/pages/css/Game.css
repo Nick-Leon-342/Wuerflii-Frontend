@@ -1,18 +1,69 @@
 
 
+/* __________________________________________________ Header-Bar __________________________________________________ */
 
-.playerTable td {
+.game_header-bar {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 15px;
+}
+
+.game_header-bar select {
+	width: 175px;
+}
+
+.game_header-bar svg {
+	width: 25px;
+}
+
+.game_header-bar .button {
+	padding: 0;
+	margin: 0;
+	background: none;
+	box-shadow: none;
+	color: var(--text-color);
+}
+
+
+
+
+
+/* __________________________________________________ Header-Bar __________________________________________________ */
+
+.game_footer-bar {
+	display: flex;
+	justify-content: space-between;
+}
+
+.game_footer-bar .button:not(.button-thick) {
+	background: none;
+	box-shadow: none;
+	color: var(--text-color);
+}
+
+
+
+
+
+/* __________________________________________________ Table-Player __________________________________________________ */
+
+.table_player td {
 	padding: 5px;
 }
 
-.playerTable td:first-child {
+.table_player td:first-child {
     width: 242px;
 	min-width: 242px;
     font-weight: bold;
 	padding: 0;
 }
 
-.checkbox {
+.table_player .checkbox-container {
+	display: grid;
+	place-content: center;
+}
+
+.table_player .checkbox {
     width: 25px;
 	height: 25px;
 	border-radius: 5px;
@@ -22,6 +73,9 @@
 
 
 
+/* __________________________________________________ Table __________________________________________________ */
+
+/* ____________________ First two rows ____________________ */
 
 #upperTable td:nth-child(1),
 #upperTable td:nth-child(2),
@@ -39,9 +93,18 @@
     margin: 2px;
 }
 
+.highlighted label {
+    color: rgb(0, 200, 0);
+}
+
+.highlighted svg {
+    stroke: rgb(0, 200, 0);
+	fill: rgb(0, 200, 0);
+}
 
 
 
+/* ____________________ Other rows ____________________ */
 
 .kniffelInput {
     border: none;
@@ -68,35 +131,6 @@
 
 
 
-.highlighted label {
-    color: rgb(0, 200, 0);
-}
-
-.highlighted svg {
-    stroke: rgb(0, 200, 0);
-	fill: rgb(0, 200, 0);
-}
-
-
-
-.newGame:hover {
-	background-color: lightgray;
-}
-
-.newGame:active {
-	background-color: lightgray;
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -104,21 +138,21 @@
 
 /* __________________________________________________ Popup Surrender __________________________________________________ */
 
-.game_modal-popup-askifsurrender {
+.game_popup_surrender_askifsurrender {
 	margin-top: 20px;
 }
 
-.game_modal-popup-askifsurrender div {
+.game_popup_surrender_askifsurrender div {
 	display: flex;
 	gap: 10px;
 }
 
-.game_modal-popup-list {
+.game_popup_surrender_list {
 	margin-top: 20px;
 	list-style-type: none;
 }
 
-.game_modal-popup-list li {
+.game_popup_surrender_list li {
 	padding: 20px 0;
 	font-size: 20px;
 	border-radius: 5px;
@@ -130,20 +164,23 @@
 
 
 
+/* __________________________________________________ Popup Edit __________________________________________________ */
 
-
-
-/* __________________________________________________ Modal Edit __________________________________________________ */
-
-.game_modal-edit-container {
-	display: flex;
-	flex-direction: column;
-}
-
-.game_modal-edit-container .container {
+.game_popup_edit_container {
 	display: flex;
 	font-weight: bold; 
 	margin-bottom: 10px; 
 	font-size: 20px;
 	padding-left: 60px;
+}
+
+
+
+
+
+/* __________________________________________________ Popup InvalidNumber __________________________________________________ */
+
+.game_popup_invalidNumber {
+	text-wrap: wrap;
+	word-wrap: break-word;
 }

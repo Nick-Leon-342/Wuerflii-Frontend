@@ -34,8 +34,9 @@ export default function Registration() {
 
 
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (e) => {
 		
+		e.preventDefault()
 		setRegistrationDisabled(true)
 		setLoaderVisible(true)
 		setError('')
