@@ -14,6 +14,20 @@
 	flex-direction: column;
 }
 
+.optionsdialog_container .logout {
+	width: 100px; 
+	box-shadow: none;
+	background: none; 
+	color: var(--red);
+	margin: 0; 
+	padding: 0;
+}
+
+
+
+
+
+
 .optionsdialog_joincode {
 	display: flex;
 	margin-top: 10px;

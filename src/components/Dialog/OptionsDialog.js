@@ -6,6 +6,12 @@ import JoinGameInput from '../JoinGameInput'
 import { useEffect, useState } from 'react'
 import './css/OptionsDialog.css'
 import Close from '../NavigationElements/Close'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useAuth from '../../hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
+import RegistrationForm from '../RegistrationForm'
+import Loader from '../Loader'
+import ErrorMessage from '../ErrorMessage'
 
 
 
@@ -13,10 +19,26 @@ import Close from '../NavigationElements/Close'
 
 export default function OptionsDialog() {
 
+    const { setAuth } = useAuth()
+
+	const axiosPrivate = useAxiosPrivate()
+	const navigate = useNavigate()
+
 	const showOptions = () => {	document.getElementById('modal-options').showModal()}
 	
 	const [ darkModeToggled, setDarkModeToggled ] = useState(localStorage.getItem('darkMode') === 'true' || false)
-	const closeOptions = () => {document.getElementById('modal-options').close()	}
+	const closeOptions = () => {document.getElementById('modal-options').close()}
+
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
+
+	const [ Name, setName ] = useState('')
+	const [ Password, setPassword ] = useState('')
+	const [ error, setError ] = useState('')
+	const [ settingsDisabled, setSettingsDisabled ] = useState(false)
+
+	const [ NAME_REGEX, setNAME_REGEX ] = useState('')
+	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState('')
 
 
 
@@ -29,6 +51,74 @@ export default function OptionsDialog() {
 		} else {document.body.classList.remove('dark')}
 
 	}, [darkModeToggled])
+
+	const handleSubmit = async (e) => {
+
+		e.preventDefault()
+		setLoaderVisible(true)
+		setSettingsDisabled(true)
+
+		if ((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) {
+			return
+		}
+
+		let json = {}
+		if(NAME_REGEX.test(Name) && PASSWORD_REGEX.test(Password)) {
+			//Name and Password are valid
+			json.Name = Name
+			json.Password = Password
+		} else if(NAME_REGEX.test(Name)) {
+			//Name is valid, password not entered
+			json.Name = Name
+		} else {
+			//Password is valid, name not entered
+			json.Password = Password
+
+		}
+
+		try {
+
+			await axiosPrivate.patch('/auth/login', json)
+            setName('')
+            setPassword('')
+			setError('')
+			setSuccessfullyUpdatedVisible(true)
+
+		} catch (err) {
+			if (!err?.response) {
+				setError('Der Server antwortet nicht!')
+			} else if (err.response?.status === 409) {
+				setError('Der Benutzername wird bereits benutzt!')
+			} else {
+				setError('Es trat ein unvorhergesehener Fehler auf!')
+			}
+		}
+
+		setSettingsDisabled(false)
+		setLoaderVisible(false)
+
+	}
+
+
+
+	
+
+	const [ logoutDisabled, setLogoutDisalbed ] = useState(false)
+
+	const logout = async () => {
+
+		setLogoutDisalbed(true)
+
+		await axiosPrivate.delete('/logout').then((res) => {
+			if(res.status === 204) {
+				setAuth({ accessToken: '' })
+				navigate('/login', { replace: true })
+			}
+		})
+		
+		setLogoutDisalbed(false)
+
+	}
 
 
 
@@ -48,6 +138,12 @@ export default function OptionsDialog() {
 			<div className='optionsdialog_container'>
 
 				<Close onClick={closeOptions}/>
+				
+
+
+				<h1>Einstellungen</h1>
+
+
 
 				<div className='optionsdialog_joincode'>
 					
@@ -61,6 +157,29 @@ export default function OptionsDialog() {
 				</div>
 
 				<JoinGameInput/>
+
+				<form onSubmit={handleSubmit}>
+
+						<RegistrationForm Name={Name} setName={setName} Password={Password} setPassword={setPassword} isRequired={false}/>
+
+						<Loader loaderVisible={loaderVisible} marginTop='10px'/>
+
+						<ErrorMessage error={error}/>
+
+						<button 
+							className='button button-thick' 
+							disabled={settingsDisabled}
+						>Speichern</button>
+					
+					</form>
+					
+
+
+					<button 
+						className='button logout' 
+						disabled={logoutDisabled}
+						onClick={logout}
+					>Ausloggen</button>
 
 			</div>
 			

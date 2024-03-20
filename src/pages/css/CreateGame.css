@@ -61,31 +61,6 @@
 
 
 
-
-
-
-
-
-/* __________________________________________________ Modal-Settings __________________________________________________ */
-
-.creategame_modal-settings {
-	display: flex;
-	flex-direction: column;
-}
-
-.creategame_modal-settings .logout {
-	width: 100px; 
-	box-shadow: none;
-	background: none; 
-	color: var(--red);
-	margin: 0; 
-	padding: 0;
-}
-
-
-
-
-
 /* __________________________________________________ Popup EnterNames __________________________________________________ */
 
 .creategame_popup-enternames {
