@@ -158,27 +158,39 @@
 
 /* __________________________________________________ Popup Edit __________________________________________________ */
 
-.selectsession_modal-edit {
-	display: flex;
-	flex-direction: column;
+.selectsession_popup-edit {
+	display: grid;
+	justify-content: center;
 }
 
-.selectsession_modal-edit h1 {
+.selectsession_popup-edit div {
+	display: flex;
+	flex-direction: column;
+	width: 500px;
+}
+
+.selectsession_popup-edit h1 {
 	font-size: 50px;
 }
 
-.selectsession_modal-edit .change-columns-container {
+.selectsession_popup-edit .change-columns {
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	width: 100%;
 	margin: 30px 0;
 }
 
-.selectsession_modal-edit .change-columns-container label {
+.selectsession_popup-edit .change-columns label {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	font-size: 20px;
+}
+
+.selectsession_popup-edit .change-columns select {
+	padding: 10px;
+	width: 200px;
 }
 
 
@@ -195,6 +207,7 @@
 .selectsession_popup-delete div {
 	display: flex;
 	flex-direction: column;
+	width: 500px;
 }
 
 .selectsession_popup-delete .button-red-reverse {

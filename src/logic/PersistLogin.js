@@ -5,7 +5,11 @@ import { useState, useEffect } from 'react'
 import useRefreshToken from '../hooks/useRefreshToken'
 import useAuth from '../hooks/useAuth'
 
-const PersistLogin = () => {
+
+
+
+
+export default function PersistLogin() {
 
 	const navigate = useNavigate()
 	const [isLoading, setIsLoading] = useState(true)
@@ -35,5 +39,3 @@ const PersistLogin = () => {
 	)
 	
 }
-
-export default PersistLogin

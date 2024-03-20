@@ -3,16 +3,18 @@
 import './css/SelectSession.css'
 
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 import Loader from '../components/Loader'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
-import Close from '../components/NavigationElements/Close'
 import CustomLink from '../components/NavigationElements/CustomLink'
 import Popup from '../components/Popup'
+
+
+
 
 
 export default function SelectSession() {
@@ -39,7 +41,9 @@ export default function SelectSession() {
 
 
 
-	useEffect(() => {request()}, [])
+	useEffect(() => {
+		request()
+	}, [])
 
 	async function request() {
 
@@ -179,7 +183,7 @@ export default function SelectSession() {
 	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
 	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
 
-	const modalEditHandleColumnChange = (event) => {
+	const handle_edit_columnChange = (event) => {
 
 		const intValue = event.target.value
 		if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
@@ -187,23 +191,23 @@ export default function SelectSession() {
 
 	}
 
-	const modalEditShow = () => {
+	const edit_show = () => {
 
 		setSuccessfullyUpdatedVisible(false)
 		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
-		document.getElementById('modal-edit').showModal()
+		setShow_editSession(true)
 
 	}
 
-	const modalEditClose = () => {
+	const edit_close = () => {
 		
 		setTmpListPlayers([])
 		setColumns('')
-		document.getElementById('modal-edit').close()
+		setShow_editSession(false)
 
 	}
 
-	const modalEditSave = async () => {
+	const edit_save = async () => {
 
 		setDialog_loaderVisible(true)
 		setSaveDisabled(true)
@@ -217,7 +221,7 @@ export default function SelectSession() {
 		).then(() => {
 
 			setSuccessfullyUpdatedVisible(true)
-			modalEditClose()
+			edit_close()
 			request()
 
 		}).catch((err) => {
@@ -237,61 +241,15 @@ export default function SelectSession() {
 	return (
 		<>
 
-			{/* __________________________________________________Dialogs__________________________________________________ */}
+			{/* __________________________________________________ Dialogs __________________________________________________ */}
 
 			<OptionsDialog/>
 
-			<dialog id='modal-edit' className='modal'>
-				<div className='selectsession_modal-edit'>
-					<Close onClick={modalEditClose}/>
-					
-					<h1>Bearbeiten</h1>
-					
-
-					{/* ______________________________ChangeColumns______________________________ */}
-					
-					<div className='change-columns-container'>
-						<label>Spalten</label>
-						<select
-							className='select-input'
-							value={columns}
-							onChange={modalEditHandleColumnChange}
-							>
-							<option value={session?.Columns}>
-								{'Derzeit: ' + session?.Columns}
-							</option>
-							{options_columns.map((c) => (
-								<option key={c} value={c}>{c}</option>
-							))}
-						</select>
-					</div>
-
-
-					{/* ______________________________ChangeNames______________________________ */}
-					
-					{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
-
-					<Loader loaderVisible={dialog_loaderVisible}/>
-
-					<button 
-						className='button button-thick' 
-						disabled={saveDisabled} 
-						onClick={modalEditSave}
-					>Speichern
-					</button>
-
-				</div>
-			</dialog>
-
-			<dialog id='modal-delete' className='modal'>
-				
-			</dialog>
 
 
 
 
-
-			{/* __________________________________________________Page__________________________________________________ */}
+			{/* __________________________________________________ Page __________________________________________________ */}
 
 			<div className='selectsession_trashcan-container'>
 
@@ -305,7 +263,7 @@ export default function SelectSession() {
 
 				<svg 
 					className={`edit ${list.length === 0 ? 'notvisible' : (settingsDisabled ? 'disabled' : 'button-responsive')}`} 
-					onClick={modalEditShow} 
+					onClick={edit_show} 
 					viewBox='0 -960 960 960'
 				><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
 
@@ -367,8 +325,8 @@ export default function SelectSession() {
 
 
 
-
-
+			{/* __________________________________________________ Popup Delete __________________________________________________ */}
+			
 			<Popup
 				showPopup={show_deleteSession}
 				setShowPopup={setShow_deleteSession}
@@ -388,6 +346,60 @@ export default function SelectSession() {
 							onClick={() => setShow_deleteSession(false)}
 							disabled={deleteDisabled}
 						>Abbrechen</button>
+
+					</div>
+				</div>
+			</Popup>
+
+
+
+
+
+			{/* __________________________________________________ Popup Edit __________________________________________________ */}
+
+			<Popup
+				showPopup={show_editSession}
+				setShowPopup={setShow_editSession}
+			>
+				<div className='selectsession_popup-edit'>
+					<div>
+					
+						<h1>Bearbeiten</h1>
+						
+
+						{/* ______________________________ChangeColumns______________________________ */}
+						
+						<div className='change-columns'>
+
+							<label>Spalten</label>
+							
+							<select
+								className='select-input'
+								value={columns}
+								onChange={handle_edit_columnChange}
+							>
+								<option value={session?.Columns}>
+									{'Derzeit: ' + session?.Columns}
+								</option>
+								{options_columns.map((c) => (
+									<option key={c} value={c}>{c}</option>
+								))}
+							</select>
+
+						</div>
+
+
+						{/* ______________________________ChangeNames______________________________ */}
+						
+						{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
+
+						<Loader loaderVisible={dialog_loaderVisible}/>
+
+						<button 
+							className='button button-thick' 
+							disabled={saveDisabled} 
+							onClick={edit_save}
+						>Speichern</button>
 
 					</div>
 				</div>

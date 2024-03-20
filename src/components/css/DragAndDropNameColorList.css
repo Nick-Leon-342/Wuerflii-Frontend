@@ -1,0 +1,37 @@
+
+
+.draganddropnamecolorlist {
+	list-style-type: none;
+}
+
+.draganddropnamecolorlist li {
+	display: flex;
+	gap: 10px;
+	left: auto !important; 
+	top: auto !important;
+	margin: 10px 0;
+}
+
+.draganddropnamecolorlist div {
+	display: flex;
+	place-content: center;
+	width: min-content;
+	padding: 0 5px;
+}
+
+.draganddropnamecolorlist svg {
+	height: 10px;
+}
+
+.draganddropnamecolorlist input[type='text'] {
+	width: 100%;
+}
+
+.draganddropnamecolorlist input[type='color'] {
+    background-color: transparent;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+	width: 40px;
+}
