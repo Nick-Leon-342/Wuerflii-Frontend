@@ -18,12 +18,13 @@ import InvalidNumberDialog from '../components/Dialog/InvalidNumberDialog'
 import ToggleSlider from '../components/ToggleSlider'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
 import Close from '../components/NavigationElements/Close'
+import Popup from '../components/Popup'
 
 
 
 
 
-function Game() {
+export default function Game() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -46,6 +47,8 @@ function Game() {
 	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
+
+	const [ show_surrender, setShow_surrender ] = useState(false)
 
 
 	
@@ -250,8 +253,6 @@ function Game() {
 
 	const [askIfSurrender, setAskIfSurrender] = useState()	//if null then dont ask, else it's the index of the 'winner'
 
-	const handleSurrender = () => {document.getElementById('modal-surrender').showModal()}
-
 	const closeSurrender = () => {
 
 		document.getElementById('modal-surrender').close()
@@ -316,44 +317,6 @@ function Game() {
 			{/* __________________________________________________Dialogs__________________________________________________ */}
 
 			<OptionsDialog/>
-
-			<dialog id='modal-surrender' className='modal'>
-
-				<Close onClick={closeSurrender}/>
-
-				<h1>Gewinner auswählen</h1>
-
-				{askIfSurrender && 
-				<div className='game_modal-surrender-askifsurrender'>
-
-					<h2>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</h2>
-
-					<div>
-
-						<button 
-							className='button button-thick' 
-							disabled={saveResultsDisabled}
-							onClick={saveResults}
-						>Ja</button>
-
-						<button 
-							className='button button-red' 
-							onClick={closeSurrender}
-						>Abbrechen</button>
-					</div>
-
-				</div>
-				}
-
-				<ul className='game_modal-surrender-list'>
-					{session?.List_Players?.map((p, i) => (
-						<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
-							<label>{p.Name}</label>
-						</li>
-					))}
-				</ul>
-
-			</dialog>
 
 			<dialog id='modal-edit' className='modal'>
 				<div className='game_modal-edit-container'>
@@ -469,6 +432,7 @@ function Game() {
 			{/* __________________________________________________Page__________________________________________________ */}
 
 			<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+
 				<select
 						value={inputType}
 						onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
@@ -498,7 +462,7 @@ function Game() {
 
 				<button 
 					className='button'
-					onClick={handleSurrender}
+					onClick={() => setShow_surrender(true)}
 					style={{
 						margin: '0',
 						marginRight: '5px',
@@ -506,8 +470,8 @@ function Game() {
 						boxShadow: 'none',
 						color: 'var(--text-color)', 
 					}}
-				>Aufgeben
-				</button>
+				>Aufgeben</button>
+
 			</div>
 
 			<PlayerTable 
@@ -573,8 +537,54 @@ function Game() {
 				
 			</div>
 
+
+
+
+
+
+
+
+			<Popup
+				showPopup={show_surrender}
+				setShowPopup={setShow_surrender}
+			>
+
+				<h1>Gewinner auswählen</h1>
+
+				{askIfSurrender && 
+				<div className='game_modal-popup-askifsurrender'>
+
+					<h2>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</h2>
+
+					<div>
+
+						<button 
+							className='button button-thick' 
+							disabled={saveResultsDisabled}
+							onClick={saveResults}
+						>Ja</button>
+
+						<button 
+							className='button button-red' 
+							onClick={closeSurrender}
+						>Abbrechen</button>
+					</div>
+
+				</div>
+				}
+
+				<ul className='game_modal-popup-list'>
+					{session?.List_Players?.map((p, i) => (
+						<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
+							<label>{p.Name}</label>
+						</li>
+					))}
+				</ul>
+
+			</Popup>
+
+
+
 		</>
 	)
 }
-
-export default Game

@@ -53,3 +53,14 @@
 		opacity: 1;
 	}
 }
+
+.popup-grid {
+	display: grid;
+	place-content: center;
+}
+
+.popup-container {
+	display: flex;
+	flex-direction: column;
+	width: 500px;
+}

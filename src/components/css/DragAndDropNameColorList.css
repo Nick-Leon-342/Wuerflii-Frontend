@@ -14,6 +14,7 @@
 
 .draganddropnamecolorlist div {
 	display: flex;
+	flex-direction: column;
 	place-content: center;
 	width: min-content;
 	padding: 0 5px;
@@ -33,5 +34,5 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-	width: 40px;
+	width: 50px;
 }

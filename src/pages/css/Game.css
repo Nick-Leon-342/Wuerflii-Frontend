@@ -100,23 +100,25 @@
 
 
 
-/* __________________________________________________ Modal Surrender __________________________________________________ */
 
-.game_modal-surrender-askifsurrender {
+
+/* __________________________________________________ Popup Surrender __________________________________________________ */
+
+.game_modal-popup-askifsurrender {
 	margin-top: 20px;
 }
 
-.game_modal-surrender-askifsurrender div {
+.game_modal-popup-askifsurrender div {
 	display: flex;
 	gap: 10px;
 }
 
-.game_modal-surrender-list {
+.game_modal-popup-list {
 	margin-top: 20px;
 	list-style-type: none;
 }
 
-.game_modal-surrender-list li {
+.game_modal-popup-list li {
 	padding: 20px 0;
 	font-size: 20px;
 	border-radius: 5px;

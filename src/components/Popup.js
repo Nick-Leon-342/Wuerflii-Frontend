@@ -28,7 +28,11 @@ export default function Popup({ showPopup, setShowPopup, children }) {
 
 				<Close onClick={() => setShowPopup(false)}/>
 
-				{children}
+				<div className='popup-grid'>
+					<div className='popup-container'>
+						{children}
+					</div>
+				</div>
 
 			</div>
 		</>

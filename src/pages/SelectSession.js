@@ -331,24 +331,20 @@ export default function SelectSession() {
 				showPopup={show_deleteSession}
 				setShowPopup={setShow_deleteSession}
 			>
-				<div className='selectsession_popup-delete'>
-					<div>
+				
+				<h1>Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?</h1>
 
-						<h1>Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?</h1>
+				<button 
+					className='button button-thick' 
+					onClick={modalDeleteSubmit}
+				>Ja</button>
 
-						<button 
-							className='button button-thick' 
-							onClick={modalDeleteSubmit}
-						>Ja</button>
+				<button 
+					className='button button-red-reverse' 
+					onClick={() => setShow_deleteSession(false)}
+					disabled={deleteDisabled}
+				>Abbrechen</button>
 
-						<button 
-							className='button button-red-reverse' 
-							onClick={() => setShow_deleteSession(false)}
-							disabled={deleteDisabled}
-						>Abbrechen</button>
-
-					</div>
-				</div>
 			</Popup>
 
 
@@ -361,48 +357,47 @@ export default function SelectSession() {
 				showPopup={show_editSession}
 				setShowPopup={setShow_editSession}
 			>
-				<div className='selectsession_popup-edit'>
-					<div>
+
+				<h1 className='selectsession_popup_edit_header'>Bearbeiten</h1>
+						
+
+
+				{/* ______________________________ Columns ______________________________ */}
+				
+				<div className='selectsession_popup_edit_change-columns'>
+
+					<label>Spalten</label>
 					
-						<h1>Bearbeiten</h1>
-						
+					<select
+						value={columns}
+						onChange={handle_edit_columnChange}
+					>
+						<option value={session?.Columns}>
+							{'Derzeit: ' + session?.Columns}
+						</option>
+						{options_columns.map((c) => (
+							<option key={c} value={c}>{c}</option>
+						))}
+					</select>
 
-						{/* ______________________________ChangeColumns______________________________ */}
-						
-						<div className='change-columns'>
-
-							<label>Spalten</label>
-							
-							<select
-								className='select-input'
-								value={columns}
-								onChange={handle_edit_columnChange}
-							>
-								<option value={session?.Columns}>
-									{'Derzeit: ' + session?.Columns}
-								</option>
-								{options_columns.map((c) => (
-									<option key={c} value={c}>{c}</option>
-								))}
-							</select>
-
-						</div>
-
-
-						{/* ______________________________ChangeNames______________________________ */}
-						
-						{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
-
-						<Loader loaderVisible={dialog_loaderVisible}/>
-
-						<button 
-							className='button button-thick' 
-							disabled={saveDisabled} 
-							onClick={edit_save}
-						>Speichern</button>
-
-					</div>
 				</div>
+
+
+
+				{/* ______________________________ List ______________________________ */}
+				
+				{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
+
+
+
+				<Loader loaderVisible={dialog_loaderVisible}/>
+
+				<button 
+					className='button button-thick' 
+					disabled={saveDisabled} 
+					onClick={edit_save}
+				>Speichern</button>
+
 			</Popup>
 
 		</>
