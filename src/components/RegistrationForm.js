@@ -2,22 +2,86 @@
 
 import './css/RegistrationForm.css'
 
-import { useState } from 'react'
-import { NAME_REGEX, NAME_REGEX_MINMAX, NAME_REGEX_LETTERFIRST, NAME_REGEX_ALLOWEDCHARS, PASSWORD_REGEX, PASSWORD_REGEX_MINMAX, PASSWORD_REGEX_ALLOWEDCHARS, PASSWORD_REGEX_ALLOWEDSYMBOLS, REACT_APP_USERNAME_MIN_CHARACTER, REACT_APP_USERNAME_MAX_CHARACTER, REACT_APP_PASSWORD_MIN_CHARACTER, REACT_APP_PASSWORD_MAX_CHARACTER } from "../logic/utils-env"
+import { useEffect, useState } from 'react'
 import FancyInput from './FancyInput'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
 
 
 
-export default function RegistrationForm({ Name, setName, Password, setPassword, isRequired }) {
+export default function RegistrationForm({ Name, setName, Password, setPassword, isRequired, NAME_REGEX, setNAME_REGEX, PASSWORD_REGEX, setPASSWORD_REGEX }) {
+
+	const axiosPrivate = useAxiosPrivate()
 
 	const [ infoName, setInfoName ] = useState(false)
 	const [ infoPassword, setInfoPassword ] = useState(false)
 
+	
+	const [ NAME_MIN_CHARACTER, setNAME_MIN_CHARACTER ] = useState()
+	const [ NAME_MAX_CHARACTER, setNAME_MAX_CHARACTER ] = useState()
+	
+	const [ NAME_REGEX_MINMAX, setNAME_REGEX_MINMAX ] = useState()
+	const [ NAME_REGEX_LETTERFIRST, setNAME_REGEX_LETTERFIRST ] = useState()
+	const [ NAME_REGEX_ALLOWEDCHARS, setNAME_REGEX_ALLOWEDCHARS ] = useState()
+
+
+	const [ PASSWORD_MIN_CHARACTER, setPASSWORD_MIN_CHARACTER ] = useState()
+	const [ PASSWORD_MAX_CHARACTER, setPASSWORD_MAX_CHARACTER ] = useState()
+
+	const [ PASSWORD_REGEX_MINMAX, setPASSWORD_REGEX_MINMAX ] = useState()
+	const [ PASSWORD_REGEX_ALLOWEDCHARS, setPASSWORD_REGEX_ALLOWEDCHARS ] = useState()
+	const [ PASSWORD_REGEX_ALLOWEDSYMBOLS, setPASSWORD_REGEX_ALLOWEDSYMBOLS ] = useState()
 
 
 
+
+
+	useEffect(() => {
+
+		axiosPrivate.get('/auth/regex').then(({ data }) => {
+
+			const {
+				NAME_MIN_CHARACTER, 
+				NAME_MAX_CHARACTER, 
+				
+				NAME_REGEX, 
+				NAME_REGEX_MINMAX, 
+				NAME_REGEX_LETTERFIRST, 
+				NAME_REGEX_ALLOWEDCHARS, 
+			
+			
+				PASSWORD_MIN_CHARACTER, 
+				PASSWORD_MAX_CHARACTER, 
+			
+				PASSWORD_REGEX, 
+				PASSWORD_REGEX_MINMAX, 
+				PASSWORD_REGEX_ALLOWEDCHARS, 
+				PASSWORD_REGEX_ALLOWEDSYMBOLS, 
+			} = data
+
+			setNAME_MIN_CHARACTER(NAME_MIN_CHARACTER)
+			setNAME_MAX_CHARACTER(NAME_MAX_CHARACTER)
+
+			setNAME_REGEX(new RegExp(NAME_REGEX))
+			setNAME_REGEX_MINMAX(new RegExp(NAME_REGEX_MINMAX))
+			setNAME_REGEX_LETTERFIRST(new RegExp(NAME_REGEX_LETTERFIRST))
+			setNAME_REGEX_ALLOWEDCHARS(new RegExp(NAME_REGEX_ALLOWEDCHARS))
+
+
+			setPASSWORD_MIN_CHARACTER(PASSWORD_MIN_CHARACTER)
+			setPASSWORD_MAX_CHARACTER(PASSWORD_MAX_CHARACTER)
+
+			setPASSWORD_REGEX(new RegExp(PASSWORD_REGEX))
+			setPASSWORD_REGEX_MINMAX(new RegExp(PASSWORD_REGEX_MINMAX))
+			setPASSWORD_REGEX_ALLOWEDCHARS(new RegExp(PASSWORD_REGEX_ALLOWEDCHARS))
+			setPASSWORD_REGEX_ALLOWEDSYMBOLS(new RegExp(PASSWORD_REGEX_ALLOWEDSYMBOLS))
+
+		}).catch((err) => {
+			console.log(err)
+		})
+
+	}, [])
 
 	const getIcon = (valid) => {
 
@@ -29,6 +93,8 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 	}
 
 	const row = (REGEX, Value, Text) => {
+
+		if(!REGEX) return 
 		
 		return (
 			<div className='registrationform_error-row'>
@@ -60,7 +126,7 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 
 			{infoName && <>
 
-				{row(NAME_REGEX_MINMAX, Name, `${REACT_APP_USERNAME_MIN_CHARACTER} - ${REACT_APP_USERNAME_MAX_CHARACTER} Zeichen`)}
+				{row(NAME_REGEX_MINMAX, Name, `${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`)}
 				{row(NAME_REGEX_LETTERFIRST, Name, 'Angefangen mit Buchstaben')}
 				{row(NAME_REGEX_ALLOWEDCHARS, Name, 'Buchstaben, Zahlen, Binde- oder Unterstriche')}
 
@@ -82,7 +148,7 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 
 			{infoPassword && <>
 
-				{row(PASSWORD_REGEX_MINMAX, Password, `${REACT_APP_PASSWORD_MIN_CHARACTER} - ${REACT_APP_PASSWORD_MAX_CHARACTER} Zeichen`)}
+				{row(PASSWORD_REGEX_MINMAX, Password, `${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`)}
 				{row(PASSWORD_REGEX_ALLOWEDCHARS, Password, 'Kleinbuchstaben, Großuchstaben und Zahlen')}
 				{row(PASSWORD_REGEX_ALLOWEDSYMBOLS, Password, 'Zeichen: ! @ # $ % - _')}
 

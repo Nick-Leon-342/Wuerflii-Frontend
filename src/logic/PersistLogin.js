@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import useRefreshToken from '../hooks/useRefreshToken'
 import useAuth from '../hooks/useAuth'
+import Loader from '../components/Loader'
 
 
 
@@ -34,7 +35,7 @@ export default function PersistLogin() {
 
 	return (
 		<>
-			{isLoading ? <p>Loading...</p> : <Outlet/>}
+			{isLoading ? <Loader loaderVisible={true}/> : <Outlet/>}
 		</>
 	)
 	

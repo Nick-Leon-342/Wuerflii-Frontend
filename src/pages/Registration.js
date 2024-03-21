@@ -2,11 +2,10 @@
 
 import './css/Registration.css'
 
-import { useState } from 'react'
-import axios from '../api/axios'
+import { useEffect, useState } from 'react'
+import axios, { axiosPrivate } from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
-import { NAME_REGEX, PASSWORD_REGEX } from '../logic/utils-env'
 
 import Loader from '../components/Loader'
 import RegistrationForm from '../components/RegistrationForm'
@@ -23,12 +22,15 @@ export default function Registration() {
 	const navigate = useNavigate()
 	const { setAuth } = useAuth()
 
-	const [Name, setName] = useState('')
-	const [Password, setPassword] = useState('')
+	const [ Name, setName ] = useState('')
+	const [ Password, setPassword ] = useState('')
 
-	const [error, setError] = useState('')
-	const [loaderVisible, setLoaderVisible] = useState(false)
+	const [ error, setError ] = useState('')
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ registrationDisabled, setRegistrationDisabled ] = useState(false)
+
+	const [ NAME_REGEX, setNAME_REGEX ] = useState()
+	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
 
 
 
@@ -100,7 +102,12 @@ export default function Registration() {
 					Name={Name} 
 					setName={setName} 
 					Password={Password} 
-					setPassword={setPassword} isRequired={true}
+					setPassword={setPassword} 
+					isRequired={true}
+					NAME_REGEX={NAME_REGEX}
+					setNAME_REGEX={setNAME_REGEX}
+					PASSWORD_REGEX={PASSWORD_REGEX}
+					setPASSWORD_REGEX={setPASSWORD_REGEX}
 				/>
 
 				<Loader loaderVisible={loaderVisible}/>

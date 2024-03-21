@@ -160,7 +160,17 @@ export default function OptionsDialog() {
 
 				<form onSubmit={handleSubmit}>
 
-						<RegistrationForm Name={Name} setName={setName} Password={Password} setPassword={setPassword} isRequired={false}/>
+						<RegistrationForm 
+							Name={Name} 
+							setName={setName} 
+							Password={Password} 
+							setPassword={setPassword} 
+							isRequired={false}
+							NAME_REGEX={NAME_REGEX}
+							setNAME_REGEX={setNAME_REGEX}
+							PASSWORD_REGEX={PASSWORD_REGEX}
+							setPASSWORD_REGEX={setPASSWORD_REGEX}
+						/>
 
 						<Loader loaderVisible={loaderVisible} marginTop='10px'/>
 

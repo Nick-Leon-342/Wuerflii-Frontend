@@ -85,9 +85,11 @@ export default function SessionPreview() {
 					const y = new Date(e.End).getFullYear()
 					if(!tmp_list_years.includes(y)) tmp_list_years.push(y)
 				}
+				tmp_list_years.sort((a, b) => b - a)
+
 				setMonth(new Date().getMonth())
-				setYear(tmp_list_years[tmp_list_years.length - 1])
-				setList_year(tmp_list_years.slice().sort((a, b) => a - b))
+				setYear(tmp_list_years[0])
+				setList_year(tmp_list_years)
 				setView('showYear')
 
 
