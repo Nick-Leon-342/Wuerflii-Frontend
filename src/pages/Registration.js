@@ -45,7 +45,13 @@ export default function Registration() {
 
 		if(Name && NAME_REGEX.test(Name) && Password && PASSWORD_REGEX.test(Password)) {
 			
-			await axios.post('/auth/registration', { Name, Password }).then(({ data }) => {
+			await axios.post('/auth/registration', 
+				{ Name, Password },  
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true
+				}
+			).then(({ data }) => {
 
 				setAuth({ accessToken: data.accessToken })
 				setName('')

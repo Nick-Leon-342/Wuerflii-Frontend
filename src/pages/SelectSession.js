@@ -57,7 +57,7 @@ export default function SelectSession() {
 
 		}).catch((err) => {
 			console.log(err)
-			window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			navigate('/login', { replace: true })
 		})
 
 		setLoaderVisible(false)

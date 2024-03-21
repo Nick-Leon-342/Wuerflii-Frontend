@@ -199,7 +199,7 @@ export default function Game() {
 
 	// __________________________________________________ FinishGame / SaveResults __________________________________________________
 
-	const [ saveResultsDisabled, setSaveResultsDisabled ] = useState(false)
+	const [ disable_save, setDisable_save ] = useState(false)
 
 	const finishGame = () => {
 	
@@ -219,7 +219,7 @@ export default function Game() {
 	const saveResults = async () => {
 		
 		setLoaderVisible(true)
-		setSaveResultsDisabled(true)
+		setDisable_save(true)
 
 		if(session.List_Players.length === 1) return navigate('/selectsession', { replace: true })
 	
@@ -246,7 +246,7 @@ export default function Game() {
 
 		})
 
-		setSaveResultsDisabled(false)
+		setDisable_save(false)
 	
 	}
 
@@ -256,16 +256,16 @@ export default function Game() {
 
 	// __________________________________________________ Edit __________________________________________________
 
-	const [ tmpListPlayers, setTmpListPlayers ] = useState()
-	const [ editDisabled, setEditDisabled ] = useState(false)
+	const [ list_players, setList_players ] = useState()
+	const [ disable_edit, setDisable_edit ] = useState(false)
 
 	const save_edit = async () => {
 
-		setEditDisabled(true)
+		setDisable_edit(true)
 
 		if(!session.id) return
 
-		await axiosPrivate.post('/updatesession',{ id: session.id, List_Players: tmpListPlayers }).then(() => {
+		await axiosPrivate.post('/updatesession',{ id: session.id, List_Players: list_players }).then(() => {
 
 			//TODO
 			// socket.emit('RefreshGame', '')
@@ -275,7 +275,7 @@ export default function Game() {
 			console.log(err)
 		})
 		
-		setEditDisabled(false)
+		setDisable_edit(false)
 
 	}
 
@@ -308,7 +308,7 @@ export default function Game() {
 					<option value='type' key='type'>Eingabe</option>
 				</select>
 
-				<svg onClick={() => { setTmpListPlayers(session?.List_Players.map((p) => { return { ...p } })); setShow_edit(true) }} className='button-responsive' viewBox='0 -960 960 960' ><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
+				<svg onClick={() => { setList_players(session?.List_Players.map((p) => { return { ...p } })); setShow_edit(true) }} className='button-responsive' viewBox='0 -960 960 960' ><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
 
 				<button 
 					className='button'
@@ -386,35 +386,35 @@ export default function Game() {
 
 				<h1>Gewinner auswählen</h1>
 
-				{askIfSurrender && 
-				<div className='game_popup_surrender_askifsurrender'>
+				{askIfSurrender ? <>
 
-					<h2>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</h2>
+					<div className='game_popup_surrender_askifsurrender'>
 
-					<div>
-
-						<button 
-							className='button button-thick' 
-							disabled={saveResultsDisabled}
-							onClick={saveResults}
-						>Ja</button>
+						<h2>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</h2>
 
 						<button 
-							className='button button-red' 
-							onClick={() => setShow_surrender(false)}
-						>Abbrechen</button>
+								className='button button-thick' 
+								disabled={disable_save}
+								onClick={saveResults}
+							>Ja</button>
+
+							<button 
+								className='button button-red-reverse' 
+								onClick={() => setAskIfSurrender()}
+							>Abbrechen</button>
 					</div>
 
-				</div>
-				}
+				</>:<>
+				
+					<ul className='game_popup_surrender_list'>
+						{session?.List_Players?.map((p, i) => (
+							<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
+								<label>{p.Name}</label>
+							</li>
+						))}
+					</ul>
 
-				<ul className='game_popup_surrender_list'>
-					{session?.List_Players?.map((p, i) => (
-						<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
-							<label>{p.Name}</label>
-						</li>
-					))}
-				</ul>
+				</>}
 
 			</Popup>
 
@@ -446,12 +446,12 @@ export default function Game() {
 					<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
 				</div>
 
-				{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
+				{list_players && <DragAndDropNameColorList List_Players={list_players} setList_Players={setList_players}/>}
 
 				<button 
 					className='button button-thick' 
 					onClick={save_edit} 
-					disabled={editDisabled}
+					disabled={disable_edit}
 				>Speichern</button>
 
 			</Popup>
@@ -502,7 +502,7 @@ export default function Game() {
 
 				<button 
 					className='button button-thick' 
-					disabled={saveResultsDisabled}
+					disabled={disable_save}
 					onClick={saveResults}
 				>Ja</button>
 

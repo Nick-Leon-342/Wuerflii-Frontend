@@ -43,7 +43,13 @@ export default function Login() {
 
 
 
-		await axios.post('/auth/login', { Name, Password }).then(({ data }) => {
+		await axios.post('/auth/login', 
+			{ Name, Password }, 
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
+			}
+		).then(({ data }) => {
 
 			setAuth({ accessToken: data.accessToken })
 			setName('')

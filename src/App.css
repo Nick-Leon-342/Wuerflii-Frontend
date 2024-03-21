@@ -29,6 +29,8 @@ body {
 	width: 100%;
 	background-color: rgb(240, 240, 240);
 	
+	--popup-background-color: rgb(200, 200, 200, .5);
+
 	--text-color: rgb(100, 100, 100);
 	--text-color-static: rgb(100, 100, 100);
 	--text-color-light: rgb(150, 150, 150);
@@ -44,7 +46,6 @@ body {
 	--green-lighter: rgb(0, 255, 0);
 
 	--button-text-color: var(--background-color);
-	--modal-backdrop-color: rgb(150, 150, 150);
 
 	--toggle-button-color: var(--background-color);
 	--toggle-button-background-color: var(--text-color);
@@ -52,6 +53,9 @@ body {
 
 .dark {
 	background-color: rgb(50, 50, 50);
+
+	--popup-background-color: rgb(50, 50, 50, .5);
+
 	--background-color: rgb(75, 75, 75);
 	--text-color: rgb(210, 210, 210);
 	--text-color-light: rgb(220, 220, 220);
@@ -65,7 +69,6 @@ body {
 	--green-lighter: rgb(0, 190, 0);
 
 	--button-text-color: var(--text-color-light);
-	--modal-backdrop-color: rgb(0, 0, 0);
 
 	--toggle-button-color: var(--background-color);
 	--toggle-button-background-color: var(--text-color);

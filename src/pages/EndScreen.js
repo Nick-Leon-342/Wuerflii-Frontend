@@ -1,6 +1,5 @@
 
 
-import '../App.css'
 import './css/EndScreen.css'
 
 import React, { useEffect, useState } from 'react'
@@ -15,7 +14,7 @@ import OptionsDialog from '../components/Dialog/OptionsDialog'
 
 
 
-function EndScreen() {
+export default function EndScreen() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -39,16 +38,10 @@ function EndScreen() {
 		setLoaderVisible(true)
 
 		async function connect() {
-			await axiosPrivate.get('/endscreen',
-				{
-					headers: { 'Content-Type': 'application/json' },
-					params: { SessionID: sessionId },
-					withCredentials: true
-				}
-			).then((res) => {
+			await axiosPrivate.get(`/endscreen?sessionid=${sessionId}`).then((res) => {
 
 				const tmp_session = res.data
-				if(!winner || !tmp_session) return navigate('/creategame', { replace: true })
+				if(!winner || !tmp_session) return navigate('/selectsession', { replace: true })
 
 				const tmp_listPlayers = []
 				for(const alias of tmp_session.List_PlayerOrder) {
@@ -103,43 +96,46 @@ function EndScreen() {
 
 			<OptionsDialog/>
 		
-			<div className='button-container'>
-				<label className='winner'>
-					{header}
-				</label>
-			</div>
+			<h1>{header}</h1>
 
-			<br/>
+
 
 			<table className='table wins'>
 				<tbody>
+
 					<tr>
 						<td>Spieler</td>
 						{session?.List_Players.map((p, i) => (
 							<td key={i}>{p.Name}</td>
 						))}
 					</tr>
+
 					<tr>
 						<td>Gewonnen</td>
 						{session?.List_Players.map((p, i) => (
 							<td key={i}>{p.Wins}</td>
 						))}
 					</tr>
+
 					<tr>
 						<td>Punkte</td>
 						{session?.List_Players.map((p, i) => (
 							<td key={i}>{playerScores[p.Alias]}</td>
 						))}
 					</tr>
+
 				</tbody>
 			</table>
 
 			<Loader loaderVisible={loaderVisible}/>
 
-			<button className='button' style={{ width: '100%', height: '60px' }} onClick={() => navigate('/creategame', { replace: false })}>Ok</button>
+
+
+			<button 
+				className='button button-thick' 
+				onClick={() => navigate('/selectsession', { replace: false })}
+			>Ok</button>
 
 		</>
 	)
 }
-
-export default EndScreen
