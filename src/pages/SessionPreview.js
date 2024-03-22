@@ -125,14 +125,26 @@ export default function SessionPreview() {
 		const rowHeights = []
 
 		const first = new Date(list_toEdit[0].End)
-		list.push({ Group_Date: first, ScoresAfter: list_toEdit[0].ScoresAfter })
+		list.push({ 
+			Group_Date: first, 
+			ScoresAfter: list_toEdit[0].ScoresAfter, 
+			ScoresAfter_Month: list_toEdit[0].ScoresAfter_Month,
+			ScoresAfter_Year: list_toEdit[0].ScoresAfter_Year, 
+			ScoresAfter_SinceCustomDate: list_toEdit[0].ScoresAfter_SinceCustomDate,
+		})
 		let currentDate = first
 	
 		list_toEdit.forEach(e => {
 			const d = new Date(e.End)
 			if(d.toDateString() !== currentDate.toDateString()) {
 				rowHeights.push(height_dateElement)
-				list.push({ Group_Date: d, ScoresAfter: e.ScoresAfter })
+				list.push({ 
+					Group_Date: d, 
+					ScoresAfter: e.ScoresAfter, 
+					ScoresAfter_Month: e.ScoresAfter_Month,
+					ScoresAfter_Year: e.ScoresAfter_Year, 
+					ScoresAfter_SinceCustomDate: e.ScoresAfter_SinceCustomDate,
+				})
 				currentDate = d
 			}
 			rowHeights.push(height_element)
@@ -169,7 +181,7 @@ export default function SessionPreview() {
 			 tmp_wins[p.Alias] = 0
 		)
 
-		for( const f of finalScores) {
+		for(const f of finalScores) {
 			
 			const date = new Date(f.End)
 			if(date.getFullYear() === +year) {
@@ -188,6 +200,33 @@ export default function SessionPreview() {
 		editList(tmp, setList)
 
 	}, [view, year, month])
+
+	const getScoresAfter = (alias) => {
+
+		if(!list) return
+		console.log(view, list)
+
+		switch(view) {
+			case 'showMonth':
+				return list.at(visibleRowIndex)?.ScoresAfter_Month[alias]
+
+			case 'showYear':
+				return list.at(visibleRowIndex)?.ScoresAfter_Year[alias]
+
+			case 'showCustomDate':
+				return list.at(visibleRowIndex)?.ScoresAfter_SinceCustomDate[alias]
+
+			default :
+				return list.at(visibleRowIndex)?.ScoresAfter[alias]
+		}
+
+
+	}
+
+
+
+
+
 
 	const getPlayer = (alias) => {
 
@@ -320,7 +359,7 @@ export default function SessionPreview() {
 							{session?.List_PlayerOrder?.map((alias, i) => {
 								return (
 									<td key={i} style={style}>
-										{list && list.at(visibleRowIndex)?.ScoresAfter[alias]}
+										{getScoresAfter(alias)}
 									</td>
 								)
 							})}
