@@ -22,7 +22,7 @@ import EndScreen from './pages/EndScreen'
 export default function App() {
 
 	return (
-		<div style={{ display: 'flex', alignItems: 'center', padding: '150px' }}>
+		<div style={{ display: 'flex', alignItems: 'center', padding: '200px' }}>
 			<div className='App' id='App'>
 				<Router>
 					<Routes>

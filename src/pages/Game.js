@@ -230,14 +230,14 @@ export default function Game() {
 
 	}
 	
-	const saveResults = async () => {
+	const saveResults = () => {
 		
 		setLoaderVisible(true)
 		setDisable_save(true)
 
 		if(list_players.length === 1) return navigate('/selectsession', { replace: true })
 	
-		await axiosPrivate.post('/game',
+		axiosPrivate.post('/game',
 			{
 				SessionID: session.id, 
 				JoinCode: joincode, 
@@ -257,10 +257,12 @@ export default function Game() {
 				console.log(err)
 			}
 
-		})
+		}).finally(() => {
+	
+			setLoaderVisible(false)
+			setDisable_save(false)
 
-		setLoaderVisible(false)
-		setDisable_save(false)
+		})
 	
 	}
 
