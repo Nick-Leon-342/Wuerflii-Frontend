@@ -5,7 +5,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleShowScoresChange, handleInputTypeChange } from '../logic/utils'
+import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleShowScoresChange } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
@@ -112,7 +112,7 @@ export default function Game() {
 			}
 		}
 
-	}, [session])
+	}, [ session ])
 
 	useEffect(() => {
 
@@ -181,7 +181,32 @@ export default function Game() {
 		})
 	
 	}
-	
+
+	const handleInputTypeChange = (e) => {
+
+		if(!e.target) return
+
+		axiosPrivate.post('/game/inputtype', { SessionID: session_id, InputType: e.target.value }).then(() => {
+
+			window.location.reload()
+
+		}).catch((err) => {
+
+			const status = err?.response?.status
+			if(status === 400) {
+				window.alert('Clientanfrage ist fehlerhaft!')
+			} else if(status === 404) {
+				window.alert('Die Session wurde nicht gefunden!')
+				navigate('/selectsession', { replace: true })
+			} else {
+				console.log(err)
+				window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			}
+
+		})
+
+	}
+
 
 
 
@@ -294,7 +319,7 @@ export default function Game() {
 
 				<select
 						value={inputType}
-						onChange={(e) => handleInputTypeChange(e.target.value, urlParams)}
+						onChange={handleInputTypeChange}
 					>
 					<option value='select' key='select'>Auswahl</option>
 					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>

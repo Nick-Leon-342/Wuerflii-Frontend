@@ -42,14 +42,6 @@ export const updateURL = (urlParams) => {
 
 }
 
-export const handleInputTypeChange = (v, urlParams) => {
-
-	urlParams.set('inputtype', v)
-	updateURL(urlParams)
-	return window.location.reload()
-
-}
-
 export const handleShowScoresChange = (v, urlParams) => {
 	
 	urlParams.set('showscores', v)
