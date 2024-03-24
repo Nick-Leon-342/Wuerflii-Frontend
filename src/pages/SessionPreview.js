@@ -238,7 +238,7 @@ export default function SessionPreview() {
 
 	const handleClick = (finalScore) => {
 
-		navigate(`/sessionpreview/table?session_id=${session_id}&finalscoreid=${finalScore.id}`, { replace: false })
+		navigate(`/sessionpreview/table?session_id=${session_id}&finalscore_id=${finalScore.id}`, { replace: false })
 
 	}
 

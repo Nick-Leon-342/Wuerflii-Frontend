@@ -20,8 +20,8 @@ export default function SessionPreviewTable() {
 	const axiosPrivate = useAxiosPrivate()
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
-	const sessionid = urlParams.get('sessionid')
-	const finalscoreid = urlParams.get('finalscoreid')
+
+	const [ session_id, setSession_id ] = useState()
 
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 	const [ List_Players, setList_Players ] = useState()
@@ -43,51 +43,45 @@ export default function SessionPreviewTable() {
 
 	useEffect(() => {
 
-		async function request() {
+		const session_id = urlParams.get('session_id')
+		const finalscore_id = urlParams.get('finalscore_id')
+		setSession_id(session_id)
 
-			setLoaderVisible(true)
+		setLoaderVisible(true)
 
-			await axiosPrivate.get('/sessionpreview-table',
-				{
-					headers: { 'Content-Type': 'application/json' },
-					params: { SessionID: sessionid, FinalScoreID: finalscoreid },
-					withCredentials: true
-				}
-			).then((res) => {
+		axiosPrivate.get(`/sessionpreview-table?session_id=${session_id}&finalscore_id=${finalscore_id}`).then((res) => {
 
-				const tmpList_Players = []
-				for(const alias of res.data.List_PlayerOrder) {
-					for(const p of res.data.List_Players) {
-						if(alias === p.Alias) {
-							tmpList_Players.push(p)
-							break
-						}
+
+			const tmpList_Players = []
+			for(const alias of res.data.List_PlayerOrder) {
+				for(const p of res.data.List_Players) {
+					if(alias === p.Alias) {
+						tmpList_Players.push(p)
+						break
 					}
 				}
-				setList_Players(tmpList_Players)
-				setFinalScores(res.data.FinalScores)
-				setTable(res.data.Table)
+			}
+			setList_Players(tmpList_Players)
+			setFinalScores(res.data.FinalScores)
+			setTable(res.data.Table)
 
-			}).catch((err) => {
 
-				const status = err?.response?.status
-				if(status === 404) {
-					window.alert('Dieser Spielstand exisiert nicht!')
-				} else if(status === 400) {
-					window.alert('Die Anfrage ist falsch!')
-				} else {
-					console.log(err)
-					window.alert('Beim Server trat ein Fehler auf!')
-				}
-				navigate(`/sessionpreview?sessionid=${sessionid}`, { replace: true })
+		}).catch((err) => {
 
-			})
 
-			setLoaderVisible(false)
+			const status = err?.response?.status
+			if(status === 404) {
+				window.alert('Dieser Spielstand exisiert nicht!')
+			} else if(status === 400) {
+				window.alert('Die Anfrage ist falsch!')
+			} else {
+				console.log(err)
+				window.alert('Beim Server trat ein Fehler auf!')
+			}
+			navigate(`/sessionpreview?sessionid=${session_id}`, { replace: true })
 
-		}
 
-		request()
+		}).finally(() => {setLoaderVisible(false)})
 
 	}, [])
 
@@ -155,6 +149,7 @@ export default function SessionPreviewTable() {
 					list_Players={List_Players}
 					playerScores={finalScores?.PlayerScores}
 					showScores={true}
+					setShowScores={() => {}}
 					tableWidth={tableWidth}
 				/>
 
@@ -177,7 +172,7 @@ export default function SessionPreviewTable() {
 
 			<Loader loaderVisible={loaderVisible} />
 			
-			<button className='button' style={{ height: '50px', width: '100%', marginBottom: '0px' }} onClick={() => navigate(`/sessionpreview?sessionid=${sessionid}`, { replace: false })}>Zurück</button>
+			<button className='button' style={{ height: '50px', width: '100%', marginBottom: '0px' }} onClick={() => navigate(`/sessionpreview?sessionid=${session_id}`, { replace: false })}>Zurück</button>
 
 		</>
 	)
