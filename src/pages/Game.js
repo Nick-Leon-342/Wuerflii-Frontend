@@ -5,7 +5,7 @@ import './css/Game.css'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleShowScoresChange, handleInputTypeChange, successfullyConnected } from '../logic/utils'
+import { id_bottomTable, id_upperTable, thickBorder, getPlayer, updateURL, handleShowScoresChange, handleInputTypeChange } from '../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../logic/Events'
 import Loader from '../components/Loader'
 import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
@@ -25,18 +25,19 @@ export default function Game() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	
-	const [ sentDataPackages ] = useState(JSON.parse(localStorage.getItem('kniffel_sentDataPackages')) || [])
+
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
-	const joincode = urlParams.get('joincode')
-	const sessionid = urlParams.get('sessionid')
-	const [ lastPlayerAlias, setLastPlayerAlias ] = useState(urlParams.get('lastplayer'))
+
+	const [ session_id, setSession_id ] = useState()
+	const [ joincode, setJoincode ] = useState()
+	const [ lastPlayerAlias, setLastPlayerAlias ] = useState()
 	
 	const [ columnsSum ] = useState([])
 	
 	const [ session, setSession ] = useState()
+	const [ list_players, setList_players ] = useState()
 
 	const [ inputType, setInputType ] = useState()
 	const [ showScores, setShowScores ] = useState()
@@ -115,77 +116,65 @@ export default function Game() {
 
 	useEffect(() => {
 
-		if(!sessionid || !joincode) return navigate('/creategame', { replace: true })
 
-		axiosPrivate.get(`/game?sessionid=${sessionid}&joincode=${joincode}`,
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
+		const session_id = urlParams.get('session_id')
+		const joincode = urlParams.get('joincode')
+		const lastplayer = urlParams.get('lastplayer')
+
+		setSession_id(+session_id)
+		setJoincode(+joincode)
+		setLastPlayerAlias(lastplayer)
+
+
+		if(!session_id || !joincode) return navigate('/creategame', { replace: true })
+
+		axiosPrivate.get(`/game?session_id=${session_id}&joincode=${joincode}`).then(({ data }) => {
+			
+
+			const session = data.Session
+			const list_players = data.List_Players
+
+			const tmp_list_players = []
+			columnsSum.length = 0
+			for(const Alias of session?.List_PlayerOrder) {
+
+				tmp_list_players.push(getPlayer(Alias, list_players))
+
+				for(let c = 0; session?.Columns > c; c++) {
+					columnsSum.push({Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
+				}
+
 			}
-		).then((res) => {
 			
-			successfullyConnected(
-				res.data, 
-				columnsSum, 
-				urlParams, 
-				setSession, 
-				setInputType, 
-				setShowScores, 
-				setTableColumns, 
-				setGnadenwurf, 
-			)
+			setList_players(tmp_list_players)
+			setInputType(session.InputType)
+			setShowScores(session.ShowScores)
+			setTableColumns(data.List_Columns)
+			setGnadenwurf(data.Gnadenwürfe)
+			setSession(session)
 
-		}).catch(() => {
-			return navigate('/creategame', { replace: true })
+
+		}).catch((err) => {
+
+			const status = err?.response?.status
+			if(status === 400) {
+				window.alert('Anfrage ist falsch!')
+			} else if(status === 404) {
+				window.alert('Die Session wurde nicht gefunden!')
+			} else {
+				console.log(err)
+				window.alert('Es trat ein unvorhergesehener fehler auf!')
+			}
+			return navigate('/selectsession', { replace: true })
 		})
-
-		// const tmp_socket = io.connect(REACT_APP_BACKEND_URL, { auth: { joincode: joincode } })
-		// setSocket(tmp_socket)
-		// tmp_socket.emit('JoinSession', '')
-		// tmp_socket.on('UpdateValueResponse', (msg) => {
-
-		// 	const m = msg.Data
-		// 	const tableID = m.UpperTable ? id_upperTable : id_bottomTable
-
-		// 	document.getElementById(tableID).querySelector(`.kniffelInput[alias='${m.Alias}'][column='${m.Column}'][row='${m.Row}']`).value = m.Value
-			
-		// 	for(const e of tableColumns) {
-		// 		if(e.TableID === tableID && e.Alias === m.Alias && e.Column === m.Column) {
-		// 			e[m.Row] = m.Value
-		// 		}
-		// 	}
-
-		// 	if(m.UpperTable) {calculateUpperColumn(m.Alias, m.Column, columnsSum)
-		// 	} else {calculateBottomColumn(m.Alias, m.Column, columnsSum)}
-
-		// 	setLastPlayerAlias(m.Alias)
-		// 	urlParams.set('lastplayer', m.Alias)
-		// 	updateURL(urlParams)
-
-		// })
-		// tmp_socket.on('UpdateGnadenwurf', (msg) => {
-
-		// 	setGnadenwurf(msg.Data)
-
-		// })
-
-		// return () => {
-		// 	tmp_socket.disconnect()
-		// }
 
 	}, [])
 
 	const newGame = () => {
 	
-		axiosPrivate.delete('/game',
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true,
-				params: { SessionID: sessionid },
-			}
-		).then(() => {
+		axiosPrivate.delete(`/game?session_id=${session_id}`).then(() => {
 
-			navigate('/creategame', { replace: true })
+			navigate('/selectsession', { replace: true })
 
 		}).catch((err) => {
 			console.log(err)
@@ -221,7 +210,7 @@ export default function Game() {
 		setLoaderVisible(true)
 		setDisable_save(true)
 
-		if(session.List_Players.length === 1) return navigate('/selectsession', { replace: true })
+		if(list_players.length === 1) return navigate('/selectsession', { replace: true })
 	
 		await axiosPrivate.post('/game',
 			{
@@ -229,12 +218,11 @@ export default function Game() {
 				JoinCode: joincode, 
 				WinnerAlias: askIfSurrender,
 				List_PlayerOrder: session.List_PlayerOrder,
-				List_Players: session.List_Players, 
+				List_Players: list_players, 
 			}
 		).then(({ data }) => {
 
-			navigate(`/endscreen?sessionid=${session.id}&winner=${JSON.stringify(data.List_WinnerNames)}&playerscores=${JSON.stringify(data.PlayerScores)}`, { replace: true })
-			setLoaderVisible(false)
+			navigate(`/endscreen?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
 
 		}).catch((err) => {
 
@@ -246,6 +234,7 @@ export default function Game() {
 
 		})
 
+		setLoaderVisible(false)
 		setDisable_save(false)
 	
 	}
@@ -256,8 +245,15 @@ export default function Game() {
 
 	// __________________________________________________ Edit __________________________________________________
 
-	const [ list_players, setList_players ] = useState()
 	const [ disable_edit, setDisable_edit ] = useState(false)
+	const [ edit_list_players, setEdit_list_players ] = useState([])
+
+	const show_edit_popup = () => {
+
+		setEdit_list_players(list_players.map((p) => { return { ...p } })) 
+		setShow_edit(true) 
+
+	}
 
 	const save_edit = async () => {
 
@@ -265,10 +261,13 @@ export default function Game() {
 
 		if(!session.id) return
 
-		await axiosPrivate.post('/updatesession',{ id: session.id, List_Players: list_players }).then(() => {
+		await axiosPrivate.post('/updatesession', 
+			{ 
+				SessionID: session.id, 
+				List_Players: edit_list_players 
+			}
+		).then(() => {
 
-			//TODO
-			// socket.emit('RefreshGame', '')
 			window.location.reload()
 
 		}).catch((err) => {
@@ -287,13 +286,7 @@ export default function Game() {
 	return (
 		<>
 
-			{/* __________________________________________________ Dialogs __________________________________________________ */}
-
 			<OptionsDialog/>
-
-
-
-
 
 			{/* __________________________________________________ Page __________________________________________________ */}
 
@@ -308,7 +301,11 @@ export default function Game() {
 					<option value='type' key='type'>Eingabe</option>
 				</select>
 
-				<svg onClick={() => { setList_players(session?.List_Players.map((p) => { return { ...p } })); setShow_edit(true) }} className='button-responsive' viewBox='0 -960 960 960' ><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
+				<svg 
+					onClick={show_edit_popup} 
+					className='button-responsive' 
+					viewBox='0 -960 960 960' 
+				><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
 
 				<button 
 					className='button'
@@ -320,7 +317,7 @@ export default function Game() {
 
 
 			<PlayerTable 
-				list_Players={session?.List_Players}
+				list_Players={list_players}
 				axiosPrivate={axiosPrivate}
 				joincode={+joincode}
 				tableWidth={tableWidth}
@@ -329,14 +326,13 @@ export default function Game() {
 				gnadenwurf={gnadenwurf}
 				setGnadenwurf={setGnadenwurf}
 				showScores={showScores}
-				sentDataPackages={sentDataPackages}
 				setShow_lastPlayer={setShow_lastPlayer}
 			/>
 			
 			<Table 
 				tableID={id_upperTable}
 				columns={session?.Columns}
-				list_Players={session?.List_Players}
+				list_Players={list_players}
 				tableColumns={tableColumns}
 				inputType={inputType}
 				onblurEvent={local_onBlurEvent}
@@ -345,7 +341,7 @@ export default function Game() {
 			<Table 
 				tableID={id_bottomTable}
 				columns={session?.Columns}
-				list_Players={session?.List_Players}
+				list_Players={list_players}
 				tableColumns={tableColumns}
 				inputType={inputType}
 				onblurEvent={local_onBlurEvent}
@@ -390,7 +386,7 @@ export default function Game() {
 
 					<div className='game_popup_surrender_askifsurrender'>
 
-						<h2>{`Sicher, dass ${getPlayer(askIfSurrender, session).Name} gewinnen soll?`}</h2>
+						<h2>{`Sicher, dass ${getPlayer(askIfSurrender, list_players).Name} gewinnen soll?`}</h2>
 
 						<button 
 								className='button button-thick' 
@@ -407,7 +403,7 @@ export default function Game() {
 				</>:<>
 				
 					<ul className='game_popup_surrender_list'>
-						{session?.List_Players?.map((p, i) => (
+						{list_players?.map((p, i) => (
 							<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
 								<label>{p.Name}</label>
 							</li>
@@ -446,7 +442,7 @@ export default function Game() {
 					<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
 				</div>
 
-				{list_players && <DragAndDropNameColorList List_Players={list_players} setList_Players={setList_players}/>}
+				{list_players && <DragAndDropNameColorList List_Players={edit_list_players} setList_Players={setEdit_list_players}/>}
 
 				<button 
 					className='button button-thick' 
@@ -574,7 +570,7 @@ export default function Game() {
 					{!lastPlayerAlias 
 						? 'Bis jetzt war noch keiner dran!'
 						: (<>
-							{'\'' + getPlayer(lastPlayerAlias, session)?.Name + '\' war als letztes dran.'}
+							{'\'' + getPlayer(lastPlayerAlias, list_players)?.Name + '\' war als letztes dran.'}
 						</>)
 					}
 				</h1>

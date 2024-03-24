@@ -10,27 +10,6 @@ export const id_playerTable							= 'playerTable'
 
 
 
-//____________________CreateObjects____________________
-
-export const createPlayer = (name, color) => {
-
-    return {
-        Name: name,
-        Color: color,
-    }
-
-}
-
-export const createSession = (sessionName, columns, list_players) => {
-
-    return {
-		SessionName: sessionName,
-        Columns: columns,
-		List_Players: list_players,
-    }
-
-}
-
 export const formatDate = (date) => {
 
 	const d = new Date(date)
@@ -45,10 +24,10 @@ export const formatDate = (date) => {
 
 }
 
-export const getPlayer = (alias, session) => {
+export const getPlayer = (alias, list_players) => {
 
-	if(session)
-	for(const p of session.List_Players) {
+	if(list_players)
+	for(const p of list_players) {
 		if(p.Alias === alias) {
 			return p
 		}
@@ -75,29 +54,6 @@ export const handleShowScoresChange = (v, urlParams) => {
 	
 	urlParams.set('showscores', v)
 	updateURL(urlParams)
-
-}
-
-export const successfullyConnected = (data, columnsSum, urlParams, setSession, setInputType, setShowScores, setTableColumns, setGnadenwurf) => {
-
-	const tmp_session = data.Session
-	const tmp_listPlayers = []
-	columnsSum.length = 0
-	for(const Alias of tmp_session?.List_PlayerOrder) {
-
-		tmp_listPlayers.push(getPlayer(Alias, tmp_session))
-		for(let c = 0; tmp_session?.Columns > c; c++) {
-			columnsSum.push({Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
-		}
-
-	}
-	tmp_session.List_Players = tmp_listPlayers
-	
-	setSession(tmp_session)
-	setInputType(urlParams.get('inputtype') || tmp_session.InputType)
-	setShowScores(urlParams.get('showscores') ? urlParams.get('showscores') === 'true' : tmp_session.ShowScores)
-	setTableColumns(data.TableColumns)
-	setGnadenwurf(data.Gnadenwürfe)
 
 }
 

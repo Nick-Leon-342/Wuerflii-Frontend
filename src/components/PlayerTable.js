@@ -75,7 +75,7 @@ export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, la
 							<td key={i} style={{ borderTop: thickBorder, borderRight: thickBorder }}>
 								<span style={{ 
 									fontWeight: lastPlayerAlias === p.Alias ? 'bold' : '',
-									color: lastPlayerAlias === p.Alias ? 'rgb(0, 255, 0)' : '',
+									color: lastPlayerAlias === p.Alias ? 'var(--green)' : '',
 								}}>
 									{p.Name}
 								</span>

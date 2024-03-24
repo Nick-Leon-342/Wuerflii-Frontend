@@ -28,7 +28,7 @@ export default function CreateGame() {
 
 	useEffect(() => {
 
-		axiosPrivate.get('/creategame').then(({ data }) => {
+		axiosPrivate.get('/game/create').then(({ data }) => {
 
 			const { MAX_PLAYERS } = data
 			setMAX_PLAYERS(MAX_PLAYERS)

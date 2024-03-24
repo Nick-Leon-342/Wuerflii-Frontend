@@ -5,7 +5,6 @@ import './css/EndScreen.css'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { getPlayer } from '../logic/utils'
 
 import Loader from '../components/Loader'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
@@ -19,15 +18,16 @@ export default function EndScreen() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 
-	const [session, setSession] = useState()
+	const [ list_players, setList_players ] = useState([])
+	const [ finalscore, setFinalScore ] = useState()
+
 	const [header, setHeader] = useState('')
 	const [loaderVisible, setLoaderVisible] = useState(false)
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
-	const winner = JSON.parse(urlParams.get('winner'))
-	const sessionId = +urlParams.get('sessionid')
-	const playerScores = JSON.parse(urlParams.get('playerscores'))
+	
+	
 
 
 
@@ -37,53 +37,62 @@ export default function EndScreen() {
 
 		setLoaderVisible(true)
 
-		async function connect() {
-			await axiosPrivate.get(`/endscreen?sessionid=${sessionId}`).then((res) => {
+		const session_id = +urlParams.get('session_id')
+		const finalscore_id = +urlParams.get('finalscore_id')
 
-				const tmp_session = res.data
-				if(!winner || !tmp_session) return navigate('/selectsession', { replace: true })
+		if(!session_id || !finalscore_id) return navigate('/selectsession', { replace: true })
 
-				const tmp_listPlayers = []
-				for(const alias of tmp_session.List_PlayerOrder) {
-					tmp_listPlayers.push(getPlayer(alias, tmp_session))
-				}
-				tmp_session.List_Players = tmp_listPlayers
+		axiosPrivate.get(`/endscreen?session_id=${session_id}&finalscore_id=${finalscore_id}`).then(({ data }) => {
 
-				setSession(tmp_session)
 
-				if(winner.length === 1) {
-					setHeader(`'${winner[0]}' hat gewonnen!`)
-				} else {
-					let string = `'${winner[0]}' `
-					for(let i = 1; winner.length > i; i++) {
-						const p = `'${winner[i]}'`
-						if((i + 1) === winner.length) {
-							string += ` und ${p} haben gewonnen!`
-						} else {
-							string += `, ${p}`
-						}
+			const finalscore = data.FinalScore
+			const list_players = data.List_Players
+			
+			setFinalScore(finalscore)
+			setList_players(list_players)
+
+
+			// Init list_winner
+			const list_winner = []
+			for(const winnerAlias of finalscore.List_Winner) {
+				for(const p of list_players) {
+					if(winnerAlias === p.Alias) {
+						list_winner.push(p.Name)
 					}
-					setHeader(string)
 				}
+			}
 
-				setLoaderVisible(false)
 
-			}).catch((err) => {
-				
-				const status = err?.response?.status
-				if(status === 400) {
-					window.alert('Irgendwas stimmt nicht mit der Serverabfrage!')
-				} else if (status === 404) {
-					window.alert('Die Session wurde nicht gefunden!')
-				} else {
-					window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			// Init header
+			if(list_winner.length === 1) {
+				setHeader(`'${list_winner[0]}' hat gewonnen!`)
+			} else {
+				let string = `'${list_winner[0]}' `
+				for(let i = 1; list_winner.length > i; i++) {
+					const p = `'${list_winner[i]}'`
+					if((i + 1) === list_winner.length) {
+						string += ` und ${p} haben gewonnen!`
+					} else {
+						string += `, ${p}`
+					}
 				}
-				navigate('/creategame', { replace: true })
-				
-			})
-		}
+				setHeader(string)
+			}
 
-		connect()
+
+		}).catch((err) => {
+			
+			const status = err?.response?.status
+			if(status === 400) {
+				window.alert('Irgendwas stimmt nicht mit der Serverabfrage!')
+			} else if (status === 404) {
+				window.alert('Die Session wurde nicht gefunden!')
+			} else {
+				window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			}
+			// navigate('/selectsession', { replace: true })
+			
+		}).finally(() => {setLoaderVisible(false)})
 
 	}, [])
 
@@ -105,22 +114,22 @@ export default function EndScreen() {
 
 					<tr>
 						<td>Spieler</td>
-						{session?.List_Players.map((p, i) => (
+						{list_players.map((p, i) => (
 							<td key={i}>{p.Name}</td>
 						))}
 					</tr>
 
 					<tr>
 						<td>Gewonnen</td>
-						{session?.List_Players.map((p, i) => (
-							<td key={i}>{p.Wins}</td>
+						{list_players.map((p, i) => (
+							<td key={i}>{finalscore?.ScoresAfter[p.Alias]}</td>
 						))}
 					</tr>
 
 					<tr>
 						<td>Punkte</td>
-						{session?.List_Players.map((p, i) => (
-							<td key={i}>{playerScores[p.Alias]}</td>
+						{list_players.map((p, i) => (
+							<td key={i}>{finalscore?.PlayerScores[p.Alias]}</td>
 						))}
 					</tr>
 

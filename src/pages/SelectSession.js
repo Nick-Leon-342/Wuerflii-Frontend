@@ -29,10 +29,11 @@ export default function SelectSession() {
 	const [ listDisabled, setListDisabled ] = useState(false)
 
 	const [ session, setSession ] = useState('')
-	const [ tmpListPlayers, setTmpListPlayers ] = useState([])
-	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ dialog_loaderVisible, setDialog_loaderVisible ] = useState(false)
+	const [ list_players, setList_players ] = useState([])
 	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
+	
+	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ loaderVisible_popup, setLoaderVisible_popup ] = useState(false)
 
 	const [ show_editSession, setShow_editSession ] = useState(false)
 	const [ show_deleteSession, setShow_deleteSession ] = useState(false)
@@ -58,9 +59,9 @@ export default function SelectSession() {
 		}).catch((err) => {
 			console.log(err)
 			navigate('/login', { replace: true })
+		}).finally(() => {
+			setLoaderVisible(false)
 		})
-
-		setLoaderVisible(false)
 
 	}
 
@@ -82,7 +83,7 @@ export default function SelectSession() {
 
 
 
-	// __________________________________________________ListElement__________________________________________________
+	// __________________________________________________ ListElement __________________________________________________
 
 	const listElementClick = async (element) => {
 		
@@ -95,9 +96,9 @@ export default function SelectSession() {
 			await axiosPrivate.post('/selectsession', { SessionID: list[i].id }).then(({ data }) => {
 	
 				if(data.Exists) {
-					navigate(`/game?sessionid=${list[i].id}&joincode=${data.JoinCode}`, { replace: true })
+					navigate(`/game?session_id=${list[i].id}&joincode=${data.JoinCode}`, { replace: true })
 				} else {
-					navigate(`/sessionpreview?sessionid=${list[i].id}`, { replace: false })
+					navigate(`/sessionpreview?session_id=${list[i].id}`, { replace: false })
 				}
 	
 			}).catch((err) => {
@@ -140,11 +141,11 @@ export default function SelectSession() {
 
 
 
-	// __________________________________________________Modal-Delete__________________________________________________
+	// __________________________________________________ Modal-Delete __________________________________________________
 
 	const [ deleteDisabled, setDeleteDisabled ] = useState(false)
 
-	const modalDeleteSubmit = async () => {
+	const handle_delete = async () => {
 
 		setShow_deleteSession(false)
 		setLoaderVisible(true)
@@ -152,15 +153,11 @@ export default function SelectSession() {
 
 		for(let i = 0; list_checkbox.length > i; i++) {
 			if(list_checkbox[i]) {
-				await axiosPrivate.delete('/selectsession',
-					{
-						headers: { 'Content-Type': 'application/json' },
-						withCredentials: true,
-						params: { id: list[i].id }
-					}
-				).catch((err) => {
+				await axiosPrivate.delete(`/selectsession?session_id=${session.id}`).catch((err) => {
+
 					console.log(err)
 					window.alert('Es trat ein unvorhergesehener Fehler auf!')
+					
 				})
 
 			}
@@ -194,14 +191,14 @@ export default function SelectSession() {
 	const edit_show = () => {
 
 		setSuccessfullyUpdatedVisible(false)
-		setTmpListPlayers(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
+		setList_players(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
 		setShow_editSession(true)
 
 	}
 
 	const edit_close = () => {
 		
-		setTmpListPlayers([])
+		setList_players([])
 		setColumns('')
 		setShow_editSession(false)
 
@@ -209,28 +206,32 @@ export default function SelectSession() {
 
 	const edit_save = async () => {
 
-		setDialog_loaderVisible(true)
+		setLoaderVisible_popup(true)
 		setSaveDisabled(true)
 
-		await axiosPrivate.post('/updatesession', 
-			{ id: session.id, Columns: columns, List_Players: tmpListPlayers },
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
-			}
-		).then(() => {
+		await axiosPrivate.post('/updatesession', { SessionID: session.id, Columns: +columns, List_Players: list_players }).then(() => {
 
 			setSuccessfullyUpdatedVisible(true)
 			edit_close()
 			request()
 
 		}).catch((err) => {
-			//TODO add some error-handling
-			return console.log(err)
+			
+			const status = err?.response?.status
+			if(status === 400) {
+				window.alert('Anfrage ist falsch!')
+			} else if(status === 404) {
+				window.alert('Die Session wurde nicht gefunden!')
+			} else {
+				console.log(err)
+				window.alert('Es trat ein unvorhergesehener fehler auf!')
+			}
+			return window.location.reload()
+
 		})
 		
 		setSaveDisabled(false)
-		setDialog_loaderVisible(false)
+		setLoaderVisible_popup(false)
 
 	}
 
@@ -336,7 +337,7 @@ export default function SelectSession() {
 
 				<button 
 					className='button button-thick' 
-					onClick={modalDeleteSubmit}
+					onClick={handle_delete}
 				>Ja</button>
 
 				<button 
@@ -386,11 +387,11 @@ export default function SelectSession() {
 
 				{/* ______________________________ List ______________________________ */}
 				
-				{tmpListPlayers && <DragAndDropNameColorList List_Players={tmpListPlayers} setList_Players={setTmpListPlayers}/>}
+				{list_players && <DragAndDropNameColorList List_Players={list_players} setList_Players={setList_players}/>}
 
 
 
-				<Loader loaderVisible={dialog_loaderVisible}/>
+				<Loader loaderVisible={loaderVisible_popup}/>
 
 				<button 
 					className='button button-thick' 

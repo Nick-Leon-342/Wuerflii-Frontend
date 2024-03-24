@@ -4,7 +4,6 @@ import './css/EnterNames.css'
 
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createSession, createPlayer } from '../logic/utils'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
@@ -59,7 +58,7 @@ export default function EnterNames({ columns, players }) {
 
 
 
-	const play = async () => {
+	const play = () => {
 
 		if(sessionName) {
 
@@ -68,27 +67,32 @@ export default function EnterNames({ columns, players }) {
 			const list_players = []
 	
 			for(let i = 0; names.length > i; i++) {
-				list_players.push(createPlayer(names[i], colors[i]))
+				list_players.push({ 
+					Name: names[i], 
+					Color: colors[i]
+				})
 			}
 
-			const session = createSession(sessionName, columns, list_players)
-			await axiosPrivate.post('/enternames',
-				session,
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).then((res) => {
+			axiosPrivate.post('/game/create', {
+				SessionName: sessionName, 
+				Columns: +columns, 
+				List_Players: list_players,
+			}).then(({ data }) => {
 
-				navigate(`/game?sessionid=${res?.data?.SessionID}&joincode=${res?.data?.JoinCode}`)
+				navigate(`/game?session_id=${data.SessionID}&joincode=${data.JoinCode}`)
 				
 			}).catch((err) => {
+
 				console.log(err)
-				navigate('/creategame', { replace: true })
-			})
-			
-			setLoaderVisible(false)
-			setDisablePlay(false)
+				window.alert('Es trat ein Fehler auf!')
+				window.location.reload()
+
+			}).finally(() => {
+				
+				setLoaderVisible(false)
+				setDisablePlay(false)
+
+			})			
 
 		}
 

@@ -21,21 +21,24 @@ export default function SessionPreview() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const location = useLocation()
-	const sessionid = new URLSearchParams(location.search).get('sessionid')
-	const [ session, setSession ] = useState()
 
-	const [ list, setList ] = useState([])
-	const [ wins, setWins ] = useState([])
-	const [ finalScores, setList_FinalScores ] = useState([])
+	const [ session_id, setSession_id ] = useState(-1) 
+
+	const [ session, setSession ] = useState()
+	const [ list_players, setList_players ] = useState([])
+	const [ list_finalScores, setList_finalScores ] = useState([])
+	const [ list_visibleFinalScores, setList_visibleFinalScores ] = useState([])
+	
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 
 	const [ view, setView ] = useState()
 	const [ year, setYear ] = useState()
 	const [ list_year, setList_year ] = useState([])
 	const [ month, setMonth ] = useState()
-	const list_month = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
-	const columnWidth = session?.List_Players?.length > 8 ? '75px' : (session?.List_Players?.length > 4 ? '125px' : '200px')
+	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
+
+	const columnWidth = list_players?.length > 8 ? '75px' : (list_players?.length > 4 ? '125px' : '200px')
 	const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 	const height_dateElement = 40
@@ -47,73 +50,60 @@ export default function SessionPreview() {
 
 	useEffect(() => {
 
-		async function request() {
+		setLoaderVisible(true)
 
-			setLoaderVisible(true)
+		const session_id = new URLSearchParams(location.search).get('session_id')
 
-			await axiosPrivate.get('/sessionpreview',
-				{
-					headers: { 'Content-Type': 'application/json' },
-					params: { id: sessionid },
-					withCredentials: true
-				}
-			).then(({ data }) => {
+		if(!session_id) return navigate('/selectsession', { replace: true })
+		setSession_id(+session_id)
 
-				const tmp_session = data.Session
+		axiosPrivate.get(`/sessionpreview?session_id=${session_id}`).then(({ data }) => {
 
-				//Order players
-				const tmpList_Players = []
-				for(const alias of tmp_session.List_PlayerOrder) {
-					for(const p of tmp_session.List_Players) {
-						if(alias === p.Alias) {
-							tmpList_Players.push(p)
-							break
-						}
+			const { Session, List_Players, List_FinalScores } = data
+			setSession(Session)
+
+			//Order players
+			const tmpList_Players = []
+			for(const alias of Session.List_PlayerOrder) {
+				for(const p of List_Players) {
+					if(alias === p.Alias) {
+						tmpList_Players.push(p)
+						break
 					}
 				}
-				tmp_session.ListPlayers = tmpList_Players
+			}
+			setList_players(tmpList_Players)
+
+			List_FinalScores.sort((a, b) => new Date(b.End) - new Date(a.End))
+			setList_finalScores(List_FinalScores)
+
+			const tmp_list_years = []
+			for(const e of List_FinalScores) {
+				const y = new Date(e.End).getFullYear()
+				if(!tmp_list_years.includes(y)) tmp_list_years.push(y)
+			}
+			tmp_list_years.sort((a, b) => b - a)
+
+			setMonth(localStorage.getItem('kniffel_sessionpreview_month') || new Date().getMonth())
+			setYear(localStorage.getItem('kniffel_sessionpreview_year') || tmp_list_years[0])
+			setView(localStorage.getItem('kniffel_sessionpreview_view') || 'showYear')
+			setList_year(tmp_list_years)
 
 
-				setSession(tmp_session)
+		}).catch((err) => {
 
-				const l = data.FinalScores
-				l.sort((a, b) => new Date(b.End) - new Date(a.End))
-				setList_FinalScores(l)
+			const status = err?.response?.status
+			if(status === 404) {
+				window.alert('Die Session exisiert nicht!')
+			} else if(status === 400) {
+				window.alert('Die Anfrage ist falsch!')
+			} else {
+				console.log(err)
+				window.alert('Beim Server trat ein Fehler auf!')
+			}
+			navigate('/selectsession', { replace: true })
 
-				const tmp_list_years = []
-				for(const e of l) {
-					const y = new Date(e.End).getFullYear()
-					if(!tmp_list_years.includes(y)) tmp_list_years.push(y)
-				}
-				tmp_list_years.sort((a, b) => b - a)
-
-				setMonth(new Date().getMonth())
-				setYear(tmp_list_years[0])
-				setList_year(tmp_list_years)
-				setView('showYear')
-
-
-
-			}).catch((err) => {
-
-				const status = err?.response?.status
-				if(status === 404) {
-					window.alert('Die SessionID exisiert nicht!')
-				} else if(status === 400) {
-					window.alert('Die Anfrage ist falsch!')
-				} else {
-					console.log(err)
-					window.alert('Beim Server trat ein Fehler auf!')
-				}
-				navigate('/selectsession', { replace: true })
-
-			})
-
-			setLoaderVisible(false)
-
-		}
-
-		request()
+		}).finally(() => {setLoaderVisible(false)})
 
 	}, [])
 
@@ -121,11 +111,11 @@ export default function SessionPreview() {
 
 		if(!list_toEdit || list_toEdit.length === 0) return
 
-		const list = []
+		const list_visibleFinalScores = []
 		const rowHeights = []
 
 		const first = new Date(list_toEdit[0].End)
-		list.push({ 
+		list_visibleFinalScores.push({ 
 			Group_Date: first, 
 			ScoresAfter: list_toEdit[0].ScoresAfter, 
 			ScoresAfter_Month: list_toEdit[0].ScoresAfter_Month,
@@ -138,7 +128,7 @@ export default function SessionPreview() {
 			const d = new Date(e.End)
 			if(d.toDateString() !== currentDate.toDateString()) {
 				rowHeights.push(height_dateElement)
-				list.push({ 
+				list_visibleFinalScores.push({ 
 					Group_Date: d, 
 					ScoresAfter: e.ScoresAfter, 
 					ScoresAfter_Month: e.ScoresAfter_Month,
@@ -148,11 +138,11 @@ export default function SessionPreview() {
 				currentDate = d
 			}
 			rowHeights.push(height_element)
-			list.push(e)
+			list_visibleFinalScores.push(e)
 		})
 
 		setRowHeights(rowHeights)
-		setList_toEdit(list)
+		setList_toEdit(list_visibleFinalScores)
 
 	}
 
@@ -164,60 +154,45 @@ export default function SessionPreview() {
 
 		if(!session) return
 
-		if(view === 'all') {
-			
-			const allWins = {}
-			session.List_Players.map(p => {
-				return allWins[p.Alias] = p.Wins
-			})
-			setWins(allWins)
-			return editList(finalScores, setList)
+		localStorage.setItem('kniffel_sessionpreview_view', view)
+		localStorage.setItem('kniffel_sessionpreview_month', month)
+		localStorage.setItem('kniffel_sessionpreview_year', year)
 
-		}
+
+		if(view === 'all') return editList(list_finalScores, setList_visibleFinalScores)
 
 		const tmp = []
-		const tmp_wins = {}
-		session.List_Players.map(p => 
-			 tmp_wins[p.Alias] = 0
-		)
 
-		for(const f of finalScores) {
+		for(const f of list_finalScores) {
 			
 			const date = new Date(f.End)
 			if(date.getFullYear() === +year) {
 				if(view === 'showMonth' && date.getMonth() !== +month) continue
-				
-				for(const w of f.List_Winner) {
-					tmp_wins[w]++
-				}
-				
 				tmp.push(f)
 			}
 
 		}
 
-		setWins(tmp_wins)
-		editList(tmp, setList)
+		editList(tmp, setList_visibleFinalScores)
 
 	}, [view, year, month])
 
 	const getScoresAfter = (alias) => {
 
-		if(!list) return
-		console.log(view, list)
+		if(!list_visibleFinalScores) return
 
 		switch(view) {
 			case 'showMonth':
-				return list.at(visibleRowIndex)?.ScoresAfter_Month[alias]
+				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter_Month[alias]
 
 			case 'showYear':
-				return list.at(visibleRowIndex)?.ScoresAfter_Year[alias]
+				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter_Year[alias]
 
 			case 'showCustomDate':
-				return list.at(visibleRowIndex)?.ScoresAfter_SinceCustomDate[alias]
+				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter_SinceCustomDate[alias]
 
 			default :
-				return list.at(visibleRowIndex)?.ScoresAfter[alias]
+				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter[alias]
 		}
 
 
@@ -230,7 +205,7 @@ export default function SessionPreview() {
 
 	const getPlayer = (alias) => {
 
-		for(const p of session?.List_Players) {
+		for(const p of list_players) {
 			if(p.Alias === alias) {
 				return p
 			}
@@ -240,21 +215,15 @@ export default function SessionPreview() {
 
 	const play = () => {
 
-		axiosPrivate.post('/sessionpreview',
-			{ SessionID: sessionid },
-			{
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
-			}
-		).then((res) => {
+		axiosPrivate.post('/sessionpreview', { SessionID: session_id }).then(({ data }) => {
 
-			navigate(`/game?sessionid=${sessionid}&joincode=${res?.data?.JoinCode}`, { replace: true })
+			navigate(`/game?session_id=${session_id}&joincode=${data.JoinCode}`, { replace: true })
 
 		}).catch((err) => {
 
 			const status = err?.response?.status
 			if(status === 400) {
-				window.alert('Fehlerhafte Anfrage!\nIrgendwas stimmt mit der SessionID nicht.')
+				window.alert('Fehlerhafte Anfrage!\nIrgendwas stimmt mit der Session nicht.')
 			} else if(status === 404) {
 				window.alert('Die Session existiert nicht!')
 			} else {
@@ -269,7 +238,7 @@ export default function SessionPreview() {
 
 	const handleClick = (finalScore) => {
 
-		navigate(`/sessionpreview/table?sessionid=${sessionid}&finalscoreid=${finalScore.id}`, { replace: false })
+		navigate(`/sessionpreview/table?session_id=${session_id}&finalscoreid=${finalScore.id}`, { replace: false })
 
 	}
 
@@ -324,6 +293,7 @@ export default function SessionPreview() {
 					<option key={0} value='all'>Gesamtansicht</option>
 					<option key={1} value='showYear'>Jahresansicht</option>
 					<option key={2} value='showMonth'>Monatsansicht</option>
+					<option key={3} value='showCustomDate'>Benutzerdefiniert</option>
 				</select>
 
 				{view !== 'all' && <select 
@@ -337,7 +307,7 @@ export default function SessionPreview() {
 				{view === 'showMonth' && <select 
 					value={month}
 					onChange={(e) => setMonth(e.target.value)}>
-					{list_month.map((m, i) => 
+					{list_months.map((m, i) => 
 						<option key={i} value={i}>{m}</option>
 					)}
 				</select>}
@@ -373,7 +343,7 @@ export default function SessionPreview() {
 			<div className='sessionpreview_table-container' ref={div_ref} onScroll={handleScroll}>
 				<table className='table sessionpreview_table' ref={table_ref}>
 					<tbody>
-						{list?.map((e, i) => {
+						{list_visibleFinalScores?.map((e, i) => {
 							if(e.Group_Date) {
 
 								return <tr className='date-row' key={i}>
