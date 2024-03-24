@@ -9,6 +9,7 @@
 	top: 0;
 	display: none;
 	animation: fade-in 1s;
+	z-index: 10000;
 }
 
 .popup_background.show {
@@ -29,8 +30,8 @@
 	border-top-left-radius: 30px;
 	background-color: var(--background-color);
 	box-shadow: 0 0 20px 0 var(--box-shadow-color);
-	/* box-shadow: 0 0 20px 0 rgb(150, 150, 150); */
 	transition: all .5s ease;
+	z-index: 10001;
 }
 
 .popup.show {

@@ -30,7 +30,7 @@ export default function App() {
 						<Route path='/' element={<Login />} />
 						<Route path='/login' element={<Login />} />
 						<Route path='/registration' element={<Registration />} />
-						<Route path='/joingame' element={<JoinGame />} />
+						{/* <Route path='/joingame' element={<JoinGame />} /> */}
 
 
 						{/* 

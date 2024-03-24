@@ -286,11 +286,11 @@ export default function Game() {
 
 		setDisable_edit(true)
 
-		if(!session.id) return
+		if(!session_id) return
 
 		await axiosPrivate.post('/updatesession', 
 			{ 
-				SessionID: session.id, 
+				SessionID: session_id, 
 				List_Players: edit_list_players 
 			}
 		).then(() => {
@@ -298,11 +298,21 @@ export default function Game() {
 			window.location.reload()
 
 		}).catch((err) => {
-			console.log(err)
-		})
-		
-		setDisable_edit(false)
 
+
+			const status = err?.response?.status
+			if(status === 400) {
+				window.alert('Fehlerhafte Clientanfrage!')
+			} else if(status === 404) {
+				window.alert('Die Session wird nicht gefunden!')
+				navigate('/selectsession', { replace: true })
+			} else {
+				console.log(err)
+				window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			}
+
+		}).finally(() => {setDisable_edit(false)})
+			
 	}
 
 
