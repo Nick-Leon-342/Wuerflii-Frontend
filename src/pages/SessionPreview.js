@@ -5,12 +5,15 @@ import './css/SessionPreview.css'
 
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import Loader from '../components/Loader'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
 import CustomLink from '../components/NavigationElements/CustomLink'
+import Popup from '../components/Popup'
+import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css'
 
 
 
@@ -61,6 +64,7 @@ export default function SessionPreview() {
 
 			const { Session, List_Players, List_FinalScores } = data
 			setSession(Session)
+			setCustomDate(Session.CustomDate || new Date())
 
 			//Order players
 			const tmpList_Players = []
@@ -109,7 +113,7 @@ export default function SessionPreview() {
 
 	const editList = ( list_toEdit, setList_toEdit ) => {
 
-		if(!list_toEdit || list_toEdit.length === 0) return
+		if(!list_toEdit || list_toEdit.length === 0) return setList_toEdit([])
 
 		const list_visibleFinalScores = []
 		const rowHeights = []
@@ -159,7 +163,22 @@ export default function SessionPreview() {
 		localStorage.setItem('kniffel_sessionpreview_year', year)
 
 
-		if(view === 'all') return editList(list_finalScores, setList_visibleFinalScores)
+		if(view === 'all' || (view === 'customDate' && !session.CustomDate)) return editList(list_finalScores, setList_visibleFinalScores)
+
+		if(view === 'customDate') {
+
+			const tmp_list = []
+
+			for(const f of list_finalScores) {
+				if(new Date(f.End) >= new Date(session.CustomDate)) {
+					tmp_list.push(f)
+				}
+			}
+
+			return editList(tmp_list, setList_visibleFinalScores)
+		}
+
+
 
 		const tmp = []
 
@@ -181,23 +200,25 @@ export default function SessionPreview() {
 
 		if(!list_visibleFinalScores) return
 
+		const e = list_visibleFinalScores.at(visibleRowIndex)
+
 		switch(view) {
 			case 'showMonth':
-				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter_Month[alias]
+				return e?.ScoresAfter_Month[alias]
 
 			case 'showYear':
-				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter_Year[alias]
+				return e?.ScoresAfter_Year[alias]
 
-			case 'showCustomDate':
-				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter_SinceCustomDate[alias]
+			case 'customDate':
+				const tmp = e?.ScoresAfter_SinceCustomDate || e?.ScoresAfter
+				return tmp && tmp[alias]
 
 			default :
-				return list_visibleFinalScores.at(visibleRowIndex)?.ScoresAfter[alias]
+				return e?.ScoresAfter[alias]
 		}
 
 
 	}
-
 
 
 
@@ -242,7 +263,44 @@ export default function SessionPreview() {
 
 	}
 
+
+
+
+
+	// __________________________________________________ Edit CustomDate __________________________________________________
+
+	const [ show_customDate, setShow_customDate ] = useState(false)
+	const [ customDate, setCustomDate ] = useState()
+	const [ loaderVisible_customDate, setLoaderVisible_customDate ] = useState(false)
+
+	const save_customDate = () => {
+
+		setLoaderVisible_customDate(true)
+
+		axiosPrivate.post('/customdate', { SessionID: session_id, CustomDate: customDate }).then(() => {
+
+
+			window.location.reload()
+
+
+		}).catch((err) => {
+
+			const status = err?.response?.status
+			if(status === 400) {
+				window.alert('Clientanfrage ist fehlerhaft!')
+			} else if(status === 404) {
+				window.alert('Die Session wurde nicht gefunden!')
+				navigate('/selectsession', { replace: true })
+			} else {
+				console.log(err)
+				window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			}
+
+		}).finally(() => {setLoaderVisible_customDate(false)})
+
+	}
 	
+
 
 
 
@@ -279,7 +337,6 @@ export default function SessionPreview() {
 
 
 
-
 	return (
 		<>
 
@@ -293,10 +350,10 @@ export default function SessionPreview() {
 					<option key={0} value='all'>Gesamtansicht</option>
 					<option key={1} value='showYear'>Jahresansicht</option>
 					<option key={2} value='showMonth'>Monatsansicht</option>
-					<option key={3} value='showCustomDate'>Benutzerdefiniert</option>
+					<option key={3} value='customDate'>Benutzerdefiniert</option>
 				</select>
 
-				{view !== 'all' && <select 
+				{(view === 'showMonth' || view === 'showYear') && <select 
 					value={year}
 					onChange={(e) => setYear(e.target.value)}>
 					{list_year.map((y, i) => 
@@ -311,6 +368,10 @@ export default function SessionPreview() {
 						<option key={i} value={i}>{m}</option>
 					)}
 				</select>}
+
+				{view === 'customDate' && <label onClick={() => setShow_customDate(true)}>
+					{`Ansicht ab: ${formatDate(session?.CustomDate)}` || 'Erstelle Ansicht'}
+				</label>}
 
 			</div>
 
@@ -329,7 +390,7 @@ export default function SessionPreview() {
 							{session?.List_PlayerOrder?.map((alias, i) => {
 								return (
 									<td key={i} style={style}>
-										{getScoresAfter(alias)}
+										{getScoresAfter(alias) || 0}
 									</td>
 								)
 							})}
@@ -375,6 +436,32 @@ export default function SessionPreview() {
 			<button className='button button-thick' onClick={play}>Los geht's!</button>
 
 			<CustomLink linkTo='/selectsession' text='Zurück'/>
+
+
+
+
+
+
+			<Popup
+				showPopup={show_customDate}
+				setShowPopup={setShow_customDate}
+			>
+
+				<h1>Zeitraum-Beginn auswählen</h1>
+
+				<Calendar
+					value={customDate}
+					onChange={(cd) => setCustomDate(cd)}
+				/>
+
+				<Loader loaderVisible={loaderVisible_customDate}/>
+
+				<button 
+					className='button button-thick'
+					onClick={save_customDate}
+				>Speichern</button>
+
+			</Popup>
 
 		</>
 	)

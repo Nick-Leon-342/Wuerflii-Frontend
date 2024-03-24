@@ -11,6 +11,13 @@
 	margin-bottom: 20px;
 }
 
+.sessionpreview_select-container label {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	font-size: 18px;
+}
+
 
 
 
