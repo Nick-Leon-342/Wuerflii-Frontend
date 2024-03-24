@@ -52,8 +52,8 @@
 }
 
 .table_player td:first-child {
-    width: 242px;
-	min-width: 242px;
+    width: 240px;
+	min-width: 240px;
     font-weight: bold;
 	padding: 0;
 }
