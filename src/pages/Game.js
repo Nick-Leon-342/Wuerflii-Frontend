@@ -40,9 +40,9 @@ export default function Game() {
 	const [ list_players, setList_players ] = useState()
 
 	const [ inputType, setInputType ] = useState()
-	const [ showScores, setShowScores ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
 	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
+	const [ showScores, setShowScores ] = useState(false)
 	const [ tableColumns, setTableColumns ] = useState([])
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
 
@@ -148,7 +148,6 @@ export default function Game() {
 			
 			setList_players(tmp_list_players)
 			setInputType(session.InputType)
-			setShowScores(session.ShowScores)
 			setTableColumns(data.List_Columns)
 			setGnadenwurf(data.Gnadenwürfe)
 			setSession(session)
@@ -360,9 +359,10 @@ export default function Game() {
 				tableWidth={tableWidth}
 				thickBorder={thickBorder}
 				lastPlayerAlias={lastPlayerAlias}
+				showScores={showScores}
+				setShowScores={setShowScores}
 				gnadenwurf={gnadenwurf}
 				setGnadenwurf={setGnadenwurf}
-				showScores={showScores}
 				setShow_lastPlayer={setShow_lastPlayer}
 			/>
 			

@@ -3,12 +3,13 @@
 import { useNavigate } from 'react-router-dom'
 import { id_playerTable } from '../logic/utils'
 import { thickBorder } from '../logic/utils'
+import { useEffect } from 'react'
 
 
 
 
 
-export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, lastPlayerAlias, gnadenwurf, setGnadenwurf, showScores, disabled, playerScores, joincode, setShow_lastPlayer }) {
+export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, lastPlayerAlias, gnadenwurf, setGnadenwurf, showScores, setShowScores, disabled, playerScores, joincode, setShow_lastPlayer }) {
   
 	const navigate = useNavigate()
 
@@ -49,6 +50,18 @@ export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, la
 		}
 
 	}
+
+	useEffect(() => {
+
+		setShowScores(localStorage.getItem('kniffel_showScores') !== 'false')
+
+	}, [])
+
+	useEffect(() => {
+
+		localStorage.setItem('kniffel_showScores', showScores)
+
+	}, [ showScores ])
 
 
 
