@@ -151,9 +151,11 @@ export default function SelectSession() {
 		setLoaderVisible(true)
 		setDeleteDisabled(true)
 
+
 		for(let i = 0; list_checkbox.length > i; i++) {
 			if(list_checkbox[i]) {
-				await axiosPrivate.delete(`/selectsession?session_id=${session.id}`).catch((err) => {
+
+				await axiosPrivate.delete(`/selectsession?session_id=${list[i].id}`).catch((err) => {
 
 					console.log(err)
 					window.alert('Es trat ein unvorhergesehener Fehler auf!')
