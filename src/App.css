@@ -35,6 +35,8 @@ body {
 	--text-color-light: rgb(150, 150, 150);
 
 	--background-color: rgb(255, 255, 255);
+	--background-color_dark: rgb(240, 240, 240);
+
 	--box-shadow-color: rgb(200, 200, 200);
 	--button-shadow-color: var(--box-shadow-color);
 	--list-element-hover-color: rgb(230, 230, 230);
@@ -56,6 +58,8 @@ body {
 	--popup-background-color: rgb(50, 50, 50, .5);
 
 	--background-color: rgb(75, 75, 75);
+	--background-color_dark: rgb(50, 50, 50);
+
 	--text-color: rgb(210, 210, 210);
 	--text-color-light: rgb(220, 220, 220);
 	--box-shadow-color: rgb(40, 40, 40);
