@@ -50,23 +50,20 @@ export default function SelectSession() {
 
 		setLoaderVisible(true)
 
-		await axiosPrivate.get('/selectsession').then((res) => {
+		axiosPrivate.get('/selectsession').then((res) => {
 
 			const l = res.data
-			l.sort(sortByTimestampDesc)
+			l.sort((a, b) => new Date(b.LastPlayed) - new Date(a.LastPlayed))
 			setList(l)
 
 		}).catch((err) => {
+			
 			console.log(err)
+			window.alert('Es trat ein unerwarteter Fehler auf!')
 			navigate('/login', { replace: true })
-		}).finally(() => {
-			setLoaderVisible(false)
-		})
 
-	}
+		}).finally(() => {setLoaderVisible(false)})
 
-	const sortByTimestampDesc = (a, b) => {
-		return new Date(b.LastPlayed) - new Date(a.LastPlayed)
 	}
 
 	const getPlayer = (alias) => {
@@ -87,29 +84,29 @@ export default function SelectSession() {
 
 	const listElementClick = async (element) => {
 		
-		if(!listDisabled) {
+		if(listDisabled) return
 
-			setListDisabled(true)
-			setLoaderVisible(true)
-			const i = element.target.closest('dt').getAttribute('index')
-	
-			await axiosPrivate.post('/selectsession', { SessionID: list[i].id }).then(({ data }) => {
-	
-				if(data.Exists) {
-					navigate(`/game?session_id=${list[i].id}&joincode=${data.JoinCode}`, { replace: true })
-				} else {
-					navigate(`/sessionpreview?session_id=${list[i].id}`, { replace: false })
-				}
-	
-			}).catch((err) => {
-				console.log(err)
-				window.alert('Es trat ein unvorhergesehener Fehler auf!')
-			})
-	
+		setListDisabled(true)
+		setLoaderVisible(true)
+		const i = element.target.closest('dt').getAttribute('index')
+
+		await axiosPrivate.post('/selectsession', { SessionID: list[i].id }).then(({ data }) => {
+
+			if(data.Exists) {
+				navigate(`/game?session_id=${list[i].id}&joincode=${data.JoinCode}`, { replace: true })
+			} else {
+				navigate(`/sessionpreview?session_id=${list[i].id}`, { replace: false })
+			}
+
+		}).catch((err) => {
+
+			console.log(err)
+			window.alert('Es trat ein unvorhergesehener Fehler auf!')
+
+		}).finally(() => {
 			setLoaderVisible(false)
 			setListDisabled(false)
-
-		}
+		})
 
 	}
 
@@ -215,7 +212,7 @@ export default function SelectSession() {
 		setLoaderVisible_popup(true)
 		setSaveDisabled(true)
 
-		await axiosPrivate.post('/updatesession', { SessionID: session.id, Columns: +columns, List_Players: list_players }).then(() => {
+		axiosPrivate.post('/updatesession', { SessionID: session.id, Columns: +columns, List_Players: list_players }).then(() => {
 
 			setSuccessfullyUpdatedVisible(true)
 			edit_close()
@@ -234,10 +231,10 @@ export default function SelectSession() {
 			}
 			return window.location.reload()
 
-		})
-		
-		setSaveDisabled(false)
-		setLoaderVisible_popup(false)
+		}).finally(() => {
+			setSaveDisabled(false)
+			setLoaderVisible_popup(false)
+		})		
 
 	}
 
