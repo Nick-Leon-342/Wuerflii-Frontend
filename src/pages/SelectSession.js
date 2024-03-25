@@ -162,6 +162,10 @@ export default function SelectSession() {
 					
 				})
 
+				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_view`)
+				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_month`)
+				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_year`)
+
 			}
 		}
 

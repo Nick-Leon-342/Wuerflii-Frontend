@@ -88,9 +88,9 @@ export default function SessionPreview() {
 			}
 			tmp_list_years.sort((a, b) => b - a)
 
-			setMonth(localStorage.getItem('kniffel_sessionpreview_month') || new Date().getMonth())
-			setYear(localStorage.getItem('kniffel_sessionpreview_year') || tmp_list_years[0])
-			setView(localStorage.getItem('kniffel_sessionpreview_view') || 'showYear')
+			setMonth(localStorage.getItem(`kniffel_sessionpreview_${session_id}_month`) || new Date().getMonth())
+			setYear(localStorage.getItem(`kniffel_sessionpreview_${session_id}_year`) || tmp_list_years[0])
+			setView(localStorage.getItem(`kniffel_sessionpreview_${session_id}_view`) || 'showYear')
 			setList_year(tmp_list_years)
 
 
@@ -158,9 +158,9 @@ export default function SessionPreview() {
 
 		if(!session) return
 
-		localStorage.setItem('kniffel_sessionpreview_view', view)
-		localStorage.setItem('kniffel_sessionpreview_month', month)
-		localStorage.setItem('kniffel_sessionpreview_year', year)
+		localStorage.setItem(`kniffel_sessionpreview_${session_id}_view`, view)
+		localStorage.setItem(`kniffel_sessionpreview_${session_id}_month`, month)
+		localStorage.setItem(`kniffel_sessionpreview_${session_id}_year`, year)
 
 
 		if(view === 'all' || (view === 'customDate' && !session.CustomDate)) return editList(list_finalScores, setList_visibleFinalScores)
