@@ -1,6 +1,6 @@
 
 
-import './css/CreateGame.css'
+import './scss/CreateGame.scss'
 
 import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'

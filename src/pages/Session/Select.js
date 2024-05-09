@@ -1,18 +1,18 @@
 
 
-import './css/SelectSession.css'
+import './scss/Select.scss'
 
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { formatDate } from '../logic/utils'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { formatDate } from '../../logic/utils'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
 
-import Popup from '../components/others/Popup'
-import Loader from '../components/others/Loader'
-import OptionsDialog from '../components/Dialog/OptionsDialog'
-import CustomLink from '../components/NavigationElements/CustomLink'
-import DragAndDropNameColorList from '../components/others/DragAndDropNameColorList'
+import Popup from '../../components/others/Popup'
+import Loader from '../../components/others/Loader'
+import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import CustomLink from '../../components/NavigationElements/CustomLink'
+import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
 
 
 
@@ -47,11 +47,11 @@ export default function SelectSession() {
 		request()
 	}, [])
 
-	async function request() {
+	const request = () => {
 
 		setLoaderVisible(true)
 
-		axiosPrivate.get('/selectsession').then((res) => {
+		axiosPrivate.get('/session/select').then((res) => {
 
 			const l = res.data
 			l.sort((a, b) => new Date(b.LastPlayed) - new Date(a.LastPlayed))
@@ -63,7 +63,7 @@ export default function SelectSession() {
 			window.alert('Es trat ein unerwarteter Fehler auf!')
 			navigate('/login', { replace: true })
 
-		}).finally(() => {setLoaderVisible(false)})
+		}).finally(() => { setLoaderVisible(false) })
 
 	}
 
@@ -91,12 +91,12 @@ export default function SelectSession() {
 		setLoaderVisible(true)
 		const i = element.target.closest('dt').getAttribute('index')
 
-		await axiosPrivate.post('/selectsession', { SessionID: list[i].id }).then(({ data }) => {
+		axiosPrivate.post('/session/select', { SessionID: list[i].id }).then(({ data }) => {
 
 			if(data.Exists) {
 				navigate(`/game?session_id=${list[i].id}&joincode=${data.JoinCode}`, { replace: true })
 			} else {
-				navigate(`/sessionpreview?session_id=${list[i].id}`, { replace: false })
+				navigate(`/session/preview?session_id=${list[i].id}`, { replace: false })
 			}
 
 		}).catch((err) => {
@@ -153,7 +153,7 @@ export default function SelectSession() {
 		for(let i = 0; list_checkbox.length > i; i++) {
 			if(list_checkbox[i]) {
 
-				await axiosPrivate.delete(`/selectsession?session_id=${list[i].id}`).catch((err) => {
+				await axiosPrivate.delete(`/session/select?session_id=${list[i].id}`).catch((err) => {
 
 					console.log(err)
 					window.alert('Es trat ein unvorhergesehener Fehler auf!')

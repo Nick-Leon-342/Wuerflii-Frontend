@@ -1,6 +1,6 @@
 
 
-import './css/FancyInput.scss'
+import './scss/FancyInput.scss'
 
 
 

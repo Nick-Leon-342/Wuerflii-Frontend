@@ -1,21 +1,21 @@
 
 
 
-import './css/SessionPreview.css'
+import './scss/Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { formatDate } from '../logic/utils'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { formatDate } from '../../logic/utils'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Calendar from 'react-calendar'
 
-import Popup from '../components/others/Popup'
-import Loader from '../components/others/Loader'
-import OptionsDialog from '../components/Dialog/OptionsDialog'
-import CustomLink from '../components/NavigationElements/CustomLink'
+import Popup from '../../components/others/Popup'
+import CustomButton from '../../components/others/Custom_Button'
+import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
@@ -34,7 +34,7 @@ export default function SessionPreview() {
 	const [ list_finalScores, setList_finalScores ] = useState([])
 	const [ list_visibleFinalScores, setList_visibleFinalScores ] = useState([])
 	
-	const [ loaderVisible, setLoaderVisible ] = useState(false)
+	const [ loading, setLoading ] = useState(false)
 
 	const [ view, setView ] = useState()
 	const [ year, setYear ] = useState()
@@ -55,14 +55,14 @@ export default function SessionPreview() {
 
 	useEffect(() => {
 
-		setLoaderVisible(true)
+		setLoading(true)
 
 		const session_id = new URLSearchParams(location.search).get('session_id')
 
-		if(!session_id) return navigate('/selectsession', { replace: true })
+		if(!session_id) return navigate('/session/select', { replace: true })
 		setSession_id(+session_id)
 
-		axiosPrivate.get(`/sessionpreview?session_id=${session_id}`).then(({ data }) => {
+		axiosPrivate.get(`/session/preview?session_id=${session_id}`).then(({ data }) => {
 
 			const { Session, List_Players, List_FinalScores } = data
 			setSession(Session)
@@ -107,9 +107,10 @@ export default function SessionPreview() {
 				console.log(err)
 				window.alert('Beim Server trat ein Fehler auf!')
 			}
-			navigate('/selectsession', { replace: true })
+			navigate('/session/select', { replace: true })
 
-		}).finally(() => {setLoaderVisible(false)})
+		}).finally(() => { setLoading(false) })
+		
 
 	}, [])
 
@@ -238,7 +239,7 @@ export default function SessionPreview() {
 
 	const play = () => {
 
-		axiosPrivate.post('/sessionpreview', { SessionID: session_id }).then(({ data }) => {
+		axiosPrivate.post('/session/preview', { SessionID: session_id }).then(({ data }) => {
 
 			navigate(`/game?session_id=${session_id}&joincode=${data.JoinCode}`, { replace: true })
 
@@ -261,7 +262,7 @@ export default function SessionPreview() {
 
 	const handleClick = (finalScore) => {
 
-		navigate(`/sessionpreview/table?session_id=${session_id}&finalscore_id=${finalScore.id}`, { replace: false })
+		navigate(`/session/preview/table?session_id=${session_id}&finalscore_id=${finalScore.id}`, { replace: false })
 
 	}
 
@@ -273,13 +274,13 @@ export default function SessionPreview() {
 
 	const [ show_customDate, setShow_customDate ] = useState(false)
 	const [ customDate, setCustomDate ] = useState()
-	const [ loaderVisible_customDate, setLoaderVisible_customDate ] = useState(false)
+	const [ loading_customDate, setLoading_customDate ] = useState(false)
 
 	const save_customDate = () => {
 
-		setLoaderVisible_customDate(true)
+		setLoading_customDate(true)
 
-		axiosPrivate.post('/customdate', { SessionID: session_id, CustomDate: customDate }).then(() => {
+		axiosPrivate.post('/session/date', { SessionID: session_id, CustomDate: customDate }).then(() => {
 
 
 			window.location.reload()
@@ -292,13 +293,13 @@ export default function SessionPreview() {
 				window.alert('Clientanfrage ist fehlerhaft!')
 			} else if(status === 404) {
 				window.alert('Die Session wurde nicht gefunden!')
-				navigate('/selectsession', { replace: true })
+				navigate('/session/select', { replace: true })
 			} else {
 				console.log(err)
 				window.alert('Es trat ein unvorhergesehener Fehler auf!')
 			}
 
-		}).finally(() => {setLoaderVisible_customDate(false)})
+		}).finally(() => { setLoading_customDate(false) })
 
 	}
 	
@@ -433,11 +434,16 @@ export default function SessionPreview() {
 			
 
 
-			<Loader loaderVisible={loaderVisible}/>
-			
-			<button className='button button-thick' onClick={play}>Los geht's!</button>
+			<CustomButton
+				loading={loading}
+				text="Los geht's!"
+				onClick={play}
+			/>
 
-			<CustomLink linkTo='/selectsession' text='Zurück'/>
+			<CustomLink 
+				linkTo='/session/select' 
+				text='Zurück'
+			/>
 
 
 
@@ -456,12 +462,11 @@ export default function SessionPreview() {
 					onChange={(cd) => setCustomDate(cd)}
 				/>
 
-				<Loader loaderVisible={loaderVisible_customDate}/>
-
-				<button 
-					className='button button-thick'
+				<CustomButton
+					loading={loading_customDate}
+					text='Speichern'
 					onClick={save_customDate}
-				>Speichern</button>
+				/>
 
 			</Popup>
 

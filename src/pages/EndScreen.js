@@ -1,6 +1,6 @@
 
 
-import './css/EndScreen.css'
+import './scss/EndScreen.scss'
 
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'

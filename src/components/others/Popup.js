@@ -2,7 +2,11 @@
 
 import { useEffect } from 'react'
 import Close from '../NavigationElements/Close'
-import './css/Popup.css'
+
+import './scss/Popup.scss'
+
+
+
 
 
 export default function Popup({ showPopup, setShowPopup, children }) {

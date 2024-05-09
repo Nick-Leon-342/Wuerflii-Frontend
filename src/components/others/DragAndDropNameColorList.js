@@ -1,6 +1,6 @@
 
 
-import './css/DragAndDropNameColorList.css'
+import './scss/DragAndDropNameColorList.scss'
 
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { isMobile } from 'react-device-detect'

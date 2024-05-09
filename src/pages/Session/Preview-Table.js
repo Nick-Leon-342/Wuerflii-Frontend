@@ -1,14 +1,14 @@
 
 
 import { useLocation, useNavigate } from 'react-router-dom'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { id_bottomTable, id_upperTable } from '../logic/utils'
+import { id_bottomTable, id_upperTable } from '../../logic/utils'
 
-import Table from '../components/others/Table'
-import Loader from '../components/others/Loader'
-import PlayerTable from '../components/others/PlayerTable'
-import OptionsDialog from '../components/Dialog/OptionsDialog'
+import Table from '../../components/others/Table'
+import Loader from '../../components/others/Loader'
+import PlayerTable from '../../components/others/PlayerTable'
+import OptionsDialog from '../../components/Dialog/OptionsDialog'
 
 
 

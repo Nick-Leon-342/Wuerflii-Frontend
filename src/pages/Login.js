@@ -1,6 +1,6 @@
 
 
-import './css/Reglog.scss'
+import './scss/Reglog.scss'
 
 import React, { useEffect } from 'react'
 import { useState } from 'react'
@@ -55,7 +55,7 @@ export default function Login() {
 			setName('')
 			setPassword('')
 
-			navigate('/selectsession', { replace: true })
+			navigate('/session/select', { replace: true })
 
 		}).catch((err) => {
 

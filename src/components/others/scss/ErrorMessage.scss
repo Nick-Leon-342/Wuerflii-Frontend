@@ -1,0 +1,28 @@
+
+
+.errormessage {
+	border: 2px solid var(--red);
+	border-radius: 10px;
+	padding: 20px;
+
+	.header {
+		display: flex; 
+		align-items: center;
+		margin-bottom: 10px;
+
+		svg {
+			height: 27px;
+			path { fill: var(--red); }
+		}
+
+		h2 {
+			margin-left: 5px; 
+			color: var(--red);
+		}
+	}
+
+	.body {
+		display: flex;
+		font-size: 20px;
+	}
+}

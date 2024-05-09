@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import axios from '../../api/axios'
 import { useNavigate } from 'react-router-dom'
-import FancyInput from './FancyInput'
+
 import Loader from './Loader'
+import FancyInput from './FancyInput'
 import ErrorMessage from './ErrorMessage'
 
 

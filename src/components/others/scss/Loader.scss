@@ -1,0 +1,32 @@
+
+
+.loader {
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	opacity: 1;
+
+	&.isnotgreen { 
+		span { background: var(--background-color); }
+	}
+
+	span {
+		width: 8px;
+		height: 8px;
+		background: var(--green);
+		border-radius: 50%;
+		margin: 0 5px;
+		animation: expandShrink 2s linear infinite;
+		animation-delay: 0.1s;
+
+		&:nth-child(1) {animation-delay: 0s;}
+		&:nth-child(2) {animation-delay: 0.333s;}
+		&:nth-child(3) {animation-delay: 0.667s;}
+	}
+}
+
+@keyframes expandShrink {
+	0%, 100% {transform: scale(1.5);}
+	25%, 75% {transform: scale(0.5);}
+}

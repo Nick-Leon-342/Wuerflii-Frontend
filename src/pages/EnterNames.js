@@ -1,6 +1,6 @@
 
 
-import './css/EnterNames.css'
+import './scss/EnterNames.scss'
 
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'

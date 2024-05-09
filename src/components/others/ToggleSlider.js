@@ -1,22 +1,19 @@
 
 
-export default function ToggleSlider({ scale, toggled, setToggled, marginLeft, marginTop, marginRight, marginBottom }) {
+import './scss/ToggleSlider.scss'
+
+
+
+
+
+export default function ToggleSlider(props) {
 
 	return (
-		<label 
-			className='toggleButton'
-			style={{
-				marginLeft: marginLeft, 
-				marginTop: marginTop, 
-				marginRight: marginRight, 
-				marginBottom: marginBottom, 
-				scale: scale, 
-			}}
-		>
+		<label className={`toggleslider${props.additionalClassName ? ' ' + props.additionalClassName : ''}`}>
 
-			<input type='checkbox' checked={toggled} onChange={() => setToggled(!toggled)}/>
+			<input type='checkbox' checked={props.toggled} onChange={({ target }) => props.onChange(target.value)}/>
 
-			<span className='toggleButton-slider'/>
+			<span/>
 
 		</label>
 	)

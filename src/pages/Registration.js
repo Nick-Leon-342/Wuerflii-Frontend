@@ -1,6 +1,6 @@
 
 
-import './css/Reglog.scss'
+import './scss/Reglog.scss'
 
 import { useState } from 'react'
 import axios from '../api/axios'

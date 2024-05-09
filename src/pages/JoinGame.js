@@ -1,7 +1,6 @@
 
 
-// import '../App.css'
-// import './css/Game.css'
+// import './scss/Game.scss'
 
 // import React, { useEffect, useState, useLayoutEffect } from 'react'
 // import { useNavigate, useLocation } from 'react-router-dom'

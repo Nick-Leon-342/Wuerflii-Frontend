@@ -2,6 +2,10 @@
 
 import Loader from './Loader'
 
+
+
+
+
 export default function Custom_Button({ className, loading, text, onClick }) {
 
     return (

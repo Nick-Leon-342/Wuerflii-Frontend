@@ -10,9 +10,9 @@ import Registration from './pages/Registration'
 
 import CreateGame from './pages/CreateGame'
 
-import SelectSession from './pages/SelectSession'
-import SessionPreview from './pages/SessionPreview'
-import SessionPreviewTable from './pages/SessionPreview-Table'
+import SelectSession from './pages/Session/Select'
+import SessionPreview from './pages/Session/Preview'
+import SessionPreviewTable from './pages/Session/Preview-Table'
 
 import Game from './pages/Game'
 import EndScreen from './pages/EndScreen'
@@ -39,9 +39,9 @@ export default function App() {
 
 						<Route path='/creategame' element={<CreateGame />} />
 						
-						<Route path='/selectsession' element={<SelectSession />} />
-						<Route path='/sessionpreview' element={<SessionPreview />} />
-						<Route path='/sessionpreview/table' element={<SessionPreviewTable />} />
+						<Route path='/session/select' element={<SelectSession />} />
+						<Route path='/session/preview' element={<SessionPreview />} />
+						<Route path='/session/preview/table' element={<SessionPreviewTable />} />
 
 						<Route path='/game' element={<Game />} />
 						<Route path='/endscreen' element={<EndScreen />} />

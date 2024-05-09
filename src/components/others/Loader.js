@@ -1,19 +1,19 @@
 
 
-import './css/Loader.css'
+import './scss/Loader.scss'
 
 
 
 
 
-export default function Loader({ loaderVisible, marginBottom, marginTop }) {
+export default function Loader({ loaderVisible, isNotGreen, marginBottom, marginTop }) {
 
-	return (
-		<div className={`loader ${loaderVisible ? '' : 'notvisible'}`} style={{ marginBottom: marginBottom, marginTop: marginTop }}>
+	return (<>
+		{loaderVisible && <div className={`loader${isNotGreen ? ' isnotgreen' : ''}`} style={{ marginBottom: marginBottom, marginTop: marginTop }}>
 			<span/>
 			<span/>
 			<span/>
-		</div>
-	)
+		</div>}
+	</>)
 
 }
