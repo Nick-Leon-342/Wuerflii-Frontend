@@ -7,11 +7,12 @@ import { useNavigate } from 'react-router-dom'
 import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { isMobile } from 'react-device-detect'
-import Loader from '../components/Loader'
-import DragAndDropNameColorList from '../components/DragAndDropNameColorList'
+
+import Popup from '../components/others/Popup'
+import Loader from '../components/others/Loader'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
 import CustomLink from '../components/NavigationElements/CustomLink'
-import Popup from '../components/Popup'
+import DragAndDropNameColorList from '../components/others/DragAndDropNameColorList'
 
 
 

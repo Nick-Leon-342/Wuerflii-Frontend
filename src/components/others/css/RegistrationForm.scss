@@ -1,0 +1,20 @@
+
+
+.registrationform_error-row {
+	display: flex; 
+	height: 25px;
+	padding: 0;
+
+	label {
+		padding: 3px 0; 
+		font-size: 18px; 
+		color: var(--text-color-light)
+	}
+
+	svg {
+		margin-right: 10px; 
+		height: 25px;
+	}
+
+	.valid path { fill: var(--green); }
+}

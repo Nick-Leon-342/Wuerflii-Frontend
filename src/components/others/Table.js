@@ -1,9 +1,9 @@
 
 
-import { possibleEntries_bottomTable, possibleEntries_upperTable } from '../logic/PossibleEntries'
-import { bottomTable_rows, id_upperTable, upperTable_rows } from '../logic/utils'
+import { possibleEntries_bottomTable, possibleEntries_upperTable } from '../../logic/PossibleEntries'
+import { bottomTable_rows, id_upperTable, upperTable_rows } from '../../logic/utils'
 import { isMobile } from 'react-device-detect'
-import { thickBorder } from '../logic/utils'
+import { thickBorder } from '../../logic/utils'
 
 
 

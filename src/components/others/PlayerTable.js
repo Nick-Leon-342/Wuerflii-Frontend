@@ -1,8 +1,8 @@
 
 
 import { useNavigate } from 'react-router-dom'
-import { id_playerTable } from '../logic/utils'
-import { thickBorder } from '../logic/utils'
+import { id_playerTable } from '../../logic/utils'
+import { thickBorder } from '../../logic/utils'
 import { useEffect } from 'react'
 
 

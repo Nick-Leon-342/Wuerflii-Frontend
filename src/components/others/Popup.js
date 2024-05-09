@@ -1,7 +1,7 @@
 
 
 import { useEffect } from 'react'
-import Close from './NavigationElements/Close'
+import Close from '../NavigationElements/Close'
 import './css/Popup.css'
 
 

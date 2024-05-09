@@ -6,8 +6,9 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import Loader from '../components/Loader'
-import FancyInput from '../components/FancyInput'
+
+import Loader from '../components/others/Loader'
+import FancyInput from '../components/others/FancyInput'
 
 
 

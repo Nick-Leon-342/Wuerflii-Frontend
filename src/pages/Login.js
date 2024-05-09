@@ -1,17 +1,16 @@
 
 
-import './css/Login.css'
+import './css/Reglog.scss'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import axios from '../api/axios'
 
-import Loader from '../components/Loader'
-import FancyInput from '../components/FancyInput'
-import ErrorMessage from '../components/ErrorMessage'
-import OptionsDialog from '../components/Dialog/OptionsDialog'
+import FancyInput from '../components/others/FancyInput'
+import ErrorMessage from '../components/others/ErrorMessage'
+import CustomButton from '../components/others/Custom_Button'
 import CustomLink from '../components/NavigationElements/CustomLink'
 
 
@@ -27,18 +26,19 @@ export default function Login() {
     const [ Name, setName ] = useState('')
     const [ Password, setPassword ] = useState('')
     const [ error, setError ] = useState('')
-	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ loginDisabled, setLoginDisabled ] = useState(false)
+	const [ loading, setLoading ] = useState(false)
 
 
 
 
+
+	
+	useEffect(() => { setError('') }, [ Name, Password ])
 
     const handleSubmit = async (e) => {
 
 		e.preventDefault()
-		setLoginDisabled(true)
-		setLoaderVisible(true)
+		setLoading(true)
 		setError('')
 
 
@@ -67,12 +67,7 @@ export default function Login() {
 				setError('Die Anmeldung hat nicht funktioniert!')
 			}
 
-		})
-
-
-		
-		setLoginDisabled(false)
-		setLoaderVisible(false)
+		}).finally(() => { setLoading(false) })
 
     }
 
@@ -81,15 +76,13 @@ export default function Login() {
 
 	
     return (
-		<>
+		<div className='reglog-page'>
 
-			<OptionsDialog/>
-
-			<h1 className='login_title'>Anmeldung</h1>
+			<h1>Anmeldung</h1>
 
 
 
-			<form onSubmit={handleSubmit} className='login_container'>
+			<form onSubmit={handleSubmit}>
 
 				<FancyInput 
 					id='Username' 
@@ -103,28 +96,29 @@ export default function Login() {
 				<FancyInput 
 					id='Password' 
 					type='password' 
-					classNames='login_input'
 					text='Passwort' 
 					value={Password} 
 					setValue={setPassword} 
 					isRequired={true}
 				/>
 
-				<Loader loaderVisible={loaderVisible}/>
-
 				<ErrorMessage error={error}/>
 
-				<button 
-					className='button button-thick' 
-					disabled={loginDisabled}
-				>Anmelden</button>
+				<CustomButton 
+					text='Anmelden'
+					loading={loading}
+				/>
 
 			</form>
 
 
 
-			<CustomLink linkTo='/registration' text='Account erstellen'/>
+			<CustomLink 
+				onClick={() => navigate('/registration', { replace: false })}
+				text='Erstellen' 
+				textBefore='Noch keinen Account?'
+			/>
 			
-		</>
+		</div>
     )
 }

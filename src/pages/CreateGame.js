@@ -5,11 +5,11 @@ import './css/CreateGame.css'
 import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import OptionsDialog from '../components/Dialog/OptionsDialog'
 
-import CustomLink from '../components/NavigationElements/CustomLink'
-import Popup from '../components/Popup'
 import EnterNames from './EnterNames'
+import Popup from '../components/others/Popup'
+import OptionsDialog from '../components/Dialog/OptionsDialog'
+import CustomLink from '../components/NavigationElements/CustomLink'
 
 
 

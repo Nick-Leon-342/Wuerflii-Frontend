@@ -1,16 +1,15 @@
 
 
-import './css/Registration.css'
+import './css/Reglog.scss'
 
-import { useEffect, useState } from 'react'
-import axios, { axiosPrivate } from '../api/axios'
+import { useState } from 'react'
+import axios from '../api/axios'
 import useAuth from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 
-import Loader from '../components/Loader'
-import RegistrationForm from '../components/RegistrationForm'
-import ErrorMessage from '../components/ErrorMessage'
-import OptionsDialog from '../components/Dialog/OptionsDialog'
+import ErrorMessage from '../components/others/ErrorMessage'
+import CustomButton from '../components/others/Custom_Button'
+import RegistrationForm from '../components/others/RegistrationForm'
 import CustomLink from '../components/NavigationElements/CustomLink'
 
 
@@ -26,8 +25,7 @@ export default function Registration() {
 	const [ Password, setPassword ] = useState('')
 
 	const [ error, setError ] = useState('')
-	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ registrationDisabled, setRegistrationDisabled ] = useState(false)
+	const [ loading, setLoading ] = useState(false)
 
 	const [ NAME_REGEX, setNAME_REGEX ] = useState()
 	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
@@ -39,47 +37,39 @@ export default function Registration() {
 	const handleSubmit = async (e) => {
 		
 		e.preventDefault()
-		setRegistrationDisabled(true)
-		setLoaderVisible(true)
+		setLoading(true)
 		setError('')
 		
 
 
-		if(Name && NAME_REGEX.test(Name) && Password && PASSWORD_REGEX.test(Password)) {
+		if(!Name || !NAME_REGEX.test(Name) || !Password || !PASSWORD_REGEX.test(Password)) return setError('')
 			
-			await axios.post('/auth/registration', 
-				{ Name, Password },  
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true
-				}
-			).then(({ data }) => {
+		await axios.post('/auth/registration', 
+			{ Name, Password },  
+			{
+				headers: { 'Content-Type': 'application/json' },
+				withCredentials: true
+			}
+		).then(({ data }) => {
 
-				setAuth({ accessToken: data.accessToken })
-				setName('')
-				setPassword('')
-	
-				navigate('/creategame', { replace: true })
+			setAuth({ accessToken: data.accessToken })
+			setName('')
+			setPassword('')
 
-			}).catch((err) => {
-				
-				if (!err?.response) {
-					setError('Der Server antwortet nicht!')
-				} else if (err.response?.status === 409) {
-					setError('Der Benutzername ist vergeben!')
-				} else {
-					setError('Die Registration schlug fehl!')
-					console.log(err)
-				}
+			navigate('/creategame', { replace: true })
 
-			})
+		}).catch((err) => {
+			
+			if (!err?.response) {
+				setError('Der Server antwortet nicht!')
+			} else if (err.response?.status === 409) {
+				setError('Der Benutzername ist vergeben!')
+			} else {
+				setError('Die Registration schlug fehl!')
+				console.log(err)
+			}
 
-		}
-
-
-
-		setRegistrationDisabled(false)
-		setLoaderVisible(false)
+		}).finally(() => { setLoading(false) })
 
 	}
 
@@ -88,15 +78,13 @@ export default function Registration() {
 
 
 	return (
-		<>
+		<div className='reglog-page'>
 
-			<OptionsDialog/>
-
-			<h1 className='registration_title'>Registrierung</h1>
+			<h1>Registrierung</h1>
 
 
 
-			<form onSubmit={handleSubmit} className='registration_container'>
+			<form onSubmit={handleSubmit}>
 
 				<RegistrationForm 
 					Name={Name} 
@@ -110,22 +98,24 @@ export default function Registration() {
 					setPASSWORD_REGEX={setPASSWORD_REGEX}
 				/>
 
-				<Loader loaderVisible={loaderVisible}/>
-
 				<ErrorMessage error={error}/>
 
-				<button 
-					className='button button-thick' 
-					disabled={registrationDisabled}
-				>Registrieren</button>
+				<CustomButton
+					text='Registrieren' 
+					loading={loading}
+				/>
 
 			</form>
 
 
 
-			<CustomLink linkTo='/creategame' text='Anmelden'/>
+			<CustomLink 
+				onClick={() => navigate('/login', { replace: false })}
+				text='Anmelden' 
+				textBefore='Bereits einen Account?'
+			/>
 
-		</>
+		</div>
 	)
 
 }

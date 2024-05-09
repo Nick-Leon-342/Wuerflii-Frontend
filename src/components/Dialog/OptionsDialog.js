@@ -1,18 +1,18 @@
 
 
-import ToggleSlider from '../ToggleSlider'
-import JoinGameInput from '../JoinGameInput'
+import './css/OptionsDialog.css'
 
 import { useEffect, useState } from 'react'
-import './css/OptionsDialog.css'
-import Close from '../NavigationElements/Close'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
-import RegistrationForm from '../RegistrationForm'
-import Loader from '../Loader'
-import ErrorMessage from '../ErrorMessage'
-import Popup from '../Popup'
+
+import Popup from '../others//Popup'
+import Loader from '../others/Loader'
+import ErrorMessage from '../others/ErrorMessage'
+import ToggleSlider from '../others/ToggleSlider'
+import RegistrationForm from '../others/RegistrationForm'
+import JoinGameInput from '../others/JoinGameInput'
 
 
 

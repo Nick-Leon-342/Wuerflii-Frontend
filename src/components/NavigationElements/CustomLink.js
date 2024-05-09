@@ -1,17 +1,22 @@
 
 
-import { Link } from 'react-router-dom'
-import './css/CustomLink.css'
+import './css/CustomLink.scss'
 
 
 
 
 
-export default function CustomLink({ linkTo, text }) {
+export default function CustomLink({ onClick, text, textBefore }) {
 
 	return (
-		<div className='customlink_container'>
-			<Link to={linkTo}>{text}</Link>
+		<div className={`customlink ${textBefore && 'right'}`}>
+			
+			<label>{textBefore}</label>
+
+			<button
+				onClick={onClick}
+			>{text}</button>
+
 		</div>
 	)
 

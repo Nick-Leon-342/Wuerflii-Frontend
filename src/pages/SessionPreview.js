@@ -2,18 +2,20 @@
 
 
 import './css/SessionPreview.css'
+import 'react-calendar/dist/Calendar.css'
 
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { formatDate } from '../logic/utils'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import Loader from '../components/Loader'
+
+import Calendar from 'react-calendar'
+
+import Popup from '../components/others/Popup'
+import Loader from '../components/others/Loader'
 import OptionsDialog from '../components/Dialog/OptionsDialog'
 import CustomLink from '../components/NavigationElements/CustomLink'
-import Popup from '../components/Popup'
-import Calendar from 'react-calendar'
-import 'react-calendar/dist/Calendar.css'
 
 
 

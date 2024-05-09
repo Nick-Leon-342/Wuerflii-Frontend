@@ -1,10 +1,11 @@
 
 
-import './css/RegistrationForm.css'
+import './css/RegistrationForm.scss'
 
 import { useEffect, useState } from 'react'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+
 import FancyInput from './FancyInput'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 
 
@@ -14,8 +15,7 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 
 	const axiosPrivate = useAxiosPrivate()
 
-	const [ infoName, setInfoName ] = useState(false)
-	const [ infoPassword, setInfoPassword ] = useState(false)
+	const [ infoName, setInfoName ] = useState(true)
 
 	
 	const [ NAME_MIN_CHARACTER, setNAME_MIN_CHARACTER ] = useState()
@@ -88,7 +88,7 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 		return valid ?
 			<svg className='valid' viewBox='0 -960 960 960'><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>
 			:
-			<svg className='invalid' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+			<svg viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
 	
 	}
 
@@ -124,35 +124,35 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 				onBlur={() => setInfoName(false)}
 			/>
 
-			{infoName && <>
+			{infoName && <div>
 
 				{row(NAME_REGEX_MINMAX, Name, `${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`)}
 				{row(NAME_REGEX_LETTERFIRST, Name, 'Angefangen mit Buchstaben')}
 				{row(NAME_REGEX_ALLOWEDCHARS, Name, 'Buchstaben, Zahlen, Binde- oder Unterstriche')}
 
-			</>}
+			</div>}
 
 
 
 			<FancyInput 
 				id='Password' 
 				type='password' 
-				classNames={`registrationform_input ${Password && PASSWORD_REGEX.test(Password) ? 'green' : ''} ${Password && !PASSWORD_REGEX.test(Password) ? 'red' : ''}`} 
+				classNames={`${Password && PASSWORD_REGEX.test(Password) ? 'green' : ''} ${Password && !PASSWORD_REGEX.test(Password) ? 'red' : ''}`} 
 				text='Passwort' 
 				value={Password} 
 				setValue={setPassword} 
 				isRequired={isRequired} 
-				onFocus={() => setInfoPassword(true)}
-				onBlur={() => setInfoPassword(false)}
+				onFocus={() => setInfoName(false)}
+				onBlur={() => setInfoName(true)}
 			/>
 
-			{infoPassword && <>
+			{!infoName && <div>
 
 				{row(PASSWORD_REGEX_MINMAX, Password, `${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`)}
 				{row(PASSWORD_REGEX_ALLOWEDCHARS, Password, 'Kleinbuchstaben, Großuchstaben und Zahlen')}
 				{row(PASSWORD_REGEX_ALLOWEDSYMBOLS, Password, 'Zeichen: ! @ # $ % - _')}
 
-			</>}
+			</div>}
 
 		</>
 	)

@@ -4,7 +4,8 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import useRefreshToken from '../hooks/useRefreshToken'
 import useAuth from '../hooks/useAuth'
-import Loader from '../components/Loader'
+
+import Loader from '../components/others/Loader'
 
 
 
