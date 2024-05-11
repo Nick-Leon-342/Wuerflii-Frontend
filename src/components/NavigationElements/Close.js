@@ -1,6 +1,6 @@
 
 
-import './css/Close.css'
+import './scss/Close.scss'
 
 
 

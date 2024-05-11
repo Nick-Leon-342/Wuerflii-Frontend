@@ -1,6 +1,6 @@
 
 
-import './css/RegistrationForm.scss'
+import './scss/RegistrationForm.scss'
 
 import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'

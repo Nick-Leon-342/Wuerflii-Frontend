@@ -10,6 +10,7 @@ import { isMobile } from 'react-device-detect'
 
 import Popup from '../../components/others/Popup'
 import Loader from '../../components/others/Loader'
+import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
@@ -34,7 +35,7 @@ export default function SelectSession() {
 	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
 	
 	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ loaderVisible_popup, setLoaderVisible_popup ] = useState(false)
+	const [ loading_edit, setLoading_edit ] = useState(false)
 
 	const [ show_editSession, setShow_editSession ] = useState(false)
 	const [ show_deleteSession, setShow_deleteSession ] = useState(false)
@@ -180,7 +181,6 @@ export default function SelectSession() {
 	// __________________________________________________Modal-Edit__________________________________________________
 
 	const [ columns, setColumns ] = useState('')
-	const [ saveDisabled, setSaveDisabled ] = useState(false)
 	const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
 	const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
 
@@ -210,10 +210,9 @@ export default function SelectSession() {
 
 	const edit_save = async () => {
 
-		setLoaderVisible_popup(true)
-		setSaveDisabled(true)
+		setLoading_edit(true)
 
-		axiosPrivate.post('/updatesession', { SessionID: session.id, Columns: +columns, List_Players: list_players }).then(() => {
+		axiosPrivate.post('/session/update', { SessionID: session.id, Columns: +columns, List_Players: list_players }).then(() => {
 
 			setSuccessfullyUpdatedVisible(true)
 			edit_close()
@@ -222,7 +221,9 @@ export default function SelectSession() {
 		}).catch((err) => {
 			
 			const status = err?.response?.status
-			if(status === 400) {
+			if(!err?.response) {
+				window.alert('Server antwortet nicht!')
+			} else if(status === 400) {
 				window.alert('Anfrage ist falsch!')
 			} else if(status === 404) {
 				window.alert('Die Session wurde nicht gefunden!')
@@ -230,12 +231,8 @@ export default function SelectSession() {
 				console.log(err)
 				window.alert('Es trat ein unvorhergesehener fehler auf!')
 			}
-			return window.location.reload()
 
-		}).finally(() => {
-			setSaveDisabled(false)
-			setLoaderVisible_popup(false)
-		})		
+		}).finally(() => { setLoading_edit(false) })		
 
 	}
 
@@ -324,7 +321,10 @@ export default function SelectSession() {
 		
 
 
-			<CustomLink linkTo='/creategame' text='Erstelle Spiel'/>
+			<CustomLink 
+				onClick={() => navigate('/game/create', { replace: false })}
+				text='Erstelle Spiel'
+			/>
 
 
 
@@ -395,13 +395,11 @@ export default function SelectSession() {
 
 
 
-				<Loader loaderVisible={loaderVisible_popup}/>
-
-				<button 
-					className='button button-thick' 
-					disabled={saveDisabled} 
+				<CustomButton
+					loading={loading_edit}
 					onClick={edit_save}
-				>Speichern</button>
+					text='Speichern'
+				/>
 
 			</Popup>
 

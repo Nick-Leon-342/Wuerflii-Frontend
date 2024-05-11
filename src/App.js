@@ -4,18 +4,19 @@ import './App.scss'
 
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
-import Login from './pages/Login'
+import Login from './pages/Reglog/Login'
 import PersistLogin from './logic/PersistLogin'
-import Registration from './pages/Registration'
+import Registration from './pages/Reglog/Registration'
 
-import CreateGame from './pages/CreateGame'
+// __________ Session __________
+import Select from './pages/Session/Select'
+import Preview from './pages/Session/Preview'
+import PreviewTable from './pages/Session/Preview-Table'
 
-import SelectSession from './pages/Session/Select'
-import SessionPreview from './pages/Session/Preview'
-import SessionPreviewTable from './pages/Session/Preview-Table'
-
-import Game from './pages/Game'
-import EndScreen from './pages/EndScreen'
+// __________ Game __________
+import End from './pages/Game/End'
+import Game from './pages/Game/Game'
+import Create from './pages/Game/Create'
 
 
 export default function App() {
@@ -32,23 +33,24 @@ export default function App() {
 
 
 					{/* 
-					routes that have to be protected by a token
-					PersistLogin is needed, so that the user doesn't have to login after page refresh
+						Routes that are protected by a token
+						PersistLogin is needed, so that the user doesn't have to login after page refresh
 					*/}
 					<Route element={<PersistLogin />}>
 
-						<Route path='/creategame' element={<CreateGame />} />
-						
-						<Route path='/session/select' element={<SelectSession />} />
-						<Route path='/session/preview' element={<SessionPreview />} />
-						<Route path='/session/preview/table' element={<SessionPreviewTable />} />
+						{/* __________ Session __________ */}
+						<Route path='/session/select' element={<Select />} />
+						<Route path='/session/preview' element={<Preview />} />
+						<Route path='/session/preview/table' element={<PreviewTable />} />
 
+						{/* __________ Game __________ */}
+						<Route path='/game/create' element={<Create />} />
 						<Route path='/game' element={<Game />} />
-						<Route path='/endscreen' element={<EndScreen />} />
+						<Route path='/game/end' element={<End />} />
 						
 					</Route>
 
-					<Route path='*' element={<SelectSession />} />
+					<Route path='*' element={<Select />} />
 
 				</Routes>
 			</Router>

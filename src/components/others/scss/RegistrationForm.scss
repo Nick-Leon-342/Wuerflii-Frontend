@@ -8,12 +8,15 @@
 	label {
 		padding: 3px 0; 
 		font-size: 18px; 
-		color: var(--text-color-light)
+		color: var(--text-color-light);
+		text-wrap: pretty;
 	}
 
 	svg {
 		margin-right: 10px; 
-		height: 25px;
+		width: 25px !important;
+		height: 25px !important;
+		flex-shrink: 0;
 	}
 
 	.valid path { fill: var(--green); }

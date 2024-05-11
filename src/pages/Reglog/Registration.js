@@ -3,14 +3,14 @@
 import './scss/Reglog.scss'
 
 import { useState } from 'react'
-import axios from '../api/axios'
-import useAuth from '../hooks/useAuth'
+import axios from '../../api/axios'
+import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 
-import ErrorMessage from '../components/others/ErrorMessage'
-import CustomButton from '../components/others/Custom_Button'
-import RegistrationForm from '../components/others/RegistrationForm'
-import CustomLink from '../components/NavigationElements/CustomLink'
+import ErrorMessage from '../../components/others/ErrorMessage'
+import CustomButton from '../../components/others/Custom_Button'
+import RegistrationForm from '../../components/others/RegistrationForm'
+import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
@@ -34,7 +34,7 @@ export default function Registration() {
 
 
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = (e) => {
 		
 		e.preventDefault()
 		setLoading(true)
@@ -44,7 +44,7 @@ export default function Registration() {
 
 		if(!Name || !NAME_REGEX.test(Name) || !Password || !PASSWORD_REGEX.test(Password)) return setError('')
 			
-		await axios.post('/auth/registration', 
+		axios.post('/auth/registration', 
 			{ Name, Password },  
 			{
 				headers: { 'Content-Type': 'application/json' },
@@ -56,7 +56,7 @@ export default function Registration() {
 			setName('')
 			setPassword('')
 
-			navigate('/creategame', { replace: true })
+			navigate('/game/create', { replace: true })
 
 		}).catch((err) => {
 			

@@ -1,6 +1,6 @@
 
 
-import './css/CustomLink.scss'
+import './scss/CustomLink.scss'
 
 
 

@@ -1,13 +1,13 @@
 
 
-import './scss/EndScreen.scss'
+import './scss/End.scss'
 
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Loader from '../components/others/Loader'
-import OptionsDialog from '../components/Dialog/OptionsDialog'
+import Loader from '../../components/others/Loader'
+import OptionsDialog from '../../components/Dialog/OptionsDialog'
 
 
 

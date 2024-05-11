@@ -4,14 +4,14 @@ import './scss/Reglog.scss'
 
 import React, { useEffect } from 'react'
 import { useState } from 'react'
-import useAuth from '../hooks/useAuth'
+import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
-import axios from '../api/axios'
+import axios from '../../api/axios'
 
-import FancyInput from '../components/others/FancyInput'
-import ErrorMessage from '../components/others/ErrorMessage'
-import CustomButton from '../components/others/Custom_Button'
-import CustomLink from '../components/NavigationElements/CustomLink'
+import FancyInput from '../../components/others/FancyInput'
+import ErrorMessage from '../../components/others/ErrorMessage'
+import CustomButton from '../../components/others/Custom_Button'
+import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
@@ -35,7 +35,7 @@ export default function Login() {
 	
 	useEffect(() => { setError('') }, [ Name, Password ])
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
 
 		e.preventDefault()
 		setLoading(true)
@@ -43,7 +43,7 @@ export default function Login() {
 
 
 
-		await axios.post('/auth/login', 
+		axios.post('/auth/login', 
 			{ Name, Password }, 
 			{
 				headers: { 'Content-Type': 'application/json' },
