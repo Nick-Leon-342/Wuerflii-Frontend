@@ -92,14 +92,14 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 	
 	}
 
-	const row = (REGEX, Value, Text) => {
+	const ROW = ({ REGEX, value, text }) => {
 
 		if(!REGEX) return 
 		
 		return (
-			<div className='registrationform_error-row'>
-				{getIcon(REGEX.test(Value))}
-				<label>{Text}</label>
+			<div>
+				{getIcon(REGEX.test(value))}
+				<label>{text}</label>
 			</div>
 		)
 
@@ -124,11 +124,11 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 				onBlur={() => setInfoName(false)}
 			/>
 
-			{infoName && <div>
+			{infoName && <div className='registrationform_error'>
 
-				{row(NAME_REGEX_MINMAX, Name, `${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`)}
-				{row(NAME_REGEX_LETTERFIRST, Name, 'Angefangen mit Buchstaben')}
-				{row(NAME_REGEX_ALLOWEDCHARS, Name, 'Buchstaben, Zahlen, Binde- oder Unterstriche')}
+				<ROW REGEX={NAME_REGEX_MINMAX} value={Name} text={`${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`}/>
+				<ROW REGEX={NAME_REGEX_LETTERFIRST} value={Name} text={'Angefangen mit Buchstaben'}/>
+				<ROW REGEX={NAME_REGEX_ALLOWEDCHARS} value={Name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
 
 			</div>}
 
@@ -146,11 +146,11 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 				onBlur={() => setInfoName(true)}
 			/>
 
-			{!infoName && <div>
+			{!infoName && <div className='registrationform_error'>
 
-				{row(PASSWORD_REGEX_MINMAX, Password, `${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`)}
-				{row(PASSWORD_REGEX_ALLOWEDCHARS, Password, 'Kleinbuchstaben, Großuchstaben und Zahlen')}
-				{row(PASSWORD_REGEX_ALLOWEDSYMBOLS, Password, 'Zeichen: ! @ # $ % - _')}
+				<ROW REGEX={PASSWORD_REGEX_MINMAX} value={Password} text={`${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`}/>
+				<ROW REGEX={PASSWORD_REGEX_ALLOWEDSYMBOLS} value={Password} text={'Zeichen: ! @ # $ % - _'}/>
+				<ROW REGEX={PASSWORD_REGEX_ALLOWEDCHARS} value={Password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
 
 			</div>}
 
