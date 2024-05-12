@@ -5,7 +5,6 @@ import './scss/Create.scss'
 import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { isMobile } from 'react-device-detect'
 
 import FancyInput from '../../components/others/FancyInput'
 import CustomButton from '../../components/others/Custom_Button'
@@ -244,7 +243,6 @@ export default function CreateGame() {
 										onChange={(e) => handleNameChange(index, e.target.value)}
 									/>
 									<input
-										className={isMobile ? 'colorbox-mobile' : 'colorbox-computer'}
 										type='color'
 										value={colors[index]}
 										onChange={(e) => handleColorChange(index, e.target.value)}

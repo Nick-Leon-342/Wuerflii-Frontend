@@ -36,34 +36,37 @@
 
 	.list-container {
 		display: flex;
-		max-height: 100px;
+		max-height: 300px;
 		overflow-y: auto;
-
-		::-webkit-scrollbar {
-			width: 5px !important;
-		}
 
 		ul {
 			width: 100%;
 
 			li {
 				display: flex;
-				gap: 10px;
-				// width: 100%;
+				gap: 15px;
 
 
 				&:not(:last-child) {
-					margin-bottom: 10px;
+					margin-bottom: 20px;
 				}
 
 
-				input:first-child {
+				input[type='text'] {
 					width: 100%;
+					border-radius: 5px;
+					font-size: 20px;
 				}
-
-				input[type="color"] {
-					width: 100px;
+				
+				input[type='color'] {
 					padding: 0;
+					border: none;
+					min-width: 40px;
+
+					&::-webkit-color-swatch {
+						border: 1px solid;
+						border-radius: 5px;
+					}
 				}
 
 			}
