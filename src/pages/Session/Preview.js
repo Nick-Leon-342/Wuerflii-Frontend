@@ -21,7 +21,7 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
-export default function SessionPreview() {
+export default function Preview() {
 	
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -43,8 +43,8 @@ export default function SessionPreview() {
 
 	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
-	const columnWidth = list_players?.length > 8 ? '75px' : (list_players?.length > 4 ? '125px' : '200px')
-	const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
+	// const columnWidth = list_players?.length > 8 ? '75px' : (list_players?.length > 4 ? '125px' : '200px')
+	// const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 	const height_dateElement = 40
 	const height_element = 51
@@ -99,21 +99,26 @@ export default function SessionPreview() {
 		}).catch((err) => {
 
 			const status = err?.response?.status
-			if(status === 404) {
-				window.alert('Die Session exisiert nicht!')
+			if(!err?.response) {
+				window.alert('Server antwortet nicht!')
 			} else if(status === 400) {
 				window.alert('Die Anfrage ist falsch!')
+			} else if(status === 404) {
+				window.alert('Die Session exisiert nicht!')
+				navigate('/session/select', { replace: true })
+			} else if(status === 500) {
+				window.alert('Beim Server trat ein Fehler auf!')
 			} else {
 				console.log(err)
-				window.alert('Beim Server trat ein Fehler auf!')
+				window.alert('Es trat ein ungewollter Fehler auf!')
 			}
-			navigate('/session/select', { replace: true })
 
 		}).finally(() => { setLoading(false) })
 		
 
 	}, [])
 
+	// Filters list so that only relevant elements are displayed and 
 	const editList = ( list_toEdit, setList_toEdit ) => {
 
 		if(!list_toEdit || list_toEdit.length === 0) return setList_toEdit([])
@@ -239,6 +244,8 @@ export default function SessionPreview() {
 
 	const play = () => {
 
+		setLoading(true)
+
 		axiosPrivate.post('/session/preview', { SessionID: session_id }).then(({ data }) => {
 
 			navigate(`/game?session_id=${session_id}&joincode=${data.JoinCode}`, { replace: true })
@@ -246,17 +253,21 @@ export default function SessionPreview() {
 		}).catch((err) => {
 
 			const status = err?.response?.status
-			if(status === 400) {
-				window.alert('Fehlerhafte Anfrage!\nIrgendwas stimmt mit der Session nicht.')
+			if(!err?.response) {
+				window.alert('Server antwortet nicht!')
+			} else if(status === 400) {
+				window.alert('Fehlerhafte Clientanfrage!')
 			} else if(status === 404) {
 				window.alert('Die Session existiert nicht!')
+				navigate('/selectsession', { replace: true })
+			} else if(status === 500) {
+				window.alert('Beim Server trat ein Fehler auf!')
 			} else {
 				console.log(err)
 				window.alert('Es trat ein unvorhergesehener Fehler auf!')
 			}
-			navigate('/selectsession', { replace: true })
 			
-		})
+		}).finally(() => { setLoading(false) })
 
 	}
 
@@ -340,110 +351,117 @@ export default function SessionPreview() {
 
 
 
+
+
+
+
 	return (
 		<>
 
 			<OptionsDialog/>
-			
-			<div className='sessionpreview_select-container'>
 
-				<select 
-					value={view}
-					onChange={(e) => setView(e.target.value)}>
-					<option key={0} value='all'>Gesamtansicht</option>
-					<option key={1} value='showYear'>Jahresansicht</option>
-					<option key={2} value='showMonth'>Monatsansicht</option>
-					<option key={3} value='customDate'>Benutzerdefiniert</option>
-				</select>
+			<div className='preview_container'>
 
-				{(view === 'showMonth' || view === 'showYear') && <select 
-					value={year}
-					onChange={(e) => setYear(e.target.value)}>
-					{list_year.map((y, i) => 
-						<option key={i} value={y}>{y}</option>
-					)}
-				</select>}
-				
-				{view === 'showMonth' && <select 
-					value={month}
-					onChange={(e) => setMonth(e.target.value)}>
-					{list_months.map((m, i) => 
-						<option key={i} value={i}>{m}</option>
-					)}
-				</select>}
+				<div className='select-container'>
 
-				{view === 'customDate' && <label onClick={() => setShow_customDate(true)}>
-					{`Ansicht ab: ${formatDate(session?.CustomDate)}` || 'Erstelle Ansicht'}
-				</label>}
+					<select 
+						value={view}
+						onChange={(e) => setView(e.target.value)}>
+						<option key={0} value='all'>Gesamtansicht</option>
+						<option key={1} value='showYear'>Jahresansicht</option>
+						<option key={2} value='showMonth'>Monatsansicht</option>
+						<option key={3} value='customDate'>Benutzerdefiniert</option>
+					</select>
 
-			</div>
+					{(view === 'showMonth' || view === 'showYear') && <select 
+						value={year}
+						onChange={(e) => setYear(e.target.value)}>
+						{list_year.map((y, i) => 
+							<option key={i} value={y}>{y}</option>
+						)}
+					</select>}
+
+					{view === 'showMonth' && <select 
+						value={month}
+						onChange={(e) => setMonth(e.target.value)}>
+						{list_months.map((m, i) => 
+							<option key={i} value={i}>{m}</option>
+						)}
+					</select>}
+
+					{view === 'customDate' && <label onClick={() => setShow_customDate(true)}>
+						{`Ansicht ab: ${formatDate(session?.CustomDate)}` || 'Erstelle Ansicht'}
+					</label>}
+
+				</div>
 
 
 
-			<div className='sessionpreview_table-container sessionpreview_player-table'>
-				<table className='table'>
-					<tbody>
-						<tr>
-							{session?.List_PlayerOrder?.map((alias, i) => {
-								const player = getPlayer(alias)
-								return (<td key={i} style={style}>{player.Name}</td>)
-							})}
-						</tr>
-						<tr>
-							{session?.List_PlayerOrder?.map((alias, i) => {
-								return (
-									<td key={i} style={style}>
+				<div className='table-container sessionpreview_player-table'>
+					<table className='table'>
+						<tbody>
+							<tr>
+								{session?.List_PlayerOrder?.map((alias, i) => (
+									<td key={i}>
+										{getPlayer(alias).Name}
+									</td>
+								))}
+							</tr>
+							<tr>
+								{session?.List_PlayerOrder?.map((alias, i) => (
+									<td key={i}>
 										{getScoresAfter(alias) || 0}
 									</td>
-								)
-							})}
-						</tr>
-					</tbody>
-				</table>
-			</div>
+								))}
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
 
 
-			<div className='sessionpreview_table-container' ref={div_ref} onScroll={handleScroll}>
-				<table className='table sessionpreview_table' ref={table_ref}>
-					<tbody>
-						{list_visibleFinalScores?.map((e, i) => {
-							if(e.Group_Date) {
+				{/* <div className='table-container' ref={div_ref} onScroll={handleScroll}>
+					<table className='table sessionpreview_table' ref={table_ref}>
+						<tbody>
+							{list_visibleFinalScores?.map((e, i) => {
+								if(e.Group_Date) {
 
-								return <tr className='date-row' key={i}>
-									<td><label className='date'>{formatDate(e.Group_Date)}</label></td>
-								</tr>
-
-							} else {
-
-								return (
-									<tr key={i} className='listElement' style={{ display: 'block' }} onClick={() => handleClick(e)}>
-										{session?.List_PlayerOrder?.map((alias, j) => {
-											const player = getPlayer(alias)
-											return (<td key={`${i}.${j}`} style={style}>{e.PlayerScores[player.Alias]}</td>)
-										})}
+									return <tr className='date-row' key={i}>
+										<td><label className='date'>{formatDate(e.Group_Date)}</label></td>
 									</tr>
-								)
 
-							}
-						})}
-						<tr ref={listelement_ref}/>
-					</tbody>
-				</table>
+								} else {
+
+									return (
+										<tr key={i} className='listElement' onClick={() => handleClick(e)}>
+											{session?.List_PlayerOrder?.map((alias, j) => {
+												const player = getPlayer(alias)
+												return (<td key={`${i}.${j}`} style={style}>{e.PlayerScores[player.Alias]}</td>)
+											})}
+										</tr>
+									)
+
+								}
+							})}
+							<tr ref={listelement_ref}/>
+						</tbody>
+					</table>
+				</div> */}
+
+
+
+				<CustomButton
+					loading={loading}
+					text="Los geht's!"
+					onClick={play}
+				/>
+
+				<CustomLink 
+					linkTo='/session/select' 
+					text='Zurück'
+				/>
+
 			</div>
-			
-
-
-			<CustomButton
-				loading={loading}
-				text="Los geht's!"
-				onClick={play}
-			/>
-
-			<CustomLink 
-				linkTo='/session/select' 
-				text='Zurück'
-			/>
 
 
 

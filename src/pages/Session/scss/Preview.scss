@@ -1,5 +1,27 @@
 
 
+.preview_container {
+
+	width: 80vw;
+	min-width: 270px;
+	max-width: 600px;
+
+	.table-container {
+
+
+		td {
+			width: 100%;
+			min-width: 100px; 
+			// max-width: columnWidth; 
+			padding: '5px'; 
+			white-space: 'nowrap'; 
+			overflow: 'hidden'; 
+			text-overflow: ellipsis;
+		}
+	}
+
+}
+
 
 
 

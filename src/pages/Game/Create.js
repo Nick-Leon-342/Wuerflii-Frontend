@@ -16,7 +16,7 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
-export default function CreateGame() {
+export default function Create() {
 
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
@@ -177,9 +177,18 @@ export default function CreateGame() {
 				
 			}).catch((err) => {
 
-				console.log(err)
-				window.alert('Es trat ein Fehler auf!')
-				window.location.reload()
+				const status = err?.response?.status
+				if(!err?.response) {
+					window.alert('Server antwortet nicht!')
+				} else if(status === 400) {
+					window.alert('Fehlerhafte Clientanfrage!')
+				} else if(status === 500) {
+					window.alert('Beim Server trat ein Fehler auf!')
+				} else {
+					console.log(err)
+					window.alert('Es trat ein ungewollter Fehler auf!')
+				}
+
 
 			}).finally(() => { setLoading_enterNames(false) })			
 

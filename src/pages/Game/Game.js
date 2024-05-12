@@ -321,6 +321,8 @@ export default function Game() {
 
 	return (
 		<>
+		<div className='game_container'>
+		<div className='game'>
 
 			<OptionsDialog/>
 
@@ -365,7 +367,7 @@ export default function Game() {
 				setGnadenwurf={setGnadenwurf}
 				setShow_lastPlayer={setShow_lastPlayer}
 			/>
-			
+
 			<Table 
 				tableID={id_upperTable}
 				columns={session?.Columns}
@@ -375,6 +377,7 @@ export default function Game() {
 				onblurEvent={local_onBlurEvent}
 				removeFocusEvent={removeFocusEvent}
 			/>
+
 			<Table 
 				tableID={id_bottomTable}
 				columns={session?.Columns}
@@ -396,10 +399,16 @@ export default function Game() {
 
 				<button 
 					onClick={finishGame}
-					className='button button-thick'
+					className='button'
 				>Spiel beenden</button>
-				
+
 			</div>
+			
+
+		</div>
+		</div>
+
+			
 
 
 
@@ -618,7 +627,6 @@ export default function Game() {
 				>Ok</button>
 
 			</Popup>
-
 
 		</>
 	)
