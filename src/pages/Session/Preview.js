@@ -420,7 +420,7 @@ export default function Preview() {
 
 
 
-				{/* <div className='table-container' ref={div_ref} onScroll={handleScroll}>
+				<div className='table-container' ref={div_ref} onScroll={handleScroll}>
 					<table className='table sessionpreview_table' ref={table_ref}>
 						<tbody>
 							{list_visibleFinalScores?.map((e, i) => {
@@ -436,7 +436,7 @@ export default function Preview() {
 										<tr key={i} className='listElement' onClick={() => handleClick(e)}>
 											{session?.List_PlayerOrder?.map((alias, j) => {
 												const player = getPlayer(alias)
-												return (<td key={`${i}.${j}`} style={style}>{e.PlayerScores[player.Alias]}</td>)
+												return (<td key={`${i}.${j}`}>{e.PlayerScores[player.Alias]}</td>)
 											})}
 										</tr>
 									)
@@ -446,7 +446,7 @@ export default function Preview() {
 							<tr ref={listelement_ref}/>
 						</tbody>
 					</table>
-				</div> */}
+				</div>
 
 
 
@@ -457,7 +457,7 @@ export default function Preview() {
 				/>
 
 				<CustomLink 
-					linkTo='/session/select' 
+					onClick={() => navigate('/session/select',  { replace: false })}
 					text='Zurück'
 				/>
 
