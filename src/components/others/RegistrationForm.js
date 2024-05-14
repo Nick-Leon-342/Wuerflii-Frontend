@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import FancyInput from './FancyInput'
+import Loader from './Loader'
 
 
 
@@ -14,6 +15,7 @@ import FancyInput from './FancyInput'
 export default function RegistrationForm({ Name, setName, Password, setPassword, isRequired, NAME_REGEX, setNAME_REGEX, PASSWORD_REGEX, setPASSWORD_REGEX }) {
 
 	const axiosPrivate = useAxiosPrivate()
+	const [ requesting, setRequesting ] = useState(false)
 
 	const [ infoName, setInfoName ] = useState(true)
 
@@ -38,6 +40,8 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 
 
 	useEffect(() => {
+
+		setRequesting(true)
 
 		axiosPrivate.get('/auth/regex').then(({ data }) => {
 
@@ -78,8 +82,16 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 			setPASSWORD_REGEX_ALLOWEDSYMBOLS(new RegExp(PASSWORD_REGEX_ALLOWEDSYMBOLS))
 
 		}).catch((err) => {
-			console.log(err)
-		})
+
+			const status = err?.response?.status
+			if(!err?.response) {
+				window.alert('Der Server antwortet nicht, es fehlen Daten!')
+			} else {
+				console.log(err)
+				window.alert('Es trat ein ungewollter Fehler auf!')
+			}
+
+		}).finally(() => { setRequesting(false) })
 
 	}, [])
 
@@ -124,13 +136,23 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 				onBlur={() => setInfoName(false)}
 			/>
 
-			{infoName && <div className='registrationform_error'>
+			{infoName && <>
+				{requesting ? <>
 
-				<ROW REGEX={NAME_REGEX_MINMAX} value={Name} text={`${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`}/>
-				<ROW REGEX={NAME_REGEX_LETTERFIRST} value={Name} text={'Angefangen mit Buchstaben'}/>
-				<ROW REGEX={NAME_REGEX_ALLOWEDCHARS} value={Name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
+					<Loader loaderVisible={requesting}/>
+				
+				</>:<>
+				
+					<div className='registrationform_error'>
 
-			</div>}
+						<ROW REGEX={NAME_REGEX_MINMAX} value={Name} text={`${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`}/>
+						<ROW REGEX={NAME_REGEX_LETTERFIRST} value={Name} text={'Angefangen mit Buchstaben'}/>
+						<ROW REGEX={NAME_REGEX_ALLOWEDCHARS} value={Name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
+
+					</div>
+
+				</>}
+			</>}
 
 
 
@@ -146,13 +168,23 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 				onBlur={() => setInfoName(true)}
 			/>
 
-			{!infoName && <div className='registrationform_error'>
+			{!infoName && <>
+				{requesting ? <>
 
-				<ROW REGEX={PASSWORD_REGEX_MINMAX} value={Password} text={`${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`}/>
-				<ROW REGEX={PASSWORD_REGEX_ALLOWEDSYMBOLS} value={Password} text={'Zeichen: ! @ # $ % - _'}/>
-				<ROW REGEX={PASSWORD_REGEX_ALLOWEDCHARS} value={Password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
+					<Loader loaderVisible={requesting}/>
+				
+				</>:<>
+				
+					<div className='registrationform_error'>
 
-			</div>}
+						<ROW REGEX={PASSWORD_REGEX_MINMAX} value={Password} text={`${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`}/>
+						<ROW REGEX={PASSWORD_REGEX_ALLOWEDSYMBOLS} value={Password} text={'Zeichen: ! @ # $ % - _'}/>
+						<ROW REGEX={PASSWORD_REGEX_ALLOWEDCHARS} value={Password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
+
+					</div>
+
+				</>}
+			</>}
 
 		</>
 	)

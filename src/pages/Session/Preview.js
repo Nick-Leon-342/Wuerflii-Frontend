@@ -397,7 +397,7 @@ export default function Preview() {
 
 
 
-				<div className='table-container sessionpreview_player-table'>
+				<div className='table-container player-table'>
 					<table className='table'>
 						<tbody>
 							<tr>

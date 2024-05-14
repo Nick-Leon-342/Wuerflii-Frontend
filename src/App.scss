@@ -193,14 +193,13 @@ textarea {
 .table {
     table-layout: fixed;
     border-collapse: collapse;
-    margin: 5px 0;
-}
 
-.table td {
-    border: 1px solid;
-    text-align: center;
-    height: 50px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	td {
+		border: 1px solid;
+		text-align: center;
+		height: 50px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
