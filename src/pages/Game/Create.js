@@ -12,6 +12,7 @@ import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import Previous from '../../components/NavigationElements/Previous'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
 
 
 
@@ -70,7 +71,7 @@ export default function Create() {
 
 	// __________________________________________________Columns__________________________________________________
 
-	const [columns, setColumns] = useState('')
+	const [ columns, setColumns ] = useState('')
 	const [ options_columns, setOptions_columns ] = useState([])
 	const [ MAX_COLUMNS, setMAX_COLUMNS ] = useState(0)
 
@@ -117,67 +118,47 @@ export default function Create() {
 
 	// __________________________________________________ EnterNames __________________________________________________
 
-	const [ names, setNames ] = useState([])
-	const [ colors, setColors ] = useState([])
+	const [ list_players, setList_players ] = useState([])
 	const [ sessionName, setSessionName ] = useState('Partie')
-	const [ loading_enterNames, setLoading_enterNames ] = useState(false)
+	const [ loading, setLoading ] = useState(false)
 
-	const handleNameChange = (index, n) => {
+	const next = () => {
+		
+		if(!players || !columns) return
 
-		const updatedNames = [...names]
-		updatedNames[index] = n
-		setNames(updatedNames)
+		const tmp = Array.from({ length: players }, (_, index) => index)
+
+		setList_players(tmp.map((p, i) => {
+			return {
+				id: i, 
+				Name: `Spieler_${p + 1}`, 
+				Color: i % 2 === 0 ? '#ffffff' : '#ADD8E6'
+			}
+		}))
+
+		setShow_enterNames(true)
 
 	}
-  
-	const handleColorChange = (index, c) => {
-
-		const updatedColors = [...colors]
-		updatedColors[index] = c
-		setColors(updatedColors)
-
-	}
-
-	useEffect(() => {
-
-		const list_players = Array.from({ length: players }, (_, index) => index)
-
-		setNames(list_players.map((p) => `Spieler_${p + 1}`))
-		setColors(list_players.map((p, i) => (i % 2 === 0 ? '#ffffff' : '#ADD8E6')))
-
-
-	}, [players])
 
 	const play = () => {
 
-		if(sessionName) {
+		if(!sessionName || !list_players) return
 
-			setLoading_enterNames(true)
-			const list_players = []
-	
-			for(let i = 0; names.length > i; i++) {
-				list_players.push({ 
-					Name: names[i], 
-					Color: colors[i]
-				})
-			}
+		setLoading(true)
 
-			axiosPrivate.post('/game/create', {
-				SessionName: sessionName, 
-				Columns: +columns, 
-				List_Players: list_players,
-			}).then(({ data }) => {
+		axiosPrivate.post('/game/create', {
+			SessionName: sessionName, 
+			Columns: +columns, 
+			List_Players: list_players,
+		}).then(({ data }) => {
 
-				navigate(`/game?session_id=${data.SessionID}&joincode=${data.JoinCode}`)
-				
-			}).catch((err) => {
+			navigate(`/game?session_id=${data.SessionID}&joincode=${data.JoinCode}`)
+			
+		}).catch((err) => {
 
-				handle_error({ err })
+			handle_error({ err })
 
-
-			}).finally(() => { setLoading_enterNames(false) })			
-
-		}
+		}).finally(() => { setLoading(false) })
 
 	}
 
@@ -227,30 +208,16 @@ export default function Create() {
 
 
 
-					<div className='list-container'>
-						<ul>
-							{names.map((n, index) => (
-								<li key={index}>
-									<input
-										type='text'
-										defaultValue={n}
-										onChange={(e) => handleNameChange(index, e.target.value)}
-									/>
-									<input
-										type='color'
-										value={colors[index]}
-										onChange={(e) => handleColorChange(index, e.target.value)}
-									/>
-								</li>
-							))}
-						</ul>
-					</div>
+					<DragAndDropNameColorList
+						List_Players={list_players}
+						setList_Players={setList_players}
+					/>
 
 
 
 					<CustomButton 
 						onClick={play}
-						loading={loading_enterNames}
+						loading={loading}
 						text='Los!'
 					/>
 
@@ -280,7 +247,7 @@ export default function Create() {
 
 					<button 
 						className='button' 
-						onClick={() => players && columns && setShow_enterNames(true)}
+						onClick={next}
 					>Weiter</button>
 
 					<CustomLink 

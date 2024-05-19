@@ -209,7 +209,7 @@ export default function SelectSession() {
 
 			setSuccessfullyUpdatedVisible(true)
 			edit_close()
-			request()
+			window.location.reload()
 
 		}).catch((err) => {
 
