@@ -1,151 +1,142 @@
 
 
-/* __________________________________________________ Trashcan-Container __________________________________________________ */
+.select_container {
+	width: 80vw;
+	max-width: 800px;
+	min-width: 300px;
 
-.selectsession_trashcan-container {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	opacity: 1;
-	margin-bottom: 20px;
+
+
+
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		opacity: 1;
+		margin-bottom: 20px;
+	
+		svg {
+			height: 30px;
+	
+			&:not(.disabled):hover { height: 30px; }
+	
+			&.disabled {
+				opacity: 0.2;
+				pointer-events: none;
+			}
+	
+			&.trashcan {
+				margin-left: 8px; 
+				margin-right: 7px;
+				
+				rect { fill: none !important; }
+	
+				&.notvisible { opacity: 0; }
+			}
+	
+			&.edit {
+				margin-right: 15px;
+	
+				&.notvisible { opacity: 0; }
+			}
+		}
+	}
+
+	.successfully-saved {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 10px;
+	
+		&.notvisible { display: none; }
+	
+		p {
+			color: var(--green);
+			font-size: 25px;
+		}
+	}
+
+	.no-game {
+		padding: 15px;
+		margin-bottom: 20px;
+		width: 100%;
+		text-align: center;
+	}
+
+
+
+
+
+	dl {
+		margin-bottom: 20px;
+		width: 100%;
+	
+		dt {
+			display: flex;
+			justify-content: space-between;
+			border-radius: 5px;
+			width: 100%;
+	
+			&:hover {
+				background-color: var(--list-element-hover-color);
+			}
+	
+			input[type='checkbox'] {
+				width: 30px;
+				margin-left: 10px;
+				flex-shrink: 0;
+			}
+	
+			div {
+				display: flex;
+				justify-content: space-between;
+				margin: 0 10px;
+				flex-grow: 1;
+				flex-shrink: 1;
+				min-width: 0;
+				align-items: center;
+				gap: 10px;
+	
+				label {
+					font-size: 23px;
+					width: max-content;
+				}
+	
+				.names {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+			}
+		}
+	}
+
 }
 
-.selectsession_trashcan-container .disabled {
-	opacity: 0.2;
-	pointer-events: none;
+@media ( max-width: 425px ) {
+	
+	.select_container {
+		width: 90vw;
+
+		dl dt {
+
+			input[type='checkbox'] {
+				width: 20px;
+				height: 20px;
+			}
+	
+			.names {
+				font-size: 20px;
+			}
+	
+			.date {
+				display: none;
+			}
+
+		}
+
+	}
+
 }
-
-.selectsession_trashcan-container svg:not(.disabled):hover {
-	height: 30px;
-}
-
-.selectsession_trashcan-container svg {
-	height: 30px;
-}
-
-
-/* ____________________ Trashcan ____________________ */
-
-.selectsession_trashcan-container .trashcan {
-	margin-left: 8px; 
-	margin-right: 7px;
-	width: 30px;
-}
-
-.selectsession_trashcan-container .trashcan.notvisible {opacity: 0;}
-
-
-/* ____________________ Edit ____________________ */
-
-.selectsession_trashcan-container .edit {
-	margin-right: 15px;
-	width: 30px;
-}
-
-.selectsession_trashcan-container .edit.notvisible {opacity: 0;}
-
-
-
-
-
-
-
-
-
-
-/* __________________________________________________ Successfully Saved __________________________________________________ */
-
-.selectsession_successfully-saved {
-	display: flex;
-	justify-content: center;
-	margin-bottom: 10px;
-}
-
-.selectsession_successfully-saved p {
-	color: var(--green);
-	font-size: 25px;
-}
-
-.selectsession_successfully-saved.notvisible {
-	display: none;
-}
-
-
-
-
-
-
-
-
-
-
-/* __________________________________________________ List __________________________________________________ */
-
-.selectsession_no-game {
-	padding: 15px;
-	margin-bottom: 20px;
-}
-
-.selectsession_list {
-	margin-bottom: 20px;
-}
-
-.selectsession_list dt {
-    display: flex;
-    justify-content: space-between;
-    border-radius: 5px;
-}
-
-.selectsession_list dt:hover {
-    background-color: var(--list-element-hover-color);
-}
-
-.selectsession_list .checkbox-delete {
-	width: 30px;
-	margin-left: 10px;
-}
-
-.selectsession_list .checkbox-delete.ismobile {
-	margin-top: 10px;
-	width: 27px;
-	height: 27px;
-}
-
-.selectsession_list .names-and-date {
-    margin-right: 10px;
-    margin-left: 10px;
-	height: 45px;
-    display: flex;
-    justify-content: space-between;
-	width: 100%;
-}
-
-.selectsession_list .names-and-date .names,
-.selectsession_list .names-and-date .date {
-	height: 100%;
-	padding-top: 11px;
-	font-size: 23px;
-	width: max-content;
-}
-
-.selectsession_list .names-and-date .names {
-	display: flex;
-	overflow: hidden;
-	text-wrap: nowrap;
-	max-width: 450px;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.selectsession_list .names-and-date .date {
-	margin-left: 30px;
-}
-
-
-
-
-
-
 
 
 

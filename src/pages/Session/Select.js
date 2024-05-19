@@ -59,10 +59,17 @@ export default function SelectSession() {
 			setList(l)
 
 		}).catch((err) => {
+
+			const status = err?.response?.status
+			if(!err?.response) {
+				window.alert('Server antwortet nicht!')
+			} else if(status === 500) {
+				window.alert('Beim Server trat ein Fehler auf!')
+			} else {
+				console.log(err)
+				window.alert(`Es trat ein unerwarteter Fehler auf!\nError: ${status}`)
+			}
 			
-			console.log(err)
-			window.alert('Es trat ein unerwarteter Fehler auf!')
-			navigate('/login', { replace: true })
 
 		}).finally(() => { setLoaderVisible(false) })
 
@@ -253,80 +260,84 @@ export default function SelectSession() {
 
 			{/* __________________________________________________ Page __________________________________________________ */}
 
-			<div className='selectsession_trashcan-container'>
+			<div className='select_container'>
 
-				<svg 
-					className={`trashcan ${list.length === 0 ? 'notvisible' : (trashcanDisabled ? 'disabled' : 'button-responsive')}`} 
-					onClick={() => !trashcanDisabled && setShow_deleteSession(true)} 
-					viewBox='-0.5 -0.5 458 510'
-				><g><rect x='58' y='55' width='340' height='440' rx='51' ry='51' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='15' y='55' width='427' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='125' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='275' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='158' y='15' width='142' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/></g></svg>
+				<header>
 
-				<Loader loaderVisible={loaderVisible}/>
+					<svg 
+						className={`trashcan ${list.length === 0 ? 'notvisible' : (trashcanDisabled ? 'disabled' : 'button-responsive')}`} 
+						onClick={() => !trashcanDisabled && setShow_deleteSession(true)} 
+						viewBox='-0.5 -0.5 458 510'
+					><g><rect x='58' y='55' width='340' height='440' rx='51' ry='51' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='15' y='55' width='427' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='125' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='275' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='158' y='15' width='142' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/></g></svg>
 
-				<svg 
-					className={`edit ${list.length === 0 ? 'notvisible' : (settingsDisabled ? 'disabled' : 'button-responsive')}`} 
-					onClick={edit_show} 
-					viewBox='0 -960 960 960'
-				><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
+					<Loader loaderVisible={loaderVisible}/>
 
-			</div>
+					<svg 
+						className={`edit ${list.length === 0 ? 'notvisible' : (settingsDisabled ? 'disabled' : 'button-responsive')}`} 
+						onClick={edit_show} 
+						viewBox='0 -960 960 960'
+					><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
 
-
-
-			<div className={`selectsession_successfully-saved ${successfullyUpdatedVisible ? '' : 'notvisible'}`}>
-				<p>Erfolgreich gespeichert!</p>
-			</div>
+				</header>
 
 
 
-			{list.length === 0 ? <>
-				
-				<h1 className='selectsession_no-game'>Es gibt noch keine Partie!</h1>
+				<div className={`successfully-saved ${successfullyUpdatedVisible ? '' : 'notvisible'}`}>
+					<p>Erfolgreich gespeichert!</p>
+				</div>
 
-			</>:<>
-			
-				<dl className='selectsession_list'>
-					{list.map((s, i) => (
-						<dt index={i} key={i}>
 
-							<input 
-								className={`button-responsive checkbox-delete ${isMobile ? 'ismobile' : ''}`}
-								type='checkbox' 
-								onChange={(e) => checkboxClick(i, e.target.checked)} 
-							/>
 
-							<div className='names-and-date' onClick={listElementClick}>
+				{list.length === 0 ? <>
 
-								<label className='names'>
-									{s.List_PlayerOrder.map((alias) => {
-										
-										for(const p of s.List_Players) {
-											if(alias === p.Alias) {
-												return p.Name
+					<h1 className='no-game'>Es gibt noch keine Partie!</h1>
+
+				</>:<>
+
+					<dl>
+						{list.map((s, i) => (
+							<dt index={i} key={i}>
+
+								<input 
+									className='button-responsive'
+									type='checkbox' 
+									onChange={(e) => checkboxClick(i, e.target.checked)} 
+								/>
+
+								<div onClick={listElementClick}>
+
+									<label className='names'>
+										{s.List_PlayerOrder.map((alias) => {
+											
+											for(const p of s.List_Players) {
+												if(alias === p.Alias) {
+													return p.Name
+												}
 											}
-										}
-										return ''
-									}).join(' vs ')}
-								</label>
+											return ''
+										}).join(' vs ')}
+									</label>
 
-								<label className='date'>{formatDate(s.LastPlayed)}</label>
+									<label className='date'>{formatDate(s.LastPlayed)}</label>
 
-							</div>
+								</div>
 
-						</dt>
-					))}
-				</dl>
+							</dt>
+						))}
+					</dl>
 
-			</>}
-		
+				</>}
 
 
-			<CustomLink 
-				onClick={() => navigate('/game/create', { replace: false })}
-				text='Erstelle Spiel'
-			/>
 
+				<CustomLink 
+					onClick={() => navigate('/game/create', { replace: false })}
+					text='Erstelle Spiel'
+				/>
 
+			</div>
+
+			
 
 
 
