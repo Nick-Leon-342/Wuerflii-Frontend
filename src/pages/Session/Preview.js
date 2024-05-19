@@ -16,6 +16,7 @@ import Popup from '../../components/others/Popup'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import CustomLink from '../../components/NavigationElements/CustomLink'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 
@@ -24,8 +25,9 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 export default function Preview() {
 	
 	const navigate = useNavigate()
-	const axiosPrivate = useAxiosPrivate()
 	const location = useLocation()
+	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const [ session_id, setSession_id ] = useState(-1) 
 
@@ -98,20 +100,12 @@ export default function Preview() {
 
 		}).catch((err) => {
 
-			const status = err?.response?.status
-			if(!err?.response) {
-				window.alert('Server antwortet nicht!')
-			} else if(status === 400) {
-				window.alert('Die Anfrage ist falsch!')
-			} else if(status === 404) {
-				window.alert('Die Session exisiert nicht!')
-				navigate('/session/select', { replace: true })
-			} else if(status === 500) {
-				window.alert('Beim Server trat ein Fehler auf!')
-			} else {
-				console.log(err)
-				window.alert('Es trat ein ungewollter Fehler auf!')
-			}
+			handle_error({ err, 
+				handle_404: (() => {
+					window.alert('Die Session exisiert nicht!')
+					navigate('/session/select', { replace: true })
+				}) 
+			})
 
 		}).finally(() => { setLoading(false) })
 		

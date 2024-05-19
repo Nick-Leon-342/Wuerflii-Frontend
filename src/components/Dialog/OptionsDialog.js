@@ -84,15 +84,7 @@ export default function OptionsDialog() {
 			setError('')
 			setSuccessfullyUpdatedVisible(true)
 
-		} catch (err) {
-			if (!err?.response) {
-				setError('Der Server antwortet nicht!')
-			} else if (err.response?.status === 409) {
-				setError('Der Benutzername wird bereits benutzt!')
-			} else {
-				setError('Es trat ein unvorhergesehener Fehler auf!')
-			}
-		}
+		} catch (err) {console.log(err)}
 
 		setSettingsDisabled(false)
 		setLoaderVisible(false)

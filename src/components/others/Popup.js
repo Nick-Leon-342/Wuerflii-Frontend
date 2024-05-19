@@ -1,15 +1,15 @@
 
 
+import './scss/Popup.scss'
+
 import { useEffect } from 'react'
 import Close from '../NavigationElements/Close'
 
-import './scss/Popup.scss'
 
 
 
 
-
-export default function Popup({ showPopup, setShowPopup, children }) {
+export default function Popup({ showPopup, setShowPopup, children, title }) {
 
 	useEffect(() => {
 
@@ -21,24 +21,38 @@ export default function Popup({ showPopup, setShowPopup, children }) {
 
 	}, [showPopup])
 
+	const click = () => {
+
+		setShowPopup(false)
+
+	}
+
+
 
 
 
 	return (
 		<>
-			<div className={`popup_background ${showPopup ? 'show' : ''}`} onClick={() => setShowPopup(false)}/>
+			<div 
+				className={`popup_background ${showPopup ? 'show' : ''}`} 
+				onClick={click}
+			>
+				
+				<div className='popup' onClick={(e) => e.stopPropagation()}>
 
-			<div className={`popup ${showPopup ? 'show' : ''}`}>
+					<Close onClick={() => setShowPopup(false)}/>
 
-				<Close onClick={() => setShowPopup(false)}/>
+					<h1>{title}</h1>
 
-				<div className='popup-grid'>
-					<div className='popup-container'>
-						{children}
+					<div className='popup-grid'>
+						<div className='popup-container'>
+							{children}
+						</div>
 					</div>
-				</div>
 
+				</div>
 			</div>
+
 		</>
 	)
 

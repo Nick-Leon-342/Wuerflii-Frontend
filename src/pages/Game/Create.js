@@ -11,6 +11,7 @@ import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import Previous from '../../components/NavigationElements/Previous'
 import CustomLink from '../../components/NavigationElements/CustomLink'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 
@@ -20,6 +21,7 @@ export default function Create() {
 
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
+	const handle_error = useErrorHandling()
 
 	const [ show_enterNames, setShow_enterNames ] = useState(false)
 
@@ -40,14 +42,7 @@ export default function Create() {
 			setMAX_COLUMNS(MAX_COLUMNS)
 			setOptions_columns(Array.from({ length: MAX_COLUMNS }, (_, index) => index + 1))
 
-		}).catch((err) => {
-
-			if(!err?.response) {
-				window.alert('Server antwortet nicht!')
-			} else {
-				navigate('/login', { replace: true })
-			}
-		})
+		}).catch((err) => { handle_error(err) })
 
 	}, [])
 
@@ -177,17 +172,7 @@ export default function Create() {
 				
 			}).catch((err) => {
 
-				const status = err?.response?.status
-				if(!err?.response) {
-					window.alert('Server antwortet nicht!')
-				} else if(status === 400) {
-					window.alert('Fehlerhafte Clientanfrage!')
-				} else if(status === 500) {
-					window.alert('Beim Server trat ein Fehler auf!')
-				} else {
-					console.log(err)
-					window.alert('Es trat ein ungewollter Fehler auf!')
-				}
+				handle_error({ err })
 
 
 			}).finally(() => { setLoading_enterNames(false) })			

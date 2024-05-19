@@ -1,6 +1,6 @@
 
 
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import useRefreshToken from '../hooks/useRefreshToken'
 import useAuth from '../hooks/useAuth'
@@ -13,10 +13,16 @@ import Loader from '../components/others/Loader'
 
 export default function PersistLogin() {
 
+	const location = useLocation()
 	const navigate = useNavigate()
-	const [isLoading, setIsLoading] = useState(true)
 	const refresh = useRefreshToken()
 	const { auth } = useAuth()
+	
+	const [isLoading, setIsLoading] = useState(true)
+
+
+
+
 
 	useEffect(() => {
 		
@@ -24,7 +30,7 @@ export default function PersistLogin() {
 			try {
 				await refresh()
 			} catch(err) {
-				navigate('/login')
+				navigate(`/?next=${location.pathname}${location.search}`)
 			} finally {
 				setIsLoading(false)
 			}
@@ -34,10 +40,14 @@ export default function PersistLogin() {
 
 	}, [])
 
-	return (
-		<>
-			{isLoading ? <Loader loaderVisible={true}/> : <Outlet/>}
-		</>
-	)
+
+
+
+
+	return (<>
+
+		{isLoading ? <Loader loaderVisible={true}/> : <Outlet/>}
+
+	</>)
 	
 }

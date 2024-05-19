@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatDate } from '../../logic/utils'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { isMobile } from 'react-device-detect'
 
 import Popup from '../../components/others/Popup'
 import Loader from '../../components/others/Loader'
@@ -14,6 +13,7 @@ import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 
@@ -23,6 +23,7 @@ export default function SelectSession() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const [ list, setList ] = useState([])
 	const [ list_checkbox ] = useState([])
@@ -60,16 +61,7 @@ export default function SelectSession() {
 
 		}).catch((err) => {
 
-			const status = err?.response?.status
-			if(!err?.response) {
-				window.alert('Server antwortet nicht!')
-			} else if(status === 500) {
-				window.alert('Beim Server trat ein Fehler auf!')
-			} else {
-				console.log(err)
-				window.alert(`Es trat ein unerwarteter Fehler auf!\nError: ${status}`)
-			}
-			
+			handle_error({ err })
 
 		}).finally(() => { setLoaderVisible(false) })
 
@@ -109,8 +101,7 @@ export default function SelectSession() {
 
 		}).catch((err) => {
 
-			console.log(err)
-			window.alert('Es trat ein unvorhergesehener Fehler auf!')
+			handle_error({ err })
 
 		}).finally(() => {
 			setLoaderVisible(false)
@@ -161,12 +152,7 @@ export default function SelectSession() {
 		for(let i = 0; list_checkbox.length > i; i++) {
 			if(list_checkbox[i]) {
 
-				await axiosPrivate.delete(`/session/select?session_id=${list[i].id}`).catch((err) => {
-
-					console.log(err)
-					window.alert('Es trat ein unvorhergesehener Fehler auf!')
-					
-				})
+				await axiosPrivate.delete(`/session/select?session_id=${list[i].id}`).catch((err) => { handle_error({ err }) })
 
 				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_view`)
 				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_month`)
@@ -226,18 +212,13 @@ export default function SelectSession() {
 			request()
 
 		}).catch((err) => {
-			
-			const status = err?.response?.status
-			if(!err?.response) {
-				window.alert('Server antwortet nicht!')
-			} else if(status === 400) {
-				window.alert('Anfrage ist falsch!')
-			} else if(status === 404) {
-				window.alert('Die Session wurde nicht gefunden!')
-			} else {
-				console.log(err)
-				window.alert('Es trat ein unvorhergesehener fehler auf!')
-			}
+
+			handle_error({ err, 
+				handle_404: (() => {
+					window.alert('Die Session wurde nicht gefunden!')
+					window.location.reload()
+				})
+			})
 
 		}).finally(() => { setLoading_edit(false) })		
 
@@ -347,20 +328,22 @@ export default function SelectSession() {
 				showPopup={show_deleteSession}
 				setShowPopup={setShow_deleteSession}
 			>
-				
-				<h1>Bist du sicher, dass du<br/>diese Session(s) löschen möchtest?</h1>
+				<div className='select_popup_delete'>
+					
+					<h1>Bist du sicher, dass du diese Session(s) löschen möchtest?</h1>
 
-				<button 
-					className='button button-thick' 
-					onClick={handle_delete}
-				>Ja</button>
+					<button 
+						className='button button-thick' 
+						onClick={handle_delete}
+					>Ja</button>
 
-				<button 
-					className='button button-red-reverse' 
-					onClick={() => setShow_deleteSession(false)}
-					disabled={deleteDisabled}
-				>Abbrechen</button>
+					<button 
+						className='button button-red-reverse' 
+						onClick={() => setShow_deleteSession(false)}
+						disabled={deleteDisabled}
+					>Abbrechen</button>
 
+				</div>
 			</Popup>
 
 
@@ -372,46 +355,46 @@ export default function SelectSession() {
 			<Popup
 				showPopup={show_editSession}
 				setShowPopup={setShow_editSession}
+				title='Bearbeiten'
 			>
-
-				<h1 className='selectsession_popup_edit_header'>Bearbeiten</h1>
-						
+				<div className='select_popup_edit'>							
 
 
-				{/* ______________________________ Columns ______________________________ */}
-				
-				<div className='selectsession_popup_edit_change-columns'>
-
-					<label>Spalten</label>
+					{/* ______________________________ Columns ______________________________ */}
 					
-					<select
-						value={columns}
-						onChange={handle_edit_columnChange}
-					>
-						<option value={session?.Columns}>
-							{'Derzeit: ' + session?.Columns}
-						</option>
-						{options_columns.map((c) => (
-							<option key={c} value={c}>{c}</option>
-						))}
-					</select>
+					<div className='columns'>
+
+						<label>Spalten</label>
+						
+						<select
+							value={columns}
+							onChange={handle_edit_columnChange}
+						>
+							<option value={session?.Columns}>
+								{'Derzeit: ' + session?.Columns}
+							</option>
+							{options_columns.map((c) => (
+								<option key={c} value={c}>{c}</option>
+							))}
+						</select>
+
+					</div>
+
+
+
+					{/* ______________________________ List ______________________________ */}
+					
+					{list_players && <DragAndDropNameColorList List_Players={list_players} setList_Players={setList_players}/>}
+
+
+
+					<CustomButton
+						loading={loading_edit}
+						onClick={edit_save}
+						text='Speichern'
+					/>
 
 				</div>
-
-
-
-				{/* ______________________________ List ______________________________ */}
-				
-				{list_players && <DragAndDropNameColorList List_Players={list_players} setList_Players={setList_players}/>}
-
-
-
-				<CustomButton
-					loading={loading_edit}
-					onClick={edit_save}
-					text='Speichern'
-				/>
-
 			</Popup>
 
 		</>

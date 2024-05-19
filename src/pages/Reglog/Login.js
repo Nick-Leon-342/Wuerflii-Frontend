@@ -5,7 +5,7 @@ import './scss/Reglog.scss'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import useAuth from '../../hooks/useAuth'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import axios from '../../api/axios'
 
 import FancyInput from '../../components/others/FancyInput'
@@ -20,6 +20,8 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 export default function Login() {
 
     const { setAuth } = useAuth()
+	const location = useLocation()
+	const [ next, setNext ] = useState('')
 
     const navigate = useNavigate()
 
@@ -33,6 +35,8 @@ export default function Login() {
 
 
 	
+	useEffect(() => { setNext(new URLSearchParams(location.search).get('next')) }, [])
+
 	useEffect(() => { setError('') }, [ Name, Password ])
 
     const handleSubmit = (e) => {
@@ -55,7 +59,7 @@ export default function Login() {
 			setName('')
 			setPassword('')
 
-			navigate('/session/select', { replace: true })
+			navigate(next || '/session/select', { replace: true })
 
 		}).catch((err) => {
 
