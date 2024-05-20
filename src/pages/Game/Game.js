@@ -5,7 +5,7 @@ import './scss/Game.scss'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { id_bottomTable, id_upperTable, thickBorder, getPlayer, handleShowScoresChange } from '../../logic/utils'
+import { id_bottomTable, id_upperTable, getPlayer, handleShowScoresChange } from '../../logic/utils'
 import { focusEvent, removeFocusEvent, onblurEvent } from '../../logic/Events'
 import { calculateUpperColumn, calculateBottomColumn } from '../../logic/Calculating'
 
@@ -328,7 +328,7 @@ export default function Game() {
 
 			{/* __________________________________________________ Page __________________________________________________ */}
 
-			<div className='game_header-bar'>
+			<header>
 
 				<select
 						value={inputType}
@@ -350,7 +350,7 @@ export default function Game() {
 					onClick={() => setShow_surrender(true)}
 				>Aufgeben</button>
 
-			</div>
+			</header>
 
 
 
@@ -359,7 +359,6 @@ export default function Game() {
 				axiosPrivate={axiosPrivate}
 				joincode={+joincode}
 				tableWidth={tableWidth}
-				thickBorder={thickBorder}
 				lastPlayerAlias={lastPlayerAlias}
 				showScores={showScores}
 				setShowScores={setShowScores}
@@ -390,11 +389,11 @@ export default function Game() {
 
 
 
-			<div className='game_footer-bar'>
+			<footer>
 
 				<button 
 					onClick={() => setShow_newGame(true)} 
-					className='button'
+					className='button new'
 				>Neues Spiel</button>
 
 				<button 
@@ -402,7 +401,7 @@ export default function Game() {
 					className='button'
 				>Spiel beenden</button>
 
-			</div>
+			</footer>
 			
 
 		</div>

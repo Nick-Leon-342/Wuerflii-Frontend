@@ -3,7 +3,8 @@
 import { possibleEntries_bottomTable, possibleEntries_upperTable } from '../../logic/PossibleEntries'
 import { bottomTable_rows, id_upperTable, upperTable_rows } from '../../logic/utils'
 import { isMobile } from 'react-device-detect'
-import { thickBorder } from '../../logic/utils'
+
+
 
 
 
@@ -24,7 +25,7 @@ export default function Table({ tableID, list_Players, columns, tableColumns, in
 	const isIOS = () => {
 
 		let userAgent = navigator.userAgent || window.opera
-		if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {return true}
+		if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return true
 		return false
 	
 	}
@@ -45,106 +46,95 @@ export default function Table({ tableID, list_Players, columns, tableColumns, in
 
 
 	return (
-		<table id={tableID} className='table'>
+		<table id={tableID} className='table table_game'>
 			<tbody>
-				{rows.map((r, currentRowIndex) => {
-					return (
-						<tr key={currentRowIndex} className='row'>
-							{r.td}
-							{list_Players?.map((p, currentPlayerIndex) => {
+				{rows.map((r, currentRowIndex) => (
+					<tr 
+						key={currentRowIndex} 
+						className={`row${currentRowIndex === rows.length - 3 ? ' result' : ''}`}
+					>
+						
+						{/* First two columns */}
+						{r.td}
+
+
+						{list_Players?.map((p, currentPlayerIndex) => (
+							list_columns.map((currentColumnIndex) => {
+
+								const props = {
+									inputMode: 'numeric',
+									tableid: tableID,
+									appearance: 'none',
+									column: currentColumnIndex,
+									row: currentRowIndex,
+									playerindex: currentPlayerIndex,
+									alias: p.Alias,
+									onInput: inputEvent,
+									defaultValue: getDefaultValue( tableID, p.Alias, currentColumnIndex, currentRowIndex ),
+									style: { backgroundColor: p.Color },
+								}
+
+
+
+								const id = `${tableID}_${currentRowIndex}`
+								const possibleEntries = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[currentRowIndex]
+
+								let e
+								if(currentRowIndex < rows.length - 3) {
+
+									if(disabled) {
+
+										e = <input { ...props } disabled/>
+
+									} else if(inputType === 'select') {
+
+										e = <select { ...props } style={{ backgroundColor: p.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
+											<option></option>
+											{possibleEntries.map((v) => (
+												<option key={v} value={v}>{v}</option>
+										))}
+										</select>
+
+									} else if(inputType === 'typeselect') {
+
+										e = <>
+											<input list={id} { ...props } onBlur={onblurEvent}/>
+											<datalist id={id}>
+												{possibleEntries.map((v) => {
+													return <option key={v} value={v}/>
+												})}
+											</datalist>
+										</>
+									} else {
+										
+										e = <input { ...props } onBlur={onblurEvent}/>
+
+									}
+
+								} else {
+
+									e = <label { ...props }/>
+
+								}
+
+
+
 								return (
-									list_columns.map((currentColumnIndex) => {
-
-										const css = {
-											className: `kniffelInput ${inputType === 'select' ? 'select' : ''}`,
-											inputMode: 'numeric',
-											tableid: tableID,
-											appearance: 'none',
-											column: currentColumnIndex,
-											row: currentRowIndex,
-											playerindex: currentPlayerIndex,
-											alias: p.Alias,
-											onInput: inputEvent,
-											defaultValue: getDefaultValue( tableID, p.Alias, currentColumnIndex, currentRowIndex ),
-											style: { backgroundColor: p.Color },
-										}
-
-										const id = `${tableID}_${currentRowIndex}`
-										const possibleEntries = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[currentRowIndex]
-
-										let e
-										if(currentRowIndex < rows.length - 3) {
-
-											if(disabled) {
-
-												e = <input {...css} disabled/>
-
-											} else if(inputType === 'select') {
-
-												e = <select {...css} style={{ backgroundColor: p.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
-													<option></option>
-													{possibleEntries.map((v) => (
-														<option key={v} value={v}>{v}</option>
-												))}
-												</select>
-
-											} else if(inputType === 'typeselect') {
-
-												e = <>
-													<input list={id} {...css} onBlur={onblurEvent}/>
-													<datalist id={id}>
-														{possibleEntries.map((v) => {
-															return <option key={v} value={v}/>
-														})}
-													</datalist>
-												</>
-											} else {
-												
-												e = <input {...css} onBlur={onblurEvent}/>
-
-											}
-
-										} else {
-
-											e = <label {...css}/>
-
-											return (
-												<td 
-													key={`${p.Alias}.${currentRowIndex}.${currentColumnIndex}`} 
-													style={{ 
-														backgroundColor: p.Color, 
-														borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
-														borderRight: currentColumnIndex === columns -1 ? thickBorder : '1px solid var(--text-color-light)',
-														borderBottom: currentRowIndex === rows.length - 1 ? thickBorder : '1px solid var(--text-color-light)',
-													}}>
-													{e}
-												</td>
-											)
-
-										}
-
-										return (
-											<td 
-												key={`${p.Alias}.${currentRowIndex}.${currentColumnIndex}`} 
-												style={{ 
-													backgroundColor: p.Color, 
-													borderTop: currentRowIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
-													borderLeft: currentColumnIndex === 0 ? thickBorder : '1px solid var(--text-color-light)', 
-													borderRight: currentColumnIndex === columns -1 ? thickBorder : '1px solid var(--text-color-light)',
-													borderBottom: currentRowIndex === rows.length - 4 ? thickBorder : '1px solid var(--text-color-light)', 
-												}}>
-												{e}
-											</td>
-										)
-									})
+									<td 
+										className={currentColumnIndex === columns - 1 ? 'last': ''}
+										key={`${p.Alias}.${currentRowIndex}.${currentColumnIndex}`} 
+										style={{ backgroundColor: p.Color }}
+									>
+										{e}
+									</td>
 								)
-							})}
-						</tr>
-					)
-				})}
+
+							})
+						))}
+					</tr>
+				))}
 			</tbody>
 		</table>
 	)
 
 }
-

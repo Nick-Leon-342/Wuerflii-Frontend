@@ -29,8 +29,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* 100% der Bildschirmhöhe */
-    width: 100vw; /* 100% der Bildschirmbreite */
+    // height: 100%;
+    // width: 100%;
     margin: 800px;
     box-sizing: border-box;
 	
@@ -48,148 +48,152 @@
 }
 
 
+.game {
+
+	header {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: var(--padding);
+
+		select {
+			width: 175px;
+		}
+
+		svg {
+			width: 25px;
+			flex-shrink: 0;
+		}
+
+		button {
+			padding: 0;
+			margin: 0;
+			background: none;
+			box-shadow: none;
+			color: var(--text-color);
+			width: fit-content;
+		}
+	}
 
 
 
 
 
+	.table_player {
+		margin-bottom: 10px;
+
+		tr {
+
+			&:first-of-type { border-top: var(--thick-border); }
+			&:last-of-type { border-bottom: var(--thick-border); }
+
+			td {
+				padding: 5px;
+				border-right: var(--thick-border);
+	
+				&:first-child {
+					width: 240px;
+					min-width: 240px;
+					font-weight: bold;
+					padding: 0;
+					border-left: var(--thick-border);
+				}
+	
+				.checkbox-container {
+					display: grid;
+					place-content: center;
+	
+					input {
+						width: 25px;
+						height: 25px;
+						border-radius: 5px;
+					}
+				}
+			}
+		}
+	}
 
 
 
 
 
+	.table_game {
+
+		margin-bottom: 10px;
+
+		tr {
+
+			&:first-of-type, &.result { border-top: var(--thick-border); }
+			&:last-of-type { border-bottom: var(--thick-border); }
+
+			&.highlighted {
+				label { color: var(--green); }
+				rect { stroke: var(--green); }
+				ellipse { fill: var(--green); }
+			}
+
+			td {
+	
+				&:nth-child(1),
+				&:nth-child(2) {
+					min-width: 120px;
+					width: 120px;
+					max-width: 120px;
+					font-weight: bold;
+					padding: 0;
+				}
+
+				&:nth-child(1) { border-left: var(--thick-border); }
+				&:nth-child(2), &.last { border-right: var(--thick-border); }
+
+	
+				svg {
+					width: 26px;
+					margin: 2px;
+	
+					rect { fill: none; }
+				}
+
+				select, 
+				input {
+					border: none;
+					width: 60px;
+					outline: none;
+					text-align: center;
+					font-size: 20px;
+					color: var(--text-color-static);
+
+					&::-webkit-calendar-picker-indicator {
+						display: none !important;
+					}
+				}
+
+				select {
+					appearance: none;
+					-webkit-appearance: none;
+					-moz-appearance: none;
+				}
+	
+			}
+		}
+	}
 
 
 
 
 
+	footer {
+		display: flex;
+		justify-content: space-between;
+		margin-top: var(--padding);
 
+		.new {
+			background: none;
+			box-shadow: none;
+			color: var(--text-color);
+			width: fit-content;
+		}
+	}
 
-/* __________________________________________________ Header-Bar __________________________________________________ */
-
-.game_header-bar {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 15px;
-}
-
-.game_header-bar select {
-	width: 175px;
-}
-
-.game_header-bar svg {
-	width: 25px;
-}
-
-.game_header-bar .button {
-	padding: 0;
-	margin: 0;
-	background: none;
-	box-shadow: none;
-	color: var(--text-color);
-}
-
-
-
-
-
-/* __________________________________________________ Header-Bar __________________________________________________ */
-
-.game_footer-bar {
-	display: flex;
-	justify-content: space-between;
-}
-
-.game_footer-bar .button:not(.button-thick) {
-	background: none;
-	box-shadow: none;
-	color: var(--text-color);
-}
-
-
-
-
-
-/* __________________________________________________ Table-Player __________________________________________________ */
-
-.table_player td {
-	padding: 5px;
-}
-
-.table_player td:first-child {
-    width: 240px;
-	min-width: 240px;
-    font-weight: bold;
-	padding: 0;
-}
-
-.table_player .checkbox-container {
-	display: grid;
-	place-content: center;
-}
-
-.table_player .checkbox {
-    width: 25px;
-	height: 25px;
-	border-radius: 5px;
-}
-
-
-
-
-
-/* __________________________________________________ Table __________________________________________________ */
-
-/* ____________________ First two rows ____________________ */
-
-#upperTable td:nth-child(1),
-#upperTable td:nth-child(2),
-#bottomTable td:nth-child(1),
-#bottomTable td:nth-child(2) {
-    min-width: 120px;
-	width: 120px;
-	max-width: 120px;
-    font-weight: bold;
-	padding: 0;
-}
-
-.kniffelImage {
-    width: 26px;
-    margin: 2px;
-}
-
-.highlighted label {
-    color: rgb(0, 200, 0);
-}
-
-.highlighted svg {
-    stroke: rgb(0, 200, 0);
-	fill: rgb(0, 200, 0);
-}
-
-
-
-/* ____________________ Other rows ____________________ */
-
-.kniffelInput {
-    border: none;
-    height: 100%;
-    width: 50px;
-    outline: none;
-    text-align: center;
-    font-size: 20px;
-	color: var(--text-color-static);
-}
-
-.kniffelInput::-webkit-calendar-picker-indicator {
-	display: none !important;
-}
-
-.select {
-	width: 60px;
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
 }
 
 
