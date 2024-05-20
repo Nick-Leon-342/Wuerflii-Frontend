@@ -46,11 +46,7 @@ export default function SelectSession() {
 
 
 	useEffect(() => {
-		request()
-	}, [])
-
-	const request = () => {
-
+		
 		setLoaderVisible(true)
 
 		axiosPrivate.get('/session/select').then((res) => {
@@ -65,7 +61,7 @@ export default function SelectSession() {
 
 		}).finally(() => { setLoaderVisible(false) })
 
-	}
+	}, [])
 
 	const getPlayer = (alias) => {
 
@@ -140,29 +136,25 @@ export default function SelectSession() {
 
 	// __________________________________________________ Modal-Delete __________________________________________________
 
-	const [ deleteDisabled, setDeleteDisabled ] = useState(false)
+	const [ loading_delete, setLoading_delete ] = useState(false)
 
 	const handle_delete = async () => {
 
-		setShow_deleteSession(false)
-		setLoaderVisible(true)
-		setDeleteDisabled(true)
-
+		setLoading_delete(true)
 
 		for(let i = 0; list_checkbox.length > i; i++) {
 			if(list_checkbox[i]) {
-
-				await axiosPrivate.delete(`/session/select?session_id=${list[i].id}`).catch((err) => { handle_error({ err }) })
-
+				
 				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_view`)
 				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_month`)
 				localStorage.removeItem(`kniffel_sessionpreview_${list[i].id}_year`)
 
+				await axiosPrivate.delete(`/session/select?session_id=${list[i].id}`).catch((err) => { handle_error({ err }) })
+
 			}
 		}
 
-		setDeleteDisabled(false)
-		setLoaderVisible(false)
+		setLoading_delete(false)
 		window.location.reload()
 
 	}
@@ -332,15 +324,15 @@ export default function SelectSession() {
 					
 					<h1>Bist du sicher, dass du diese Session(s) löschen möchtest?</h1>
 
-					<button 
-						className='button button-thick' 
+					<CustomButton
+						text='Ja'
+						loading={loading_delete}
 						onClick={handle_delete}
-					>Ja</button>
+					/>
 
 					<button 
 						className='button button-red-reverse' 
 						onClick={() => setShow_deleteSession(false)}
-						disabled={deleteDisabled}
 					>Abbrechen</button>
 
 				</div>
