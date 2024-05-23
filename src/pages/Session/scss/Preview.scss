@@ -14,14 +14,14 @@
 	}
 
 	.table-container {
-		overflow-x: auto;
+		overflow-x: scroll;
 
 		&.player-table td {
 			background-color: rgb(0, 230, 0, .2);
 		}
 
 		table {
-			// width: 100%;
+			min-width: 100%;
 
 			td {
 				// width: 50%;

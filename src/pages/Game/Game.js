@@ -2,12 +2,12 @@
 
 import './scss/Game.scss'
 
-import React, { useEffect, useState, useLayoutEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { id_bottomTable, id_upperTable, getPlayer, handleShowScoresChange } from '../../logic/utils'
-import { focusEvent, removeFocusEvent, onblurEvent } from '../../logic/Events'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { focusEvent, removeFocusEvent } from '../../logic/Events'
+import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { calculateUpperColumn, calculateBottomColumn } from '../../logic/Calculating'
+import { id_bottomTable, id_upperTable, getPlayer, handleShowScoresChange } from '../../logic/utils'
 
 import Popup from '../../components/others/Popup'
 import Table from '../../components/others/Table'
@@ -16,6 +16,8 @@ import PlayerTable from '../../components/others/PlayerTable'
 import ToggleSlider from '../../components/others/ToggleSlider'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
+import useOnBlurEvent from '../../hooks/useOnBlurEvent'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 
@@ -25,6 +27,8 @@ export default function Game() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
+	const onblurEvent = useOnBlurEvent()
+	const handle_error = useErrorHandling()
 
 
 	const location = useLocation()
@@ -50,13 +54,14 @@ export default function Game() {
 
 	const [ invalidNumberText, setInvalidNumberText ] = useState('')
 
-	const [ show_surrender, setShow_surrender ] = useState(false)
 	const [ show_edit, setShow_edit ] = useState(false)
 	const [ show_newGame, setShow_newGame ] = useState(false)
+	const [ show_options, setShow_options ] = useState(false)
+	const [ show_surrender, setShow_surrender ] = useState(false)
 	const [ show_finishGame, setShow_finishGame ] = useState(false)
-	const [ show_finishGame_error, setShow_finishGame_error ] = useState(false)
-	const [ show_invalidNumber, setShow_invalidNumber ] = useState(false)
 	const [ show_lastPlayer, setShow_lastPlayer ] = useState(false)
+	const [ show_invalidNumber, setShow_invalidNumber ] = useState(false)
+	const [ show_finishGame_error, setShow_finishGame_error ] = useState(false)
 
 
 	
@@ -85,6 +90,14 @@ export default function Game() {
 	useEffect(() => {
 
 		if(!session) return
+
+		const x = window.innerWidth / 2
+		const y = window.innerHeight / 2
+		window.scrollTo({
+			top: y,
+			left: x,
+			behavior: 'smooth'
+		})
 
 		for(const alias of session?.List_PlayerOrder) {
 			for(let i = 0; session?.Columns > i; i++) {
@@ -155,16 +168,14 @@ export default function Game() {
 
 		}).catch((err) => {
 
-			const status = err?.response?.status
-			if(status === 400) {
-				window.alert('Anfrage ist falsch!')
-			} else if(status === 404) {
-				window.alert('Die Session wurde nicht gefunden!')
-			} else {
-				console.log(err)
-				window.alert('Es trat ein unvorhergesehener fehler auf!')
-			}
-			return navigate('/selectsession', { replace: true })
+			handle_error({
+				err, 
+				handle_404: () => {
+					window.alert('Die Session wurde nicht gefunden!')
+					navigate('/session/select', { replace: true })
+				},
+			})
+			
 		})
 
 	}, [])
@@ -319,36 +330,21 @@ export default function Game() {
 
 
 
-	return (
-		<>
+	return (<>
+
+		<OptionsDialog/>
+
+
+
 		<div className='game_container'>
 		<div className='game'>
 
-			<OptionsDialog/>
 
 			{/* __________________________________________________ Page __________________________________________________ */}
 
 			<header>
 
-				<select
-						value={inputType}
-						onChange={handleInputTypeChange}
-					>
-					<option value='select' key='select'>Auswahl</option>
-					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
-					<option value='type' key='type'>Eingabe</option>
-				</select>
-
-				<svg 
-					onClick={show_edit_popup} 
-					className='button-responsive' 
-					viewBox='0 -960 960 960' 
-				><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
-
-				<button 
-					className='button'
-					onClick={() => setShow_surrender(true)}
-				>Aufgeben</button>
+				
 
 			</header>
 
@@ -391,10 +387,12 @@ export default function Game() {
 
 			<footer>
 
-				<button 
-					onClick={() => setShow_newGame(true)} 
-					className='button new'
-				>Neues Spiel</button>
+				<button
+					onClick={() => setShow_options(true)}
+					className='button options'
+				>
+					<svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
+				</button>
 
 				<button 
 					onClick={finishGame}
@@ -418,185 +416,91 @@ export default function Game() {
 
 
 
-			{/* __________________________________________________ Popup Surrender __________________________________________________ */}
 
-			<Popup
-				showPopup={show_surrender}
-				setShowPopup={setShow_surrender}
-			>
+		<Popup
+			title='Einstellungen'
+			showPopup={show_options}
+			setShowPopup={setShow_options}
+		>
+			<div className='game_popup_options'>
 
-				<h1>Gewinner auswählen</h1>
-
-				{askIfSurrender ? <>
-
-					<div className='game_popup_surrender_askifsurrender'>
-
-						<h2>{`Sicher, dass ${getPlayer(askIfSurrender, list_players).Name} gewinnen soll?`}</h2>
-
-						<button 
-								className='button button-thick' 
-								disabled={disable_save}
-								onClick={saveResults}
-							>Ja</button>
-
-							<button 
-								className='button button-red-reverse' 
-								onClick={() => setAskIfSurrender()}
-							>Abbrechen</button>
-					</div>
-
-				</>:<>
 				
-					<ul className='game_popup_surrender_list'>
-						{list_players?.map((p, i) => (
-							<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
-								<label>{p.Name}</label>
-							</li>
-						))}
-					</ul>
-
-				</>}
-
-			</Popup>
-
-
-
-
-
-
-
-			{/* __________________________________________________ Popup Edit __________________________________________________ */}
-
-			<Popup
-				showPopup={show_edit}
-				setShowPopup={setShow_edit}
-			>
-
-				<h1>Bearbeiten</h1>
-
-				{/* ______________________________ ChangeNames ______________________________ */}
-				{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
-
+				
 				<div className='game_popup_edit_container'>
 					<label>Beitrittscode</label>
-					<label style={{ marginLeft: '27px' }}>{joincode}</label>
+					<label>{joincode}</label>
 				</div>
 
-				<div className='game_popup_edit_container'>
-					<label>Gesamtsumme anzeigen</label>
-					<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
+				<select
+					value={inputType}
+					onChange={handleInputTypeChange}
+				>
+					<option value='select' key='select'>Auswahl</option>
+					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
+					<option value='type' key='type'>Eingabe</option>
+				</select>
+
+				<svg 
+					onClick={show_edit_popup} 
+					className='button-responsive' 
+					viewBox='0 -960 960 960' 
+				><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
+
+				<button 
+					className='button'
+					onClick={() => setShow_surrender(true)}
+				>Aufgeben</button>
+
+				<button 
+					onClick={() => setShow_newGame(true)} 
+					className='button new'
+				>Neues Spiel</button>
+
+			</div>
+		</Popup>
+
+
+
+		{/* __________________________________________________ Popup Surrender __________________________________________________ */}
+
+		<Popup
+			showPopup={show_surrender}
+			setShowPopup={setShow_surrender}
+		>
+
+			<h1>Gewinner auswählen</h1>
+
+			{askIfSurrender ? <>
+
+				<div className='game_popup_surrender_askifsurrender'>
+
+					<h2>{`Sicher, dass ${getPlayer(askIfSurrender, list_players).Name} gewinnen soll?`}</h2>
+
+					<button 
+							className='button button-thick' 
+							disabled={disable_save}
+							onClick={saveResults}
+						>Ja</button>
+
+						<button 
+							className='button button-red-reverse' 
+							onClick={() => setAskIfSurrender()}
+						>Abbrechen</button>
 				</div>
 
-				{list_players && <DragAndDropNameColorList List_Players={edit_list_players} setList_Players={setEdit_list_players}/>}
-
-				<button 
-					className='button button-thick' 
-					onClick={save_edit} 
-					disabled={disable_edit}
-				>Speichern</button>
-
-			</Popup>
-
-
-
-
-
-
-
-			{/* __________________________________________________ Popup Edit __________________________________________________ */}
-
-			<Popup
-				showPopup={show_newGame}
-				setShowPopup={setShow_newGame}
-			>
-
-				<h1>Dieses Spiel löschen<br/>und ein neues Spiel anfangen?</h1>
-
-				<button 
-					className='button button-thick' 
-					onClick={newGame}
-				>Ja</button>
-
-				<button 
-					className='button button-red-reverse' 
-					onClick={() => setShow_newGame(false)}
-				>Abbrechen</button>
-
-			</Popup>
-
-
-
-
-
-
-
-			{/* __________________________________________________ Popup FinishGame __________________________________________________ */}
-
-			<Popup
-				showPopup={show_finishGame}
-				setShowPopup={setShow_finishGame}
-			>
-
-				<h1>Spiel beenden?</h1>
-
-				<Loader loaderVisible={loaderVisible}/>
-
-				<button 
-					className='button button-thick' 
-					disabled={disable_save}
-					onClick={saveResults}
-				>Ja</button>
-
-				<button 
-					className='button button-red-reverse' 
-					onClick={() => setShow_finishGame(false)}
-				>Abbrechen</button>
-
-			</Popup>
-
-
-
-
-
-
-
-			{/* __________________________________________________ Popup FinishGame-Error __________________________________________________ */}
-
-			<Popup
-				showPopup={show_finishGame_error}
-				setShowPopup={setShow_finishGame_error}
-			>
-
-				<h1>Bitte alle Werte eingeben!</h1>
-
-				<button 
-					className='button button-thick' 
-					onClick={() => setShow_finishGame_error(false)}
-				>Verstanden</button>
-
-			</Popup>
-
-
-
-
-
-
-
-			{/* __________________________________________________ Popup InvalidNumber __________________________________________________ */}
-
-			<Popup
-				showPopup={show_invalidNumber}
-				setShowPopup={setShow_invalidNumber}
-			>
-	
-				<h1 className='game_popup_invalidNumber'>{invalidNumberText}</h1>
-
-				<button 
-					className='button button-thick' 
-					onClick={() => setShow_invalidNumber(false)}
-				>Ok</button>
+			</>:<>
 			
-			</Popup>
+				<ul className='game_popup_surrender_list'>
+					{list_players?.map((p, i) => (
+						<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
+							<label>{p.Name}</label>
+						</li>
+					))}
+				</ul>
+
+			</>}
+
+		</Popup>
 
 
 
@@ -604,29 +508,160 @@ export default function Game() {
 
 
 
-			{/* __________________________________________________ Popup LastPlayer __________________________________________________ */}
+		{/* __________________________________________________ Popup Edit __________________________________________________ */}
 
-			<Popup
-				showPopup={show_lastPlayer}
-				setShowPopup={setShow_lastPlayer}
-			>
+		<Popup
+			showPopup={show_edit}
+			setShowPopup={setShow_edit}
+		>
 
-				<h1>
-					{!lastPlayerAlias 
-						? 'Bis jetzt war noch keiner dran!'
-						: (<>
-							{'\'' + getPlayer(lastPlayerAlias, list_players)?.Name + '\' war als letztes dran.'}
-						</>)
-					}
-				</h1>
+			<h1>Bearbeiten</h1>
 
-				<button 
-					className='button button-thick' 
-					onClick={() => setShow_lastPlayer(false)}
-				>Ok</button>
+			{/* ______________________________ ChangeNames ______________________________ */}
+			{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
 
-			</Popup>
+			<div className='game_popup_edit_container'>
+				<label>Gesamtsumme anzeigen</label>
+				<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
+			</div>
 
-		</>
-	)
+			{list_players && <DragAndDropNameColorList List_Players={edit_list_players} setList_Players={setEdit_list_players}/>}
+
+			<button 
+				className='button button-thick' 
+				onClick={save_edit} 
+				disabled={disable_edit}
+			>Speichern</button>
+
+		</Popup>
+
+
+
+
+
+
+
+		{/* __________________________________________________ Popup Edit __________________________________________________ */}
+
+		<Popup
+			showPopup={show_newGame}
+			setShowPopup={setShow_newGame}
+		>
+
+			<h1>Dieses Spiel löschen<br/>und ein neues Spiel anfangen?</h1>
+
+			<button 
+				className='button button-thick' 
+				onClick={newGame}
+			>Ja</button>
+
+			<button 
+				className='button button-red-reverse' 
+				onClick={() => setShow_newGame(false)}
+			>Abbrechen</button>
+
+		</Popup>
+
+
+
+
+
+
+
+		{/* __________________________________________________ Popup FinishGame __________________________________________________ */}
+
+		<Popup
+			showPopup={show_finishGame}
+			setShowPopup={setShow_finishGame}
+		>
+
+			<h1>Spiel beenden?</h1>
+
+			<Loader loaderVisible={loaderVisible}/>
+
+			<button 
+				className='button button-thick' 
+				disabled={disable_save}
+				onClick={saveResults}
+			>Ja</button>
+
+			<button 
+				className='button button-red-reverse' 
+				onClick={() => setShow_finishGame(false)}
+			>Abbrechen</button>
+
+		</Popup>
+
+
+
+
+
+
+
+		{/* __________________________________________________ Popup FinishGame-Error __________________________________________________ */}
+
+		<Popup
+			showPopup={show_finishGame_error}
+			setShowPopup={setShow_finishGame_error}
+		>
+
+			<h1>Bitte alle Werte eingeben!</h1>
+
+			<button 
+				className='button button-thick' 
+				onClick={() => setShow_finishGame_error(false)}
+			>Verstanden</button>
+
+		</Popup>
+
+
+
+
+
+
+
+		{/* __________________________________________________ Popup InvalidNumber __________________________________________________ */}
+
+		<Popup
+			showPopup={show_invalidNumber}
+			setShowPopup={setShow_invalidNumber}
+			title={invalidNumberText}
+		>
+
+			{/* <h1 className='game_popup_invalidNumber'>{invalidNumberText}</h1> */}
+
+			<button 
+				className='button button-thick' 
+				onClick={() => setShow_invalidNumber(false)}
+			>Ok</button>
+		
+		</Popup>
+
+
+
+
+
+
+
+		{/* __________________________________________________ Popup LastPlayer __________________________________________________ */}
+
+		<Popup
+			showPopup={show_lastPlayer}
+			setShowPopup={setShow_lastPlayer}
+			title={!lastPlayerAlias 
+					? 'Bis jetzt war noch keiner dran!'
+					: (<>
+						{'\'' + getPlayer(lastPlayerAlias, list_players)?.Name + '\' war als letztes dran.'}
+					</>)
+				}
+		>
+
+			<button 
+				className='button' 
+				onClick={() => setShow_lastPlayer(false)}
+			>Ok</button>
+
+		</Popup>
+
+	</>)
 }

@@ -15,7 +15,7 @@ export default function useErrorHandling() {
 
 
 
-	const handle = ({ err, handle_404, handle_409 }) => {
+	const handle = ({ err, handle_404, handle_409, handle_default }) => {
 		
 		const status = err?.response?.status
 		if(!err?.response) {
@@ -48,8 +48,12 @@ export default function useErrorHandling() {
 					break
 
 				default:
-					console.log(err)
-					window.alert(`Ein unbehandelter Fehler trat auf: ${status}`)
+					if(handle_default) {
+						handle_default()
+					} else {
+						console.log(err)
+						window.alert(`Ein unbehandelter Fehler trat auf: ${status}`)
+					}
 					break
 
 			  }

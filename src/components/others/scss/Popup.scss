@@ -1,7 +1,7 @@
 
 
 .popup_background {
-	position: absolute;
+	position: fixed;
 	display: none;
 	place-content: center;
 	height: 100%;
@@ -15,6 +15,7 @@
 	}
 
 	h1 {
+		text-align: center;
 		font-size: 45px;
 		margin-bottom: var(--padding);
 	}

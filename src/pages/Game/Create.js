@@ -208,10 +208,12 @@ export default function Create() {
 
 
 
-					<DragAndDropNameColorList
-						List_Players={list_players}
-						setList_Players={setList_players}
-					/>
+					<div className='list-container'>
+						<DragAndDropNameColorList
+							List_Players={list_players}
+							setList_Players={setList_players}
+						/>
+					</div>
 
 
 
