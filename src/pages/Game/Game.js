@@ -2,7 +2,9 @@
 
 import './scss/Game.scss'
 
+import useOnBlurEvent from '../../hooks/useOnBlurEvent'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../hooks/useErrorHandling'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { focusEvent, removeFocusEvent } from '../../logic/Events'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
@@ -11,13 +13,11 @@ import { id_bottomTable, id_upperTable, getPlayer, handleShowScoresChange } from
 
 import Popup from '../../components/others/Popup'
 import Table from '../../components/others/Table'
-import Loader from '../../components/others/Loader'
 import PlayerTable from '../../components/others/PlayerTable'
 import ToggleSlider from '../../components/others/ToggleSlider'
+import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
-import useOnBlurEvent from '../../hooks/useOnBlurEvent'
-import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 
@@ -48,7 +48,6 @@ export default function Game() {
 	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
 	const [ showScores, setShowScores ] = useState(false)
 	const [ tableColumns, setTableColumns ] = useState([])
-	const [ loaderVisible, setLoaderVisible ] = useState(false)
 
 	const [ askIfSurrender, setAskIfSurrender ] = useState()	// index of the 'winner'
 
@@ -72,8 +71,6 @@ export default function Game() {
 		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, joincode, columnsSum, setShow_invalidNumber, setInvalidNumberText)
 
 	}
-
-
 
 
 
@@ -139,7 +136,7 @@ export default function Game() {
 		setLastPlayerAlias(lastplayer)
 
 
-		if(!session_id || !joincode) return navigate('/creategame', { replace: true })
+		if(!session_id || !joincode) return navigate('/game/create', { replace: true })
 
 		axiosPrivate.get(`/game?session_id=${session_id}&joincode=${joincode}`).then(({ data }) => {
 			
@@ -184,10 +181,12 @@ export default function Game() {
 	
 		axiosPrivate.delete(`/game?session_id=${session_id}`).then(() => {
 
-			navigate('/selectsession', { replace: true })
+			navigate('/session/select', { replace: true })
 
 		}).catch((err) => {
-			console.log(err)
+
+			handle_error({ err })
+
 		})
 	
 	}
@@ -202,16 +201,13 @@ export default function Game() {
 
 		}).catch((err) => {
 
-			const status = err?.response?.status
-			if(status === 400) {
-				window.alert('Clientanfrage ist fehlerhaft!')
-			} else if(status === 404) {
-				window.alert('Die Session wurde nicht gefunden!')
-				navigate('/selectsession', { replace: true })
-			} else {
-				console.log(err)
-				window.alert('Es trat ein unvorhergesehener Fehler auf!')
-			}
+			handle_error({
+				err, 
+				handle_404: () => {
+					window.alert('Die Session wurde nicht gefunden!')
+					navigate('/session/select', { replace: true })
+				}
+			})
 
 		})
 
@@ -223,7 +219,7 @@ export default function Game() {
 
 	// __________________________________________________ FinishGame / SaveResults __________________________________________________
 
-	const [ disable_save, setDisable_save ] = useState(false)
+	const [ loading, setLoading ] = useState(false)
 
 	const finishGame = () => {
 	
@@ -242,10 +238,9 @@ export default function Game() {
 	
 	const saveResults = () => {
 		
-		setLoaderVisible(true)
-		setDisable_save(true)
+		setLoading(true)
 
-		if(list_players.length === 1) return navigate('/selectsession', { replace: true })
+		if(list_players.length === 1) return navigate('/session/select', { replace: true })
 	
 		axiosPrivate.post('/game',
 			{
@@ -257,22 +252,18 @@ export default function Game() {
 			}
 		).then(({ data }) => {
 
-			navigate(`/endscreen?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
+			navigate(`/game/end?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
 
 		}).catch((err) => {
 
-			if(err.response.status === 409) {
-				window.alert('Es gibt einen Synchronisations-Fehler!')
-			} else {
-				console.log(err)
-			}
+			handle_error({
+				err, 
+				handle_409: () => {
+					window.alert('Es gibt einen Synchronisations-Fehler!')
+				}
+			})
 
-		}).finally(() => {
-	
-			setLoaderVisible(false)
-			setDisable_save(false)
-
-		})
+		}).finally(() => { setLoading(false) })
 	
 	}
 
@@ -292,13 +283,13 @@ export default function Game() {
 
 	}
 
-	const save_edit = async () => {
+	const save_edit = () => {
 
 		setDisable_edit(true)
 
 		if(!session_id) return
 
-		await axiosPrivate.post('/updatesession', 
+		axiosPrivate.post('/session/update', 
 			{ 
 				SessionID: session_id, 
 				List_Players: edit_list_players 
@@ -309,17 +300,13 @@ export default function Game() {
 
 		}).catch((err) => {
 
-
-			const status = err?.response?.status
-			if(status === 400) {
-				window.alert('Fehlerhafte Clientanfrage!')
-			} else if(status === 404) {
-				window.alert('Die Session wird nicht gefunden!')
-				navigate('/selectsession', { replace: true })
-			} else {
-				console.log(err)
-				window.alert('Es trat ein unvorhergesehener Fehler auf!')
-			}
+			handle_error({
+				err, 
+				handle_404: () => {
+					window.alert('Die Session wird nicht gefunden!')
+					navigate('/session/select', { replace: true })
+				}
+			})
 
 		}).finally(() => {setDisable_edit(false)})
 			
@@ -330,6 +317,10 @@ export default function Game() {
 
 
 
+
+
+
+
 	return (<>
 
 		<OptionsDialog/>
@@ -337,72 +328,60 @@ export default function Game() {
 
 
 		<div className='game_container'>
-		<div className='game'>
+			<div className='game'>
+
+				<PlayerTable 
+					list_Players={list_players}
+					axiosPrivate={axiosPrivate}
+					joincode={+joincode}
+					tableWidth={tableWidth}
+					lastPlayerAlias={lastPlayerAlias}
+					showScores={showScores}
+					setShowScores={setShowScores}
+					gnadenwurf={gnadenwurf}
+					setGnadenwurf={setGnadenwurf}
+					setShow_lastPlayer={setShow_lastPlayer}
+				/>
+
+				<Table 
+					tableID={id_upperTable}
+					columns={session?.Columns}
+					list_Players={list_players}
+					tableColumns={tableColumns}
+					inputType={inputType}
+					onblurEvent={local_onBlurEvent}
+					removeFocusEvent={removeFocusEvent}
+				/>
+
+				<Table 
+					tableID={id_bottomTable}
+					columns={session?.Columns}
+					list_Players={list_players}
+					tableColumns={tableColumns}
+					inputType={inputType}
+					onblurEvent={local_onBlurEvent}
+					removeFocusEvent={removeFocusEvent}
+				/>
 
 
-			{/* __________________________________________________ Page __________________________________________________ */}
 
-			<header>
+				<footer>
 
+					<button
+						onClick={() => setShow_options(true)}
+						className='button options'
+					>
+						<svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
+					</button>
+
+					<button 
+						onClick={finishGame}
+						className='button'
+					>Spiel beenden</button>
+
+				</footer>
 				
-
-			</header>
-
-
-
-			<PlayerTable 
-				list_Players={list_players}
-				axiosPrivate={axiosPrivate}
-				joincode={+joincode}
-				tableWidth={tableWidth}
-				lastPlayerAlias={lastPlayerAlias}
-				showScores={showScores}
-				setShowScores={setShowScores}
-				gnadenwurf={gnadenwurf}
-				setGnadenwurf={setGnadenwurf}
-				setShow_lastPlayer={setShow_lastPlayer}
-			/>
-
-			<Table 
-				tableID={id_upperTable}
-				columns={session?.Columns}
-				list_Players={list_players}
-				tableColumns={tableColumns}
-				inputType={inputType}
-				onblurEvent={local_onBlurEvent}
-				removeFocusEvent={removeFocusEvent}
-			/>
-
-			<Table 
-				tableID={id_bottomTable}
-				columns={session?.Columns}
-				list_Players={list_players}
-				tableColumns={tableColumns}
-				inputType={inputType}
-				onblurEvent={local_onBlurEvent}
-				removeFocusEvent={removeFocusEvent}
-			/>
-
-
-
-			<footer>
-
-				<button
-					onClick={() => setShow_options(true)}
-					className='button options'
-				>
-					<svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
-				</button>
-
-				<button 
-					onClick={finishGame}
-					className='button'
-				>Spiel beenden</button>
-
-			</footer>
-			
-
-		</div>
+			</div>
 		</div>
 
 			
@@ -414,50 +393,61 @@ export default function Game() {
 
 
 
-
-
+		{/* __________________________________________________ Popup Options __________________________________________________ */}
 
 		<Popup
 			title='Einstellungen'
 			showPopup={show_options}
 			setShowPopup={setShow_options}
 		>
-			<div className='game_popup_options'>
+			<div className='game_popup-options'>
 
-				
-				
-				<div className='game_popup_edit_container'>
+				<section>
 					<label>Beitrittscode</label>
 					<label>{joincode}</label>
-				</div>
+				</section>
 
-				<select
-					value={inputType}
-					onChange={handleInputTypeChange}
-				>
-					<option value='select' key='select'>Auswahl</option>
-					<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
-					<option value='type' key='type'>Eingabe</option>
-				</select>
+				<section>
+					<label>Eingabetyp</label>
 
-				<svg 
-					onClick={show_edit_popup} 
-					className='button-responsive' 
-					viewBox='0 -960 960 960' 
-				><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
+					<select
+						value={inputType}
+						onChange={handleInputTypeChange}
+					>
+						<option value='select' key='select'>Auswahl</option>
+						<option value='typeselect' key='typeselect'>Auswahl und Eingabe</option>
+						<option value='type' key='type'>Eingabe</option>
+					</select>
+				</section>
 
-				<button 
-					className='button'
-					onClick={() => setShow_surrender(true)}
-				>Aufgeben</button>
+				<section>
+					<label>Bearbeiten</label>
 
-				<button 
-					onClick={() => setShow_newGame(true)} 
-					className='button new'
-				>Neues Spiel</button>
+					<svg 
+						onClick={show_edit_popup} 
+						className='button-responsive' 
+						viewBox='0 -960 960 960' 
+					><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg>
+				</section>
+
+				<section>
+					<button 
+						className='button button-red-reverse'
+						onClick={() => setShow_surrender(true)}
+					>Aufgeben</button>
+				</section>
+
+				<section>
+					<button 
+						onClick={() => setShow_newGame(true)} 
+						className='button button-reverse'
+					>Neues Spiel</button>
+				</section>
 
 			</div>
 		</Popup>
+
+
 
 
 
@@ -466,40 +456,43 @@ export default function Game() {
 		<Popup
 			showPopup={show_surrender}
 			setShowPopup={setShow_surrender}
+			title='Gewinner auswählen'
 		>
+			<div className='game_popup-surrender'>
 
-			<h1>Gewinner auswählen</h1>
+				{askIfSurrender ? <>
 
-			{askIfSurrender ? <>
+					<div className='askifsurrender'>
 
-				<div className='game_popup_surrender_askifsurrender'>
+						<h2>{`Sicher, dass ${getPlayer(askIfSurrender, list_players).Name} gewinnen soll?`}</h2>
 
-					<h2>{`Sicher, dass ${getPlayer(askIfSurrender, list_players).Name} gewinnen soll?`}</h2>
-
-					<button 
-							className='button button-thick' 
-							disabled={disable_save}
+						<CustomButton
+							loading={loading}
+							text='Ja'
 							onClick={saveResults}
-						>Ja</button>
+						/>
 
 						<button 
 							className='button button-red-reverse' 
 							onClick={() => setAskIfSurrender()}
 						>Abbrechen</button>
-				</div>
+					</div>
 
-			</>:<>
-			
-				<ul className='game_popup_surrender_list'>
-					{list_players?.map((p, i) => (
-						<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
-							<label>{p.Name}</label>
-						</li>
-					))}
-				</ul>
+				</>:<>
+				
+					<div className='list-container'>
+						<ul>
+							{list_players?.map((p, i) => (
+								<li className='responsive' key={i} onClick={() => setAskIfSurrender(p.Alias)}>
+									<label>{p.Name}</label>
+								</li>
+							))}
+						</ul>
+					</div>
 
-			</>}
+				</>}
 
+			</div>
 		</Popup>
 
 
@@ -513,26 +506,29 @@ export default function Game() {
 		<Popup
 			showPopup={show_edit}
 			setShowPopup={setShow_edit}
+			title='Bearbeiten'
 		>
+			<div className='game_popup-edit'>
 
-			<h1>Bearbeiten</h1>
+				{/* ______________________________ ChangeNames ______________________________ */}
+				{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
 
-			{/* ______________________________ ChangeNames ______________________________ */}
-			{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
+				<div className='show-sum'>
+					<label>Gesamtsumme anzeigen</label>
+					<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
+				</div>
 
-			<div className='game_popup_edit_container'>
-				<label>Gesamtsumme anzeigen</label>
-				<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
+				<div className='list-container'>
+					{list_players && <DragAndDropNameColorList List_Players={edit_list_players} setList_Players={setEdit_list_players}/>}
+				</div>
+
+				<button 
+					className='button button-thick' 
+					onClick={save_edit} 
+					disabled={disable_edit}
+				>Speichern</button>
+			
 			</div>
-
-			{list_players && <DragAndDropNameColorList List_Players={edit_list_players} setList_Players={setEdit_list_players}/>}
-
-			<button 
-				className='button button-thick' 
-				onClick={save_edit} 
-				disabled={disable_edit}
-			>Speichern</button>
-
 		</Popup>
 
 
@@ -541,17 +537,16 @@ export default function Game() {
 
 
 
-		{/* __________________________________________________ Popup Edit __________________________________________________ */}
+		{/* __________________________________________________ Popup NewGame  __________________________________________________ */}
 
 		<Popup
 			showPopup={show_newGame}
 			setShowPopup={setShow_newGame}
+			title={`Dieses Spiel löschen und ein neues Spiel anfangen?`}
 		>
 
-			<h1>Dieses Spiel löschen<br/>und ein neues Spiel anfangen?</h1>
-
 			<button 
-				className='button button-thick' 
+				className='button' 
 				onClick={newGame}
 			>Ja</button>
 
@@ -573,17 +568,14 @@ export default function Game() {
 		<Popup
 			showPopup={show_finishGame}
 			setShowPopup={setShow_finishGame}
+			title='Spiel beenden?'
 		>
 
-			<h1>Spiel beenden?</h1>
-
-			<Loader loaderVisible={loaderVisible}/>
-
-			<button 
-				className='button button-thick' 
-				disabled={disable_save}
+			<CustomButton
 				onClick={saveResults}
-			>Ja</button>
+				loading={loading}
+				text='Ja'
+			/>
 
 			<button 
 				className='button button-red-reverse' 
@@ -627,8 +619,6 @@ export default function Game() {
 			setShowPopup={setShow_invalidNumber}
 			title={invalidNumberText}
 		>
-
-			{/* <h1 className='game_popup_invalidNumber'>{invalidNumberText}</h1> */}
 
 			<button 
 				className='button button-thick' 

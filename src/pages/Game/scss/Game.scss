@@ -5,164 +5,197 @@
 	
 	.game {
 		margin: 500px 500px 500px 500px;
+
+		header {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: var(--padding);
+	
+			select {
+				width: 175px;
+			}
+	
+			svg {
+				width: 25px;
+				flex-shrink: 0;
+			}
+	
+			button {
+				padding: 0;
+				margin: 0;
+				background: none;
+				box-shadow: none;
+				color: var(--text-color);
+				width: fit-content;
+			}
+		}
+	
+	
+	
+		.table_player {
+			margin-bottom: 10px;
+	
+			tr {
+	
+				&:first-of-type { border-top: var(--thick-border); }
+				&:last-of-type { border-bottom: var(--thick-border); }
+	
+				td {
+					padding: 5px;
+					border-right: var(--thick-border);
+		
+					&:first-child {
+						width: 240px;
+						min-width: 240px;
+						font-weight: bold;
+						padding: 0;
+						border-left: var(--thick-border);
+					}
+		
+					.checkbox-container {
+						display: grid;
+						place-content: center;
+		
+						input {
+							width: 25px;
+							height: 25px;
+							border-radius: 5px;
+						}
+					}
+				}
+			}
+		}
+	
+	
+	
+		.table_game {
+	
+			margin-bottom: 10px;
+	
+			tr {
+	
+				&:first-of-type, &.result { border-top: var(--thick-border); }
+				&:last-of-type { border-bottom: var(--thick-border); }
+	
+				&.highlighted {
+					label { color: var(--green); }
+					rect { stroke: var(--green); }
+					ellipse { fill: var(--green); }
+				}
+	
+				td {
+		
+					&:nth-child(1),
+					&:nth-child(2) {
+						min-width: 120px;
+						width: 120px;
+						max-width: 120px;
+						font-weight: bold;
+						padding: 0;
+					}
+	
+					&:nth-child(1) { border-left: var(--thick-border); }
+					&:nth-child(2), &.last { border-right: var(--thick-border); }
+	
+		
+					svg {
+						width: 26px;
+						margin: 2px;
+		
+						rect { fill: none; }
+					}
+	
+					select, 
+					input {
+						border: none;
+						width: 60px;
+						outline: none;
+						text-align: center;
+						font-size: 20px;
+						color: var(--text-color-static);
+	
+						&::-webkit-calendar-picker-indicator {
+							display: none !important;
+						}
+					}
+	
+					select {
+						appearance: none;
+						-webkit-appearance: none;
+						-moz-appearance: none;
+					}
+		
+				}
+			}
+		}
+	
+	
+	
+		footer {
+			display: flex;
+			justify-content: space-between;
+			margin-top: var(--padding);
+	
+			.options {
+				background: none;
+				box-shadow: none;
+				color: var(--text-color);
+				width: fit-content;
+				padding: 0 10px;
+				svg { height: 40px; }
+			}
+		}
 	}
 }
 
 
-.game {
 
-	header {
+
+
+
+
+
+
+
+/* __________________________________________________ Popup Options __________________________________________________ */
+
+.game_popup-options {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--background-color_dark_2);
+	border-radius: 10px;
+	padding: 20px;
+
+	section {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: var(--padding);
+		align-items: center;
+		padding: 0 15px;
+		font-size: 20px;
+		height: 75px;
+
+		&:not(:first-of-type) { padding-top: var(--padding); }
+
+		&:not(:last-of-type) {
+			padding-bottom: var(--padding);
+			border-bottom: 1px solid;
+		}
 
 		select {
-			width: 175px;
+			border: none;
+			background: none;
+			text-align: right;
+			min-height: 0px;
+			height: min-content;
+			padding: 0;
 		}
 
 		svg {
-			width: 25px;
-			flex-shrink: 0;
+			height: 30px;
 		}
 
-		button {
-			padding: 0;
-			margin: 0;
-			background: none;
-			box-shadow: none;
-			color: var(--text-color);
-			width: fit-content;
-		}
 	}
-
-
-
-
-
-	.table_player {
-		margin-bottom: 10px;
-
-		tr {
-
-			&:first-of-type { border-top: var(--thick-border); }
-			&:last-of-type { border-bottom: var(--thick-border); }
-
-			td {
-				padding: 5px;
-				border-right: var(--thick-border);
-	
-				&:first-child {
-					width: 240px;
-					min-width: 240px;
-					font-weight: bold;
-					padding: 0;
-					border-left: var(--thick-border);
-				}
-	
-				.checkbox-container {
-					display: grid;
-					place-content: center;
-	
-					input {
-						width: 25px;
-						height: 25px;
-						border-radius: 5px;
-					}
-				}
-			}
-		}
-	}
-
-
-
-
-
-	.table_game {
-
-		margin-bottom: 10px;
-
-		tr {
-
-			&:first-of-type, &.result { border-top: var(--thick-border); }
-			&:last-of-type { border-bottom: var(--thick-border); }
-
-			&.highlighted {
-				label { color: var(--green); }
-				rect { stroke: var(--green); }
-				ellipse { fill: var(--green); }
-			}
-
-			td {
-	
-				&:nth-child(1),
-				&:nth-child(2) {
-					min-width: 120px;
-					width: 120px;
-					max-width: 120px;
-					font-weight: bold;
-					padding: 0;
-				}
-
-				&:nth-child(1) { border-left: var(--thick-border); }
-				&:nth-child(2), &.last { border-right: var(--thick-border); }
-
-	
-				svg {
-					width: 26px;
-					margin: 2px;
-	
-					rect { fill: none; }
-				}
-
-				select, 
-				input {
-					border: none;
-					width: 60px;
-					outline: none;
-					text-align: center;
-					font-size: 20px;
-					color: var(--text-color-static);
-
-					&::-webkit-calendar-picker-indicator {
-						display: none !important;
-					}
-				}
-
-				select {
-					appearance: none;
-					-webkit-appearance: none;
-					-moz-appearance: none;
-				}
-	
-			}
-		}
-	}
-
-
-
-
-
-	footer {
-		display: flex;
-		justify-content: space-between;
-		margin-top: var(--padding);
-
-		.options {
-			background: none;
-			box-shadow: none;
-			color: var(--text-color);
-			width: fit-content;
-			padding: 0 10px;
-			svg { height: 40px; }
-		}
-	}
-
 }
-
-
-
-
-
 
 
 
@@ -170,26 +203,33 @@
 
 /* __________________________________________________ Popup Surrender __________________________________________________ */
 
-.game_popup_surrender_askifsurrender {
-	margin-top: 20px;
-}
+.game_popup-surrender {
 
-.game_popup_surrender_askifsurrender div {
-	display: flex;
-	gap: 10px;
-}
+	.askifsurrender h2 {
+		margin-bottom: 20px; 
+		text-align: center;
+	}
 
-.game_popup_surrender_list {
-	margin-top: 20px;
-	list-style-type: none;
-}
+	.list-container {
+		max-height: 500px;
+		overflow-y: auto;
+		overflow-x: hidden;
 
-.game_popup_surrender_list li {
-	padding: 20px 0;
-	font-size: 20px;
-	border-radius: 5px;
-	box-shadow: 0 0 10px -3px gray;
-	margin-bottom: 15px;
+		ul {
+			list-style-type: none;
+
+			li {
+				padding: 30px 0;
+				font-size: 20px;
+				padding-left: 10px;
+				
+				&:not(:last-child) {
+					border-bottom: 1px dashed;
+				}
+			}
+		}
+	}
+
 }
 
 
@@ -198,12 +238,23 @@
 
 /* __________________________________________________ Popup Edit __________________________________________________ */
 
-.game_popup_edit_container {
+.game_popup-edit {
 	display: flex;
-	font-weight: bold; 
-	margin-bottom: 10px; 
-	font-size: 20px;
-	padding-left: 60px;
+	flex-direction: column;
+	gap: var(--padding);
+
+	.show-sum {
+		display: flex;
+		justify-content: space-between;
+		font-weight: bold; 
+		font-size: 20px;
+		padding: 0 60px;
+	}
+
+	.list-container {
+		max-height: 500px;
+		overflow-y: auto;
+	}
 }
 
 
