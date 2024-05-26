@@ -127,7 +127,7 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 			<FancyInput 
 				id='Username' 
 				type='text' 
-				classNames={`${Name && NAME_REGEX.test(Name) ? 'green' : ''} ${Name && !NAME_REGEX.test(Name) ? 'red' : ''}`} 
+				classNames={`${Name && NAME_REGEX && NAME_REGEX.test(Name) ? 'green' : ''} ${Name && NAME_REGEX && !NAME_REGEX.test(Name) ? 'red' : ''}`} 
 				text='Benutzername' 
 				value={Name} 
 				setValue={setName} 
@@ -159,7 +159,7 @@ export default function RegistrationForm({ Name, setName, Password, setPassword,
 			<FancyInput 
 				id='Password' 
 				type='password' 
-				classNames={`${Password && PASSWORD_REGEX.test(Password) ? 'green' : ''} ${Password && !PASSWORD_REGEX.test(Password) ? 'red' : ''}`} 
+				classNames={`${Password && PASSWORD_REGEX && PASSWORD_REGEX.test(Password) ? 'green' : ''} ${Password && PASSWORD_REGEX && !PASSWORD_REGEX.test(Password) ? 'red' : ''}`} 
 				text='Passwort' 
 				value={Password} 
 				setValue={setPassword} 

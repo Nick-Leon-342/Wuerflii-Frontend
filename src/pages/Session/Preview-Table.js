@@ -141,40 +141,45 @@ export default function SessionPreviewTable() {
 
 			<OptionsDialog/>
 
-			{List_Players && <>
-				<PlayerTable
-					disabled={true}
-					list_Players={List_Players}
-					playerScores={finalScores?.PlayerScores}
-					showScores={true}
-					setShowScores={() => {}}
-					tableWidth={tableWidth}
-				/>
+			<div className='game_container'>
+				<div className='game'>
 
-				<Table
-					tableID={id_upperTable}
-					tableColumns={table}
-					columns={finalScores?.Columns}
-					list_Players={List_Players}
-					disabled={true}
-				/>
+					{List_Players && <>
+						<PlayerTable
+							disabled={true}
+							list_Players={List_Players}
+							playerScores={finalScores?.PlayerScores}
+							showScores={true}
+							setShowScores={() => {}}
+							tableWidth={tableWidth}
+						/>
 
-				<Table
-					tableID={id_bottomTable}
-					tableColumns={table}
-					columns={finalScores?.Columns}
-					list_Players={List_Players}
-					disabled={true}
-				/> 
-			</>}
+						<Table
+							tableID={id_upperTable}
+							tableColumns={table}
+							columns={finalScores?.Columns}
+							list_Players={List_Players}
+							disabled={true}
+						/>
 
-			<Loader loaderVisible={loaderVisible} />
-			
-			<button 
-				className='button' 
-				onClick={() => navigate(`/session/preview?sessionid=${session_id}`, { replace: false })}
-			>Zurück</button>
+						<Table
+							tableID={id_bottomTable}
+							tableColumns={table}
+							columns={finalScores?.Columns}
+							list_Players={List_Players}
+							disabled={true}
+						/> 
+					</>}
 
+					<Loader loaderVisible={loaderVisible} />
+					
+					<button 
+						className='button' 
+						onClick={() => navigate(`/session/preview?session_id=${session_id}`, { replace: false })}
+					>Zurück</button>
+
+				</div>
+			</div>
 		</>
 	)
 
