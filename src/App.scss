@@ -162,29 +162,36 @@ textarea {
 	background: none;
 	color: var(--red);
 	box-shadow: none;
+
+	&:hover { background: none; }
+	&:active { background: none; }
 }
 
-.button-red-reverse:hover {background: none;}
-.button-red-reverse:active {background: none;}
 
-
-.button-responsive {			transition: all .25s ease;	}
-.button-responsive:hover {		transform: scale(1.15);		}
-.button-responsive:active {		transform: scale(0.92);		}
+.button-responsive {
+	transition: all .25s ease;
+	&:hover { transform: scale(1.15); }
+	&:active { transform: scale(0.92); }
+}
 
 
 .reglog-link-switch {
 	color: var(--text-color-light);
 	text-align: end;
+
+	a {
+		color: var(--green);
+		&:hover { color: var(--green-lighter); }
+	}
 }
-.reglog-link-switch a {			color: var(--green);	   	}
-.reglog-link-switch a:hover {	color: var(--green-lighter);}
 
 
 
-.responsive {			transition: all .3s;}
-.responsive:hover {		transform: scale(1.02);}
-.responsive:active {	transform: scale(0.98);}
+.responsive {
+	transition: all .3s;
+	&:hover { transform: scale(1.02); }
+	&:active { transform: scale(0.98); }
+}
 
 
 
