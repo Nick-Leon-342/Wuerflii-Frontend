@@ -28,7 +28,28 @@
 		table {
 			min-width: 100%;
 
-			&.table_players td { background-color: rgb(150, 250, 150); }
+			&.table_players { 
+				background-color: rgb(150, 250, 150);
+
+				tr {
+					display: flex;
+
+					&:not(:last-child) td { border-bottom: none; }
+
+					td {
+						display: grid;
+						align-items: center;
+	
+						span {
+							white-space: nowrap;
+							overflow: hidden;
+							text-overflow: ellipsis;
+						}
+	
+						&:not(:last-child) { border-right: none; }
+					}
+				}
+			}
 
 			.date {
 				border: none;

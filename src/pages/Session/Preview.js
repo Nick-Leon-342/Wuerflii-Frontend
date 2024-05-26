@@ -403,14 +403,14 @@ export default function Preview() {
 							<tr>
 								{session?.List_PlayerOrder?.map((alias, i) => (
 									<td key={i}>
-										{getPlayer(alias).Name}
+										<span>{getPlayer(alias).Name}</span>
 									</td>
 								))}
 							</tr>
 							<tr>
 								{session?.List_PlayerOrder?.map((alias, i) => (
 									<td key={i}>
-										{getScoresAfter(alias) || 0}
+										<span>{getScoresAfter(alias) || 0}</span>
 									</td>
 								))}
 							</tr>
