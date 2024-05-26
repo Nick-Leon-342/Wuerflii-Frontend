@@ -1,18 +1,19 @@
 
 
-import './css/OptionsDialog.css'
+import './css/OptionsDialog.scss'
 
 import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../others//Popup'
-import Loader from '../others/Loader'
 import ErrorMessage from '../others/ErrorMessage'
-import ToggleSlider from '../others/ToggleSlider'
-import RegistrationForm from '../others/RegistrationForm'
+import CustomButton from '../others/Custom_Button'
 import JoinGameInput from '../others/JoinGameInput'
+import Previous from '../NavigationElements/Previous'
+import RegistrationForm from '../others/RegistrationForm'
 
 
 
@@ -24,21 +25,22 @@ export default function OptionsDialog() {
 
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
+	const handle_error = useErrorHandling()
 
 	const [ show_options, setShow_options ] = useState(false)
 	
-	const [ darkModeToggled, setDarkModeToggled ] = useState(localStorage.getItem('kniffel_darkMode') === 'true' || false)
-
-	const [ loaderVisible, setLoaderVisible ] = useState(false)
-	const [ successfullyUpdatedVisible, setSuccessfullyUpdatedVisible ] = useState(false)
+	const [ darkMode, setDarkMode ] = useState(localStorage.getItem('kniffel_darkMode') === 'true' || false)
 
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
 	const [ error, setError ] = useState('')
-	const [ settingsDisabled, setSettingsDisabled ] = useState(false)
+	const [ loading_credentials, setLoading_credentials ] = useState(false)
+	const [ successfullyUpdated, setSuccessfullyUpdated ] = useState(false)
 
 	const [ NAME_REGEX, setNAME_REGEX ] = useState('')
 	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState('')
+
+	const [ show_editCredentials, setShow_editCredentials ] = useState(false)
 
 
 
@@ -46,21 +48,19 @@ export default function OptionsDialog() {
 
 	useEffect(() => {
 
-		localStorage.setItem('kniffel_darkMode', darkModeToggled)
-		if(darkModeToggled) {document.body.classList.add('dark')
+		localStorage.setItem('kniffel_darkMode', darkMode)
+		if(darkMode) {document.body.classList.add('dark')
 		} else {document.body.classList.remove('dark')}
 
-	}, [darkModeToggled])
+	}, [darkMode])
 
 	const handleSubmit = async (e) => {
 
 		e.preventDefault()
-		setLoaderVisible(true)
-		setSettingsDisabled(true)
+		setError('')
 
-		if ((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) {
-			return
-		}
+		if ((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) return
+
 
 		let json = {}
 		if(NAME_REGEX.test(Name) && PASSWORD_REGEX.test(Password)) {
@@ -76,24 +76,32 @@ export default function OptionsDialog() {
 
 		}
 
-		try {
+		setLoading_credentials(true)
 
-			await axiosPrivate.patch('/auth/login', json)
-            setName('')
-            setPassword('')
-			setError('')
-			setSuccessfullyUpdatedVisible(true)
+		axiosPrivate.patch('/auth/login', json).then(() => {
 
-		} catch (err) {console.log(err)}
+			setSuccessfullyUpdated(true)
+			setName('')
+			setPassword('')
 
-		setSettingsDisabled(false)
-		setLoaderVisible(false)
+		}).catch((err) => {
+
+			handle_error({
+				err,
+				handle_409: () => {
+					setError('Name bereits vergeben!')
+				}
+			})
+
+		}).finally(() => { setLoading_credentials(false) })
 
 	}
 
 
 
-	
+
+
+	// __________________________________________________ Logout __________________________________________________
 
 	const [ logoutDisabled, setLogoutDisalbed ] = useState(false)
 
@@ -116,6 +124,11 @@ export default function OptionsDialog() {
 
 
 
+
+
+
+
+
 	return (<>
 
 		<svg 
@@ -133,28 +146,19 @@ export default function OptionsDialog() {
 		<Popup
 			showPopup={show_options}
 			setShowPopup={setShow_options}
+			title='Einstellungen'
 		>
+			<div className='optionsdialog'>
 
-			<div className='optionsdialog_container'>
+				{show_editCredentials ? <>
 
-				<h1>Einstellungen</h1>
-
-
-
-				<div className='optionsdialog_joincode'>
-					
-					<label>Dark mode</label>
-					<ToggleSlider 
-						toggled={darkModeToggled} 
-						setToggled={setDarkModeToggled} 
-						scale='.7'
+					<Previous
+						onClick={() => setShow_editCredentials(false)}
 					/>
-					
-				</div>
 
-				<JoinGameInput/>
+					<form onSubmit={handleSubmit}>
 
-				<form onSubmit={handleSubmit}>
+						<h2 className={`${successfullyUpdated ? 'visible': ''}`}>Erfolgreich gespeichert!</h2>
 
 						<RegistrationForm 
 							Name={Name} 
@@ -168,25 +172,52 @@ export default function OptionsDialog() {
 							setPASSWORD_REGEX={setPASSWORD_REGEX}
 						/>
 
-						<Loader loaderVisible={loaderVisible} marginTop='10px'/>
-
 						<ErrorMessage error={error}/>
 
-						<button 
-							className='button button-thick' 
-							disabled={settingsDisabled}
-						>Speichern</button>
-					
+						<CustomButton
+							loading={loading_credentials}
+							text='Speichern'
+						/>
+
 					</form>
-					
+				
+				</>:<>
+
+					<div className='container'>
+
+						<section className='joincode'>
+							
+							<input
+								type='checkbox'
+								checked={darkMode}
+								onChange={() => setDarkMode(!darkMode)}
+							/>
+							<label>Dark mode</label>
+							
+						</section>
+
+						{/* <JoinGameInput/> */}
+						<section>
+							<button 
+								className='button button-reverse'
+								onClick={() => setShow_editCredentials(true)}
+							>
+								<span>Anmeldedaten ändern</span>
+							</button>
+						</section>
 
 
-					<button 
-						className='button logout' 
-						disabled={logoutDisabled}
-						onClick={logout}
-					>Ausloggen</button>
+						<section>
+							<button 
+								className='button button-red-reverse' 
+								disabled={logoutDisabled}
+								onClick={logout}
+							>Ausloggen</button>
+						</section>
 
+					</div>
+				
+				</>}
 			</div>
 			
 		</Popup>

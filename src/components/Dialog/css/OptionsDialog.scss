@@ -1,0 +1,67 @@
+
+
+.optionsdialog_icon {
+	position: fixed;
+	top: 5px;
+	left: 5px;
+	height: 30px;
+}
+
+
+
+
+.optionsdialog {
+	display: flex;
+	flex-direction: column;
+	gap: var(--padding);
+
+
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
+
+		h2 {
+			text-align: center;
+			color: var(--green);
+			display: none;
+			
+			&.visible {
+				display: block;
+			}
+		}
+
+	}
+
+
+
+	.container {
+		background-color: var(--background-color_dark_1);
+		padding: 10px;
+		border-radius: 10px;
+
+		section {
+			display: flex;
+			padding: 15px 10px;
+			height: 70px;
+			align-items: center;
+			
+			&:not(:last-of-type) { border-bottom: 1px solid; }
+
+			label { font-size: 20px; }
+
+			button { height: fit-content; }
+
+			
+
+			&.joincode {
+				display: flex;
+				gap: 10px;
+
+				input { width: 20px; }
+			}
+		}
+	}
+
+}
