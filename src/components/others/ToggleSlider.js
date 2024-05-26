@@ -6,12 +6,12 @@ import './scss/ToggleSlider.scss'
 
 
 
-export default function ToggleSlider(props) {
+export default function ToggleSlider({ checked, onChange }) {
 
 	return (
-		<label className={`toggleslider${props.additionalClassName ? ' ' + props.additionalClassName : ''}`}>
+		<label className='toggleslider'>
 
-			<input type='checkbox' checked={props.toggled} onChange={({ target }) => props.onChange(target.value)}/>
+			<input type='checkbox' checked={checked} onChange={onChange}/>
 
 			<span/>
 

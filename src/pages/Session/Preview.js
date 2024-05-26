@@ -45,11 +45,11 @@ export default function Preview() {
 
 	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
-	// const columnWidth = list_players?.length > 8 ? '75px' : (list_players?.length > 4 ? '125px' : '200px')
-	// const style = { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth, padding: '5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
-
 	const height_dateElement = 40
 	const height_element = 51
+
+	const container_players = useRef(null)
+	const container_games = useRef(null)
 
 	
 
@@ -287,22 +287,17 @@ export default function Preview() {
 
 		axiosPrivate.post('/session/date', { SessionID: session_id, CustomDate: customDate }).then(() => {
 
-
 			window.location.reload()
-
 
 		}).catch((err) => {
 
-			const status = err?.response?.status
-			if(status === 400) {
-				window.alert('Clientanfrage ist fehlerhaft!')
-			} else if(status === 404) {
-				window.alert('Die Session wurde nicht gefunden!')
-				navigate('/session/select', { replace: true })
-			} else {
-				console.log(err)
-				window.alert('Es trat ein unvorhergesehener Fehler auf!')
-			}
+			handle_error({
+				err, 
+				handle_404: () => {
+					window.alert('Die Session wurde nicht gefunden!')
+					navigate('/session/select', { replace: true })
+				}
+			})
 
 		}).finally(() => { setLoading_customDate(false) })
 
@@ -315,16 +310,15 @@ export default function Preview() {
 	// __________________________________________________ Scroll __________________________________________________
 
 	const [ visibleRowIndex, setVisibleRowIndex ] = useState(0)
-	const div_ref = useRef(null)
 	const table_ref = useRef(null)
 	const listelement_ref = useRef(null)
 	const [ rowHeights, setRowHeights ] = useState([])
 
 	const handleScroll = () => {
 
-		if (!div_ref.current || !table_ref.current) return
+		if (!container_games.current || !table_ref.current) return
 
-		const scrollTop = div_ref.current.scrollTop
+		const scrollTop = container_games.current.scrollTop
 		let totalHeight = 0
 		let newVisibleRowIndex = 0
 
@@ -338,6 +332,18 @@ export default function Preview() {
 
 		setVisibleRowIndex(newVisibleRowIndex)
 
+	}
+
+	const syncScroll = ( container ) => {
+		const p = container_players.current
+		const g = container_games.current
+
+		if(!p || ! g) return
+		if(container === 'container_players') {
+			g.scrollLeft = p.scrollLeft
+		} else {
+			p.scrollLeft = g.scrollLeft
+		}
 	}
 
 
@@ -391,8 +397,8 @@ export default function Preview() {
 
 
 
-				<div className='table-container player-table'>
-					<table className='table'>
+				<div className='table-container' ref={container_players} onScroll={() => syncScroll('container_players')}>
+					<table className='table table_players'>
 						<tbody>
 							<tr>
 								{session?.List_PlayerOrder?.map((alias, i) => (
@@ -414,14 +420,14 @@ export default function Preview() {
 
 
 
-				<div className='table-container' ref={div_ref} onScroll={handleScroll}>
-					<table className='table sessionpreview_table' ref={table_ref}>
+				<div className='table-container' ref={container_games} onScroll={() => { handleScroll(); syncScroll('container_games') }}>
+					<table className='table' ref={table_ref}>
 						<tbody>
 							{list_visibleFinalScores?.map((e, i) => {
 								if(e.Group_Date) {
 
-									return <tr className='date-row' key={i}>
-										<td><label className='date'>{formatDate(e.Group_Date)}</label></td>
+									return <tr key={i}>
+										<td className='date'><label>{formatDate(e.Group_Date)}</label></td>
 									</tr>
 
 								} else {
@@ -465,21 +471,20 @@ export default function Preview() {
 			<Popup
 				showPopup={show_customDate}
 				setShowPopup={setShow_customDate}
+				title='Beginn auswählen'
 			>
+				<div className='preview_popup'>
+					<Calendar
+						value={customDate}
+						onChange={(cd) => setCustomDate(cd)}
+					/>
 
-				<h1>Zeitraum-Beginn auswählen</h1>
-
-				<Calendar
-					value={customDate}
-					onChange={(cd) => setCustomDate(cd)}
-				/>
-
-				<CustomButton
-					loading={loading_customDate}
-					text='Speichern'
-					onClick={save_customDate}
-				/>
-
+					<CustomButton
+						loading={loading_customDate}
+						text='Speichern'
+						onClick={save_customDate}
+					/>
+				</div>
 			</Popup>
 
 		</>

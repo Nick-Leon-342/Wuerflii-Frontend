@@ -201,7 +201,8 @@ textarea {
     table-layout: fixed;
     border-collapse: collapse;
 
-	td {
+	td, 
+	th {
 		border: 1px solid;
 		text-align: center;
 		height: 50px;

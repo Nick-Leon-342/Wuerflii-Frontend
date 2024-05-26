@@ -14,22 +14,36 @@
 	}
 
 	.table-container {
-		overflow-x: scroll;
-
-		&.player-table td {
-			background-color: rgb(0, 230, 0, .2);
-		}
+		overflow-x: auto;
+		overflow-y: auto;
+		max-height: 305px; 
+		scrollbar-gutter: stable both-edges;
 
 		table {
 			min-width: 100%;
 
+			&.table_players td { background-color: rgb(150, 250, 150); }
+
+			.date {
+				border: none;
+				height: 40px;
+				label {
+					margin: 0;
+					padding-left: 10px;
+					display: flex;
+					font-weight: bold;
+					text-align: left;
+					width: 100%;
+				}
+			}
+
 			td {
-				// width: 50%;
-				min-width: 100px;
+				min-width: 1cap;
 				padding: 5px;
 				white-space: nowrap; 
 				overflow: hidden; 
 				text-overflow: ellipsis;
+				background-clip: padding-box;
 			}
 		}
 		
@@ -51,118 +65,50 @@
 
 
 
-
-.sessionpreview_table-container {
-	max-height: 305px; 
-	overflow-y: auto;
-	overflow-x: hidden;
-	scrollbar-gutter: stable both-edges;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.sessionpreview_table td {
-	border: none;
-}
-
-.sessionpreview_table td {
-	border-right: 1px solid;
-}
-
-.sessionpreview_table td:first-child {
-	border-left: 1px solid;
-}
-
-
-
-.sessionpreview_table tr:not(:first-child) {
-	border-radius: 0;
-	border-top: 1px solid;
-}
-
-.sessionpreview_table tr:last-child {
-	border-bottom: 1px solid;
-}
-
-
-
-.sessionpreview_table .date-row td {
-	border: none;
-	height: 40px;
-}
-
-.sessionpreview_table .date {
-	margin: 0;
-	padding-left: 10px;
+.preview_popup {
 	display: flex;
-	font-weight: bold;
-	text-align: left;
-	width: 100%;
-}
+	flex-direction: column;
+	gap: var(--padding);
 
+	.react-calendar {
+		background-color: var(--background-color) !important;
+		font-size: 25px;
+		width: 100% !important;
+		border-radius: 5px;
+		padding: 10px;
 
+		.react-calendar__tile {
+			border-radius: 5px;
+		}
 
+		.react-calendar__tile--active, 
+		.react-calendar__tile--active:hover, 
+		.react-calendar__tile--hasActive, 
+		.react-calendar__tile--hasActive:hover{
+			background: var(--green) !important;
+			color: var(--button-text-color) !important;
+		}
+		
+		/* Navigation */
+		
+		.react-calendar__navigation {
+			height: 60px !important;
 
+			button {
+				font-size: 30px;
+				background: none !important;
+			}
 
-
-
-
-.react-calendar {
-	background-color: var(--background-color) !important;
-	font-size: 25px;
-	width: 100% !important;
-	border-radius: 10px;
-	margin-top: 20px;
-}
-
-.react-calendar__viewContainer button {
-	border-radius: 10px;
-}
-
-.react-calendar__tile--active, 
-.react-calendar__tile--active:hover, 
-.react-calendar__tile--hasActive, 
-.react-calendar__tile--hasActive:hover{
-	background: var(--green) !important;
-	color: var(--button-text-color) !important;
-}
-
-.react-calendar button:hover:not(.react-calendar__tile--active), 
-.react-calendar button:hover:not(.react-calendar__tile--hasActive) {
-	background-color: var(--background-color_dark) !important;
-}
-
-
-
-/* Navigation  */
-
-.react-calendar__navigation {
-	height: 60px !important;
-}
-
-.react-calendar__navigation button {
-	font-size: 30px;
-	background: none !important;
-}
-
-.react-calendar__navigation__next-button,
-.react-calendar__navigation__prev-button {
-	border-radius: 10px;
-	flex-grow: .5;
-}
-
-.react-calendar__navigation__next2-button, 
-.react-calendar__navigation__prev2-button {
-	display: none;
+			.react-calendar__navigation__next-button,
+			.react-calendar__navigation__prev-button {
+				border-radius: 10px;
+				flex-grow: .5;
+			}
+			
+			.react-calendar__navigation__next2-button, 
+			.react-calendar__navigation__prev2-button {
+				display: none;
+			}
+		}
+	}
 }

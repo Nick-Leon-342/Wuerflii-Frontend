@@ -515,7 +515,10 @@ export default function Game() {
 
 				<div className='show-sum'>
 					<label>Gesamtsumme anzeigen</label>
-					<ToggleSlider scale='.9' marginLeft='20px' toggled={showScores} setToggled={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}/>
+					<ToggleSlider 
+						toggled={showScores}
+						onChange={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}
+					/>
 				</div>
 
 				<div className='list-container'>
