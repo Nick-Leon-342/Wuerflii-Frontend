@@ -8,6 +8,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Loader from '../../components/others/Loader'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 
@@ -17,6 +18,7 @@ export default function EndScreen() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const [ list_players, setList_players ] = useState([])
 	const [ finalscore, setFinalScore ] = useState()
@@ -40,9 +42,9 @@ export default function EndScreen() {
 		const session_id = +urlParams.get('session_id')
 		const finalscore_id = +urlParams.get('finalscore_id')
 
-		if(!session_id || !finalscore_id) return navigate('/selectsession', { replace: true })
+		if(!session_id || !finalscore_id) return navigate('/session/select', { replace: true })
 
-		axiosPrivate.get(`/endscreen?session_id=${session_id}&finalscore_id=${finalscore_id}`).then(({ data }) => {
+		axiosPrivate.get(`/game/end?session_id=${session_id}&finalscore_id=${finalscore_id}`).then(({ data }) => {
 
 
 			const finalscore = data.FinalScore
@@ -82,17 +84,15 @@ export default function EndScreen() {
 
 		}).catch((err) => {
 			
-			const status = err?.response?.status
-			if(status === 400) {
-				window.alert('Irgendwas stimmt nicht mit der Serverabfrage!')
-			} else if (status === 404) {
-				window.alert('Die Session wurde nicht gefunden!')
-			} else {
-				window.alert('Es trat ein unvorhergesehener Fehler auf!')
-			}
-			// navigate('/selectsession', { replace: true })
+			handle_error({
+				err, 
+				handle_404: () => {
+					window.alert('Die Session wurde nicht gefunden!')
+					navigate('/session/select')
+				}
+			})
 			
-		}).finally(() => {setLoaderVisible(false)})
+		}).finally(() => { setLoaderVisible(false) })
 
 	}, [])
 
@@ -104,47 +104,53 @@ export default function EndScreen() {
 		<>
 
 			<OptionsDialog/>
+
+			<div className='end_container'>
+
+				<h1>{header}</h1>
+
+
+
+				<div className='table_container'>
+					<table className='table'>
+						<tbody>
+
+							<tr>
+								<td>Spieler</td>
+								{list_players.map((p, i) => (
+									<td key={i}><span>{p.Name}</span></td>
+								))}
+							</tr>
+
+							<tr>
+								<td>Gewonnen</td>
+								{list_players.map((p, i) => (
+									<td key={i}>{finalscore?.ScoresAfter[p.Alias]}</td>
+								))}
+							</tr>
+
+							<tr>
+								<td>Punkte</td>
+								{list_players.map((p, i) => (
+									<td key={i}><span>{finalscore?.PlayerScores[p.Alias]}</span></td>
+								))}
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+
+				<Loader loaderVisible={loaderVisible}/>
+
+
+
+				<button 
+					className='button' 
+					onClick={() => navigate('/session/select', { replace: false })}
+				>Ok</button>
+
+			</div>
 		
-			<h1>{header}</h1>
-
-
-
-			<table className='table wins'>
-				<tbody>
-
-					<tr>
-						<td>Spieler</td>
-						{list_players.map((p, i) => (
-							<td key={i}>{p.Name}</td>
-						))}
-					</tr>
-
-					<tr>
-						<td>Gewonnen</td>
-						{list_players.map((p, i) => (
-							<td key={i}>{finalscore?.ScoresAfter[p.Alias]}</td>
-						))}
-					</tr>
-
-					<tr>
-						<td>Punkte</td>
-						{list_players.map((p, i) => (
-							<td key={i}>{finalscore?.PlayerScores[p.Alias]}</td>
-						))}
-					</tr>
-
-				</tbody>
-			</table>
-
-			<Loader loaderVisible={loaderVisible}/>
-
-
-
-			<button 
-				className='button button-thick' 
-				onClick={() => navigate('/selectsession', { replace: false })}
-			>Ok</button>
-
 		</>
 	)
 }

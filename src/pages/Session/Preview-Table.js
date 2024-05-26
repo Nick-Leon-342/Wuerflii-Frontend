@@ -9,6 +9,7 @@ import Table from '../../components/others/Table'
 import Loader from '../../components/others/Loader'
 import PlayerTable from '../../components/others/PlayerTable'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 
@@ -19,6 +20,7 @@ export default function SessionPreviewTable() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const location = useLocation()
+	const handle_error = useErrorHandling()
 	const urlParams = new URLSearchParams(location.search)
 
 	const [ session_id, setSession_id ] = useState()
@@ -49,7 +51,7 @@ export default function SessionPreviewTable() {
 
 		setLoaderVisible(true)
 
-		axiosPrivate.get(`/sessionpreview-table?session_id=${session_id}&finalscore_id=${finalscore_id}`).then((res) => {
+		axiosPrivate.get(`/session/preview-table?session_id=${session_id}&finalscore_id=${finalscore_id}`).then((res) => {
 
 
 			const tmpList_Players = []
@@ -68,20 +70,16 @@ export default function SessionPreviewTable() {
 
 		}).catch((err) => {
 
-
-			const status = err?.response?.status
-			if(status === 404) {
-				window.alert('Dieser Spielstand exisiert nicht!')
-			} else if(status === 400) {
-				window.alert('Die Anfrage ist falsch!')
-			} else {
-				console.log(err)
-				window.alert('Beim Server trat ein Fehler auf!')
-			}
-			navigate(`/sessionpreview?sessionid=${session_id}`, { replace: true })
+			handle_error({
+				err, 
+				handle_404: () => {
+					window.alert('Dieser Spielstand exisiert nicht!')
+					navigate(-1)
+				}
+			})
 
 
-		}).finally(() => {setLoaderVisible(false)})
+		}).finally(() => { setLoaderVisible(false) })
 
 	}, [])
 
@@ -172,7 +170,10 @@ export default function SessionPreviewTable() {
 
 			<Loader loaderVisible={loaderVisible} />
 			
-			<button className='button' style={{ height: '50px', width: '100%', marginBottom: '0px' }} onClick={() => navigate(`/sessionpreview?sessionid=${session_id}`, { replace: false })}>Zurück</button>
+			<button 
+				className='button' 
+				onClick={() => navigate(`/session/preview?sessionid=${session_id}`, { replace: false })}
+			>Zurück</button>
 
 		</>
 	)
