@@ -18,7 +18,7 @@ export default function PersistLogin() {
 	const refresh = useRefreshToken()
 	const { auth } = useAuth()
 	
-	const [isLoading, setIsLoading] = useState(true)
+	const [ isLoading, setIsLoading ] = useState(true)
 
 
 

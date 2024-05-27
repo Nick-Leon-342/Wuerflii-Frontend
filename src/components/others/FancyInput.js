@@ -6,11 +6,11 @@ import './scss/FancyInput.scss'
 
 
 
-export default function FancyInput({ id, type, classNames, text, value, setValue, isRequired, onFocus, onBlur, maxLength }) {
+export default function FancyInput({ id, type, text, value, setValue, isRequired, onFocus, onBlur, maxLength }) {
 
 	return (
 
-		<div className={`fancyinput ${classNames ? classNames : ''}`}>
+		<div className='fancyinput'>
 
 			<input
 				id={id}

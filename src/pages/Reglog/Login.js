@@ -7,6 +7,7 @@ import { useState } from 'react'
 import useAuth from '../../hooks/useAuth'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios from '../../api/axios'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 import FancyInput from '../../components/others/FancyInput'
 import ErrorMessage from '../../components/others/ErrorMessage'
@@ -22,6 +23,7 @@ export default function Login() {
     const { setAuth } = useAuth()
 	const location = useLocation()
 	const [ next, setNext ] = useState('')
+	const handle_error = useErrorHandling()
 
     const navigate = useNavigate()
 
@@ -63,13 +65,12 @@ export default function Login() {
 
 		}).catch((err) => {
 
-			if (!err?.response) {
-				setError('Der Server antwortet nicht!')
-			} else if (err.response?.status === 401) {
-				setError('Falscher Benutzername \noder falsches Passwort!')
-			} else {
-				setError('Die Anmeldung hat nicht funktioniert!')
-			}
+			handle_error({
+				err, 
+				handle_409: () => {
+					setError('Falscher Benutzername \noder falsches Passwort!')
+				}
+			})
 
 		}).finally(() => { setLoading(false) })
 

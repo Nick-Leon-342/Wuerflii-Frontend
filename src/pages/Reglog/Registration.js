@@ -6,6 +6,7 @@ import { useState } from 'react'
 import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 import ErrorMessage from '../../components/others/ErrorMessage'
 import CustomButton from '../../components/others/Custom_Button'
@@ -20,6 +21,7 @@ export default function Registration() {
 
 	const navigate = useNavigate()
 	const { setAuth } = useAuth()
+	const handle_error = useErrorHandling()
 
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
@@ -59,15 +61,13 @@ export default function Registration() {
 			navigate('/game/create', { replace: true })
 
 		}).catch((err) => {
-			
-			if (!err?.response) {
-				setError('Der Server antwortet nicht!')
-			} else if (err.response?.status === 409) {
-				setError('Der Benutzername ist vergeben!')
-			} else {
-				setError('Die Registration schlug fehl!')
-				console.log(err)
-			}
+
+			handle_error({
+				err, 
+				handle_409: () => {
+					setError('Der Benutzername ist vergeben!')
+				}
+			})
 
 		}).finally(() => { setLoading(false) })
 
