@@ -123,6 +123,7 @@ export const calculateScore = (alias, columnsSum) => {
 		}
 	}
 
-	document.getElementById(id_playerTable).querySelector(`[alias='${alias}']`).textContent = sum
+	const tmp = document.getElementById(id_playerTable).querySelector(`[alias='${alias}']`)
+	if(tmp) tmp.textContent = sum
 
 }
