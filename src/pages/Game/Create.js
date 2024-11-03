@@ -24,6 +24,8 @@ export default function Create() {
 	const navigate = useNavigate()
 	const handle_error = useErrorHandling()
 
+	const [ loading_request, setLoading_request ] = useState(false)
+
 	const [ show_enterNames, setShow_enterNames ] = useState(false)
 
 
@@ -32,18 +34,28 @@ export default function Create() {
 
 	useEffect(() => {
 
-		axiosPrivate.get('/game/create').then(({ data }) => {
+		async function request() {
 
-			const { MAX_PLAYERS } = data
-			setMAX_PLAYERS(MAX_PLAYERS)
-			setOptions_players(Array.from({ length: MAX_PLAYERS }, (_, index) => index + 1))
+			setLoading_request(true)
 
+			await axiosPrivate.get('/game/create').then(({ data }) => {
+	
+				const { MAX_PLAYERS } = data
+				setMAX_PLAYERS(MAX_PLAYERS)
+				setOptions_players(Array.from({ length: MAX_PLAYERS }, (_, index) => index + 1))
+	
+	
+				const { MAX_COLUMNS } = data
+				setMAX_COLUMNS(MAX_COLUMNS)
+				setOptions_columns(Array.from({ length: MAX_COLUMNS }, (_, index) => index + 1))
+	
+			}).catch(err => { 
+				
+				handle_error({ err }) 
+			
+			})
+		}
 
-			const { MAX_COLUMNS } = data
-			setMAX_COLUMNS(MAX_COLUMNS)
-			setOptions_columns(Array.from({ length: MAX_COLUMNS }, (_, index) => index + 1))
-
-		}).catch((err) => { handle_error(err) })
 
 	}, [])
 
@@ -119,8 +131,9 @@ export default function Create() {
 	// __________________________________________________ EnterNames __________________________________________________
 
 	const [ list_players, setList_players ] = useState([])
-	const [ sessionName, setSessionName ] = useState('Partie')
-	const [ loading, setLoading ] = useState(false)
+	const [ name, setName ] = useState('Partie')
+	const [ loading_play, setLoading_play ] = useState(false)
+	const [ MAX_LENGTH_PLAYER_NAME, setMAX_LENGTH_PLAYER_NAME ] = useState(0)
 
 	const next = () => {
 		
@@ -142,35 +155,25 @@ export default function Create() {
 
 	const play = () => {
 
-		if(!sessionName || !list_players) return
+		if(!name || !list_players) return
 
-		setLoading(true)
+		setLoading_play(true)
 
 		axiosPrivate.post('/game/create', {
-			SessionName: sessionName, 
+			Name: name, 
 			Columns: +columns, 
 			List_Players: list_players,
 		}).then(({ data }) => {
 
-			navigate(`/game?session_id=${data.SessionID}&joincode=${data.JoinCode}`)
+			navigate(`/game?session_id=${data.SessionID}`)
 			
 		}).catch((err) => {
 
 			handle_error({ err })
 
-		}).finally(() => { setLoading(false) })
+		}).finally(() => setLoading_play(false))
 
 	}
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -199,8 +202,8 @@ export default function Create() {
 
 					<FancyInput 
 						id='SessionName'
-						value={sessionName}
-						setValue={setSessionName}
+						value={name}
+						setValue={setName}
 						type='text'
 						text='Name für die Partie'
 						isRequired={true}
@@ -219,7 +222,7 @@ export default function Create() {
 
 					<CustomButton 
 						onClick={play}
-						loading={loading}
+						loading={loading_play}
 						text='Los!'
 					/>
 
