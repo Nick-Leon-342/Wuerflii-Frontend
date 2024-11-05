@@ -1,26 +1,99 @@
 
 
-import { possibleEntries_bottomTable, possibleEntries_upperTable } from '../../logic/PossibleEntries'
-import { bottomTable_rows, id_upperTable, upperTable_rows } from '../../logic/utils'
+import { useEffect, useState } from 'react'
+import { list_rows } from '../../logic/utils'
 import { isMobile } from 'react-device-detect'
 
 
 
 
 
-export default function Table({ tableID, list_Players, columns, tableColumns, inputType, onblurEvent, removeFocusEvent, disabled }) {
+export default function Table({ 
+	removeFocusEvent, 
+	list_players, 
+	onblurEvent, 
+	disabled, 
+	session, 
+}) {
 
-	const rows = tableID === id_upperTable ? upperTable_rows : bottomTable_rows
+	const [ list_columns, setList_columns ] = useState([])
 
-	const getDefaultValue = (tableID, alias, column, row) => {
 
-		for(const c of tableColumns) {
-			if(c.TableID === tableID && c.Alias === alias && c.Column === column) {
-				return c[row]
-			}
-		}
 
-	}
+
+
+	useEffect(() => {
+
+		if(!session) return
+		setList_columns(Array.from({ length: session.Columns }, (_, index) => index))		
+
+	}, [])
+
+
+
+
+	return (
+		<table className='table table_game'>
+			<tbody>
+				{list_rows.map((row, index_row) => (
+					<tr key={index_row}>
+						
+						{/* First two columns */}
+						{row.td}
+
+
+
+						{list_players?.map((player, index_player) => {
+							return <>
+								{list_columns.map(column => {
+
+									if(!row.Possible_Entries || disabled) {
+										return (
+											<td>
+												<span>{player.List_Table_Columns[column][row.Name]}</span>
+											</td>
+										)
+									}
+
+									return (
+										<td>
+											<InputElement
+												list_players={list_players}
+												index_player={index_player}
+												session={session}
+												column={column}
+											/>
+										</td>
+									)
+
+
+								})}
+							</>
+						})}
+
+					</tr>
+				))}
+			</tbody>
+		</table>
+	)
+}
+
+
+
+const InputElement = ({
+	list_players, 
+	index_player, 
+	index_row, 
+	disabled, 
+	session, 
+	column, 
+}) => {
+
+	const [ input, setInput ] = useState()
+
+
+
+
 
 	const isIOS = () => {
 
@@ -30,111 +103,52 @@ export default function Table({ tableID, list_Players, columns, tableColumns, in
 	
 	}
 
-	const inputEvent = (element) => {
+	useEffect(() => {
 
-		const e = element.target
-		if (isNaN(parseFloat(e.value)) || !isFinite(e.value) || e.value.length > 2) {
-			e.value = e.value.slice(0, -1)
+		if(!session) return 
+
+		let i
+
+		switch(session.InputType) {
+			case 'type':
+				i = (
+					<select style={{ backgroundColor: list_players[index_player].Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
+						<option></option>
+						{list_rows[index_row].Possible_Entries.map((v) => (
+							<option key={v} value={v}>{v}</option>
+						))}
+					</select>
+				)
+				break
+
+			case 'select_and_type':
+				const id = index_player + '.' + index_row + '.' + column
+				i = (
+					<>
+						<input list={id} onBlur={onblurEvent}/>
+						<datalist id={id}>
+							{list_rows[index_row].Possible_Entries.map((v) => {
+								return <option key={v} value={v}/>
+							})}
+						</datalist>
+					</>
+				)
+				break
+
+			default: // Everything else is just 'select'
+				i = <input onBlur={onblurEvent}/>
+				break
 		}
+
+		setInput(i)
+
+		// eslint-disable-next-line
+	}, [ session?.InputType ])
 	
-	}
-
-	const list_columns = Array.from({ length: columns }, (_, index) => index)
-
-
-
-
 
 	return (
-		<table id={tableID} className='table table_game'>
-			<tbody>
-				{rows.map((r, currentRowIndex) => (
-					<tr 
-						key={currentRowIndex} 
-						className={`row${currentRowIndex === rows.length - 3 ? ' result' : ''}`}
-					>
-						
-						{/* First two columns */}
-						{r.td}
-
-
-						{list_Players?.map((p, currentPlayerIndex) => (
-							list_columns.map((currentColumnIndex) => {
-
-								const props = {
-									inputMode: 'numeric',
-									tableid: tableID,
-									appearance: 'none',
-									column: currentColumnIndex,
-									row: currentRowIndex,
-									playerindex: currentPlayerIndex,
-									alias: p.Alias,
-									onInput: inputEvent,
-									defaultValue: getDefaultValue( tableID, p.Alias, currentColumnIndex, currentRowIndex ),
-									style: { backgroundColor: p.Color },
-								}
-
-
-
-								const id = `${tableID}_${currentRowIndex}`
-								const possibleEntries = (tableID === id_upperTable ? possibleEntries_upperTable : possibleEntries_bottomTable)[currentRowIndex]
-
-								let e
-								if(currentRowIndex < rows.length - 3) {
-
-									if(disabled) {
-
-										e = <input { ...props } disabled/>
-
-									} else if(inputType === 'select') {
-
-										e = <select { ...props } style={{ backgroundColor: p.Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
-											<option></option>
-											{possibleEntries.map((v) => (
-												<option key={v} value={v}>{v}</option>
-										))}
-										</select>
-
-									} else if(inputType === 'typeselect') {
-
-										e = <>
-											<input list={id} { ...props } onBlur={onblurEvent}/>
-											<datalist id={id}>
-												{possibleEntries.map((v) => {
-													return <option key={v} value={v}/>
-												})}
-											</datalist>
-										</>
-									} else {
-										
-										e = <input { ...props } onBlur={onblurEvent}/>
-
-									}
-
-								} else {
-
-									e = <label { ...props }/>
-
-								}
-
-
-
-								return (
-									<td 
-										className={currentColumnIndex === columns - 1 ? 'last': ''}
-										key={`${p.Alias}.${currentRowIndex}.${currentColumnIndex}`} 
-										style={{ backgroundColor: p.Color }}
-									>
-										{e}
-									</td>
-								)
-
-							})
-						))}
-					</tr>
-				))}
-			</tbody>
-		</table>
+		<>
+			{input}
+		</>
 	)
-
 }

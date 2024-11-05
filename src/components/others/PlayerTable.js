@@ -2,15 +2,22 @@
 
 import { useNavigate } from 'react-router-dom'
 import { id_playerTable } from '../../logic/utils'
-import { useEffect } from 'react'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 
 
 
 
-export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, lastPlayerAlias, gnadenwurf, setGnadenwurf, showScores, setShowScores, disabled, playerScores, joincode, setShow_lastPlayer }) {
+export default function PlayerTable({ 
+	list_players, 
+	tableWidth, 
+	lastPlayerAlias, 
+	disabled, 
+	setShow_lastPlayer, 
+}) {
   
 	const navigate = useNavigate()
+	const axiosPrivate = useAxiosPrivate()
 
 
 
@@ -18,49 +25,45 @@ export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, la
 
 	const handleGnadenwurfChange = async (alias, checked) => {
 
-		const before = { ...gnadenwurf }
-		const g = { ...gnadenwurf }
-		g[alias] = checked
-		setGnadenwurf(g)
+		// const before = { ...gnadenwurf }
+		// const g = { ...gnadenwurf }
+		// g[alias] = checked
+		// setGnadenwurf(g)
 
 
-		for(let i = 0; 100 > i; i++) {
+		// for(let i = 0; 100 > i; i++) {
 
-			let tryagain = false
+		// 	let tryagain = false
 	
-			await axiosPrivate.post('/game/gnadenwurf', { Gnadenwürfe: g, JoinCode: joincode }).catch((err) => {
+		// 	await axiosPrivate.post('/game/gnadenwurf', { Gnadenwürfe: g, JoinCode: joincode }).catch((err) => {
 
-				if(err.response.status === 404) {
-					window.alert('Das Spiel wurde nicht gefunden!')
-					return navigate('/selectsession', { replace: true })
-				} else if(err.response.status === 400) {
-					window.alert('Client-Anfrage ist falsch!')
-				} else {
-					tryagain = window.confirm('Der Gnadenwurf wurde nicht gespeichert.\nErneut versuchen?')
-					console.log(err)
-					if(!tryagain) setGnadenwurf(before)
-				}
+		// 		if(err.response.status === 404) {
+		// 			window.alert('Das Spiel wurde nicht gefunden!')
+		// 			return navigate('/selectsession', { replace: true })
+		// 		} else if(err.response.status === 400) {
+		// 			window.alert('Client-Anfrage ist falsch!')
+		// 		} else {
+		// 			tryagain = window.confirm('Der Gnadenwurf wurde nicht gespeichert.\nErneut versuchen?')
+		// 			console.log(err)
+		// 			if(!tryagain) setGnadenwurf(before)
+		// 		}
 
-			})
+		// 	})
 
-			if(tryagain) continue
-			break
+		// 	if(tryagain) continue
+		// 	break
 
-		}
+		// }
 
 	}
 
-	useEffect(() => {
+	const calculateScore = ( player ) => {
 
-		setShowScores(localStorage.getItem('kniffel_showScores') !== 'false')
+		let sum = 0
+		for(const tc of player.List_Table_Columns) { sum += tc.TotalScore }
+		return sum
 
-	}, [])
-
-	useEffect(() => {
-
-		localStorage.setItem('kniffel_showScores', showScores)
-
-	}, [ showScores ])
+	}
 
 
 
@@ -82,18 +85,16 @@ export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, la
 						{!disabled && <svg className='button-responsive' onClick={() => setShow_lastPlayer(true)} height='18' viewBox='0 -960 960 960'><path d='M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>}
 					</td>
 
-					{list_Players?.map((p, i) => {
-						return (
-							<td key={i}>
-								<span style={{ 
-									fontWeight: lastPlayerAlias === p.Alias ? 'bold' : '',
-									color: lastPlayerAlias === p.Alias ? 'var(--green)' : '',
-								}}>
-									{p.Name}
-								</span>
-							</td>
-						)
-					})}
+					{list_players?.map((p, i) => 
+						<td key={i}>
+							<span style={{ 
+								fontWeight: lastPlayerAlias === p.Alias ? 'bold' : '',
+								color: lastPlayerAlias === p.Alias ? 'var(--green)' : '',
+							}}>
+								{p.Name}
+							</span>
+						</td>
+					)}
 
 				</tr>
 
@@ -101,17 +102,14 @@ export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, la
 
 				{/* __________________________________________________ Scores __________________________________________________ */}
 
-				{!showScores && 
+				{!sessionStorage.ShowScores && 
 					<tr>
 
 						<td>Spieler gesamt</td>
 
-						{list_Players?.map((p, i) => 
-							<td 
-								key={i} 
-								alias={p.Alias}
-							>
-								{playerScores ? playerScores[p.Alias] : 0}
+						{list_players?.map((p, i) => 
+							<td key={i}>
+								<span>{calculateScore(p)}</span>
 							</td>
 						)}
 
@@ -126,23 +124,20 @@ export default function PlayerTable({ list_Players, axiosPrivate, tableWidth, la
 
 					<td>Gnadenwurf</td>
 
-					{list_Players?.map((p, i) => {
-						if(!gnadenwurf[p.Alias]) gnadenwurf[p.Alias] = false
-						return (
-							<td key={i}>
-								<div className='checkbox-container'>
-									
-									<input 
-										className='button-responsive' 
-										type='checkbox' 
-										checked={gnadenwurf[p.Alias]}
-										onChange={(e) => handleGnadenwurfChange(p.Alias, e.target.checked)} 
-									/>
+					{list_players?.map((p, i) => 
+						<td key={i}>
+							<div className='checkbox-container'>
+								
+								<input 
+									className='button-responsive' 
+									type='checkbox' 
+									checked={p.Gnadenwurf}
+									onChange={(e) => handleGnadenwurfChange(p.Alias, e.target.checked)} 
+								/>
 
-								</div>
-							</td>
-						)
-					})}
+							</div>
+						</td>
+					)}
 
 				</tr>}
 			</tbody>

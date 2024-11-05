@@ -23,6 +23,11 @@
 
 		input[type='text'] {
 			width: 100%;
+
+			&.invalid {
+				border-color: var(--red);
+				border-width: 3px;
+			}
 		}
 
 		input[type='color'] {

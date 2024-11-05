@@ -8,7 +8,11 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
 
 
-export default function DragAndDropNameColorList({ List_Players, setList_Players }) {
+export default function DragAndDropNameColorList({ 
+	MAX_LENGTH_PLAYER_NAME, 
+	setList_Players,  
+	List_Players, 
+}) {
 
 	const handleOnDragEnd = ( result ) => {
 
@@ -18,6 +22,24 @@ export default function DragAndDropNameColorList({ List_Players, setList_Players
 		const [ item ] = tmp.splice(result.source.index, 1)
 		tmp.splice(result.destination.index, 0, item)
 
+		setList_Players(tmp)
+
+	}
+
+	const change_name = (e, index) => {
+
+		const value = e.target.value
+		const tmp = [ ...List_Players ]
+		tmp[index].Name = value
+		setList_Players(tmp)
+
+	}
+
+	const change_color = (e, index) => {
+
+		const value = e.target.value
+		const tmp = [ ...List_Players ]
+		tmp[index].Color = value
 		setList_Players(tmp)
 
 	}
@@ -59,14 +81,15 @@ export default function DragAndDropNameColorList({ List_Players, setList_Players
 
 										<input
 											type='text'
-											defaultValue={p.Name}
-											onChange={(e) => p.Name = e.target.value}
+											className={`${p.Name.length > MAX_LENGTH_PLAYER_NAME ? 'invalid' : ''}`}
+											value={p.Name}
+											onChange={(e) => change_name(e, index)}
 										/>
 
 										<input
 											type='color'
-											defaultValue={p.Color}
-											onChange={(e) => p.Color = e.target.value}
+											value={p.Color}
+											onChange={(e) => change_color(e, index)}
 										/>
 
 									</div>

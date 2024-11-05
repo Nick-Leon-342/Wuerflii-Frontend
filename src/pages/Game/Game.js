@@ -18,6 +18,7 @@ import ToggleSlider from '../../components/others/ToggleSlider'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
+import Loader from '../../components/others/Loader'
 
 
 
@@ -35,19 +36,15 @@ export default function Game() {
 	const urlParams = new URLSearchParams(location.search)
 
 	const [ session_id, setSession_id ] = useState()
-	const [ joincode, setJoincode ] = useState()
 	const [ lastPlayerAlias, setLastPlayerAlias ] = useState()
 	
 	const [ columnsSum ] = useState([])
 	
+	const [ user, setUser ] = useState()
 	const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState()
 
-	const [ inputType, setInputType ] = useState()
 	const [ tableWidth, setTableWidth ] = useState(0)
-	const [ gnadenwurf, setGnadenwurf ] = useState({})	// Gnadenwurf is an extra try
-	const [ showScores, setShowScores ] = useState(false)
-	const [ tableColumns, setTableColumns ] = useState([])
 
 	const [ askIfSurrender, setAskIfSurrender ] = useState()	// index of the 'winner'
 
@@ -62,13 +59,15 @@ export default function Game() {
 	const [ show_invalidNumber, setShow_invalidNumber ] = useState(false)
 	const [ show_finishGame_error, setShow_finishGame_error ] = useState(false)
 
+	const [ loading_request, setLoading_request ] = useState(false)
+
 
 	
 
 
 	const local_onBlurEvent = ( element ) => {
 
-		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, joincode, columnsSum, setShow_invalidNumber, setInvalidNumberText)
+		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, columnsSum, setShow_invalidNumber, setInvalidNumberText)
 
 	}
 
@@ -76,91 +75,75 @@ export default function Game() {
 
 
 
-	useLayoutEffect(() => {
+	// useLayoutEffect(() => {
 		
-		const ut = document.getElementById(id_upperTable)
-		if(!ut) return
-		setTableWidth(ut.offsetWidth)
+	// 	const ut = document.getElementById(id_upperTable)
+	// 	if(!ut) return
+	// 	setTableWidth(ut.offsetWidth)
 
-	})
+	// })
 
-	useEffect(() => {
+	// useEffect(() => {
 
-		if(!session) return
+	// 	if(!session) return
 
-		const x = window.innerWidth / 2
-		const y = window.innerHeight / 2
-		window.scrollTo({
-			top: y,
-			left: x,
-			behavior: 'smooth'
-		})
+	// 	const x = window.innerWidth / 2
+	// 	const y = window.innerHeight / 2
+	// 	window.scrollTo({
+	// 		top: y,
+	// 		left: x,
+	// 		behavior: 'smooth'
+	// 	})
 
-		for(const alias of session?.List_PlayerOrder) {
-			for(let i = 0; session?.Columns > i; i++) {
-				calculateUpperColumn(alias, i, columnsSum)
-				calculateBottomColumn(alias, i, columnsSum)
-			}
-		}
+	// 	for(const alias of session?.List_PlayerOrder) {
+	// 		for(let i = 0; session?.Columns > i; i++) {
+	// 			calculateUpperColumn(alias, i, columnsSum)
+	// 			calculateBottomColumn(alias, i, columnsSum)
+	// 		}
+	// 	}
 
-		const elements = document.getElementsByClassName('kniffelInput')
-		if (elements) {
-			for(const e of elements) {
-				e.addEventListener('focus', focusEvent)
-				if(inputType === 0) {
-					e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
-				} else {
-					e.addEventListener('blur', removeFocusEvent)
-				}
-			}
-		}
+	// 	const elements = document.getElementsByClassName('kniffelInput')
+	// 	if (elements) {
+	// 		for(const e of elements) {
+	// 			e.addEventListener('focus', focusEvent)
+	// 			// if(session.InputType === '') {
+	// 			// 	e.addEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
+	// 			// } else {
+	// 				e.addEventListener('blur', removeFocusEvent)
+	// 			// }
+	// 		}
+	// 	}
 
-		return () => {
-			for(const e of elements) {
-				e.removeEventListener('focus', focusEvent)
-				e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
-			}
-		}
+	// 	return () => {
+	// 		for(const e of elements) {
+	// 			e.removeEventListener('focus', focusEvent)
+	// 			e.removeEventListener('blur', (removeFocusEvent(e?.target?.closest('tr')), local_onBlurEvent(e)))
+	// 		}
+	// 	}
 
-	}, [ session ])
+	// 	// eslint-disable-next-line
+	// }, [ session ])
 
 	useEffect(() => {
 
 
 		const session_id = urlParams.get('session_id')
-		const joincode = urlParams.get('joincode')
 		const lastplayer = urlParams.get('lastplayer')
 
 		setSession_id(+session_id)
-		setJoincode(+joincode)
 		setLastPlayerAlias(lastplayer)
 
 
-		if(!session_id || !joincode) return navigate('/game/create', { replace: true })
+		if(!session_id) return navigate('/game/create', { replace: true })
 
-		axiosPrivate.get(`/game?session_id=${session_id}&joincode=${joincode}`).then(({ data }) => {
+		setLoading_request(true)
+
+		axiosPrivate.get(`/game?session_id=${session_id}`).then(({ data }) => {
 			
-
-			const session = data.Session
-			const list_players = data.List_Players
-
-			const tmp_list_players = []
-			columnsSum.length = 0
-			for(const Alias of session?.List_PlayerOrder) {
-
-				tmp_list_players.push(getPlayer(Alias, list_players))
-
-				for(let c = 0; session?.Columns > c; c++) {
-					columnsSum.push({Alias, Column: c, Upper: 0, Bottom: 0, All: 0})
-				}
-
-			}
 			
-			setList_players(tmp_list_players)
-			setInputType(session.InputType)
-			setTableColumns(data.List_Columns)
-			setGnadenwurf(data.Gnadenwürfe)
-			setSession(session)
+			setUser(data.User)
+			setList_players(data.List_Players)
+			setSession(data.Session)
 
 
 		}).catch((err) => {
@@ -173,7 +156,7 @@ export default function Game() {
 				},
 			})
 			
-		})
+		}).finally(() => setLoading_request(false))
 
 	}, [])
 
@@ -193,7 +176,7 @@ export default function Game() {
 
 	const handleInputTypeChange = (e) => {
 
-		if(!e.target) return
+		if(!e) return
 
 		axiosPrivate.post('/game/inputtype', { SessionID: session_id, InputType: e.target.value }).then(() => {
 
@@ -245,7 +228,6 @@ export default function Game() {
 		axiosPrivate.post('/game',
 			{
 				SessionID: session.id, 
-				JoinCode: joincode, 
 				WinnerAlias: askIfSurrender,
 				List_PlayerOrder: session.List_PlayerOrder,
 				List_Players: list_players, 
@@ -319,7 +301,7 @@ export default function Game() {
 
 
 
-
+	if(loading_request) return <Loader loaderVisible={true}/>
 
 	return (<>
 
@@ -331,19 +313,17 @@ export default function Game() {
 			<div className='game'>
 
 				<PlayerTable 
-					list_Players={list_players}
-					axiosPrivate={axiosPrivate}
-					joincode={+joincode}
+					list_players={list_players}
 					tableWidth={tableWidth}
 					lastPlayerAlias={lastPlayerAlias}
-					showScores={showScores}
-					setShowScores={setShowScores}
-					gnadenwurf={gnadenwurf}
-					setGnadenwurf={setGnadenwurf}
 					setShow_lastPlayer={setShow_lastPlayer}
 				/>
 
 				<Table 
+					session={session}
+					list_players={list_players}
+				/>
+				{/* <Table 
 					tableID={id_upperTable}
 					columns={session?.Columns}
 					list_Players={list_players}
@@ -351,17 +331,7 @@ export default function Game() {
 					inputType={inputType}
 					onblurEvent={local_onBlurEvent}
 					removeFocusEvent={removeFocusEvent}
-				/>
-
-				<Table 
-					tableID={id_bottomTable}
-					columns={session?.Columns}
-					list_Players={list_players}
-					tableColumns={tableColumns}
-					inputType={inputType}
-					onblurEvent={local_onBlurEvent}
-					removeFocusEvent={removeFocusEvent}
-				/>
+				/> */}
 
 
 
@@ -395,17 +365,12 @@ export default function Game() {
 
 		{/* __________________________________________________ Popup Options __________________________________________________ */}
 
-		<Popup
+		{/* <Popup
 			title='Einstellungen'
 			showPopup={show_options}
 			setShowPopup={setShow_options}
 		>
 			<div className='game_popup-options'>
-
-				<section>
-					<label>Beitrittscode</label>
-					<label>{joincode}</label>
-				</section>
 
 				<section>
 					<label>Eingabetyp</label>
@@ -445,7 +410,7 @@ export default function Game() {
 				</section>
 
 			</div>
-		</Popup>
+		</Popup> */}
 
 
 
@@ -513,13 +478,13 @@ export default function Game() {
 				{/* ______________________________ ChangeNames ______________________________ */}
 				{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
 
-				<div className='show-sum'>
+				{/* <div className='show-sum'>
 					<label>Gesamtsumme anzeigen</label>
 					<ToggleSlider 
 						toggled={showScores}
 						onChange={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}
 					/>
-				</div>
+				</div> */}
 
 				<div className='list-container'>
 					{list_players && <DragAndDropNameColorList List_Players={edit_list_players} setList_Players={setEdit_list_players}/>}

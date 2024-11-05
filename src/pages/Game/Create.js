@@ -40,12 +40,14 @@ export default function Create() {
 
 			await axiosPrivate.get('/game/create').then(({ data }) => {
 	
-				const { MAX_PLAYERS } = data
+				const { MAX_PLAYERS, MAX_COLUMNS, MAX_LENGTH_PLAYER_NAME } = data
+
+				setMAX_LENGTH_PLAYER_NAME(MAX_LENGTH_PLAYER_NAME)
+
 				setMAX_PLAYERS(MAX_PLAYERS)
 				setOptions_players(Array.from({ length: MAX_PLAYERS }, (_, index) => index + 1))
 	
 	
-				const { MAX_COLUMNS } = data
 				setMAX_COLUMNS(MAX_COLUMNS)
 				setOptions_columns(Array.from({ length: MAX_COLUMNS }, (_, index) => index + 1))
 	
@@ -53,9 +55,10 @@ export default function Create() {
 				
 				handle_error({ err }) 
 			
-			})
+			}).finally(() => setLoading_request(false))
 		}
 
+		request()
 
 	}, [])
 
@@ -155,7 +158,7 @@ export default function Create() {
 
 	const play = () => {
 
-		if(!name || !list_players) return
+		if(!name || !list_players || list_players.some(p => p.Name.length > MAX_LENGTH_PLAYER_NAME)) return
 
 		setLoading_play(true)
 
@@ -169,7 +172,9 @@ export default function Create() {
 			
 		}).catch((err) => {
 
-			handle_error({ err })
+			handle_error({ 
+				err 
+			})
 
 		}).finally(() => setLoading_play(false))
 
@@ -215,6 +220,7 @@ export default function Create() {
 						<DragAndDropNameColorList
 							List_Players={list_players}
 							setList_Players={setList_players}
+							MAX_LENGTH_PLAYER_NAME={MAX_LENGTH_PLAYER_NAME}
 						/>
 					</div>
 
@@ -250,10 +256,12 @@ export default function Create() {
 
 
 
-					<button 
+					<CustomButton 
+						loading={loading_request}
 						className='button' 
 						onClick={next}
-					>Weiter</button>
+						text='Weiter'
+					/>
 
 					<CustomLink 
 						onClick={() => navigate('/session/select', { replace: false })}
