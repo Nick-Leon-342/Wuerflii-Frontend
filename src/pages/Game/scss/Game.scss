@@ -4,67 +4,10 @@
 	position: absolute;
 	
 	.game {
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
 		margin: 500px 500px 500px 500px;
-
-		header {
-			display: flex;
-			justify-content: space-between;
-			margin-bottom: var(--padding);
-	
-			select {
-				width: 175px;
-			}
-	
-			svg {
-				width: 25px;
-				flex-shrink: 0;
-			}
-	
-			button {
-				padding: 0;
-				margin: 0;
-				background: none;
-				box-shadow: none;
-				color: var(--text-color);
-				width: fit-content;
-			}
-		}
-	
-	
-	
-		.table_player {
-			margin-bottom: 10px;
-	
-			tr {
-	
-				&:first-of-type { border-top: var(--thick-border); }
-				&:last-of-type { border-bottom: var(--thick-border); }
-	
-				td {
-					padding: 5px;
-					border-right: var(--thick-border);
-		
-					&:first-child {
-						width: 240px;
-						min-width: 240px;
-						font-weight: bold;
-						padding: 0;
-						border-left: var(--thick-border);
-					}
-		
-					.checkbox-container {
-						display: grid;
-						place-content: center;
-		
-						input {
-							width: 25px;
-							height: 25px;
-							border-radius: 5px;
-						}
-					}
-				}
-			}
-		}
 	
 	
 	

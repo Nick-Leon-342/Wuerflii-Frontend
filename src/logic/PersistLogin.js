@@ -1,11 +1,12 @@
 
 
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import useRefreshToken from '../hooks/useRefreshToken'
-import useAuth from '../hooks/useAuth'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
-import Loader from '../components/others/Loader'
+import useAuth from '../hooks/useAuth'
+import useRefreshToken from '../hooks/useRefreshToken'
+
+import Loader from '../components/Loader/Loader'
 
 
 

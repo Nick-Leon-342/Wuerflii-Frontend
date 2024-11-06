@@ -4,11 +4,12 @@ import './scss/End.scss'
 
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Loader from '../../components/others/Loader'
-import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import Loader from '../../components/Loader/Loader'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import OptionsDialog from '../../components/others/OptionsDialog'
 
 
 

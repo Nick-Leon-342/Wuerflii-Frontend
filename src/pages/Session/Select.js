@@ -5,15 +5,16 @@ import './scss/Select.scss'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatDate } from '../../logic/utils'
+
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../../components/others/Popup'
-import Loader from '../../components/others/Loader'
+import Loader from '../../components/Loader/Loader'
 import CustomButton from '../../components/others/Custom_Button'
-import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import OptionsDialog from '../../components/others/OptionsDialog'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
-import useErrorHandling from '../../hooks/useErrorHandling'
 
 
 

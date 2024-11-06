@@ -5,11 +5,12 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { id_bottomTable, id_upperTable } from '../../logic/utils'
 
-import Table from '../../components/others/Table'
-import Loader from '../../components/others/Loader'
-import PlayerTable from '../../components/others/PlayerTable'
-import OptionsDialog from '../../components/Dialog/OptionsDialog'
 import useErrorHandling from '../../hooks/useErrorHandling'
+
+import Table from '../../components/Tables/Table'
+import Loader from '../../components/Loader/Loader'
+import PlayerTable from '../../components/Tables/Table_Player'
+import OptionsDialog from '../../components/others/OptionsDialog'
 
 
 

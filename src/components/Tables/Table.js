@@ -49,24 +49,23 @@ export default function Table({
 
 									if(!row.Possible_Entries || disabled) {
 										return (
-											<td>
+											<td key={`${index_player}_${column}`}>
 												<span>{player.List_Table_Columns[column][row.Name]}</span>
 											</td>
 										)
 									}
 
 									return (
-										<td>
+										<td key={`${index_player}_${column}`}>
 											<InputElement
 												list_players={list_players}
 												index_player={index_player}
+												index_row={index_row}
 												session={session}
 												column={column}
 											/>
 										</td>
 									)
-
-
 								})}
 							</>
 						})}
@@ -95,6 +94,14 @@ const InputElement = ({
 
 
 
+	const onBlur = () => {
+
+	}
+
+
+
+
+
 	const isIOS = () => {
 
 		let userAgent = navigator.userAgent || window.opera
@@ -106,13 +113,12 @@ const InputElement = ({
 	useEffect(() => {
 
 		if(!session) return 
-
 		let i
 
 		switch(session.InputType) {
 			case 'type':
 				i = (
-					<select style={{ backgroundColor: list_players[index_player].Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={(e) => {onblurEvent(e); removeFocusEvent(e)}}>
+					<select style={{ backgroundColor: list_players[index_player].Color, paddingLeft: isMobile && isIOS() ? '20px' : '' }} onChange={onBlur}>
 						<option></option>
 						{list_rows[index_row].Possible_Entries.map((v) => (
 							<option key={v} value={v}>{v}</option>
@@ -125,7 +131,7 @@ const InputElement = ({
 				const id = index_player + '.' + index_row + '.' + column
 				i = (
 					<>
-						<input list={id} onBlur={onblurEvent}/>
+						<input list={id} onBlur={onBlur}/>
 						<datalist id={id}>
 							{list_rows[index_row].Possible_Entries.map((v) => {
 								return <option key={v} value={v}/>
@@ -136,7 +142,7 @@ const InputElement = ({
 				break
 
 			default: // Everything else is just 'select'
-				i = <input onBlur={onblurEvent}/>
+				i = <input onBlur={onBlur}/>
 				break
 		}
 

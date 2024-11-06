@@ -1,19 +1,19 @@
 
 
-import './css/OptionsDialog.scss'
+import './scss/OptionsDialog.scss'
 
 import { useEffect, useState } from 'react'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
+
+import useAuth from '../../hooks/useAuth'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Popup from '../others//Popup'
-import ErrorMessage from '../others/ErrorMessage'
-import CustomButton from '../others/Custom_Button'
-import JoinGameInput from '../others/JoinGameInput'
+import Popup from './Popup'
+import ErrorMessage from './ErrorMessage'
+import CustomButton from './Custom_Button'
+import RegistrationForm from './RegistrationForm'
 import Previous from '../NavigationElements/Previous'
-import RegistrationForm from '../others/RegistrationForm'
 
 
 

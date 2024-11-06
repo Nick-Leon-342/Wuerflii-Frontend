@@ -1,0 +1,44 @@
+
+
+.table_player tr {
+
+	&:first-of-type { border-top: var(--thick-border); }
+	&:last-of-type { border-bottom: var(--thick-border); }
+
+	td {
+		padding: 5px;
+		border-right: var(--thick-border);
+
+		&:first-child {
+			width: 240px;
+			min-width: 240px;
+			font-weight: bold;
+			padding: 0;
+			border-left: var(--thick-border);
+		}
+
+		.checkbox-container {
+			display: grid;
+			place-content: center;
+
+			input {
+				width: 25px;
+				height: 25px;
+				border-radius: 5px;
+			}
+		}
+	}
+}
+
+.table_player_loader-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	height: 60px;
+
+	.table_player_loader {
+		border-radius: 5px !important;
+		height: 25px !important;
+		width: 25px !important;
+	}
+}

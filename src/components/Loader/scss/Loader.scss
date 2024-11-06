@@ -7,10 +7,6 @@
 	align-items: center;
 	opacity: 1;
 
-	&.isnotgreen { 
-		span { background: var(--background-color); }
-	}
-
 	span {
 		width: 8px;
 		height: 8px;

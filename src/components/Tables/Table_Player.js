@@ -1,0 +1,193 @@
+
+
+import './scss/Table_Player.scss'
+
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../hooks/useErrorHandling'
+
+import LoaderBox from '../Loader/Loader_Box'
+
+
+
+
+
+export default function Table_Player({ 
+	setList_players, 
+	list_players, 
+	disabled, 
+	session, 
+}) {
+
+	const calculateScore = ( player ) => {
+
+		let sum = 0
+		for(const tc of player.List_Table_Columns) { sum += tc.TotalScore }
+		return sum
+
+	}
+
+
+
+
+
+	return (
+
+		<table className='table table_player'>
+			<tbody>
+
+
+
+				{/* __________________________________________________ Names __________________________________________________ */}
+
+				<tr>
+
+					<td>Spieler</td>
+
+					{list_players?.map((p, i) => 
+						<td key={i}>
+							<span>{p.Name}</span>
+						</td>
+					)}
+
+				</tr>
+
+
+
+				{/* __________________________________________________ Scores __________________________________________________ */}
+
+				{!sessionStorage.ShowScores && <tr>
+
+					<td>Spieler gesamt</td>
+
+					{list_players?.map((p, i) => 
+						<td key={i}>
+							<span>{calculateScore(p)}</span>
+						</td>
+					)}
+
+				</tr>}
+
+
+
+				{/* __________________________________________________ Gnadenwurf __________________________________________________ */}
+
+				{!disabled && <tr>
+
+					<td>Gnadenwurf</td>
+
+					{list_players?.map((_, index_player) => 
+						<td key={index_player}>
+							<div className='checkbox-container'>
+								
+								<Gnadenwurf
+									setList_players={setList_players}
+									list_players={list_players}
+									index_player={index_player}
+									session={session}
+								/>
+
+							</div>
+						</td>
+					)}
+
+				</tr>}
+			</tbody>
+		</table>
+
+	)
+
+}
+
+
+
+
+
+const Gnadenwurf = ({
+	setList_players, 
+	list_players, 
+	index_player, 
+	session, 
+}) => {
+
+	const navigate = useNavigate()
+	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
+
+	const [ loading, setLoading ] = useState(false)
+
+
+
+
+
+	const change = async () => {
+
+		const bool = !list_players[index_player].Gnadenwurf
+		
+		for(let i = 0; 100 > i; i++) {
+			
+			let try_again = false
+			setLoading(true)
+	
+			await axiosPrivate.patch(`/player?session_id=${session.id}`, {
+				PlayerID: list_players[index_player].id, 
+				Gnadenwurf: bool
+			}).then(() => {
+	
+				setList_players(prev => {
+					const tmp = [ ...prev ]
+					tmp[index_player].Gnadenwurf = bool
+					return tmp
+				})
+	
+			}).catch(err => {
+	
+				handle_error({
+					err, 
+					handle_no_server_response: () => {
+						if(window.confirm(`Der Server antwortet nicht.\nDer Gnadenwurf für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
+					}, 
+					handle_404: () => {
+						alert('Benutzer, Session oder Spieler wurde nicht gefunden!')
+						navigate(`/game/create`)
+					}, 
+					handle_500: () => {
+						if(window.confirm(`Beim Server ist ein Fehler aufgetreten.\nDer Gnadenwurf für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
+					}
+				})
+	
+			}).finally(() => setLoading(false))
+
+
+			if(!try_again) return
+
+		}
+
+	}
+
+
+
+
+
+	return (<>
+		{loading &&
+			<div className='table_player_loader-container'>
+				<LoaderBox
+					className='table_player_loader'
+					dark={true}
+				/>
+			</div>
+		}
+
+		{!loading &&
+			<input 
+				className='button-responsive' 
+				type='checkbox' 
+				checked={list_players[index_player].Gnadenwurf}
+				onChange={change} 
+			/>
+		}
+	</>)
+}

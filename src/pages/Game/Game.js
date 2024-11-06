@@ -6,19 +6,17 @@ import useOnBlurEvent from '../../hooks/useOnBlurEvent'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { focusEvent, removeFocusEvent } from '../../logic/Events'
 import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { calculateUpperColumn, calculateBottomColumn } from '../../logic/Calculating'
-import { id_bottomTable, id_upperTable, getPlayer, handleShowScoresChange } from '../../logic/utils'
+import { getPlayer } from '../../logic/utils'
 
 import Popup from '../../components/others/Popup'
-import Table from '../../components/others/Table'
-import PlayerTable from '../../components/others/PlayerTable'
-import ToggleSlider from '../../components/others/ToggleSlider'
+import Table from '../../components/Tables/Table'
+import Loader from '../../components/Loader/Loader'
+import TablePlayer from '../../components/Tables/Table_Player'
 import CustomButton from '../../components/others/Custom_Button'
-import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import OptionsDialog from '../../components/others/OptionsDialog'
 import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
-import Loader from '../../components/others/Loader'
 
 
 
@@ -312,11 +310,10 @@ export default function Game() {
 		<div className='game_container'>
 			<div className='game'>
 
-				<PlayerTable 
+				<TablePlayer 
+					session={session}
 					list_players={list_players}
-					tableWidth={tableWidth}
-					lastPlayerAlias={lastPlayerAlias}
-					setShow_lastPlayer={setShow_lastPlayer}
+					setList_players={setList_players}
 				/>
 
 				<Table 

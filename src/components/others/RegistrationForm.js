@@ -5,8 +5,8 @@ import './scss/RegistrationForm.scss'
 import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
+import Loader from '../Loader/Loader'
 import FancyInput from './FancyInput'
-import Loader from './Loader'
 
 
 

@@ -14,7 +14,7 @@ import Calendar from 'react-calendar'
 
 import Popup from '../../components/others/Popup'
 import CustomButton from '../../components/others/Custom_Button'
-import OptionsDialog from '../../components/Dialog/OptionsDialog'
+import OptionsDialog from '../../components/others/OptionsDialog'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
