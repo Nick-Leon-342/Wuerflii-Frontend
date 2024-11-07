@@ -131,7 +131,8 @@ const Gnadenwurf = ({
 			let try_again = false
 			setLoading(true)
 	
-			await axiosPrivate.patch(`/player?session_id=${session.id}`, {
+			await axiosPrivate.patch(`/player`, {
+				SessionID: session.id, 
 				PlayerID: list_players[index_player].id, 
 				Gnadenwurf: bool
 			}).then(() => {

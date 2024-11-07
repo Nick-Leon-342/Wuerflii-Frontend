@@ -2,13 +2,11 @@
 
 import './scss/Game.scss'
 
-import useOnBlurEvent from '../../hooks/useOnBlurEvent'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { useNavigate, useLocation } from 'react-router-dom'
-import React, { useEffect, useState, useLayoutEffect } from 'react'
-import { calculateUpperColumn, calculateBottomColumn } from '../../logic/Calculating'
-import { getPlayer } from '../../logic/utils'
 
 import Popup from '../../components/others/Popup'
 import Table from '../../components/Tables/Table'
@@ -26,7 +24,6 @@ export default function Game() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	const onblurEvent = useOnBlurEvent()
 	const handle_error = useErrorHandling()
 
 
@@ -42,8 +39,6 @@ export default function Game() {
 	const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState()
 
-	const [ tableWidth, setTableWidth ] = useState(0)
-
 	const [ askIfSurrender, setAskIfSurrender ] = useState()	// index of the 'winner'
 
 	const [ invalidNumberText, setInvalidNumberText ] = useState('')
@@ -58,16 +53,6 @@ export default function Game() {
 	const [ show_finishGame_error, setShow_finishGame_error ] = useState(false)
 
 	const [ loading_request, setLoading_request ] = useState(false)
-
-
-	
-
-
-	const local_onBlurEvent = ( element ) => {
-
-		onblurEvent(element, setLastPlayerAlias, urlParams, axiosPrivate, navigate, columnsSum, setShow_invalidNumber, setInvalidNumberText)
-
-	}
 
 
 
@@ -170,28 +155,6 @@ export default function Game() {
 
 		})
 	
-	}
-
-	const handleInputTypeChange = (e) => {
-
-		if(!e) return
-
-		axiosPrivate.post('/game/inputtype', { SessionID: session_id, InputType: e.target.value }).then(() => {
-
-			window.location.reload()
-
-		}).catch((err) => {
-
-			handle_error({
-				err, 
-				handle_404: () => {
-					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/session/select', { replace: true })
-				}
-			})
-
-		})
-
 	}
 
 
@@ -319,18 +282,8 @@ export default function Game() {
 				<Table 
 					session={session}
 					list_players={list_players}
+					setList_players={setList_players}
 				/>
-				{/* <Table 
-					tableID={id_upperTable}
-					columns={session?.Columns}
-					list_Players={list_players}
-					tableColumns={tableColumns}
-					inputType={inputType}
-					onblurEvent={local_onBlurEvent}
-					removeFocusEvent={removeFocusEvent}
-				/> */}
-
-
 
 				<footer>
 
@@ -415,7 +368,7 @@ export default function Game() {
 
 		{/* __________________________________________________ Popup Surrender __________________________________________________ */}
 
-		<Popup
+		{/* <Popup
 			showPopup={show_surrender}
 			setShowPopup={setShow_surrender}
 			title='Gewinner auswählen'
@@ -455,7 +408,7 @@ export default function Game() {
 				</>}
 
 			</div>
-		</Popup>
+		</Popup> */}
 
 
 
@@ -600,7 +553,7 @@ export default function Game() {
 
 		{/* __________________________________________________ Popup LastPlayer __________________________________________________ */}
 
-		<Popup
+		{/* <Popup
 			showPopup={show_lastPlayer}
 			setShowPopup={setShow_lastPlayer}
 			title={!lastPlayerAlias 
@@ -616,7 +569,7 @@ export default function Game() {
 				onClick={() => setShow_lastPlayer(false)}
 			>Ok</button>
 
-		</Popup>
+		</Popup> */}
 
 	</>)
 }

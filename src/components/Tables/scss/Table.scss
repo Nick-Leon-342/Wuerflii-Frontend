@@ -1,0 +1,70 @@
+
+
+.table_game tr {
+
+	&.blank { height: 10px; }
+
+	&.border_top { border-top: var(--thick-border); }
+	&.border_bottom { border-bottom: var(--thick-border); }
+
+	td {
+
+		&.border-right { border-right: var(--thick-border); }
+
+		&:nth-child(1),
+		&:nth-child(2) {
+			min-width: 120px;
+			width: 120px;
+			max-width: 120px;
+			font-weight: bold;
+			padding: 0;
+		}
+
+		&:nth-child(1) { border-left: var(--thick-border); }
+		&:nth-child(2), &.last { border-right: var(--thick-border); }
+
+
+		svg {
+			width: 26px;
+			margin: 2px;
+
+			rect { fill: none; }
+		}
+
+		.table_loader-container {
+			display: grid;
+			place-content: center;
+			width: 60px;
+			height: 60px;
+
+			.table_loader {
+				border-radius: 5px;
+				width: 40px;
+				height: 40px;
+			}
+		}
+
+		select, 
+		input {
+			border: none;
+			width: 60px;
+			outline: none;
+			text-align: center;
+			font-size: 20px;
+			color: var(--text-color-static);
+			border-radius: 0px;
+			background: none;
+
+			&::-webkit-calendar-picker-indicator {
+				display: none !important;
+			}
+		}
+
+		select {
+			appearance: none;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+		}
+
+	}
+}

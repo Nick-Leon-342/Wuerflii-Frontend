@@ -1,15 +1,5 @@
 
 
-//____________________IDs____________________
-
-export const id_upperTable							= 'upperTable'
-export const id_bottomTable							= 'bottomTable'
-export const id_playerTable							= 'playerTable'
-
-
-
-
-
 export const formatDate = (date) => {
 
 	const d = new Date(date)
@@ -24,28 +14,10 @@ export const formatDate = (date) => {
 
 }
 
-export const getPlayer = (alias, list_players) => {
-
-	if(list_players)
-	for(const p of list_players) {
-		if(p.Alias === alias) {
-			return p
-		}
-	}
-
-}
-
 export const updateURL = (urlParams) => {
 
 	const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
 	window.history.pushState({ path: updatedURL }, '', updatedURL)
-
-}
-
-export const handleShowScoresChange = (v, urlParams) => {
-	
-	urlParams.set('showscores', v)
-	updateURL(urlParams)
 
 }
 
@@ -58,6 +30,7 @@ export const list_rows = [
 	{
 		Name: 'Upper_Table_1', 
 		Possible_Entries: [ 0, 1, 2, 3, 4, 50 ],
+		Border_Top: true, 
 		td:
 		<>
 			<td>
@@ -129,6 +102,7 @@ export const list_rows = [
 		</>, 
 	}, {
 		Name: 'Upper_Table_Score', 
+		Border_Top: true, 
 		td: 
 		<>
 			<td>gesamt</td>
@@ -143,6 +117,7 @@ export const list_rows = [
 		</>, 
 	}, {
 		Name: 'Upper_Table_TotalScore', 
+		Border_Bottom: true, 
 		td: 
 		<>
 			<td>gesamt<br/>oberer Teil</td>
@@ -155,7 +130,16 @@ export const list_rows = [
 
 
 	{
+		Name: 'Blank', 
+	},
+
+
+
+
+
+	{
 		Name: 'Bottom_Table_1', 
+		Border_Top: true, 
 		Possible_Entries: [ 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 50 ],
 		td: 
 		<>
@@ -205,6 +189,7 @@ export const list_rows = [
 	}, {
 		Name: 'Bottom_Table_7', 
 		Possible_Entries: [ 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 50 ], 
+		Border_Bottom: true, 
 		td: 
 		<>
 			<td><label>Chance</label></td>
@@ -218,7 +203,7 @@ export const list_rows = [
 			<td><svg height='13px' viewBox='-0.5 -0.5 700 300'><path d='M 0.5 197 L 0.5 101 L 483.49 101 L 483.49 0.5 L 699.5 149 L 483.49 297.5 L 483.49 197 Z' strokeMiterlimit='10' pointerEvents='all'/></svg></td>
 		</>, 
 	}, {
-		Name: 'Bottom_Table_UpperTableScore', 
+		Name: 'Upper_Table_TotalScore', 
 		td:
 		<>
 			<td>gesamt<br/>oberer Teil</td>
@@ -226,6 +211,7 @@ export const list_rows = [
 		</>, 
 	}, {
 		Name: 'Bottom_Table_TotalScore', 
+		Border_Bottom: true, 
 		td:
 		<>
 			<td>Endsumme</td>
