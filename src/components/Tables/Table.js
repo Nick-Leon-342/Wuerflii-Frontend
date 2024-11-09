@@ -47,7 +47,7 @@ export default function Table({
 				{list_rows.map((row, index_row) => {
 					
 					if(row.Name === 'Blank') {
-						return <tr className='blank'/>
+						return <tr key={index_row} className='blank'/>
 					}
 
 					return (
@@ -113,18 +113,15 @@ const InputElement = ({
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const [ input, setInput ] = useState()
+	const [ id, setId ] = useState('')
 	const [ loading, setLoading ] = useState(false)
+	const [ input_value, setInput_value ] = useState('')
 
 
 
 
 
-	const onBlur = () => {
-
-	}
-
-	const onSelect = async ( e ) => {
+	const onBlur = async ( e ) => {
 
 		const value = e.target.value
 		
@@ -155,14 +152,19 @@ const InputElement = ({
 				handle_error({
 					err, 
 					handle_no_server_response: () => {
-						if(window.confirm(`Der Server antwortet nicht.\nDer Eintrag für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
+						if(window.confirm(`Der Server antwortet nicht.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
 					}, 
 					handle_404: () => {
 						alert('Benutzer, Session oder Spieler wurde nicht gefunden!')
 						navigate(`/game/create`)
 					}, 
+					handle_409: () => {
+						alert(`Der Eintrag '${value}' ist nicht zulässig!`)
+						e.target.value = ''
+						setInput_value('')
+					}, 
 					handle_500: () => {
-						if(window.confirm(`Beim Server ist ein Fehler aufgetreten.\nDer Eintrag für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
+						if(window.confirm(`Beim Server ist ein Fehler aufgetreten.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
 					}
 				})
 	
@@ -175,10 +177,6 @@ const InputElement = ({
 
 	}
 
-
-
-
-
 	const isIOS = () => {
 
 		let userAgent = navigator.userAgent || window.opera
@@ -187,60 +185,63 @@ const InputElement = ({
 	
 	}
 
+	useEffect(() => setId(index_player + '.' + index_row + '.' + column), [ index_player, index_row, column ])
+
 	useEffect(() => {
 
-		if(!session) return 
-		let i
+		if(!session) return
 
-		switch(session.InputType) {
-			case 'type':
-				i = <input onBlur={onBlur}/>
-				break
-
-			case 'select_and_type':
-				const id = index_player + '.' + index_row + '.' + column
-				i = (
-					<>
-						<input list={id} onBlur={onBlur}/>
-						<datalist id={id}>
-							{list_rows[index_row].Possible_Entries.map((v) => {
-								return <option key={v} value={v}/>
-							})}
-						</datalist>
-					</>
-				)
-				break
-
-			default: // Everything else is just 'select'
-				i = (
-					<select 
-						value={list_players[index_player].List_Table_Columns[column][list_rows[index_row].Name]}
-						onChange={onSelect}
-					>
-						<option></option>
-						{list_rows[index_row].Possible_Entries.map((v) => (
-							<option key={v} value={v}>{v}</option>
-						))}
-					</select>
-				)
-				break
-		}
-
-		setInput(i)
+		const tmp = list_players[index_player].List_Table_Columns[column][list_rows[index_row].Name]
+		const value = typeof tmp === 'number' ? tmp : ''
+		setInput_value(value)
 
 		// eslint-disable-next-line
-	}, [ session?.InputType, list_players ])
+	}, [])
+
 	
 
+
+
 	return (<>
+
 		{loading && <>
 			<div className='table_loader-container'>
 				<LoaderBox className='table_loader' dark={true}/>
 			</div>
 		</>}
 
-		{!loading && <>
-			{input}
+		{!loading && session?.InputType === 'type' && <>
+			<input 
+				value={input_value}
+				onChange={({ target }) => setInput_value(target.value)}
+				onBlur={onBlur}
+			/>
+		</>}
+
+		{!loading && session?.InputType === 'select' && <>
+			<select 
+				value={input_value}
+				onChange={e => { onBlur(e); setInput_value(e.target.value) }}
+			>
+				<option></option>
+				{list_rows[index_row].Possible_Entries.map((v) => (
+					<option key={v} value={v}>{v}</option>
+				))}
+			</select>
+		</>}
+
+		{!loading && session?.InputType === 'select_and_type' && <>
+			<input 
+				list={id} 
+				value={input_value}
+				onChange={({ target }) => setInput_value(target.value)}
+				onBlur={onBlur}
+			/>
+			<datalist id={id}>
+				{list_rows[index_row].Possible_Entries.map((v) => {
+					return <option key={v} value={v}/>
+				})}
+			</datalist>
 		</>}
 	</>)
 }

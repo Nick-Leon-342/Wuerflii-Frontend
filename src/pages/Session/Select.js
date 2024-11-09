@@ -281,7 +281,7 @@ export default function SelectSession() {
 								<div onClick={listElementClick}>
 
 									<label className='names'>
-										{s.List_PlayerOrder.map((alias) => {
+										{/* {s.List_PlayerOrder.map((alias) => {
 											
 											for(const p of s.List_Players) {
 												if(alias === p.Alias) {
@@ -289,7 +289,7 @@ export default function SelectSession() {
 												}
 											}
 											return ''
-										}).join(' vs ')}
+										}).join(' vs ')} */}
 									</label>
 
 									<label className='date'>{formatDate(s.LastPlayed)}</label>
