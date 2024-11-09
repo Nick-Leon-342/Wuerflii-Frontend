@@ -34,32 +34,28 @@ export default function Create() {
 
 	useEffect(() => {
 
-		async function request() {
+		setLoading_request(true)
 
-			setLoading_request(true)
+		axiosPrivate.get('/game/create').then(({ data }) => {
 
-			await axiosPrivate.get('/game/create').then(({ data }) => {
-	
-				const { MAX_PLAYERS, MAX_COLUMNS, MAX_LENGTH_PLAYER_NAME } = data
+			const { MAX_PLAYERS, MAX_COLUMNS, MAX_LENGTH_PLAYER_NAME } = data
 
-				setMAX_LENGTH_PLAYER_NAME(MAX_LENGTH_PLAYER_NAME)
+			setMAX_LENGTH_PLAYER_NAME(MAX_LENGTH_PLAYER_NAME)
 
-				setMAX_PLAYERS(MAX_PLAYERS)
-				setOptions_players(Array.from({ length: MAX_PLAYERS }, (_, index) => index + 1))
-	
-	
-				setMAX_COLUMNS(MAX_COLUMNS)
-				setOptions_columns(Array.from({ length: MAX_COLUMNS }, (_, index) => index + 1))
-	
-			}).catch(err => { 
-				
-				handle_error({ err }) 
+			setMAX_PLAYERS(MAX_PLAYERS)
+			setOptions_players(Array.from({ length: MAX_PLAYERS }, (_, index) => index + 1))
+
+
+			setMAX_COLUMNS(MAX_COLUMNS)
+			setOptions_columns(Array.from({ length: MAX_COLUMNS }, (_, index) => index + 1))
+
+		}).catch(err => { 
 			
-			}).finally(() => setLoading_request(false))
-		}
+			handle_error({ err }) 
+		
+		}).finally(() => setLoading_request(false))
 
-		request()
-
+		// eslint-disable-next-line
 	}, [])
 
 
@@ -206,7 +202,7 @@ export default function Create() {
 					/>
 
 					<FancyInput 
-						id='SessionName'
+						id='Name'
 						value={name}
 						setValue={setName}
 						type='text'
