@@ -14,14 +14,10 @@
 		footer {
 			display: flex;
 			justify-content: space-between;
-			margin-top: var(--padding);
 	
 			.options {
-				background: none;
-				box-shadow: none;
-				color: var(--text-color);
 				width: fit-content;
-				padding: 0 10px;
+				padding: 0 5px;
 				svg { height: 40px; }
 			}
 		}

@@ -29,8 +29,7 @@ export default function Preview() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const [ session_id, setSession_id ] = useState(-1) 
-
+	const [ user, setUser ] = useState()
 	const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState([])
 	const [ list_finalScores, setList_finalScores ] = useState([])
@@ -38,10 +37,7 @@ export default function Preview() {
 	
 	const [ loading, setLoading ] = useState(false)
 
-	const [ view, setView ] = useState()
-	const [ year, setYear ] = useState()
 	const [ list_year, setList_year ] = useState([])
-	const [ month, setMonth ] = useState()
 
 	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
@@ -57,33 +53,30 @@ export default function Preview() {
 
 	useEffect(() => {
 
-		setLoading(true)
-
+		
 		const session_id = new URLSearchParams(location.search).get('session_id')
-
 		if(!session_id) return navigate('/session/select', { replace: true })
-		setSession_id(+session_id)
+		setLoading(true)
+		
 
 		axiosPrivate.get(`/session/preview?session_id=${session_id}`).then(({ data }) => {
 
-			const { Session, List_Players, List_FinalScores } = data
+
+			const { 
+				Session, 
+				List_Players, 
+				List_FinalScores, 
+				User, 
+				Exists, 
+			} = data
+
+			if(Exists) return navigate(`/game?session_id=${session_id}`, { replace: true })
+
+			setUser(User)
 			setSession(Session)
-			setCustomDate(Session.CustomDate || new Date())
-
-			//Order players
-			const tmpList_Players = []
-			for(const alias of Session.List_PlayerOrder) {
-				for(const p of List_Players) {
-					if(alias === p.Alias) {
-						tmpList_Players.push(p)
-						break
-					}
-				}
-			}
-			setList_players(tmpList_Players)
-
-			List_FinalScores.sort((a, b) => new Date(b.End) - new Date(a.End))
+			setList_players(List_Players)
 			setList_finalScores(List_FinalScores)
+
 
 			const tmp_list_years = []
 			for(const e of List_FinalScores) {
@@ -91,25 +84,22 @@ export default function Preview() {
 				if(!tmp_list_years.includes(y)) tmp_list_years.push(y)
 			}
 			tmp_list_years.sort((a, b) => b - a)
-
-			setMonth(localStorage.getItem(`kniffel_sessionpreview_${session_id}_month`) || new Date().getMonth())
-			setYear(localStorage.getItem(`kniffel_sessionpreview_${session_id}_year`) || tmp_list_years[0])
-			setView(localStorage.getItem(`kniffel_sessionpreview_${session_id}_view`) || 'showYear')
 			setList_year(tmp_list_years)
 
 
 		}).catch((err) => {
 
-			handle_error({ err, 
+			handle_error({ 
+				err, 
 				handle_404: (() => {
-					window.alert('Die Session exisiert nicht!')
+					alert('Die Session exisiert nicht!')
 					navigate('/session/select', { replace: true })
 				}) 
 			})
 
-		}).finally(() => { setLoading(false) })
+		}).finally(() => setLoading(false))
 		
-
+		// eslint-disable-next-line
 	}, [])
 
 	// Filters list so that only relevant elements are displayed and 
@@ -160,14 +150,10 @@ export default function Preview() {
 
 		if(!session) return
 
-		localStorage.setItem(`kniffel_sessionpreview_${session_id}_view`, view)
-		localStorage.setItem(`kniffel_sessionpreview_${session_id}_month`, month)
-		localStorage.setItem(`kniffel_sessionpreview_${session_id}_year`, year)
 
+		if(session.View === 'all' || (session.View === 'customDate' && !session.CustomDate)) return editList(list_finalScores, setList_visibleFinalScores)
 
-		if(view === 'all' || (view === 'customDate' && !session.CustomDate)) return editList(list_finalScores, setList_visibleFinalScores)
-
-		if(view === 'customDate') {
+		if(session.View === 'customDate') {
 
 			const tmp_list = []
 
@@ -187,8 +173,8 @@ export default function Preview() {
 		for(const f of list_finalScores) {
 			
 			const date = new Date(f.End)
-			if(date.getFullYear() === +year) {
-				if(view === 'showMonth' && date.getMonth() !== +month) continue
+			if(date.getFullYear() === session.View_Year) {
+				if(session.View === 'showMonth' && date.getMonth() !== session.View_Month) continue
 				tmp.push(f)
 			}
 
@@ -196,7 +182,8 @@ export default function Preview() {
 
 		editList(tmp, setList_visibleFinalScores)
 
-	}, [view, year, month])
+		// eslint-disable-next-line
+	}, [ session ])
 
 	const getScoresAfter = (alias) => {
 
@@ -204,70 +191,21 @@ export default function Preview() {
 
 		const e = list_visibleFinalScores.at(visibleRowIndex)
 
-		switch(view) {
-			case 'showMonth':
+		switch(session?.View) {
+			case 'show_month':
 				return e?.ScoresAfter_Month[alias]
 
-			case 'showYear':
+			case 'show_year':
 				return e?.ScoresAfter_Year[alias]
 
-			case 'customDate':
+			case 'custom_date':
 				const tmp = e?.ScoresAfter_SinceCustomDate || e?.ScoresAfter
 				return tmp && tmp[alias]
 
-			default :
+			default:
 				return e?.ScoresAfter[alias]
 		}
 
-
-	}
-
-
-
-
-
-	const getPlayer = (alias) => {
-
-		for(const p of list_players) {
-			if(p.Alias === alias) {
-				return p
-			}
-		}
-
-	}
-
-	const play = () => {
-
-		setLoading(true)
-
-		axiosPrivate.post('/session/preview', { SessionID: session_id }).then(({ data }) => {
-
-			navigate(`/game?session_id=${session_id}&joincode=${data.JoinCode}`, { replace: true })
-
-		}).catch((err) => {
-
-			const status = err?.response?.status
-			if(!err?.response) {
-				window.alert('Server antwortet nicht!')
-			} else if(status === 400) {
-				window.alert('Fehlerhafte Clientanfrage!')
-			} else if(status === 404) {
-				window.alert('Die Session existiert nicht!')
-				navigate('/selectsession', { replace: true })
-			} else if(status === 500) {
-				window.alert('Beim Server trat ein Fehler auf!')
-			} else {
-				console.log(err)
-				window.alert('Es trat ein unvorhergesehener Fehler auf!')
-			}
-			
-		}).finally(() => { setLoading(false) })
-
-	}
-
-	const handleClick = (finalScore) => {
-
-		navigate(`/session/preview/table?session_id=${session_id}&finalscore_id=${finalScore.id}`, { replace: false })
 
 	}
 
@@ -283,23 +221,23 @@ export default function Preview() {
 
 	const save_customDate = () => {
 
-		setLoading_customDate(true)
+		// setLoading_customDate(true)
 
-		axiosPrivate.post('/session/date', { SessionID: session_id, CustomDate: customDate }).then(() => {
+		// axiosPrivate.post('/session/date', { SessionID: session_id, CustomDate: customDate }).then(() => {
 
-			window.location.reload()
+		// 	window.location.reload()
 
-		}).catch((err) => {
+		// }).catch((err) => {
 
-			handle_error({
-				err, 
-				handle_404: () => {
-					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/session/select', { replace: true })
-				}
-			})
+		// 	handle_error({
+		// 		err, 
+		// 		handle_404: () => {
+		// 			window.alert('Die Session wurde nicht gefunden!')
+		// 			navigate('/session/select', { replace: true })
+		// 		}
+		// 	})
 
-		}).finally(() => { setLoading_customDate(false) })
+		// }).finally(() => { setLoading_customDate(false) })
 
 	}
 	
@@ -335,16 +273,82 @@ export default function Preview() {
 	}
 
 	const syncScroll = ( container ) => {
+
 		const p = container_players.current
 		const g = container_games.current
 
-		if(!p || ! g) return
+		if(!p || !g) return
 		if(container === 'container_players') {
 			g.scrollLeft = p.scrollLeft
 		} else {
 			p.scrollLeft = g.scrollLeft
 		}
+
 	}
+
+
+
+
+
+
+	
+
+
+
+
+
+	// // __________________________________________________Modal-Edit__________________________________________________
+
+	// const [ columns, setColumns ] = useState('')
+	// const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
+	// const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
+
+	// const handle_edit_columnChange = (event) => {
+
+	// 	const intValue = event.target.value
+	// 	if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
+	// 	setColumns(intValue)
+
+	// }
+
+	// const edit_show = () => {
+
+	// 	// setSuccessfullyUpdatedVisible(false)
+	// 	// setList_players(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
+	// 	// setShow_editSession(true)
+
+	// }
+
+	// const edit_close = () => {
+		
+	// 	setList_players([])
+	// 	setColumns('')
+	// 	setShow_editSession(false)
+
+	// }
+
+	// const edit_save = async () => {
+
+	// 	setLoading_edit(true)
+
+	// 	axiosPrivate.post('/session/update', { SessionID: session.id, Columns: +columns, List_Players: list_players }).then(() => {
+
+	// 		setSuccessfullyUpdatedVisible(true)
+	// 		edit_close()
+	// 		window.location.reload()
+
+	// 	}).catch((err) => {
+
+	// 		handle_error({ err, 
+	// 			handle_404: (() => {
+	// 				window.alert('Die Session wurde nicht gefunden!')
+	// 				window.location.reload()
+	// 			})
+	// 		})
+
+	// 	}).finally(() => { setLoading_edit(false) })		
+
+	// }
 
 
 
@@ -360,36 +364,106 @@ export default function Preview() {
 
 			<OptionsDialog/>
 
+
+
+
+
+
+
+
+
+
+
+			{/* __________________________________________________ Popup Edit __________________________________________________ */}
+
+			{/* <Popup
+				showPopup={show_editSession}
+				setShowPopup={setShow_editSession}
+				title='Bearbeiten'
+			>
+				<div className='select_popup_edit'>							
+
+
+					
+					<div className='columns'>
+
+						<label>Spalten</label>
+						
+						<select
+							value={columns}
+							onChange={handle_edit_columnChange}
+						>
+							<option value={session?.Columns}>
+								{'Derzeit: ' + session?.Columns}
+							</option>
+							{options_columns.map((c) => (
+								<option key={c} value={c}>{c}</option>
+							))}
+						</select>
+
+					</div>
+
+
+
+					
+					{list_players && <DragAndDropNameColorList List_Players={list_players} setList_Players={setList_players}/>}
+
+
+
+					<CustomButton
+						loading={loading_edit}
+						onClick={edit_save}
+						text='Speichern'
+					/>
+
+				</div>
+			</Popup> */}
+
+
+
+
+
+
+
+
+
 			<div className='preview_container'>
 
 				<div className='select-container'>
 
 					<select 
-						value={view}
-						onChange={(e) => setView(e.target.value)}>
-						<option key={0} value='all'>Gesamtansicht</option>
-						<option key={1} value='showYear'>Jahresansicht</option>
-						<option key={2} value='showMonth'>Monatsansicht</option>
-						<option key={3} value='customDate'>Benutzerdefiniert</option>
+						value={session?.View}
+						// onChange={(e) => setView(e.target.value)}
+					>
+						<option key={0} value='show_all'>Gesamtansicht</option>
+						<option key={1} value='show_year'>Jahresansicht</option>
+						<option key={2} value='show_month'>Monatsansicht</option>
+						<option key={3} value='custom_date'>Benutzerdefiniert</option>
 					</select>
 
-					{(view === 'showMonth' || view === 'showYear') && <select 
-						value={year}
-						onChange={(e) => setYear(e.target.value)}>
-						{list_year.map((y, i) => 
-							<option key={i} value={y}>{y}</option>
-						)}
-					</select>}
+					{(session?.View === 'show_month' || session?.View === 'show_year') && <>
+						<select 
+							value={session.View_Year}
+							// onChange={(e) => setYear(e.target.value)}
+						>
+							{list_year.map((y, i) => 
+								<option key={i} value={y}>{y}</option>
+							)}
+						</select>
+					</>}
 
-					{view === 'showMonth' && <select 
-						value={month}
-						onChange={(e) => setMonth(e.target.value)}>
-						{list_months.map((m, i) => 
-							<option key={i} value={i}>{m}</option>
-						)}
-					</select>}
+					{session?.View === 'show_month' && <>
+						<select 
+							value={session.View_Month}
+							// onChange={(e) => setMonth(e.target.value)}
+						>
+							{list_months.map((m, i) => 
+								<option key={i} value={i}>{m}</option>
+							)}
+						</select>
+					</>}
 
-					{view === 'customDate' && <label onClick={() => setShow_customDate(true)}>
+					{session?.View === 'custom_date' && <label onClick={() => setShow_customDate(true)}>
 						{`Ansicht ab: ${formatDate(session?.CustomDate)}` || 'Erstelle Ansicht'}
 					</label>}
 
@@ -401,16 +475,16 @@ export default function Preview() {
 					<table className='table table_players'>
 						<tbody>
 							<tr>
-								{session?.List_PlayerOrder?.map((alias, i) => (
-									<td key={i}>
-										<span>{getPlayer(alias).Name}</span>
+								{list_players?.map(player => (
+									<td key={player.id}>
+										<span>{player.Name}</span>
 									</td>
 								))}
 							</tr>
 							<tr>
-								{session?.List_PlayerOrder?.map((alias, i) => (
-									<td key={i}>
-										<span>{getScoresAfter(alias) || 0}</span>
+								{list_players?.map(player => (
+									<td key={player.id}>
+										<span>{getScoresAfter(player.id) || 0}</span>
 									</td>
 								))}
 							</tr>
@@ -433,11 +507,14 @@ export default function Preview() {
 								} else {
 
 									return (
-										<tr key={i} className='listElement' onClick={() => handleClick(e)}>
-											{session?.List_PlayerOrder?.map((alias, j) => {
-												const player = getPlayer(alias)
-												return (<td key={`${i}.${j}`}>{e.PlayerScores[player.Alias]}</td>)
-											})}
+										<tr 
+											key={i} 
+											className='listElement' 
+											onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
+										>
+											{list_players?.map((player, index_player) => 
+												<td key={`${i}.${index_player}`}>{e.PlayerScores[player.id]}</td>
+											)}
 										</tr>
 									)
 
@@ -452,8 +529,8 @@ export default function Preview() {
 
 				<CustomButton
 					loading={loading}
-					text="Los geht's!"
-					onClick={play}
+					text={`Los geht's!`}
+					onClick={() => navigate(`/game?session_id=${session?.id}`, { replace: false })}
 				/>
 
 				<CustomLink 

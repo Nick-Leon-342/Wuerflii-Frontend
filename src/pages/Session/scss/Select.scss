@@ -16,7 +16,7 @@
 		margin-bottom: 20px;
 		padding: 0 10px;
 	
-		svg {
+		button {
 			height: 30px;
 			width: 30px;
 	
@@ -38,19 +38,10 @@
 		}
 	}
 
-	.successfully-saved {
-		display: flex;
-		justify-content: center;
-		margin-bottom: 10px;
-	
-		&.notvisible { display: none; }
-	
-		p {
-			color: var(--green);
-			font-size: 25px;
-		}
-	}
 
+
+
+	
 	.no-game {
 		padding: 15px;
 		margin-bottom: 20px;
@@ -72,9 +63,7 @@
 			border-radius: 5px;
 			width: 100%;
 	
-			&:hover {
-				background-color: var(--list-element-hover-color);
-			}
+			&:hover { background-color: var(--list-element-hover-color); }
 	
 			input[type='checkbox'] {
 				width: 30px;
@@ -112,48 +101,6 @@
 
 
 
-.select_popup_delete {
-
-	h1 {
-		text-align: center;
-		margin-bottom: var(--padding);
-	}
-
-}
-
-
-
-
-
-.select_popup_edit {
-	display: flex;
-	flex-direction: column;
-	gap: var(--padding);
-
-	.columns {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-
-		label { font-size: 30px; }
-
-		select {
-			padding: 10px;
-			width: 200px;
-		}
-	}
-
-	.draganddropnamecolorlist {
-		overflow-y: auto;
-		max-height: 300px;
-	}
-
-}
-
-
-
-
-
 
 
 
@@ -179,18 +126,6 @@
 				display: none;
 			}
 
-		}
-
-	}
-
-	.select_popup_delete h1 {
-		font-size: 25px;
-	}
-
-	.select_popup_edit {
-
-		.columns label {
-			font-size: 25px;
 		}
 
 	}

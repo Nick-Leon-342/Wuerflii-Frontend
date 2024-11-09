@@ -28,10 +28,6 @@ export default function Game() {
 
 
 	const location = useLocation()
-	const urlParams = new URLSearchParams(location.search)
-
-	const [ session_id, setSession_id ] = useState()
-	const [ lastPlayerAlias, setLastPlayerAlias ] = useState()
 	
 	const [ columnsSum ] = useState([])
 	
@@ -41,14 +37,10 @@ export default function Game() {
 
 	const [ askIfSurrender, setAskIfSurrender ] = useState()	// index of the 'winner'
 
-	const [ invalidNumberText, setInvalidNumberText ] = useState('')
-
 	const [ show_edit, setShow_edit ] = useState(false)
 	const [ show_newGame, setShow_newGame ] = useState(false)
 	const [ show_options, setShow_options ] = useState(false)
-	const [ show_surrender, setShow_surrender ] = useState(false)
 	const [ show_finishGame, setShow_finishGame ] = useState(false)
-	const [ show_lastPlayer, setShow_lastPlayer ] = useState(false)
 	const [ show_invalidNumber, setShow_invalidNumber ] = useState(false)
 	const [ show_finishGame_error, setShow_finishGame_error ] = useState(false)
 
@@ -110,12 +102,7 @@ export default function Game() {
 	useEffect(() => {
 
 
-		const session_id = urlParams.get('session_id')
-		const lastplayer = urlParams.get('lastplayer')
-
-		setSession_id(+session_id)
-		setLastPlayerAlias(lastplayer)
-
+		const session_id = new URLSearchParams(location.search).get('session_id')
 
 		if(!session_id) return navigate('/game/create', { replace: true })
 
@@ -145,7 +132,7 @@ export default function Game() {
 
 	const newGame = () => {
 	
-		axiosPrivate.delete(`/game?session_id=${session_id}`).then(() => {
+		axiosPrivate.delete(`/game?session_id=${session.id}`).then(() => {
 
 			navigate('/session/select', { replace: true })
 
@@ -165,37 +152,19 @@ export default function Game() {
 
 	const [ loading, setLoading ] = useState(false)
 
-	const finishGame = () => {
+	const finish_game = () => {
 	
-		if(!askIfSurrender) {
-			for(const element of columnsSum) {
-				if(element.All === '0' || element.All === 0) {
-					setShow_finishGame_error(true)
-					return
-				}
-			}
-		}
-
-		setShow_finishGame(true)
-
-	}
-	
-	const saveResults = () => {
-		
-		setLoading(true)
-
+		if(list_players.some(p => p.List_Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')		
 		if(list_players.length === 1) return navigate('/session/select', { replace: true })
+			
+		setLoading(true)
 	
-		axiosPrivate.post('/game',
-			{
-				SessionID: session.id, 
-				WinnerAlias: askIfSurrender,
-				List_PlayerOrder: session.List_PlayerOrder,
-				List_Players: list_players, 
-			}
-		).then(({ data }) => {
+
+		axiosPrivate.post('/game', { SessionID: session.id }).then(({ data }) => {
+
 
 			navigate(`/game/end?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
+
 
 		}).catch((err) => {
 
@@ -206,7 +175,7 @@ export default function Game() {
 				}
 			})
 
-		}).finally(() => { setLoading(false) })
+		}).finally(() => setLoading(false))
 	
 	}
 
@@ -221,7 +190,7 @@ export default function Game() {
 
 	const show_edit_popup = () => {
 
-		setEdit_list_players(list_players.map((p) => { return { ...p } })) 
+		setEdit_list_players(structuredClone(list_players)) 
 		setShow_edit(true) 
 
 	}
@@ -230,11 +199,11 @@ export default function Game() {
 
 		setDisable_edit(true)
 
-		if(!session_id) return
+		if(!session.id) return
 
 		axiosPrivate.post('/session/update', 
 			{ 
-				SessionID: session_id, 
+				SessionID: session.id, 
 				List_Players: edit_list_players 
 			}
 		).then(() => {
@@ -251,7 +220,7 @@ export default function Game() {
 				}
 			})
 
-		}).finally(() => {setDisable_edit(false)})
+		}).finally(() => setDisable_edit(false))
 			
 	}
 
@@ -289,13 +258,11 @@ export default function Game() {
 
 					<button
 						onClick={() => setShow_options(true)}
-						className='button options'
-					>
-						<svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
-					</button>
+						className='button button-reverse button-responsive options'
+					><svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg></button>
 
 					<button 
-						onClick={finishGame}
+						onClick={finish_game}
 						className='button'
 					>Spiel beenden</button>
 
@@ -474,102 +441,6 @@ export default function Game() {
 			>Abbrechen</button>
 
 		</Popup>
-
-
-
-
-
-
-
-		{/* __________________________________________________ Popup FinishGame __________________________________________________ */}
-
-		<Popup
-			showPopup={show_finishGame}
-			setShowPopup={setShow_finishGame}
-			title='Spiel beenden?'
-		>
-
-			<CustomButton
-				onClick={saveResults}
-				loading={loading}
-				text='Ja'
-			/>
-
-			<button 
-				className='button button-red-reverse' 
-				onClick={() => setShow_finishGame(false)}
-			>Abbrechen</button>
-
-		</Popup>
-
-
-
-
-
-
-
-		{/* __________________________________________________ Popup FinishGame-Error __________________________________________________ */}
-
-		<Popup
-			showPopup={show_finishGame_error}
-			setShowPopup={setShow_finishGame_error}
-		>
-
-			<h1>Bitte alle Werte eingeben!</h1>
-
-			<button 
-				className='button button-thick' 
-				onClick={() => setShow_finishGame_error(false)}
-			>Verstanden</button>
-
-		</Popup>
-
-
-
-
-
-
-
-		{/* __________________________________________________ Popup InvalidNumber __________________________________________________ */}
-
-		<Popup
-			showPopup={show_invalidNumber}
-			setShowPopup={setShow_invalidNumber}
-			title={invalidNumberText}
-		>
-
-			<button 
-				className='button button-thick' 
-				onClick={() => setShow_invalidNumber(false)}
-			>Ok</button>
-		
-		</Popup>
-
-
-
-
-
-
-
-		{/* __________________________________________________ Popup LastPlayer __________________________________________________ */}
-
-		{/* <Popup
-			showPopup={show_lastPlayer}
-			setShowPopup={setShow_lastPlayer}
-			title={!lastPlayerAlias 
-					? 'Bis jetzt war noch keiner dran!'
-					: (<>
-						{'\'' + getPlayer(lastPlayerAlias, list_players)?.Name + '\' war als letztes dran.'}
-					</>)
-				}
-		>
-
-			<button 
-				className='button' 
-				onClick={() => setShow_lastPlayer(false)}
-			>Ok</button>
-
-		</Popup> */}
 
 	</>)
 }

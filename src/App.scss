@@ -106,12 +106,12 @@ input,
 select, 
 textarea {
 	// outline: none;
+	resize: none;
+	font-size: 20px;
+	min-height: 60px;
 	border: 1px solid;
 	padding: 10px 15px;
 	border-radius: 5px;
-	min-height: 60px;
-	font-size: 20px;
-	resize: none;
 	background-color: var(--background-color);
 }
 

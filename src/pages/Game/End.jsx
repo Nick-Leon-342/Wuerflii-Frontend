@@ -24,13 +24,11 @@ export default function EndScreen() {
 	const [ list_players, setList_players ] = useState([])
 	const [ finalscore, setFinalScore ] = useState()
 
-	const [header, setHeader] = useState('')
-	const [loaderVisible, setLoaderVisible] = useState(false)
+	const [ header, setHeader ] = useState('')
+	const [ loading, setLoading ] = useState(false)
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
-	
-	
 
 
 
@@ -38,12 +36,12 @@ export default function EndScreen() {
 
 	useEffect(() => {
 
-		setLoaderVisible(true)
-
+		
 		const session_id = +urlParams.get('session_id')
 		const finalscore_id = +urlParams.get('finalscore_id')
-
+		
 		if(!session_id || !finalscore_id) return navigate('/session/select', { replace: true })
+		setLoading(true)
 
 		axiosPrivate.get(`/game/end?session_id=${session_id}&finalscore_id=${finalscore_id}`).then(({ data }) => {
 
@@ -57,9 +55,9 @@ export default function EndScreen() {
 
 			// Init list_winner
 			const list_winner = []
-			for(const winnerAlias of finalscore.List_Winner) {
+			for(const winner_id of finalscore.List_Winner) {
 				for(const p of list_players) {
-					if(winnerAlias === p.Alias) {
+					if(+winner_id === p.id) {
 						list_winner.push(p.Name)
 					}
 				}
@@ -93,65 +91,68 @@ export default function EndScreen() {
 				}
 			})
 			
-		}).finally(() => { setLoaderVisible(false) })
+		}).finally(() => setLoading(false))
 
+		// eslint-disable-next-line
 	}, [])
 
 
 
 
 
-	return (
-		<>
+	return (<>
 
-			<OptionsDialog/>
+		<OptionsDialog/>
 
-			<div className='end_container'>
-
-				<h1>{header}</h1>
-
-
-
-				<div className='table_container'>
-					<table className='table'>
-						<tbody>
-
-							<tr>
-								<td>Spieler</td>
-								{list_players.map((p, i) => (
-									<td key={i}><span>{p.Name}</span></td>
-								))}
-							</tr>
-
-							<tr>
-								<td>Gewonnen</td>
-								{list_players.map((p, i) => (
-									<td key={i}><span>{finalscore?.ScoresAfter[p.Alias]}</span></td>
-								))}
-							</tr>
-
-							<tr>
-								<td>Punkte</td>
-								{list_players.map((p, i) => (
-									<td key={i}><span>{finalscore?.PlayerScores[p.Alias]}</span></td>
-								))}
-							</tr>
-
-						</tbody>
-					</table>
-				</div>
-
-				<Loader loaderVisible={loaderVisible}/>
-
-
-
-				<button 
-					className='button' 
-					onClick={() => navigate('/session/select', { replace: false })}
-				>Ok</button>
-
-			</div>
 		
-		</>
-	)
+
+		<div className='end_container'>
+
+			<h1>{header}</h1>
+
+
+
+			<div className='table_container'>
+				<table className='table'>
+					<tbody>
+
+						<tr>
+							<td>Spieler</td>
+							{list_players.map((p, i) => (
+								<td key={i}><span>{p.Name}</span></td>
+							))}
+						</tr>
+
+						<tr>
+							<td>Gewonnen</td>
+							{list_players.map((p, i) => (
+								<td key={i}><span>{finalscore?.ScoresAfter[p.id]}</span></td>
+							))}
+						</tr>
+
+						<tr>
+							<td>Punkte</td>
+							{list_players.map((p, i) => (
+								<td key={i}><span>{finalscore?.PlayerScores[p.id]}</span></td>
+							))}
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+
+
+
+			<Loader loadin={loading}/>
+
+
+
+			<button 
+				className='button' 
+				onClick={() => navigate('/session/select', { replace: false })}
+			>Ok</button>
+
+		</div>
+		
+	</>)
 }

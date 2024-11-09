@@ -14,12 +14,16 @@ import ErrorMessage from './ErrorMessage'
 import CustomButton from './Custom_Button'
 import RegistrationForm from './RegistrationForm'
 import Previous from '../NavigationElements/Previous'
+import Loader from '../Loader/Loader'
 
 
 
 
 
-export default function OptionsDialog() {
+export default function OptionsDialog({
+	setUser, 
+	user, 
+}) {
 
     const { setAuth } = useAuth()
 
@@ -29,7 +33,7 @@ export default function OptionsDialog() {
 
 	const [ show_options, setShow_options ] = useState(false)
 	
-	const [ darkMode, setDarkMode ] = useState(localStorage.getItem('kniffel_darkMode') === 'true' || false)
+	const [ loading_darkMode, setLoading_darkMode ] = useState(false)
 
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
@@ -47,12 +51,38 @@ export default function OptionsDialog() {
 
 
 	useEffect(() => {
+		
+		if(!user) return
+		
+		if(user.DarkMode) {
+			document.body.classList.add('dark')
+		} else {
+			document.body.classList.remove('dark')
+		}
 
-		localStorage.setItem('kniffel_darkMode', darkMode)
-		if(darkMode) {document.body.classList.add('dark')
-		} else {document.body.classList.remove('dark')}
+	}, [ user ])
 
-	}, [darkMode])
+	const change_dark_mode = async () => {
+
+		setLoading_darkMode(true)
+
+		axiosPrivate.patch('/user', { DarkMode: !user.DarkMode }).then(() => {
+
+			setUser(prev => {
+				const tmp = { ...prev }
+				tmp.DarkMode = !tmp.DarkMode
+				return tmp
+			})
+
+		}).catch(err => {
+
+			handle_error({
+				err
+			})
+
+		}).finally(() => setLoading_darkMode(false))
+
+	}
 
 	const handleSubmit = async (e) => {
 
@@ -187,16 +217,18 @@ export default function OptionsDialog() {
 
 						<section className='joincode'>
 							
-							<input
-								type='checkbox'
-								checked={darkMode}
-								onChange={() => setDarkMode(!darkMode)}
-							/>
+							{loading_darkMode && <Loader loading={true}/>}
+							{!loading_darkMode &&
+								<input
+									type='checkbox'
+									checked={user?.DarkMode}
+									onChange={change_dark_mode}
+								/>
+							}
 							<label>Dark mode</label>
 							
 						</section>
 
-						{/* <JoinGameInput/> */}
 						<section>
 							<button 
 								className='button button-reverse'

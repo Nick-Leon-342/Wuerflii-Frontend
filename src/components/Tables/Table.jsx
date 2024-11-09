@@ -66,14 +66,22 @@ export default function Table({
 
 										if(!row.Possible_Entries || disabled) {
 											return (
-												<td style={{ backgroundColor: list_players[index_player].Color }} className={className} key={`${index_player}_${column}`}>
+												<td 
+													className={className} 
+													key={`${index_player}_${column}`}
+													style={{ backgroundColor: list_players[index_player].Color }} 
+												>
 													<span>{player.List_Table_Columns[column][row.Name]}</span>
 												</td>
 											)
 										}
 
 										return (
-											<td style={{ backgroundColor: list_players[index_player].Color }} className={className} key={`${index_player}_${column}`}>
+											<td 
+												className={className} 
+												key={`${index_player}_${column}`}
+												style={{ backgroundColor: list_players[index_player].Color }} 
+											>
 												<InputElement
 													setList_players={setList_players}
 													list_players={list_players}
@@ -212,6 +220,7 @@ const InputElement = ({
 
 		{!loading && session?.InputType === 'type' && <>
 			<input 
+				tabIndex={0}
 				value={input_value}
 				onChange={({ target }) => setInput_value(target.value)}
 				onBlur={onBlur}
@@ -220,6 +229,7 @@ const InputElement = ({
 
 		{!loading && session?.InputType === 'select' && <>
 			<select 
+				tabIndex={0}
 				value={input_value}
 				onChange={e => { onBlur(e); setInput_value(e.target.value) }}
 			>
@@ -232,6 +242,7 @@ const InputElement = ({
 
 		{!loading && session?.InputType === 'select_and_type' && <>
 			<input 
+				tabIndex={0}
 				list={id} 
 				value={input_value}
 				onChange={({ target }) => setInput_value(target.value)}
