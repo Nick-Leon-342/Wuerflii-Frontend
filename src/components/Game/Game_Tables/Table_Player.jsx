@@ -5,10 +5,10 @@ import './scss/Table_Player.scss'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../../hooks/useErrorHandling'
 
-import LoaderBox from '../Loader/Loader_Box'
+import LoaderBox from '../../Loader/Loader_Box'
 
 
 
@@ -58,7 +58,7 @@ export default function Table_Player({
 
 				{/* __________________________________________________ Scores __________________________________________________ */}
 
-				{!sessionStorage.ShowScores && <tr>
+				{session?.ShowScores && <tr>
 
 					<td>Spieler gesamt</td>
 

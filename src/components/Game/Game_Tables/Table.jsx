@@ -7,11 +7,11 @@ import { isMobile } from 'react-device-detect'
 
 import { useNavigate } from 'react-router-dom'
 
-import { list_rows } from '../../logic/utils'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../hooks/useErrorHandling'
+import { list_rows } from '../../../logic/utils'
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../../hooks/useErrorHandling'
 
-import LoaderBox from '../Loader/Loader_Box'
+import LoaderBox from '../../Loader/Loader_Box'
 
 
 
@@ -231,6 +231,7 @@ const InputElement = ({
 			<select 
 				tabIndex={0}
 				value={input_value}
+				className={`${isIOS() ? 'isios' : ''}`}
 				onChange={e => { onBlur(e); setInput_value(e.target.value) }}
 			>
 				<option></option>
@@ -242,11 +243,12 @@ const InputElement = ({
 
 		{!loading && session?.InputType === 'select_and_type' && <>
 			<input 
-				tabIndex={0}
 				list={id} 
-				value={input_value}
-				onChange={({ target }) => setInput_value(target.value)}
+				tabIndex={0}
 				onBlur={onBlur}
+				value={input_value}
+				className={`${isIOS() ? 'isios' : ''}`}
+				onChange={({ target }) => setInput_value(target.value)}
 			/>
 			<datalist id={id}>
 				{list_rows[index_row].Possible_Entries.map((v) => {

@@ -7,7 +7,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--padding);
-		margin: 500px 500px 500px 500px;
+		margin: 1500px 1500px 1500px 1500px;
 	
 	
 	
@@ -21,55 +21,6 @@
 				svg { height: 40px; }
 			}
 		}
-	}
-}
-
-
-
-
-
-
-
-
-
-
-/* __________________________________________________ Popup Options __________________________________________________ */
-
-.game_popup-options {
-	display: flex;
-	flex-direction: column;
-	background-color: var(--background-color_dark_2);
-	border-radius: 10px;
-	padding: 20px;
-
-	section {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0 15px;
-		font-size: 20px;
-		height: 75px;
-
-		&:not(:first-of-type) { padding-top: var(--padding); }
-
-		&:not(:last-of-type) {
-			padding-bottom: var(--padding);
-			border-bottom: 1px solid;
-		}
-
-		select {
-			border: none;
-			background: none;
-			text-align: right;
-			min-height: 0px;
-			height: min-content;
-			padding: 0;
-		}
-
-		svg {
-			height: 30px;
-		}
-
 	}
 }
 
@@ -93,15 +44,14 @@
 
 		ul {
 			list-style-type: none;
+			padding: 5px 10px;
 
 			li {
 				padding: 30px 0;
 				font-size: 20px;
 				padding-left: 10px;
 				
-				&:not(:last-child) {
-					border-bottom: 1px dashed;
-				}
+				&:not(:last-child) { border-bottom: 1px dashed; }
 			}
 		}
 	}
