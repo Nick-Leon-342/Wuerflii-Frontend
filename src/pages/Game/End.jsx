@@ -21,6 +21,7 @@ export default function EndScreen() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
+	const [ user, setUser ] = useState()
 	const [ list_players, setList_players ] = useState([])
 	const [ finalscore, setFinalScore ] = useState()
 
@@ -49,6 +50,7 @@ export default function EndScreen() {
 			const finalscore = data.FinalScore
 			const list_players = data.List_Players
 			
+			setUser(data.User)
 			setFinalScore(finalscore)
 			setList_players(list_players)
 
@@ -102,9 +104,14 @@ export default function EndScreen() {
 
 	return (<>
 
-		<OptionsDialog/>
+		<OptionsDialog
+			user={user}
+			setUser={setUser}
+		/>
 
 		
+
+
 
 		<div className='end_container'>
 
@@ -143,7 +150,7 @@ export default function EndScreen() {
 
 
 
-			<Loader loadin={loading}/>
+			<Loader loading={loading}/>
 
 
 

@@ -235,7 +235,10 @@ export default function Game() {
 
 	return (<>
 
-		<OptionsDialog/>
+		<OptionsDialog
+			user={user}
+			setUser={setUser}
+		/>
 
 
 

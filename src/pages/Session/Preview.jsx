@@ -362,7 +362,10 @@ export default function Preview() {
 	return (
 		<>
 
-			<OptionsDialog/>
+			<OptionsDialog
+				user={user}
+				setUser={setUser}
+			/>
 
 
 

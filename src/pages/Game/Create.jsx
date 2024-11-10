@@ -24,6 +24,7 @@ export default function Create() {
 	const navigate = useNavigate()
 	const handle_error = useErrorHandling()
 
+	const [ user, setUser ] = useState()
 	const [ loading_request, setLoading_request ] = useState(false)
 
 	const [ show_enterNames, setShow_enterNames ] = useState(false)
@@ -38,7 +39,14 @@ export default function Create() {
 
 		axiosPrivate.get('/game/create').then(({ data }) => {
 
-			const { MAX_PLAYERS, MAX_COLUMNS, MAX_LENGTH_PLAYER_NAME } = data
+			const { 
+				User, 
+				MAX_PLAYERS, 
+				MAX_COLUMNS, 
+				MAX_LENGTH_PLAYER_NAME, 
+			} = data
+
+			setUser(User)
 
 			setMAX_LENGTH_PLAYER_NAME(MAX_LENGTH_PLAYER_NAME)
 
@@ -183,9 +191,10 @@ export default function Create() {
 	return (
 		<>
 
-			{/* __________________________________________________ Dialogs __________________________________________________ */}
-
-			<OptionsDialog/>
+			<OptionsDialog
+				user={user}
+				setUser={setUser}
+			/>
 
 
 
