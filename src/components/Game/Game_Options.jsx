@@ -8,7 +8,7 @@ import { useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Popup from '../others/Popup'
+import Popup from '../Popup/Popup'
 import LoaderBox from '../Loader/Loader_Box'
 import Loader from '../Loader/Loader'
 

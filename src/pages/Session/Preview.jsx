@@ -5,19 +5,18 @@ import './scss/Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 
+import Calendar from 'react-calendar'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-import { formatDate } from '../../logic/utils'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Calendar from 'react-calendar'
-
-import Popup from '../../components/others/Popup'
+import Popup from '../../components/Popup/Popup'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/others/OptionsDialog'
 import CustomLink from '../../components/NavigationElements/CustomLink'
-import useErrorHandling from '../../hooks/useErrorHandling'
+import PopupEditPlayers from '../../components/Popup/Popup_EditPlayers'
 
 
 
@@ -37,12 +36,11 @@ export default function Preview() {
 	
 	const [ loading, setLoading ] = useState(false)
 	const [ loading_play, setLoading_play ] = useState(false)
-	const [ loading_update_view, setLoading_update_view ] = useState(false)
 	const [ loading_request_finalscores, setLoading_request_finalscores ] = useState(false)
 
-	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
+	const [ show_settings, setShow_settings ] = useState(false)
 
-	const height_dateElement = 50
+	const height_dateElement = 70
 	const height_element = 70
 
 	const container_players = useRef(null)
@@ -165,43 +163,6 @@ export default function Preview() {
 
 	}
 
-	const update_view = async ( view, view_month, view_year ) => { 
-
-		setLoading_update_view(true)
-
-		await axiosPrivate.patch('/session', {
-			SessionID: session.id, 
-			View: view, 
-			View_Month: view_month, 
-			View_Year: view_year, 
-		}).then(() => {
-
-
-			setSession(prev => {
-				const tmp = { ...prev }
-				tmp.View = view
-				tmp.View_Month = view_month
-				tmp.View_Year = view_year
-				return tmp
-			})
-
-
-		}).catch(err => {
-
-			handle_error({
-				err, 
-				handle_404: () => {
-					alert('Session nicht gefunden.')
-					navigate('/session/select', { replace: false })
-				}
-			})
-
-		}).finally(() => setLoading_update_view(false))
-
-		request_finalscores(session)
-
-	}
-
 	const request_finalscores = ( session ) => {
 
 		setLoading_request_finalscores(true)
@@ -275,7 +236,6 @@ export default function Preview() {
 
 	const [ visibleRowIndex, setVisibleRowIndex ] = useState(0)
 	const table_ref = useRef(null)
-	const listelement_ref = useRef(null)
 	const [ rowHeights, setRowHeights ] = useState([])
 
 	const handleScroll = () => {
@@ -298,7 +258,9 @@ export default function Preview() {
 
 	}
 
-	const syncScroll = ( container ) => {
+	const sync_horizontal_scroll = ( container ) => {
+
+		// Sync horizontal scroll on both 'tables' so they align 
 
 		const p = container_players.current
 		const g = container_games.current
@@ -317,308 +279,194 @@ export default function Preview() {
 
 
 
-	
+
+
+
+
+	return (<>
+
+		<OptionsDialog
+			user={user}
+			setUser={setUser}
+		/>
 
 
 
 
 
-	// // __________________________________________________Modal-Edit__________________________________________________
+		<div className='preview'>
 
-	// const [ columns, setColumns ] = useState('')
-	// const maxColumns = process.env.REACT_APP_MAX_COLUMNS || 10
-	// const options_columns = Array.from({ length: maxColumns }, (_, index) => index + 1)
-
-	// const handle_edit_columnChange = (event) => {
-
-	// 	const intValue = event.target.value
-	// 	if (isNaN(parseInt(intValue.substr(intValue.length - 1))) || intValue < 1 || parseInt(intValue) > maxColumns) {return setColumns(intValue.slice(0, -1))}
-	// 	setColumns(intValue)
-
-	// }
-
-	// const edit_show = () => {
-
-	// 	// setSuccessfullyUpdatedVisible(false)
-	// 	// setList_players(session?.List_PlayerOrder.map((alias) => getPlayer(alias)))
-	// 	// setShow_editSession(true)
-
-	// }
-
-	// const edit_close = () => {
-		
-	// 	setList_players([])
-	// 	setColumns('')
-	// 	setShow_editSession(false)
-
-	// }
-
-	// const edit_save = async () => {
-
-	// 	setLoading_edit(true)
-
-	// 	axiosPrivate.post('/session/update', { SessionID: session.id, Columns: +columns, List_Players: list_players }).then(() => {
-
-	// 		setSuccessfullyUpdatedVisible(true)
-	// 		edit_close()
-	// 		window.location.reload()
-
-	// 	}).catch((err) => {
-
-	// 		handle_error({ err, 
-	// 			handle_404: (() => {
-	// 				window.alert('Die Session wurde nicht gefunden!')
-	// 				window.location.reload()
-	// 			})
-	// 		})
-
-	// 	}).finally(() => { setLoading_edit(false) })		
-
-	// }
+			<header>
+				<button
+					onClick={() => setShow_settings(true)}
+					className='button button-reverse button-reverse'
+				>
+					<svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
+					<span>Einstellungen</span>
+				</button>
+			</header>
 
 
 
+			<div 
+				ref={container_players} 
+				className='preview_table-container' 
+				onScroll={() => sync_horizontal_scroll('container_players')}
+			>
+				<table className='table table_players'>
+					<tbody>
+						<tr>
+							{list_players?.map(player => (
+								<td key={player.id}>
+									<span>{player.Name}</span>
+								</td>
+							))}
+						</tr>
+						<tr>
+							{list_players?.map(player => {
 
+								const id = player.id
+								const e = list_finalScores.at(visibleRowIndex)
 
-
-
-
-
-
-	return (
-		<>
-
-			<OptionsDialog
-				user={user}
-				setUser={setUser}
-			/>
-
-
-
-
-
-			<div className='preview_container'>
-
-				<div className='select-container'>
-
-					<select 
-						value={session?.View}
-						onChange={({ target }) => update_view(target.value, session.View_Month, session.View_Year)}
-					>
-						<option key={0} value='show_all'>Gesamtansicht</option>
-						<option key={1} value='show_year'>Jahresansicht</option>
-						<option key={2} value='show_month'>Monatsansicht</option>
-						<option key={3} value='custom_date'>Benutzerdefiniert</option>
-					</select>
-
-					{(session?.View === 'show_month' || session?.View === 'show_year') && <>
-						<select 
-							value={session.View_Year}
-							onChange={({ target }) => update_view(session.View, session.View_Month, +target.value)}
-						>
-							{session?.View_List_Years.map((y, i) => 
-								<option key={i} value={y}>{y}</option>
-							)}
-						</select>
-					</>}
-
-					{session?.View === 'show_month' && <>
-						<select 
-							value={session.View_Month}
-							onChange={({ target }) => update_view(session.View, +target.value, session.View_Year)}
-						>
-							{list_months.map((m, i) => 
-								<option key={i} value={i+1}>{m}</option>
-							)}
-						</select>
-					</>}
-
-					{session?.View === 'custom_date' && <>
-						<label onClick={() => setShow_customDate(true)}>
-							{`Ansicht ab: ${formatDate(session?.CustomDate)}` || 'Erstelle Ansicht'}
-						</label>
-					</>}
-
-				</div>
-
-
-
-				<div className='preview_table-container' ref={container_players} onScroll={() => syncScroll('container_players')}>
-					<table className='table table_players'>
-						<tbody>
-							<tr>
-								{list_players?.map(player => (
-									<td key={player.id}>
-										<span>{player.Name}</span>
+								return (
+									<td key={id}>
+										<span>
+											{session?.View === 'show_month' && (e?.ScoresAfter_Month[id] || 0)}
+											{session?.View === 'show_year' && (e?.ScoresAfter_Year[id] || 0)}
+											{session?.View === 'custom_date' && (e?.ScoresAfter_SinceCustomDate[id] || 0)}
+											{session?.View === 'show_all' && (e?.ScoresAfter[id] || 0)}
+										</span>
 									</td>
-								))}
-							</tr>
-							<tr>
-								{list_players?.map(player => {
+								)
 
-									const id = player.id
-									const e = list_finalScores.at(visibleRowIndex)
-
-									return (
-										<td key={id}>
-											<span>
-												{session?.View === 'show_month' && (e?.ScoresAfter_Month[id] || 0)}
-												{session?.View === 'show_year' && (e?.ScoresAfter_Year[id] || 0)}
-												{session?.View === 'custom_date' && (e?.ScoresAfter_SinceCustomDate[id] || 0)}
-												{session?.View === 'show_all' && (e?.ScoresAfter[id] || 0)}
-											</span>
-										</td>
-									)
-
-								})}
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-
-
-				<div className='preview_table-container' ref={container_games} onScroll={() => { handleScroll(); syncScroll('container_games') }}>
-					<table className='table table_preview' ref={table_ref}>
-						<tbody>
-							{list_finalScores?.map((e, i) => {
-								if(e.Group_Date) {
-
-									const day = new Date(e.Group_Date).getDate()
-									const month = new Date(e.Group_Date).getMonth() + 1
-									const year = new Date(e.Group_Date).getFullYear()
-
-									return (
-										<tr 
-											key={i}
-											className='preview_list_date'
-										>
-											<td className='date'>
-												<label>
-													{session?.View === 'show_month' && `${day}.`}
-													{session?.View === 'show_year' && `${day}.${month}.`}
-													{(session?.View === 'custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
-												</label>
-											</td>
-										</tr>
-									)
-
-								} else {
-
-									return (
-										<tr 
-											key={i} 
-											className='preview_list_element' 
-											onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
-										>
-											{list_players?.map((player, index_player) => 
-												<td key={`${i}.${index_player}`}>{e.PlayerScores[player.id]}</td>
-											)}
-										</tr>
-									)
-
-								}
 							})}
-							<tr ref={listelement_ref}/>
-						</tbody>
-					</table>
-				</div>
-
-
-
-				<CustomButton
-					loading={loading_play}
-					text={`Los geht's!`}
-					onClick={play}
-				/>
-
-				<CustomLink 
-					onClick={() => navigate('/session/select',  { replace: false })}
-					text='Zurück'
-				/>
-
+						</tr>
+					</tbody>
+				</table>
 			</div>
 
 
 
-
-
-			{/* __________________________________________________ Popup Calendar __________________________________________________ */}
-
-			<Popup
-				showPopup={show_customDate}
-				setShowPopup={setShow_customDate}
-				title='Beginn auswählen'
+			<div 
+				ref={container_games} 
+				className='preview_list' 
+				onScroll={() => { handleScroll(); sync_horizontal_scroll('container_games') }}
 			>
-				<div className='preview_popup'>
-					<Calendar
-						value={customDate}
-						onChange={(cd) => setCustomDate(cd)}
-					/>
+				<ul 
+					ref={table_ref}
+					className='preview_list_scores' 
+				>
+					{list_finalScores?.map((e, i) => {
+						if(e.Group_Date) {
 
-					<CustomButton
-						loading={loading_customDate}
-						text='Speichern'
-						onClick={save_customDate}
-					/>
-				</div>
-			</Popup>
+							const day = new Date(e.Group_Date).getDate()
+							const month = new Date(e.Group_Date).getMonth() + 1
+							const year = new Date(e.Group_Date).getFullYear()
+
+							return (
+								<li 
+									key={i}
+									className='preview_list_element-date'
+								>
+									<span>
+										{session?.View === 'show_month' && `${day}.`}
+										{session?.View === 'show_year' && `${day}.${month}.`}
+										{(session?.View === 'custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
+									</span>
+								</li>
+							)
+
+						} else {
+
+							return (
+								<li 
+									key={i} 
+									className='preview_list_element-scores' 
+									onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
+								>
+									{list_players?.map((player, index_player) => 
+										<div key={`${i}.${index_player}`}>
+											<span>
+												{e.PlayerScores[player.id]}
+											</span>
+										</div>
+									)}
+								</li>
+							)
+
+						}
+					})}
+				</ul>
+			</div>
 
 
 
+			<CustomButton
+				loading={loading_play}
+				text={`Los geht's!`}
+				onClick={play}
+			/>
 
-
-
-
-
-
-
-
-{/* __________________________________________________ Popup Edit __________________________________________________ */}
-
-{/* <Popup
-	showPopup={show_editSession}
-	setShowPopup={setShow_editSession}
-	title='Bearbeiten'
->
-	<div className='select_popup_edit'>							
-
-
-		
-		<div className='columns'>
-
-			<label>Spalten</label>
-			
-			<select
-				value={columns}
-				onChange={handle_edit_columnChange}
-			>
-				<option value={session?.Columns}>
-					{'Derzeit: ' + session?.Columns}
-				</option>
-				{options_columns.map((c) => (
-					<option key={c} value={c}>{c}</option>
-				))}
-			</select>
+			<CustomLink 
+				onClick={() => navigate('/session/select',  { replace: false })}
+				text='Zurück'
+			/>
 
 		</div>
 
 
 
-		
-		{list_players && <DragAndDropNameColorList List_Players={list_players} setList_Players={setList_players}/>}
+
+
+		{/* __________________________________________________ Popup Calendar __________________________________________________ */}
+
+		<Popup
+			showPopup={show_customDate}
+			setShowPopup={setShow_customDate}
+			title='Beginn auswählen'
+		>
+			<div className='preview_popup'>
+				<Calendar
+					value={customDate}
+					onChange={(cd) => setCustomDate(cd)}
+				/>
+
+				<CustomButton
+					loading={loading_customDate}
+					text='Speichern'
+					onClick={save_customDate}
+				/>
+			</div>
+		</Popup>
 
 
 
-		<CustomButton
-			loading={loading_edit}
-			onClick={edit_save}
-			text='Speichern'
+
+
+
+
+
+
+
+
+		{/* __________________________________________________ Popup Edit __________________________________________________ */}
+
+		<PopupEditPlayers
+			request_finalscores={request_finalscores}
+
+			setShow_customDate={setShow_customDate}
+
+			setShow_editPlayers={setShow_settings}
+			show_editPlayers={show_settings}
+
+			setSession={setSession}
+			session={session}
+
+			setList_players={setList_players}
+			list_players={list_players}
+
+			show_edit_customDate={true}
 		/>
 
-	</div>
-</Popup> */}
-
-		</>
-	)
+	</>)
 }

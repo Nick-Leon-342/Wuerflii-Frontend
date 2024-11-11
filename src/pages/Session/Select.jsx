@@ -50,7 +50,11 @@ export default function SelectSession() {
 		}).catch((err) => {
 
 			handle_error({ 
-				err 
+				err, 
+				handle_404: () => {
+					alert('Benutzer nicht gefunden.')
+					navigate('/', { replace: true })
+				}
 			})
 
 		}).finally(() => setLoading(false))

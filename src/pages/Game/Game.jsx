@@ -8,14 +8,14 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Popup from '../../components/others/Popup'
+import Popup from '../../components/Popup/Popup'
 import Loader from '../../components/Loader/Loader'
 import Table from '../../components/Game/Game_Tables/Table'
 import GameOptions from '../../components/Game/Game_Options'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/others/OptionsDialog'
+import PopupEditPlayers from '../../components/Popup/Popup_EditPlayers'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
-import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
 
 
 
@@ -280,36 +280,18 @@ export default function Game() {
 
 		{/* __________________________________________________ Popup Edit __________________________________________________ */}
 
-		<Popup
-			showPopup={show_edit}
-			setShowPopup={setShow_edit}
-			title='Bearbeiten'
-		>
-			<div className='game_popup-edit'>
+		<PopupEditPlayers
+			setShow_editPlayers={setShow_edit}
+			show_editPlayers={show_edit}
 
-				{/* ______________________________ ChangeNames ______________________________ */}
-				{/* To test the drag and drop function you have to disable/comment React.StrictMode in index.js */}
+			setSession={setSession}
+			session={session}
 
-				{/* <div className='show-sum'>
-					<label>Gesamtsumme anzeigen</label>
-					<ToggleSlider 
-						toggled={showScores}
-						onChange={() => {handleShowScoresChange(!showScores, urlParams); setShowScores(!showScores)}}
-					/>
-				</div> */}
+			setList_players={setList_players}
+			list_players={list_players}
 
-				<div className='list-container'>
-					{list_players && <DragAndDropNameColorList List_Players={edit_list_players} setList_Players={setEdit_list_players}/>}
-				</div>
-
-				<button 
-					className='button button-thick' 
-					onClick={save_edit} 
-					disabled={disable_edit}
-				>Speichern</button>
-			
-			</div>
-		</Popup>
+			show_edit_customDate={false}
+		/>
 
 	</>)
 }

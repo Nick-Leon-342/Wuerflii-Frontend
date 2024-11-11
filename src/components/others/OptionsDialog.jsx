@@ -9,7 +9,7 @@ import useAuth from '../../hooks/useAuth'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Popup from './Popup'
+import Popup from '../Popup/Popup'
 import ErrorMessage from './ErrorMessage'
 import CustomButton from './Custom_Button'
 import LoaderBox from '../Loader/Loader_Box'
