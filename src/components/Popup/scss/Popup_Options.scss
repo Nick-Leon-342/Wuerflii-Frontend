@@ -1,0 +1,61 @@
+
+
+.popup_options-icon {
+	position: fixed;
+	top: 5px;
+	left: 5px;
+	width: 30px;
+	height: 30px;
+	z-index: 100;
+
+	svg { height: 30px; }
+}
+
+
+
+.popup_options {
+	display: flex;
+	flex-direction: column;
+	gap: var(--padding);
+
+
+
+	.container {
+		background-color: var(--background-color_dark_1);
+		padding: 10px;
+		border-radius: 10px;
+
+
+
+		section {
+			display: flex;
+			padding: 15px 10px;
+			height: 70px;
+			align-items: center;
+			font-size: 20px;
+			
+			&:not(:last-of-type) { border-bottom: 1px dashed; }
+
+
+
+			&.darkmode {
+				display: flex;
+				flex-direction: row;
+				gap: 10px;
+				input { width: 25px; }
+
+				.popup_options_loading_darkmode-container {
+					display: grid;
+					place-content: center;
+				
+					.popup_options_loading_darkmode {
+						border-radius: 5px;
+						width: 20px;
+						height: 20px;
+					}
+				}
+			}
+		}
+	}
+
+}

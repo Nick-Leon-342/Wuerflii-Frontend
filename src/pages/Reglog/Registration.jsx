@@ -3,9 +3,10 @@
 import './scss/Reglog.scss'
 
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
-import { useNavigate } from 'react-router-dom'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import ErrorMessage from '../../components/others/ErrorMessage'
@@ -54,11 +55,13 @@ export default function Registration() {
 			}
 		).then(({ data }) => {
 
+
 			setAuth({ accessToken: data.accessToken })
 			setName('')
 			setPassword('')
 
 			navigate('/game/create', { replace: true })
+
 
 		}).catch((err) => {
 
@@ -69,7 +72,7 @@ export default function Registration() {
 				}
 			})
 
-		}).finally(() => { setLoading(false) })
+		}).finally(() => setLoading(false))
 
 	}
 
@@ -110,9 +113,9 @@ export default function Registration() {
 
 
 			<CustomLink 
-				onClick={() => navigate('/login', { replace: false })}
 				text='Anmelden' 
 				textBefore='Bereits einen Account?'
+				onClick={() => navigate('/login', { replace: false })}
 			/>
 
 		</div>

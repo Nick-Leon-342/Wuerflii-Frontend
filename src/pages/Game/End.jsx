@@ -9,7 +9,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Loader from '../../components/Loader/Loader'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import OptionsDialog from '../../components/others/OptionsDialog'
+import OptionsDialog from '../../components/Popup/Popup_Options'
 
 
 

@@ -8,6 +8,8 @@ import Login from './pages/Reglog/Login'
 import PersistLogin from './logic/PersistLogin'
 import Registration from './pages/Reglog/Registration'
 
+import Profile from './pages/Profile'
+
 // __________ Session __________
 import Select from './pages/Session/Select'
 import Preview from './pages/Session/Preview'
@@ -37,6 +39,8 @@ export default function App() {
 						PersistLogin is needed, so that the user doesn't have to login after page refresh
 					*/}
 					<Route element={<PersistLogin />}>
+
+						<Route path='/profile' element={<Profile />} />
 
 						{/* __________ Session __________ */}
 						<Route path='/session/select' element={<Select />} />

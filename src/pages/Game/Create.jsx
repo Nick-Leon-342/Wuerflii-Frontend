@@ -8,7 +8,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import FancyInput from '../../components/others/FancyInput'
 import CustomButton from '../../components/others/Custom_Button'
-import OptionsDialog from '../../components/others/OptionsDialog'
+import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import useErrorHandling from '../../hooks/useErrorHandling'

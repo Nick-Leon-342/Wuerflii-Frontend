@@ -10,7 +10,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Loader from '../../components/Loader/Loader'
-import OptionsDialog from '../../components/others/OptionsDialog'
+import OptionsDialog from '../../components/Popup/Popup_Options'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 
 

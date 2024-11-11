@@ -13,7 +13,7 @@ import Loader from '../../components/Loader/Loader'
 import Table from '../../components/Game/Game_Tables/Table'
 import GameOptions from '../../components/Game/Game_Options'
 import CustomButton from '../../components/others/Custom_Button'
-import OptionsDialog from '../../components/others/OptionsDialog'
+import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupEditPlayers from '../../components/Popup/Popup_EditPlayers'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
@@ -110,44 +110,6 @@ export default function Game() {
 	}
 
 
-
-
-
-	// __________________________________________________ Edit __________________________________________________
-
-	const [ disable_edit, setDisable_edit ] = useState(false)
-	const [ edit_list_players, setEdit_list_players ] = useState([])
-
-	const save_edit = () => {
-
-		setDisable_edit(true)
-
-		if(!session.id) return
-
-		axiosPrivate.post('/session/update', 
-			{ 
-				SessionID: session.id, 
-				List_Players: edit_list_players 
-			}
-		).then(() => {
-
-			window.location.reload()
-
-		}).catch((err) => {
-
-			handle_error({
-				err, 
-				handle_404: () => {
-					window.alert('Die Session wird nicht gefunden!')
-					navigate('/session/select', { replace: true })
-				}
-			})
-
-		}).finally(() => setDisable_edit(false))
-			
-	}
-
-
 	
 
 
@@ -202,24 +164,17 @@ export default function Game() {
 
 
 
-
-
-
-
-
 		{/* __________________________________________________ Options __________________________________________________ */}
 
 		<GameOptions
-			show_options={show_options}
+			setShow_surrender={setShow_surrender}
+			setShow_edit={setShow_edit}
+
 			setShow_options={setShow_options}
+			show_options={show_options}
 
 			session={session}
 			setSession={setSession}
-			list_players={list_players}
-			
-			setShow_edit={setShow_edit}
-			setShow_surrender={setShow_surrender}
-			setEdit_list_players={setEdit_list_players}
 		/>
 
 

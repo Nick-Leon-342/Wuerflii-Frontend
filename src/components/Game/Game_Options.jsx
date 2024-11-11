@@ -2,29 +2,29 @@
 
 import './scss/Game_Options.scss'
 
-import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../Popup/Popup'
-import LoaderBox from '../Loader/Loader_Box'
 import Loader from '../Loader/Loader'
+import LoaderBox from '../Loader/Loader_Box'
+
+
 
 
 
 export default function Game_Options({
-	show_options, 
-	setShow_options, 
-
-	session, 
-	setSession, 
-	list_players, 
-	
-	setShow_edit, 
 	setShow_surrender, 
-	setEdit_list_players, 
+	setShow_edit, 
+
+	setShow_options, 
+	show_options, 
+
+	setSession, 
+	session, 
 }) {
 
 	const navigate = useNavigate()
@@ -34,17 +34,10 @@ export default function Game_Options({
 	const [ loading_newGame, setLoading_newGame ] = useState(false)
 	const [ loading_inputType, setLoading_inputType ] = useState(false)
 	const [ loading_showScores, setLoading_showScores ] = useState(false)
-
 	
 
 
 
-	const show_edit_popup = () => {
-
-		setEdit_list_players(structuredClone(list_players)) 
-		setShow_edit(true) 
-
-	}
 
 	const change_inputType = ( e ) => {
 
@@ -182,7 +175,7 @@ export default function Game_Options({
 					<label>Bearbeiten</label>
 
 					<button
-						onClick={show_edit_popup} 
+						onClick={() => setShow_edit(true)} 
 						className='button button-reverse button-responsive edit'
 					><svg viewBox='0 -960 960 960'><path d='M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z'/></svg></button>
 				</section>

@@ -2,11 +2,12 @@
 
 import './scss/Reglog.scss'
 
-import React, { useEffect } from 'react'
 import { useState } from 'react'
-import useAuth from '../../hooks/useAuth'
+import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+
 import axios from '../../api/axios'
+import useAuth from '../../hooks/useAuth'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import FancyInput from '../../components/others/FancyInput'
@@ -37,9 +38,10 @@ export default function Login() {
 
 
 	
-	useEffect(() => { setNext(new URLSearchParams(location.search).get('next')) }, [])
+	// eslint-disable-next-line
+	useEffect(() => setNext(new URLSearchParams(location.search).get('next')), [])
 
-	useEffect(() => { setError('') }, [ Name, Password ])
+	useEffect(() => setError(''), [ Name, Password ])
 
     const handleSubmit = (e) => {
 
@@ -57,11 +59,13 @@ export default function Login() {
 			}
 		).then(({ data }) => {
 
+
 			setAuth({ accessToken: data.accessToken })
 			setName('')
 			setPassword('')
 
 			navigate(next || '/session/select', { replace: true })
+
 
 		}).catch((err) => {
 
@@ -72,7 +76,7 @@ export default function Login() {
 				}
 			})
 
-		}).finally(() => { setLoading(false) })
+		}).finally(() => setLoading(false))
 
     }
 
@@ -119,9 +123,9 @@ export default function Login() {
 
 
 			<CustomLink 
-				onClick={() => navigate('/registration', { replace: false })}
 				text='Erstellen' 
 				textBefore='Noch keinen Account?'
+				onClick={() => navigate('/registration', { replace: false })}
 			/>
 			
 		</div>
