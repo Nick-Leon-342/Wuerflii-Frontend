@@ -223,8 +223,8 @@ export default function Create() {
 
 					<div className='list-container'>
 						<DragAndDropNameColorList
-							List_Players={list_players}
-							setList_Players={setList_players}
+							list_edit_players={list_players}
+							setList_edit_players={setList_players}
 							MAX_LENGTH_PLAYER_NAME={MAX_LENGTH_PLAYER_NAME}
 						/>
 					</div>
