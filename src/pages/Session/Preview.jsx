@@ -382,7 +382,8 @@ export default function Preview() {
 								<li 
 									key={i} 
 									className='preview_list_element-scores' 
-									onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
+									// onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
+									onClick={() => alert('Noch nicht implementiert.')}
 								>
 									{list_players?.map((player, index_player) => 
 										<div key={`${i}.${index_player}`}>
