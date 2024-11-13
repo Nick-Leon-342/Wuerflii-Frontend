@@ -20,6 +20,7 @@
 			border-right: var(--thick-border);
 			width: 100%;
 			overflow: hidden;
+			padding: 5px; 
 
 			&:first-child {
 				width: 240px;
@@ -31,9 +32,9 @@
 
 			span {
 				font-size: 20px;
-				// flex-wrap: nowrap;
 				text-wrap: nowrap;
 				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 
 			input {

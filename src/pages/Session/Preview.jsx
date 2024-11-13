@@ -319,7 +319,7 @@ export default function Preview() {
 					className='preview_table-container' 
 					onScroll={() => sync_horizontal_scroll('container_players')}
 				>
-					<table className='table table_players'>
+					<table className='table'>
 						<tbody>
 							<tr>
 								{list_players?.map(player => (

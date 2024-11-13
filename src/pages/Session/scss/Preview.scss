@@ -34,7 +34,7 @@
 		overflow: auto;
 		scrollbar-gutter: stable both-edges;
 
-		.table_players { 
+		table { 
 			min-width: 100%;
 			background-color: rgb(150, 250, 150);
 
@@ -48,6 +48,7 @@
 					align-items: center;
 					min-width: 100px;
 					height: 60px;
+					padding: 5px;
 
 					span {
 						font-size: 20px;
