@@ -62,9 +62,7 @@ export default function Game() {
 			setList_players(data.List_Players)
 			setSession(data.Session)
 
-			setTimeout(() => {
-				window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' })
-			}, 50)
+			setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
 
 
 		}).catch((err) => {

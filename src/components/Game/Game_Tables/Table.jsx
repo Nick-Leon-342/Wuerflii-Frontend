@@ -59,18 +59,19 @@ export default function Table({
 
 							{list_players?.map((player, index_player) => {
 								return <>
-									{list_columns.map((column, index_column) => {
+									{list_columns.map(column => {
 
-										const className = `${index_column === session.Columns - 1 ? 'border-right' : ''}`
+										const className = `${column === session.Columns - 1 ? 'border-right' : ''}`
 
 										if(!row.Possible_Entries || disabled) {
+											const value = player.List_Table_Columns[column][row.Name]
 											return (
 												<td 
 													className={className} 
 													key={`${index_player}_${column}`}
-													style={{ backgroundColor: list_players[index_player].Color }} 
+													style={{ backgroundColor: player.Color }} 
 												>
-													<span>{player.List_Table_Columns[column][row.Name]}</span>
+													<span>{disabled ? value || 0 : value}</span>
 												</td>
 											)
 										}
@@ -79,7 +80,7 @@ export default function Table({
 											<td 
 												className={className} 
 												key={`${index_player}_${column}`}
-												style={{ backgroundColor: list_players[index_player].Color }} 
+												style={{ backgroundColor: player.Color }} 
 											>
 												<InputElement
 													setList_players={setList_players}

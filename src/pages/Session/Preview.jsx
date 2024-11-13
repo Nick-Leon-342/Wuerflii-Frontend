@@ -391,8 +391,8 @@ export default function Preview() {
 									<li 
 										key={index_final_score} 
 										className={`preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
-										// onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
-										onClick={() => alert('Noch nicht implementiert.')}
+										onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${final_score?.id}`, { replace: false })}
+										// onClick={() => alert('Noch nicht implementiert.')}
 									>
 										{list_players?.map((player, index_player) => 
 											<div key={`${index_final_score}.${index_player}`}>

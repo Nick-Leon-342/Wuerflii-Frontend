@@ -43,9 +43,9 @@ export default function Table_Player({
 
 				<div className='table_player_column'><span>Spieler</span></div>
 
-				{list_players?.map((p, i) => 
-					<div className='table_player_column' key={i}>
-						<span>{p.Name}</span>
+				{list_players?.map((player, index_player) => 
+					<div className='table_player_column' key={index_player}>
+						<span>{player.Name}</span>
 					</div>
 				)}
 
