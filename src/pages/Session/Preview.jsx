@@ -4,7 +4,6 @@
 import './scss/Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
-
 import Calendar from 'react-calendar'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -13,6 +12,8 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../../components/Popup/Popup'
+import Loader from '../../components/Loader/Loader'
+import LoaderBox from '../../components/Loader/Loader_Box'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import CustomLink from '../../components/NavigationElements/CustomLink'
@@ -296,117 +297,128 @@ export default function Preview() {
 
 		<div className='preview'>
 
-			<header>
-				<button
-					onClick={() => setShow_settings(true)}
-					className='button button-reverse button-reverse'
+			{loading && <Loader loading={true}/>}
+
+			{!loading && <>
+				<header>
+					<button
+						onClick={() => setShow_settings(true)}
+						className='button button-reverse button-reverse'
+					>
+						<svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
+						<span>Einstellungen</span>
+					</button>
+				</header>
+			</>}
+
+
+
+			{!loading && <>
+				<div 
+					ref={container_players} 
+					className='preview_table-container' 
+					onScroll={() => sync_horizontal_scroll('container_players')}
 				>
-					<svg viewBox='0 -960 960 960'><path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z'/></svg>
-					<span>Einstellungen</span>
-				</button>
-			</header>
+					<table className='table table_players'>
+						<tbody>
+							<tr>
+								{list_players?.map(player => (
+									<td key={player.id}>
+										<span>{player.Name}</span>
+									</td>
+								))}
+							</tr>
+							<tr>
+								{list_players?.map(player => {
+
+									const id = player.id
+									const e = list_finalScores.at(visibleRowIndex)
+
+									return (
+										<td key={id}>
+											<span>
+												{session?.View === 'show_month' && (e?.ScoresAfter_Month[id] || 0)}
+												{session?.View === 'show_year' && (e?.ScoresAfter_Year[id] || 0)}
+												{session?.View === 'custom_date' && (e?.ScoresAfter_SinceCustomDate[id] || 0)}
+												{session?.View === 'show_all' && (e?.ScoresAfter[id] || 0)}
+											</span>
+										</td>
+									)
+
+								})}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</>}
 
 
 
-			<div 
-				ref={container_players} 
-				className='preview_table-container' 
-				onScroll={() => sync_horizontal_scroll('container_players')}
-			>
-				<table className='table table_players'>
-					<tbody>
-						<tr>
-							{list_players?.map(player => (
-								<td key={player.id}>
-									<span>{player.Name}</span>
-								</td>
-							))}
-						</tr>
-						<tr>
-							{list_players?.map(player => {
+			{loading_request_finalscores && <LoaderBox className='preview_list_loader' dark={true}/>}
+			{!loading_request_finalscores && <>
+				<div 
+					ref={container_games} 
+					className='preview_list' 
+					onScroll={() => { handleScroll(); sync_horizontal_scroll('container_games') }}
+				>
+					<ul 
+						ref={table_ref}
+						className='preview_list_scores' 
+					>
+						{list_finalScores?.map((final_score, index_final_score) => {
+							if(final_score.Group_Date) {
 
-								const id = player.id
-								const e = list_finalScores.at(visibleRowIndex)
+								const day = new Date(final_score.Group_Date).getDate()
+								const month = new Date(final_score.Group_Date).getMonth() + 1
+								const year = new Date(final_score.Group_Date).getFullYear()
 
 								return (
-									<td key={id}>
+									<li 
+										key={index_final_score}
+										className='preview_list_element-date'
+									>
 										<span>
-											{session?.View === 'show_month' && (e?.ScoresAfter_Month[id] || 0)}
-											{session?.View === 'show_year' && (e?.ScoresAfter_Year[id] || 0)}
-											{session?.View === 'custom_date' && (e?.ScoresAfter_SinceCustomDate[id] || 0)}
-											{session?.View === 'show_all' && (e?.ScoresAfter[id] || 0)}
+											{session?.View === 'show_month' && `${day}.`}
+											{session?.View === 'show_year' && `${day}.${month}.`}
+											{(session?.View === 'custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
 										</span>
-									</td>
+									</li>
 								)
 
-							})}
-						</tr>
-					</tbody>
-				</table>
-			</div>
+							} else {
+
+								return (
+									<li 
+										key={index_final_score} 
+										className={`preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
+										// onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
+										onClick={() => alert('Noch nicht implementiert.')}
+									>
+										{list_players?.map((player, index_player) => 
+											<div key={`${index_final_score}.${index_player}`}>
+												<span>
+													{final_score.PlayerScores[player.id]}
+												</span>
+											</div>
+										)}
+									</li>
+								)
+
+							}
+						})}
+					</ul>
+				</div>
+			</>}
 
 
 
-			<div 
-				ref={container_games} 
-				className='preview_list' 
-				onScroll={() => { handleScroll(); sync_horizontal_scroll('container_games') }}
-			>
-				<ul 
-					ref={table_ref}
-					className='preview_list_scores' 
-				>
-					{list_finalScores?.map((e, i) => {
-						if(e.Group_Date) {
-
-							const day = new Date(e.Group_Date).getDate()
-							const month = new Date(e.Group_Date).getMonth() + 1
-							const year = new Date(e.Group_Date).getFullYear()
-
-							return (
-								<li 
-									key={i}
-									className='preview_list_element-date'
-								>
-									<span>
-										{session?.View === 'show_month' && `${day}.`}
-										{session?.View === 'show_year' && `${day}.${month}.`}
-										{(session?.View === 'custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
-									</span>
-								</li>
-							)
-
-						} else {
-
-							return (
-								<li 
-									key={i} 
-									className='preview_list_element-scores' 
-									// onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${e.id}`, { replace: false })}
-									onClick={() => alert('Noch nicht implementiert.')}
-								>
-									{list_players?.map((player, index_player) => 
-										<div key={`${i}.${index_player}`}>
-											<span>
-												{e.PlayerScores[player.id]}
-											</span>
-										</div>
-									)}
-								</li>
-							)
-
-						}
-					})}
-				</ul>
-			</div>
-
-
-
-			<CustomButton
-				loading={loading_play}
-				text={`Los geht's!`}
-				onClick={play}
-			/>
+			{!loading && <>
+				<CustomButton
+					loading={loading_play}
+					text={`Los geht's!`}
+					onClick={play}
+				/>
+			</>}
 
 			<CustomLink 
 				onClick={() => navigate('/session/select',  { replace: false })}

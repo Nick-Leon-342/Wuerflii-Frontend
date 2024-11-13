@@ -69,6 +69,10 @@
 
 
 
+.preview_list_loader {
+	height: 100px;
+}
+
 .preview_list {
 	max-height: 500px;
 	overflow: auto;
@@ -94,6 +98,8 @@
 			display: flex;
 			justify-content: space-between;
 			width: 100%;
+
+			&.no_border_bottom div { border-bottom: none; }
 	
 			div {
 				display: grid;
