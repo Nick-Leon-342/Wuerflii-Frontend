@@ -54,8 +54,6 @@ export default function Popup_EditPlayers({
 
 	useEffect(() => {
 
-		if(!show_edit_customDate) return
-
 		setLoading(true)
 
 		axiosPrivate.get('/game/create').then(({ data }) => {
@@ -114,11 +112,18 @@ export default function Popup_EditPlayers({
 	const save = async () => {
 
 		if(list_players === list_edit_players) return setShow_editPlayers(false)
+		if(!list_edit_players.every(p => (p.Name.length <= MAX_LENGTH_PLAYER_NAME && p.Name.length > 0))) return alert(`Spielername darf nicht leer oder länger als ${MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
 		setLoading(true)
 
 		axiosPrivate.patch('/player/list', { 
 			SessionID: session.id, 
-			List_Players: list_edit_players, 
+			List_Players: list_edit_players.map(p => {
+				return {
+					id: p.id, 
+					Name: p.Name, 
+					Color: p.Color
+				}
+			}), 
 		}).then(() => {
 
 			setList_players(structuredClone(list_edit_players))

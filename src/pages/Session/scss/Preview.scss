@@ -31,9 +31,7 @@
 
 
 	.preview_table-container {
-		overflow-x: auto;
-		overflow-y: auto;
-		max-height: 305px; 
+		overflow: auto;
 		scrollbar-gutter: stable both-edges;
 
 		.table_players { 
@@ -104,6 +102,8 @@
 				width: 100%;
 				min-width: 100px;
 				height: 70px;
+
+				&:not(:last-of-type) { border-right: none; }
 			}
 		}
 	}

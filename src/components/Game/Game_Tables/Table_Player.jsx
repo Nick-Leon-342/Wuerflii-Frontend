@@ -35,51 +35,51 @@ export default function Table_Player({
 
 	return (
 
-		<table className='table table_player'>
-			<tbody>
+		<div className='table_player'>
+
+			{/* __________________________________________________ Names __________________________________________________ */}
+
+			<div className='table_player_row'>
+
+				<div className='table_player_column'><span>Spieler</span></div>
+
+				{list_players?.map((p, i) => 
+					<div className='table_player_column' key={i}>
+						<span>{p.Name}</span>
+					</div>
+				)}
+
+			</div>
 
 
 
-				{/* __________________________________________________ Names __________________________________________________ */}
+			{/* __________________________________________________ Scores __________________________________________________ */}
 
-				<tr>
+			{session?.ShowScores && <>
+				<div className='table_player_row'>
 
-					<td>Spieler</td>
-
-					{list_players?.map((p, i) => 
-						<td key={i}>
-							<span>{p.Name}</span>
-						</td>
-					)}
-
-				</tr>
-
-
-
-				{/* __________________________________________________ Scores __________________________________________________ */}
-
-				{session?.ShowScores && <tr>
-
-					<td>Spieler gesamt</td>
+					<div className='table_player_column'><span>Spieler gesamt</span></div>
 
 					{list_players?.map((p, i) => 
-						<td key={i}>
+						<div className='table_player_column' key={i}>
 							<span>{calculateScore(p)}</span>
-						</td>
+						</div>
 					)}
 
-				</tr>}
+				</div>
+			</>}
 
 
 
-				{/* __________________________________________________ Gnadenwurf __________________________________________________ */}
+			{/* __________________________________________________ Gnadenwurf __________________________________________________ */}
 
-				{!disabled && <tr>
+			{!disabled && <>
+				<div className='table_player_row'>
 
-					<td>Gnadenwurf</td>
+					<div className='table_player_column'><span>Gnadenwurf</span></div>
 
 					{list_players?.map((_, index_player) => 
-						<td key={index_player}>
+						<div className='table_player_column' key={index_player}>
 							<div className='checkbox-container'>
 								
 								<Gnadenwurf
@@ -90,12 +90,13 @@ export default function Table_Player({
 								/>
 
 							</div>
-						</td>
+						</div>
 					)}
 
-				</tr>}
-			</tbody>
-		</table>
+				</div>
+			</>}
+
+		</div>
 
 	)
 
