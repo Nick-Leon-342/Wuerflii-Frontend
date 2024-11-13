@@ -19,8 +19,6 @@ import DragAndDropNameColorList from '../others/DragAndDropNameColorList'
 
 
 export default function Popup_EditPlayers({
-	request_finalscores, 
-
 	setShow_customDate, 
 
 	setShow_editPlayers, 
@@ -104,8 +102,6 @@ export default function Popup_EditPlayers({
 			})
 
 		}).finally(() => setLoading_update_view(false))
-
-		request_finalscores(session)
 
 	}
 

@@ -18,6 +18,7 @@ import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import PopupEditPlayers from '../../components/Popup/Popup_EditPlayers'
+import useInfiniteScrolling from '../../hooks/useInfiniteScrolling'
 
 
 
@@ -35,9 +36,8 @@ export default function Preview() {
 	const [ list_players, setList_players ] = useState([])
 	const [ list_finalScores, setList_finalScores ] = useState([])
 	
-	const [ loading, setLoading ] = useState(false)
+	const [ loading_request, setLoading_request ] = useState(false)
 	const [ loading_play, setLoading_play ] = useState(false)
-	const [ loading_request_finalscores, setLoading_request_finalscores ] = useState(false)
 
 	const [ show_settings, setShow_settings ] = useState(false)
 
@@ -45,7 +45,16 @@ export default function Preview() {
 	const height_element = 70
 
 	const container_players = useRef(null)
-	const container_games = useRef(null)
+
+	const [ url, setURL ] = useState('')
+	const { ref, list, loading } = useInfiniteScrolling({ 
+		scrollDirection: 'vertical', 
+		url,  
+		handle_404: () => {
+			alert('Session nicht gefunden.')
+			navigate('/session/select', { replace: true })
+		}
+	})
 
 	
 
@@ -53,57 +62,48 @@ export default function Preview() {
 
 	useEffect(() => {
 
-		async function request() {
-			
-			const session_id = new URLSearchParams(location.search).get('session_id')
-			if(!session_id) return navigate('/session/select', { replace: true })
-			setLoading(true)
-	
-			let tmp_session
-	
-			await axiosPrivate.get(`/session/preview?session_id=${session_id}`).then(({ data }) => {
-	
-	
-				const { 
-					Session, 
-					List_Players, 
-					User, 
-					Exists, 
-				} = data
-	
-				tmp_session = Session
-	
-				if(Exists) return navigate(`/game?session_id=${session_id}`, { replace: true })
-	
-				setUser(User)
-				setSession(Session)
-				setList_players(List_Players)
-				setCustomDate(Session.CustomDate)
-	
-	
-			}).catch((err) => {
-	
-				handle_error({ 
-					err, 
-					handle_404: (() => {
-						alert('Die Session exisiert nicht!')
-						navigate('/session/select', { replace: true })
-					}) 
-				})
-	
-			}).finally(() => setLoading(false))
-	
-			request_finalscores(tmp_session)
+		const session_id = new URLSearchParams(location.search).get('session_id')
+		if(!session_id) return navigate('/session/select', { replace: true })
+		setLoading_request(true)
 
-		}
 
-		request()
+		axiosPrivate.get(`/session/preview?session_id=${session_id}`).then(({ data }) => {
+
+
+			const { 
+				Session, 
+				List_Players, 
+				User, 
+				Exists, 
+			} = data
+
+			if(Exists) return navigate(`/game?session_id=${session_id}`, { replace: true })
+
+			setUser(User)
+			setSession(Session)
+			setList_players(List_Players)
+			setCustomDate(Session.CustomDate)
+
+			setURL(`/session/preview/all?session_id=${Session.id}`)
+
+
+		}).catch((err) => {
+
+			handle_error({ 
+				err, 
+				handle_404: (() => {
+					alert('Die Session exisiert nicht!')
+					navigate('/session/select', { replace: true })
+				}) 
+			})
+
+		}).finally(() => setLoading_request(false))
 		
 		// eslint-disable-next-line
 	}, [])
 
 	// Filters list so that only relevant elements are displayed and 
-	const editList = ( list_toEdit, setList_toEdit ) => {
+	const edit_list = ( list_toEdit, setList_toEdit ) => {
 
 		if(!list_toEdit || list_toEdit.length === 0) return setList_toEdit([])
 
@@ -164,32 +164,21 @@ export default function Preview() {
 
 	}
 
-	const request_finalscores = ( session ) => {
+	useEffect(() => {
 
-		setLoading_request_finalscores(true)
+		// TODO surely could be solved way better, just 'temporarily' xD - Don't think imma change this at all
+		if(!session) return
+		setURL('')
+		setTimeout(() => setURL(`/session/preview/all?session_id=${session.id}`), 10)
 
-		axiosPrivate.get(`/session/preview/all?session_id=${session.id}&offset=${0}`).then(({ data }) => {
+	}, [ session ])
 
-
-			const { List_FinalScores } = data
-			setList_finalScores(List_FinalScores)
-
-			editList(List_FinalScores, setList_finalScores)
-
-
-		}).catch(err => {
-
-			handle_error({
-				err, 
-				handle_404: () => {
-					alert('Session nicht gefunden.')
-					navigate('/session/select', { replace: true })
-				}
-			})
-			
-		}).finally(() => setLoading_request_finalscores(false))
-
-	}
+	useEffect(() => {
+	
+		if(loading) return 
+		edit_list(list, setList_finalScores)
+	
+	}, [ list, loading ])
 
 
 
@@ -213,7 +202,6 @@ export default function Preview() {
 				return tmp
 			})
 			setShow_customDate(false)
-			request_finalscores(session)
 
 		}).catch((err) => {
 
@@ -241,9 +229,9 @@ export default function Preview() {
 
 	const handleScroll = () => {
 
-		if (!container_games.current || !table_ref.current) return
+		if (!ref.current || !table_ref.current) return
 
-		const scrollTop = container_games.current.scrollTop
+		const scrollTop = ref.current.scrollTop
 		let totalHeight = 0
 		let newVisibleRowIndex = 0
 
@@ -264,7 +252,7 @@ export default function Preview() {
 		// Sync horizontal scroll on both 'tables' so they align 
 
 		const p = container_players.current
-		const g = container_games.current
+		const g = ref.current
 
 		if(!p || !g) return
 		if(container === 'container_players') {
@@ -293,13 +281,11 @@ export default function Preview() {
 
 
 
-
-
 		<div className='preview'>
 
-			{loading && <Loader loading={true}/>}
+			{loading_request && <Loader loading_request={true}/>}
 
-			{!loading && <>
+			{!loading_request && <>
 				<header>
 					<button
 						onClick={() => setShow_settings(true)}
@@ -313,7 +299,7 @@ export default function Preview() {
 
 
 
-			{!loading && <>
+			{!loading_request && <>
 				<div 
 					ref={container_players} 
 					className='preview_table-container' 
@@ -354,10 +340,10 @@ export default function Preview() {
 
 
 
-			{loading_request_finalscores && <LoaderBox className='preview_list_loader' dark={true}/>}
-			{!loading_request_finalscores && <>
+			{loading && <LoaderBox className='preview_list_loader' dark={true}/>}
+			{!loading && <>
 				<div 
-					ref={container_games} 
+					ref={ref} 
 					className='preview_list' 
 					onScroll={() => { handleScroll(); sync_horizontal_scroll('container_games') }}
 				>
@@ -412,9 +398,9 @@ export default function Preview() {
 
 
 
-			{!loading && <>
+			{!loading_request && <>
 				<CustomButton
-					loading={loading_play}
+					loading_request={loading_play}
 					text={`Los geht's!`}
 					onClick={play}
 				/>
@@ -445,7 +431,7 @@ export default function Preview() {
 				/>
 
 				<CustomButton
-					loading={loading_customDate}
+					loading_request={loading_customDate}
 					text='Speichern'
 					onClick={save_customDate}
 				/>
@@ -465,8 +451,6 @@ export default function Preview() {
 		{/* __________________________________________________ Popup Edit __________________________________________________ */}
 
 		<PopupEditPlayers
-			request_finalscores={request_finalscores}
-
 			setShow_customDate={setShow_customDate}
 
 			setShow_editPlayers={setShow_settings}
