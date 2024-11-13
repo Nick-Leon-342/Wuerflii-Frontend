@@ -3,7 +3,6 @@
 import './scss/Table.scss'
 
 import { useEffect, useState } from 'react'
-import { isMobile } from 'react-device-detect'
 
 import { useNavigate } from 'react-router-dom'
 

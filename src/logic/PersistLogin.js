@@ -39,6 +39,7 @@ export default function PersistLogin() {
 	
 		!auth?.accessToken ? verifyRefreshToken() : setIsLoading(false)
 
+		// eslint-disable-next-line
 	}, [])
 
 
