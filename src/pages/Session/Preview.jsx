@@ -283,7 +283,7 @@ export default function Preview() {
 
 		<div className='preview'>
 
-			{loading_request && <Loader loading_request={true}/>}
+			{loading_request && <Loader loading={true}/>}
 
 			{!loading_request && <>
 				<header>
@@ -345,10 +345,12 @@ export default function Preview() {
 				<div 
 					ref={ref} 
 					className='preview_list' 
-					onScroll={() => { handleScroll(); sync_horizontal_scroll('container_games') }}
+					// onScroll={() => { handleScroll(); sync_horizontal_scroll('container_games') }}
 				>
 					<ul 
 						ref={table_ref}
+						// ref={ref}
+						onScroll={() => console.log('BLA')}
 						className='preview_list_scores' 
 					>
 						{list_finalScores?.map((final_score, index_final_score) => {

@@ -43,8 +43,8 @@ export default function useInfiniteScrolling({
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const [ loading, setLoading ] = useState(false)
 	const [ list, setList ] = useState([])
+	const [ loading, setLoading ] = useState(false)
 
 	let list_length = 0
 	let offset_int = 0
@@ -84,8 +84,6 @@ export default function useInfiniteScrolling({
 			list_length = data.List_Length
 			offset_int += newList.length
 
-			console.log(newList)
-
 
 		}).catch((err) => {
 
@@ -105,6 +103,7 @@ export default function useInfiniteScrolling({
 
 
 	const handleScroll = () => {
+		console.log('TEsST')
 
 		let scrollTop, scrollHeight, clientHeight
 
@@ -122,7 +121,7 @@ export default function useInfiniteScrolling({
 			clientHeight = container.clientHeight
 
 		}
-
+		
 		const int = 50	// At what point new data should be requested
 
 		if (scrollDirection === 'vertical') {
@@ -146,7 +145,7 @@ export default function useInfiniteScrolling({
         request(true)
 
 
-
+console.log(ref)
         if (useWindowScrollbar) {
             window.addEventListener('scroll', handleScroll)
 			return () => window.removeEventListener('scroll', handleScroll)
@@ -158,7 +157,7 @@ export default function useInfiniteScrolling({
         }
 
         // eslint-disable-next-line
-    }, [ url ])
+    }, [ url, ref ])
 
 
 
