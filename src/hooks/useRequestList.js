@@ -31,7 +31,7 @@ export default function useRequestList({
 
 
 
-	// useEffect(() => setList([]), [ url ])
+	useEffect(() => setList([]), [ url ])
 
 	useEffect(() => {
 

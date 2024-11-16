@@ -329,6 +329,9 @@ export default function Preview() {
 							onScroll={handle_scroll}
 						>
 							{list_finalScores?.map((final_score, index_final_score) => {
+
+								const tmp_ref = list_finalScores.length - 1 === index_final_score ? ref : 	null
+
 								if(final_score.Group_Date) {
 
 									const day = new Date(final_score.Group_Date).getDate()
@@ -337,6 +340,7 @@ export default function Preview() {
 
 									return (
 										<li 
+											ref={tmp_ref}
 											key={index_final_score}
 											className='preview_list_element-date'
 										>
@@ -352,8 +356,8 @@ export default function Preview() {
 
 									return (
 										<li 
+											ref={tmp_ref}
 											key={index_final_score} 
-											ref={list.length - 1 === index_final_score ? ref : 	null}
 											onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${final_score?.id}`, { replace: false })}
 											className={`preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
 										>

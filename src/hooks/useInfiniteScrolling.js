@@ -1,6 +1,6 @@
 
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import useRequestList from './useRequestList'
 
@@ -32,6 +32,8 @@ export default function useInfiniteScrolling({
 
 
 
+	
+	useEffect(() => setOffset_block(1), [ url ])
 
 	const observer = useRef()
 	const ref = useCallback(node => {
