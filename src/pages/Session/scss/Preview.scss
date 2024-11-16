@@ -38,6 +38,7 @@
 		.preview_body-container{
 			display: flex;
 			flex-direction: column;
+			gap: 10px;
 			width: fit-content;
 			min-width: 100%;
 
@@ -92,7 +93,7 @@
 			.preview_list {
 				min-width: 100%;
 				list-style-type: none;
-				max-height: 150px;
+				max-height: 400px;
 				overflow-y: auto;
 				scrollbar-gutter: stable both-edges;
 			

@@ -220,28 +220,24 @@ export default function Preview() {
 
 	// __________________________________________________ Scroll __________________________________________________
 
-	const [ visibleRowIndex, setVisibleRowIndex ] = useState(0)
-	const table_ref = useRef(null)
+	const [ index_visible_row, setIndex_visible_row ] = useState(0)
 	const [ rowHeights, setRowHeights ] = useState([])
 
+	const handle_scroll = ( e ) => {
 
-	const handleScroll = () => {
-
-		if (!ref.current || !table_ref.current) return
-
-		const scrollTop = ref.current.scrollTop
+		const scrollTop = e.target.scrollTop
 		let totalHeight = 0
-		let newVisibleRowIndex = 0
+		let index_newRow = 0
 
 		for (let i = 0; i < rowHeights.length; i++) {
 			totalHeight += rowHeights[i]
-			if (totalHeight > scrollTop) {
-				newVisibleRowIndex = i
+			if(totalHeight > scrollTop) {
+				index_newRow = i
 				break
 			}
 		}
 
-		setVisibleRowIndex(newVisibleRowIndex)
+		setIndex_visible_row(index_newRow)
 
 	}
 
@@ -284,6 +280,8 @@ export default function Preview() {
 			<div className='preview_body'>
 				<div className='preview_body-container'>
 					
+					{/* __________________________________________________ Table __________________________________________________ */}
+
 					{!loading_request && <>
 						<div className='preview_table-container'>
 							<table className='table preview_table'>
@@ -299,7 +297,7 @@ export default function Preview() {
 										{list_players?.map(player => {
 
 											const id = player.id
-											const e = list_finalScores.at(visibleRowIndex)
+											const e = list_finalScores.at(index_visible_row)
 
 											return (
 												<td key={id}>
@@ -321,8 +319,15 @@ export default function Preview() {
 
 
 
+
+
+					{/* __________________________________________________ List __________________________________________________ */}
+
 					{<>
-						<ul className='preview_list'>
+						<ul 
+							className='preview_list'
+							onScroll={handle_scroll}
+						>
 							{list_finalScores?.map((final_score, index_final_score) => {
 								if(final_score.Group_Date) {
 
