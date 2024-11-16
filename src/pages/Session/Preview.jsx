@@ -5,7 +5,7 @@ import './scss/Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -370,6 +370,7 @@ export default function Preview() {
 								}
 							})}
 							{loading && <li><LoaderBox className='preview_list_loader' dark={true}/></li>}
+							{error && <li>Fehler...</li>}
 						</ul>
 					</>}
 
@@ -417,12 +418,6 @@ export default function Preview() {
 				/>
 			</div>
 		</Popup>
-
-
-
-
-
-
 
 
 

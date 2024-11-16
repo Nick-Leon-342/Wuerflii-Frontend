@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import axios from '../api/axios'
 import useAxiosPrivate from './useAxiosPrivate'
 import useErrorHandling from './useErrorHandling'
 
@@ -43,7 +42,6 @@ export default function useRequestList({
 
 		const controller = new AbortController()
 
-		let cancel
 		axiosPrivate.get(
 			`${url}&offset_block=${offset_block}`, 
 			{ signal: controller.signal }
