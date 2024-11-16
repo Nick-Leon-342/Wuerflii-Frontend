@@ -10,12 +10,21 @@ import useErrorHandling from './useErrorHandling'
 
 
 
-export default function useRequestList(url, pageNumber) {
+export default function useRequestList({
+	offset_block, 
+	url, 
+
+	handle_404, 
+	handle_409, 
+	handle_500, 
+	handle_default, 
+}) {
 
 	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const [ loading, setLoading ] = useState(true)
-	const [ error, setError ] = useState(false)
+	const [ is_error, setIs_error ] = useState(false)
 	const [ list, setList ] = useState([])
 	const [ hasMore, setHasMore ] = useState(false)
 
@@ -23,90 +32,58 @@ export default function useRequestList(url, pageNumber) {
 
 
 
-	useEffect(() => setList([]), [ url ])
+	// useEffect(() => setList([]), [ url ])
 
 	useEffect(() => {
+
+		if(!url) return
+
 		setLoading(true)
-		setError(false)
+		setIs_error(false)
+
+		const controller = new AbortController()
 
 		let cancel
-		axiosPrivate.get(url, { cancelToken: new axios.CancelToken(c => cancel = c) }).then(({ data }) => {
+		axiosPrivate.get(
+			`${url}&offset_block=${offset_block}`, 
+			{ signal: controller.signal }
+		).then(({ data }) => {
+
 
 			const {
 				List, 
-				List_length
+				Has_More
 			} = data
 
-			setList(prev_list => {
-				return [ ...new Set([ ...prev_list, ...List ]) ]
-			})
-			setHasMore(data.docs.length > 0)
-			setLoading(false)
+			setList(prev_list => [ ...new Set([ ...prev_list, ...List ]) ])
+			setHasMore(Has_More)
+
 
 		}).catch(err => {
 
-			if (axios.isCancel(err)) return
-			setError(true)
+			if(err.name === 'CanceledError') return
+			handle_error({
+				err, 
+				handle_404, 
+				handle_409, 
+				handle_500, 
+				handle_default, 
+			})
+			setIs_error(true)
 
-		})
-
-		return () => cancel()
-	}, [ url, pageNumber ])
-
-
-	return { loading, error, list, hasMore }
-
-}
-
+		}).finally(() => setLoading(false))
 
 
 
+		return () => controller.abort()
+
+		// eslint-disable-next-line
+	}, [ url, offset_block ])
 
 
 
 
 
-import React, { useState, useRef, useCallback } from 'react'
-import useBookSearch from './useBookSearch'
+	return { loading, is_error, list, hasMore }
 
-export default function App() {
-	const [query, setQuery] = useState('')
-	const [pageNumber, setPageNumber] = useState(1)
-
-	const {
-	books,
-	hasMore,
-	loading,
-	error
-	} = useBookSearch(query, pageNumber)
-
-	const observer = useRef()
-	const lastBookElementRef = useCallback(node => {
-		if (loading) return
-		if (observer.current) observer.current.disconnect()
-			observer.current = new IntersectionObserver(entries => {
-			if (entries[0].isIntersecting && hasMore) {
-				setPageNumber(prevPageNumber => prevPageNumber + 1)
-			}
-		})
-		if (node) observer.current.observe(node)
-	}, [loading, hasMore])
-
-	function handleSearch(e) {
-		setQuery(e.target.value)
-		setPageNumber(1)
-	}
-
-	return (<>
-		<input type="text" value={query} onChange={handleSearch}></input>
-		{books.map((book, index) => {
-			if (books.length === index + 1) {
-				return <div ref={lastBookElementRef} key={book}>{book}</div>
-			} else {
-				return <div key={book}>{book}</div>
-			}
-		})}
-		<div>{loading && 'Loading...'}</div>
-		<div>{error && 'Error'}</div>
-	</>)
 }

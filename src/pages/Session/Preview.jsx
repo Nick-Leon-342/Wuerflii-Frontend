@@ -16,9 +16,9 @@ import Loader from '../../components/Loader/Loader'
 import LoaderBox from '../../components/Loader/Loader_Box'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
+import useInfiniteScrolling from '../../hooks/useInfiniteScrolling'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import PopupEditPlayers from '../../components/Popup/Popup_EditPlayers'
-import useInfiniteScrolling from '../../hooks/useInfiniteScrolling'
 
 
 
@@ -44,11 +44,8 @@ export default function Preview() {
 	const height_dateElement = 70
 	const height_element = 70
 
-	const container_players = useRef(null)
-
 	const [ url, setURL ] = useState('')
-	const { ref, list, loading } = useInfiniteScrolling({ 
-		scrollDirection: 'vertical', 
+	const { ref, loading, error, list } = useInfiniteScrolling({ 
 		url,  
 		handle_404: () => {
 			alert('Session nicht gefunden.')
@@ -227,6 +224,7 @@ export default function Preview() {
 	const table_ref = useRef(null)
 	const [ rowHeights, setRowHeights ] = useState([])
 
+
 	const handleScroll = () => {
 
 		if (!ref.current || !table_ref.current) return
@@ -244,22 +242,6 @@ export default function Preview() {
 		}
 
 		setVisibleRowIndex(newVisibleRowIndex)
-
-	}
-
-	const sync_horizontal_scroll = ( container ) => {
-
-		// Sync horizontal scroll on both 'tables' so they align 
-
-		const p = container_players.current
-		const g = ref.current
-
-		if(!p || !g) return
-		if(container === 'container_players') {
-			g.scrollLeft = p.scrollLeft
-		} else {
-			p.scrollLeft = g.scrollLeft
-		}
 
 	}
 
@@ -299,104 +281,95 @@ export default function Preview() {
 
 
 
-			{!loading_request && <>
-				<div 
-					ref={container_players} 
-					className='preview_table-container' 
-					onScroll={() => sync_horizontal_scroll('container_players')}
-				>
-					<table className='table'>
-						<tbody>
-							<tr>
-								{list_players?.map(player => (
-									<td key={player.id}>
-										<span>{player.Name}</span>
-									</td>
-								))}
-							</tr>
-							<tr>
-								{list_players?.map(player => {
+			<div className='preview_body'>
+				<div className='preview_body-container'>
+					
+					{!loading_request && <>
+						<div className='preview_table-container'>
+							<table className='table preview_table'>
+								<tbody>
+									<tr>
+										{list_players?.map(player => (
+											<td key={player.id}>
+												<span>{player.Name}</span>
+											</td>
+										))}
+									</tr>
+									<tr>
+										{list_players?.map(player => {
 
-									const id = player.id
-									const e = list_finalScores.at(visibleRowIndex)
+											const id = player.id
+											const e = list_finalScores.at(visibleRowIndex)
+
+											return (
+												<td key={id}>
+													<span>
+														{session?.View === 'show_month' && (e?.ScoresAfter_Month[id] || 0)}
+														{session?.View === 'show_year' && (e?.ScoresAfter_Year[id] || 0)}
+														{session?.View === 'custom_date' && (e?.ScoresAfter_SinceCustomDate[id] || 0)}
+														{session?.View === 'show_all' && (e?.ScoresAfter[id] || 0)}
+													</span>
+												</td>
+											)
+
+										})}
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</>}
+
+
+
+					{<>
+						<ul className='preview_list'>
+							{list_finalScores?.map((final_score, index_final_score) => {
+								if(final_score.Group_Date) {
+
+									const day = new Date(final_score.Group_Date).getDate()
+									const month = new Date(final_score.Group_Date).getMonth() + 1
+									const year = new Date(final_score.Group_Date).getFullYear()
 
 									return (
-										<td key={id}>
+										<li 
+											key={index_final_score}
+											className='preview_list_element-date'
+										>
 											<span>
-												{session?.View === 'show_month' && (e?.ScoresAfter_Month[id] || 0)}
-												{session?.View === 'show_year' && (e?.ScoresAfter_Year[id] || 0)}
-												{session?.View === 'custom_date' && (e?.ScoresAfter_SinceCustomDate[id] || 0)}
-												{session?.View === 'show_all' && (e?.ScoresAfter[id] || 0)}
+												{session?.View === 'show_month' && `${day}.`}
+												{session?.View === 'show_year' && `${day}.${month}.`}
+												{(session?.View === 'custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
 											</span>
-										</td>
+										</li>
 									)
 
-								})}
-							</tr>
-						</tbody>
-					</table>
+								} else {
+
+									return (
+										<li 
+											key={index_final_score} 
+											ref={list.length - 1 === index_final_score ? ref : 	null}
+											onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${final_score?.id}`, { replace: false })}
+											className={`preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
+										>
+											{list_players?.map((player, index_player) => 
+												<div key={`${index_final_score}.${index_player}`}>
+													<span>
+														{final_score.PlayerScores[player.id]}
+													</span>
+												</div>
+											)}
+										</li>
+									)
+
+								}
+							})}
+							{loading && <li><LoaderBox className='preview_list_loader' dark={true}/></li>}
+						</ul>
+					</>}
+
 				</div>
-			</>}
-
-
-
-			{loading && <LoaderBox className='preview_list_loader' dark={true}/>}
-			{!loading && <>
-				<div 
-					ref={ref} 
-					className='preview_list' 
-					// onScroll={() => { handleScroll(); sync_horizontal_scroll('container_games') }}
-				>
-					<ul 
-						ref={table_ref}
-						// ref={ref}
-						onScroll={() => console.log('BLA')}
-						className='preview_list_scores' 
-					>
-						{list_finalScores?.map((final_score, index_final_score) => {
-							if(final_score.Group_Date) {
-
-								const day = new Date(final_score.Group_Date).getDate()
-								const month = new Date(final_score.Group_Date).getMonth() + 1
-								const year = new Date(final_score.Group_Date).getFullYear()
-
-								return (
-									<li 
-										key={index_final_score}
-										className='preview_list_element-date'
-									>
-										<span>
-											{session?.View === 'show_month' && `${day}.`}
-											{session?.View === 'show_year' && `${day}.${month}.`}
-											{(session?.View === 'custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
-										</span>
-									</li>
-								)
-
-							} else {
-
-								return (
-									<li 
-										key={index_final_score} 
-										className={`preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
-										onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${final_score?.id}`, { replace: false })}
-										// onClick={() => alert('Noch nicht implementiert.')}
-									>
-										{list_players?.map((player, index_player) => 
-											<div key={`${index_final_score}.${index_player}`}>
-												<span>
-													{final_score.PlayerScores[player.id]}
-												</span>
-											</div>
-										)}
-									</li>
-								)
-
-							}
-						})}
-					</ul>
-				</div>
-			</>}
+			</div>
 
 
 
