@@ -1,27 +1,32 @@
 
 
 .errormessage {
-	border: 2px solid var(--red);
-	border-radius: 10px;
 	padding: 20px;
+	border-radius: 10px;
+	border-left: 6px solid var(--red);
+	background-color: rgba(255, 0, 0, .07);
 
-	.header {
+	.errormessage_header {
 		display: flex; 
 		align-items: center;
 		margin-bottom: 10px;
 
 		svg {
-			height: 27px;
-			path { fill: var(--red); }
+			height: 30px;
+			path { 
+				stroke-width: 4;
+				fill: var(--red); 
+			}
 		}
 
 		h2 {
 			margin-left: 5px; 
+			font-weight: 600;
 			color: var(--red);
 		}
 	}
 
-	.body {
+	.errormessage_body {
 		display: flex;
 		font-size: 20px;
 	}

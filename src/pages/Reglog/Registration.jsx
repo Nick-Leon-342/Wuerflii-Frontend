@@ -40,13 +40,14 @@ export default function Registration() {
 	const handleSubmit = (e) => {
 		
 		e.preventDefault()
+		
+		if(!Name || !NAME_REGEX.test(Name) || !Password || !PASSWORD_REGEX.test(Password)) return setError('Bitte alles richtig ausfüllen!')
+
+
+		
 		setLoading(true)
 		setError('')
-		
 
-
-		if(!Name || !NAME_REGEX.test(Name) || !Password || !PASSWORD_REGEX.test(Password)) return setError('')
-			
 		axios.post('/auth/registration', 
 			{ Name, Password },  
 			{
