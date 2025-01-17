@@ -1,7 +1,9 @@
 
 
-import { useEffect, useState } from 'react';
 import './scss/Popup_Error.scss'
+
+import { useEffect, useState } from 'react'
+
 
 
 
@@ -23,7 +25,7 @@ export default function Popup_Error({
 
 		if (!error) return
 
-		setProgress(0)
+		setTimeout(() => setProgress(0), 50)
   
 		// clear popup
 		let timeout
@@ -38,9 +40,7 @@ export default function Popup_Error({
 	}, [ error, setError, isHovered ])
 
 	useEffect(() => {
-		if(error) {
-			setProgress(isHovered ? 100 : 0)
-		} 
+		if(error) setTimeout(() => setProgress(isHovered ? 100 : 0) , 50)
 	}, [ isHovered, error ])
 
 

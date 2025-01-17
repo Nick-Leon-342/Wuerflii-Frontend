@@ -9,7 +9,6 @@
 	border-radius: 10px;
 	box-shadow: -1px 1px 3px 0px var(--text-color);
 
-
 	.popup_error-container {
 		display: flex;
 		position: relative;
@@ -53,6 +52,7 @@
 			height: 100%;
 	
 			.popup_error_progress {
+				height: 100%;
 				width: 100%;
 				background-color: var(--red);
 				transition: height 5s linear;
