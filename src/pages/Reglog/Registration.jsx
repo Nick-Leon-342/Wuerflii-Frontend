@@ -2,14 +2,14 @@
 
 import './scss/Reglog.scss'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import ErrorMessage from '../../components/others/ErrorMessage'
+import PopupError from '../../components/Popup/Popup_Error'
 import CustomButton from '../../components/others/Custom_Button'
 import RegistrationForm from '../../components/others/RegistrationForm'
 import CustomLink from '../../components/NavigationElements/CustomLink'
@@ -36,6 +36,8 @@ export default function Registration() {
 
 
 
+
+	useEffect(() => setError(''), [ Name, Password ])
 
 	const handleSubmit = (e) => {
 		
@@ -86,6 +88,11 @@ export default function Registration() {
 
 			<h1>Registrierung</h1>
 
+			<PopupError 
+				error={error}
+				setError={setError} 
+			/>
+
 
 
 			<form onSubmit={handleSubmit}>
@@ -101,8 +108,6 @@ export default function Registration() {
 					PASSWORD_REGEX={PASSWORD_REGEX}
 					setPASSWORD_REGEX={setPASSWORD_REGEX}
 				/>
-
-				<ErrorMessage error={error}/>
 
 				<CustomButton
 					text='Registrieren' 

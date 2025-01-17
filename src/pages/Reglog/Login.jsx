@@ -10,8 +10,8 @@ import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
+import PopupError from '../../components/Popup/Popup_Error'
 import FancyInput from '../../components/others/FancyInput'
-import ErrorMessage from '../../components/others/ErrorMessage'
 import CustomButton from '../../components/others/Custom_Button'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 
@@ -89,6 +89,11 @@ export default function Login() {
 
 			<h1>Anmeldung</h1>
 
+			<PopupError
+				error={error}
+				setError={setError}
+			/>
+
 
 
 			<form onSubmit={handleSubmit}>
@@ -110,8 +115,6 @@ export default function Login() {
 					setValue={setPassword} 
 					isRequired={true}
 				/>
-
-				<ErrorMessage error={error}/>
 
 				<CustomButton 
 					text='Anmelden'
