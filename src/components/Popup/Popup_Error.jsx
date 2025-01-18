@@ -43,6 +43,11 @@ export default function Popup_Error({
 		if(error) setTimeout(() => setProgress(isHovered ? 100 : 0) , 50)
 	}, [ isHovered, error ])
 
+	useEffect(() => {
+		setIsHovered(true)
+		setTimeout(() => setIsHovered(false), 10)
+	}, [ error ])
+
 
 
 

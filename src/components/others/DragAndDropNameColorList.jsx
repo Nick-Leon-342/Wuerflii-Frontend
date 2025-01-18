@@ -48,7 +48,7 @@ export default function DragAndDropNameColorList({
 
 
 	
-	return (
+	return <>
 		<DragDropContext onDragEnd={handleOnDragEnd}>
 			<Droppable droppableId='editplayers'>
 				{(provided) => (
@@ -101,6 +101,5 @@ export default function DragAndDropNameColorList({
 				)}
 			</Droppable>
 		</DragDropContext>
-	)
-
+	</>
 }

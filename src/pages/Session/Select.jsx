@@ -159,7 +159,10 @@ export default function SelectSession() {
 
 					<dl>
 						{list_sessions?.map((session, index_session) => (
-							<dt key={index_session}>
+							<dt 
+								key={index_session}
+								style={{ backgroundColor: session.Color + '70' }}
+							>
 
 								<input 
 									className='button-responsive'
@@ -188,7 +191,7 @@ export default function SelectSession() {
 
 				<CustomLink 
 					onClick={() => navigate('/game/create', { replace: false })}
-					text='Erstelle Spiel'
+					text='Spiel erstellen'
 				/>
 
 			</div>

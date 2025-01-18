@@ -25,7 +25,7 @@ export default function Previous({
 	onClick, 
 }) {
 
-	return (
+	return <>
 		<div className={`previous${className ? ` ${className}` : ''}`}>
 
 			<button
@@ -36,6 +36,6 @@ export default function Previous({
 			{children}
 
 		</div>
-	)
+	</>
 
 }

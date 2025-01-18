@@ -8,7 +8,19 @@
 	max-width: 600px;
 	min-width: 300px;
 
-	.create_select {
+
+
+	.create_red_input {
+		label { color: var(--red); }
+		input { 
+			border-width: 2px;
+			border-color: var(--red); 
+		}
+	}
+
+
+
+	.create_element {
 		display: flex;
 		justify-content: space-between;
 		font-size: 25px;
@@ -19,7 +31,7 @@
 			justify-content: center;
 		}
 	
-		select {
+		select, input, div {
 			border-radius: 5px;
 			width: 180px;
 			height: 50px;
@@ -27,6 +39,34 @@
 			color: var(--text-color);
 			background-color: var(--background-color);
 			outline: none;
+		}
+
+		input[type='color'] {
+			padding: 0;
+			border: none;
+			min-width: 40px;
+		
+			&::-webkit-color-swatch {
+				border: 1px solid;
+				border-radius: 5px;
+			}
+		}
+	}
+
+	.create_preview {
+		padding: 10px;
+		border: 1px solid;
+		border-radius: 10px;
+		flex-direction: column;
+
+		label { font-size: 18px; }
+
+		div {
+			display: grid;
+			place-content: center;
+			width: 100%;
+			overflow: hidden;
+			font-size: 15px;
 		}
 	}
 
@@ -40,6 +80,19 @@
 		overflow-y: auto;
 	}
 
+}
+
+.create_players {
+	.create_edit_player-container {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+
+		.create_edit_player svg {
+			width: 40px;
+			path { fill: var(--background-color); }
+		}
+	}
 }
 
 
