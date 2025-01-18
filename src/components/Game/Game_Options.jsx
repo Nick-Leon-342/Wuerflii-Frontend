@@ -122,7 +122,7 @@ export default function Game_Options({
 
 
 
-	return (<>
+	return <>
 		<Popup
 			title='Einstellungen'
 			showPopup={show_options}
@@ -207,5 +207,5 @@ export default function Game_Options({
 
 			</div>
 		</Popup>
-	</>)
+	</>
 }

@@ -250,7 +250,7 @@ export default function Preview() {
 
 
 
-	return (<>
+	return <>
 
 		<OptionsDialog
 			user={user}
@@ -408,6 +408,7 @@ export default function Preview() {
 			showPopup={show_customDate}
 			setShowPopup={setShow_customDate}
 			title='Beginn auswählen'
+			className='preview_popup_calendar'
 		>
 			<div className='preview_popup'>
 				<Calendar
@@ -444,5 +445,5 @@ export default function Preview() {
 			show_edit_customDate={true}
 		/>
 
-	</>)
+	</>
 }

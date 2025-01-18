@@ -143,7 +143,7 @@ export default function Popup_EditPlayers({
 
 
 
-	return (<>
+	return <>
 		<Popup
 			showPopup={show_editPlayers}
 			setShowPopup={setShow_editPlayers}
@@ -248,5 +248,5 @@ export default function Popup_EditPlayers({
 
 			</div>
 		</Popup>
-	</>)
+	</>
 }

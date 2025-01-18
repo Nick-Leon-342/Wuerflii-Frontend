@@ -9,51 +9,28 @@ import Close from '../NavigationElements/Close'
 
 
 
-export default function Popup({ showPopup, setShowPopup, children, title }) {
+export default function Popup({ className, showPopup, setShowPopup, children, title }) {
 
-	useEffect(() => {
+	useEffect(() => { document.body.style.overflow = showPopup ? 'hidden' : 'visible' }, [showPopup])
 
-		if(showPopup) {
-			document.body.style.overflow = 'hidden'
-		} else {
-			document.body.style.overflow = 'visible'
-		}
+	return <>
+		<div 
+			className={`popup_background${showPopup ? ' show' : ''}${className ? ` ${className}` : ''}`} 
+			onClick={() => setShowPopup(false)}
+		>
+			<div className='popup' onClick={(e) => e.stopPropagation()}>
 
-	}, [showPopup])
+				<Close onClick={() => setShowPopup(false)}/>
 
-	const click = () => {
+				<h1>{title}</h1>
 
-		setShowPopup(false)
-
-	}
-
-
-
-
-
-	return (
-		<>
-			<div 
-				className={`popup_background ${showPopup ? 'show' : ''}`} 
-				onClick={click}
-			>
-				
-				<div className='popup' onClick={(e) => e.stopPropagation()}>
-
-					<Close onClick={() => setShowPopup(false)}/>
-
-					<h1>{title}</h1>
-
-					<div className='popup-grid'>
-						<div className='popup-container'>
-							{children}
-						</div>
+				<div className='popup-grid'>
+					<div className='popup-container'>
+						{children}
 					</div>
-
 				</div>
+
 			</div>
-
-		</>
-	)
-
+		</div>
+	</>
 }

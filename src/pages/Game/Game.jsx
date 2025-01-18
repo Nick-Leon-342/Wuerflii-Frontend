@@ -114,7 +114,7 @@ export default function Game() {
 
 
 
-	if(loading_request) return <Loader loaderVisible={true}/>
+	if(loading_request) return <Loader loading={true}/>
 
 	return (<>
 
