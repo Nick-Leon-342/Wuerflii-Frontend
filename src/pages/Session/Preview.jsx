@@ -139,28 +139,6 @@ export default function Preview() {
 
 	}
 
-	const play = () => {
-
-		setLoading_play(true)
-
-		axiosPrivate.patch('/game/create', { SessionID: session.id }).then(() => {
-
-			navigate(`/game?session_id=${session?.id}`, { replace: false })
-
-		}).catch(err => {
-
-			handle_error({
-				err, 
-				handle_404: () => {
-					alert('Session nicht gefunden.')
-					navigate('/session/select', { replace: true })
-				}
-			})
-
-		}).finally(() => setLoading_play(false))
-
-	}
-
 	useEffect(() => {
 
 		// TODO surely could be solved way better, just 'temporarily' xD - Don't think imma change this at all
@@ -387,7 +365,7 @@ export default function Preview() {
 				<CustomButton
 					loading_request={loading_play}
 					text={`Los geht's!`}
-					onClick={play}
+					onClick={() => navigate(`/game?session_id=${session?.id}`, { replace: false })}
 				/>
 			</>}
 
