@@ -135,15 +135,16 @@ export default function RegistrationForm({
 	return <>
 		
 		<FancyInput 
-			id='Username' 
-			type='text' 
-			className={`${Name && NAME_REGEX && NAME_REGEX.test(Name) ? 'green' : ''} ${Name && NAME_REGEX && !NAME_REGEX.test(Name) ? 'red' : ''}`} 
-			text='Benutzername' 
 			value={Name} 
+			type='text' 
+			id='Username' 
 			setValue={setName} 
+			text='Benutzername' 
 			isRequired={isRequired} 
 			onFocus={() => setInfoName(true)}
 			onBlur={() => setInfoName(false)}
+			isRed={Name && NAME_REGEX && !NAME_REGEX.test(Name)}
+			isGreen={Name && NAME_REGEX && NAME_REGEX.test(Name)}
 		/>
 
 		{infoName && requesting && <Loader loading={true}/>}
@@ -165,13 +166,14 @@ export default function RegistrationForm({
 		<FancyInput 
 			id='Password' 
 			type='password' 
-			className={`${Password && PASSWORD_REGEX && PASSWORD_REGEX.test(Password) ? 'green' : ''} ${Password && PASSWORD_REGEX && !PASSWORD_REGEX.test(Password) ? 'red' : ''}`} 
 			text='Passwort' 
 			value={Password} 
 			setValue={setPassword} 
 			isRequired={isRequired} 
-			onFocus={() => setInfoName(false)}
 			onBlur={() => setInfoName(true)}
+			onFocus={() => setInfoName(false)}
+			isRed={Password && PASSWORD_REGEX && !PASSWORD_REGEX.test(Password)}
+			isGreen={Password && PASSWORD_REGEX && PASSWORD_REGEX.test(Password)}
 		/>
 
 		{!infoName && requesting && <Loader loading={requesting}/>}

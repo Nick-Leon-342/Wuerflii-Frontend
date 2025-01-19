@@ -10,15 +10,24 @@ import Registration from './pages/Reglog/Registration'
 
 import Profile from './pages/Profile'
 
-// __________ Session __________
+
+// ____________________ Session ____________________
+
+import SessionAddAndEdit from './pages/Session/Session_AddAndEdit'
+import SessionPlayers from './pages/Session/Session_Players'
+
 import Select from './pages/Session/Select'
 import Preview from './pages/Session/Preview'
 import PreviewTable from './pages/Session/Preview-Table'
 
-// __________ Game __________
+
+// ____________________ Game ____________________
+
 import End from './pages/Game/End'
 import Game from './pages/Game/Game'
-import Create from './pages/Game/Create'
+
+
+
 
 
 export default function App() {
@@ -27,6 +36,7 @@ export default function App() {
 		<div className='App' id='App'>
 			<Router>
 				<Routes>
+
 					{/* 'Public' routes --> routes that can be accessed without token */}
 					<Route path='/' element={<Login />} />
 					<Route path='/login' element={<Login />} />
@@ -42,13 +52,20 @@ export default function App() {
 
 						<Route path='/profile' element={<Profile />} />
 
+
 						{/* __________ Session __________ */}
+
+						<Route path='/session' element={<SessionAddAndEdit />} /> 
+						<Route path='/session/:session_id' element={<SessionAddAndEdit />} /> 
+						<Route path='/session/:session_id/players' element={<SessionPlayers />} />
+
 						<Route path='/session/select' element={<Select />} />
 						<Route path='/session/preview' element={<Preview />} />
 						<Route path='/session/preview/table' element={<PreviewTable />} />
 
+
 						{/* __________ Game __________ */}
-						<Route path='/game/create' element={<Create />} />
+
 						<Route path='/game' element={<Game />} />
 						<Route path='/game/end' element={<End />} />
 						

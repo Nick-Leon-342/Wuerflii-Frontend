@@ -167,6 +167,8 @@ textarea {
 	color: var(--red);
 	box-shadow: none;
 
+	path { fill: var(--red); }
+
 	&:hover { background: none; }
 	&:active { background: none; }
 }

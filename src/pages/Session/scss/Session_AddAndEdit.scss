@@ -1,6 +1,6 @@
 
 
-.create_container {
+.session_addandedit {
 	display: flex;
 	flex-direction: column;
 	gap: var(--padding);
@@ -8,19 +8,7 @@
 	max-width: 600px;
 	min-width: 300px;
 
-
-
-	.create_red_input {
-		label { color: var(--red); }
-		input { 
-			border-width: 2px;
-			border-color: var(--red); 
-		}
-	}
-
-
-
-	.create_element {
+	.session_addandedit_element {
 		display: flex;
 		justify-content: space-between;
 		font-size: 25px;
@@ -53,7 +41,7 @@
 		}
 	}
 
-	.create_preview {
+	.session_addandedit_preview {
 		padding: 10px;
 		border: 1px solid;
 		border-radius: 10px;
@@ -69,30 +57,6 @@
 			font-size: 15px;
 		}
 	}
-
-
-
-
-	.list-container {
-		display: flex;
-		width: 100%;
-		max-height: 300px !important;
-		overflow-y: auto;
-	}
-
-}
-
-.create_players {
-	.create_edit_player-container {
-		display: flex;
-		flex-direction: row;
-		gap: 10px;
-
-		.create_edit_player svg {
-			width: 40px;
-			path { fill: var(--background-color); }
-		}
-	}
 }
 
 
@@ -101,7 +65,7 @@
 
 @media ( max-width: 425px ) {
 
-	.create_container {
+	.session_addandedit {
 		width: 90vw;
 	}
 

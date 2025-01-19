@@ -35,12 +35,12 @@
 		background-color: var(--background-color);
 	}
 
-	&.green {
+	&.fancyinput_green {
 		label { color: var(--green_dark_0); }
 		input { border-color: var(--green_dark_0); }
 	}
 
-	&.red {
+	&.fancyinput_red {
 		label { color: var(--red); }
 		input { border-color: var(--red); }
 	}

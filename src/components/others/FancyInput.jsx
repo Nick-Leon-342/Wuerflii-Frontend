@@ -6,29 +6,42 @@ import './scss/FancyInput.scss'
 
 
 
-export default function FancyInput({ id, type, text, value, setValue, isRequired, onFocus, onBlur, maxLength, className }) {
+export default function FancyInput({ 
+	id, 
+	type, 
+	text, 
+	value, 
+	isRed, 
+	onBlur, 
+	isGreen, 
+	onFocus, 
+	setValue, 
+	maxLength, 
+	className,  
+	isRequired, 
+}) {
 
-	return (
+	return <>
 
-		<div className={`fancyinput${className ? ` ${className}` : ''}`}>
+		<div className={`fancyinput${isRed ? ' fancyinput_red' : ''}${isGreen ? ' fancyinput_green' : ''}${className ? ` ${className}` : ''}`}>
 
 			<input
 				id={id}
 				type={type}
-				autoComplete='off'
-				onChange={({ target }) => setValue(target.value)}
 				value={value}
-				maxLength={maxLength}
 				placeholder=''
-				required={isRequired}
-				onFocus={onFocus}
 				onBlur={onBlur}
+				onFocus={onFocus}
+				autoComplete='off'
+				required={isRequired}
+				maxLength={maxLength}
+				onChange={({ target }) => setValue(target.value)}
 			/>
 
 			<label htmlFor={id}>{text}</label>
 
 		</div>
 
-	)
+	</>
 
 }

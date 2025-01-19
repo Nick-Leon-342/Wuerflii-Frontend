@@ -14,7 +14,6 @@ import Table from '../../components/Game/Game_Tables/Table'
 import GameOptions from '../../components/Game/Game_Options'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
-import PopupEditPlayers from '../../components/Popup/Popup_EditPlayers'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
 
@@ -39,7 +38,6 @@ export default function Game() {
 
 	const [ surrender_winner, setSurrender_winner ] = useState()	// Player-Object of the 'winner'
 
-	const [ show_edit, setShow_edit ] = useState(false)
 	const [ show_options, setShow_options ] = useState(false)
 	const [ show_surrender, setShow_surrender ] = useState(false)
 
@@ -51,7 +49,7 @@ export default function Game() {
 
 		const session_id = new URLSearchParams(location.search).get('session_id')
 
-		if(!session_id) return navigate('/game/create', { replace: true })
+		if(!session_id) return navigate('/session/select', { replace: true })
 
 		setLoading_request(true)
 
@@ -116,7 +114,7 @@ export default function Game() {
 
 	if(loading_request) return <Loader loading={true}/>
 
-	return (<>
+	return <>
 
 		<OptionsDialog
 			user={user}
@@ -166,7 +164,6 @@ export default function Game() {
 
 		<GameOptions
 			setShow_surrender={setShow_surrender}
-			setShow_edit={setShow_edit}
 
 			setShow_options={setShow_options}
 			show_options={show_options}
@@ -225,26 +222,5 @@ export default function Game() {
 			</div>
 		</Popup>
 
-
-
-
-
-
-
-		{/* __________________________________________________ Popup Edit __________________________________________________ */}
-
-		<PopupEditPlayers
-			setShow_editPlayers={setShow_edit}
-			show_editPlayers={show_edit}
-
-			setSession={setSession}
-			session={session}
-
-			setList_players={setList_players}
-			list_players={list_players}
-
-			show_edit_customDate={false}
-		/>
-
-	</>)
+	</>
 }
