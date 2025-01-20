@@ -84,7 +84,7 @@ export default function Session_Select() {
 
 		axiosPrivate.get('/user').then(({ data }) => {
 
-			setUser(data.User)
+			setUser(data)
 
 		}).catch((err) => {
 
@@ -98,6 +98,8 @@ export default function Session_Select() {
 	}, [])
 
 	useEffect(() => {
+
+		if(!user) return
 		
 		setLoading(true)
 
