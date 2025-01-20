@@ -37,6 +37,41 @@ export default function Session_Select() {
 
 	const [ loading_show_session_names, setLoading_show_session_names ] = useState(false)
 	const [ loading_show_session_date, setLoading_show_session_date ] = useState(false)
+	const [ loading_change_order, setLoading_change_order ] = useState(false)
+	const list_orderOptions = [
+		{ Text: 'Zuletzt gespielt', 	Alias: 'Last_Played'	},
+		{ Text: 'Erstellt', 			Alias: 'Created'		},
+		{ Text: 'Name', 				Alias: 'Name'			},
+	]
+
+	const change_order = async ( selectedOption ) => {
+
+		const alias = selectedOption.Alias
+		const descending = alias === user?.View_Sessions ? !user.View_Sessions_Desc : true
+
+		setLoading_change_order(true)
+
+		axiosPrivate.patch('/user', {
+			View_Sessions: alias, 
+			View_Sessions_Desc: descending
+		}).then(() => {
+
+			setUser(prev => {
+				const tmp = { ...prev }
+				tmp.View_Sessions = alias
+				tmp.View_Sessions_Desc = descending
+				return tmp
+			})
+
+		}).catch((err) => {
+
+			handle_error({ 
+				err, 
+			})
+
+		}).finally(() => setLoading_change_order(false))
+
+	}
 
 
 
@@ -47,10 +82,27 @@ export default function Session_Select() {
 		
 		setLoading(true)
 
+		axiosPrivate.get('/user').then(({ data }) => {
+
+			setUser(data.User)
+
+		}).catch((err) => {
+
+			handle_error({ 
+				err, 
+			})
+
+		}).finally(() => setLoading(false))
+
+		// eslint-disable-next-line
+	}, [])
+
+	useEffect(() => {
+		
+		setLoading(true)
+
 		axiosPrivate.get('/session/all').then(({ data }) => {
 
-			
-			setUser(data.User)
 			setList_sessions(data.List_Sessions.map(s => {
 				return {
 					...s, 
@@ -63,16 +115,12 @@ export default function Session_Select() {
 
 			handle_error({ 
 				err, 
-				handle_404: () => {
-					alert('Benutzer nicht gefunden.')
-					navigate('/', { replace: true })
-				}
 			})
 
 		}).finally(() => setLoading(false))
 
 		// eslint-disable-next-line
-	}, [])
+	}, [ user?.View_Sessions, user?.View_Sessions_Desc ])
 
 	const select = ( session ) => {
 
@@ -294,6 +342,24 @@ export default function Session_Select() {
 				{!loading_show_session_date && <input type='checkbox' checked={user?.Show_Session_Date} onChange={change_show_session_date}/>}
 				<span>Datum anzeigen</span>
 			</div>
+
+			{list_orderOptions.map((option, i) => {
+				const cs = user?.View_Sessions === option.Alias
+				const desc = user?.View_Sessions_Desc
+
+				return <>
+					<button 
+						key={i}
+						className={`button button-reverse${cs ? ' session_select_popup_settings-currently_selected' : ''}${desc ? ' session_select_popup_settings-desc' : ''}`}
+						onClick={() => change_order(option)}
+					>
+						{option.Text}
+						<svg  viewBox='0 -960 960 960'><path d='M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z'/></svg>
+					</button>
+				</>
+			})}
+
+			<Loader loading={loading_change_order}/>
 		</PopupDropdown>
 
 	</>
