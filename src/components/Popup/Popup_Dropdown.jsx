@@ -115,7 +115,7 @@ export default function Popup_Dropdown({
 
 
 
-	return (
+	return <>
 		<div
 			ref={popup_ref}
 			className={`popup_dropdown${show_popup ? ' popup_dropdown_show' : ''}${className ? ` ${className}` : ''}`}
@@ -130,5 +130,5 @@ export default function Popup_Dropdown({
 				{children}
 			</div>
 		</div>
-	)
+	</>
 }

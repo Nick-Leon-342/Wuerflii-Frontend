@@ -4,14 +4,16 @@ import './scss/Session_Select.scss'
 
 import { useNavigate } from 'react-router-dom'
 import { formatDate } from '../../logic/utils'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Loader from '../../components/Loader/Loader'
+import LoaderBox from '../../components/Loader/Loader_Box'
 import PopupError from '../../components/Popup/Popup_Error'
 import OptionsDialog from '../../components/Popup/Popup_Options'
+import PopupDropdown from '../../components/Popup/Popup_Dropdown'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
@@ -24,10 +26,18 @@ export default function Session_Select() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
+	const ref = useRef()
+
 	const [ user, setUser ] = useState()
 	const [ error, setError ] = useState('')
 	const [ loading, setLoading ] = useState(false)
 	const [ list_sessions, setList_sessions ] = useState() 
+
+	const [ show_settings, setShow_settings ] = useState(false)
+
+	const [ loading_show_session_names, setLoading_show_session_names ] = useState(false)
+	const [ loading_show_session_date, setLoading_show_session_date ] = useState(false)
+
 
 
 
@@ -71,7 +81,7 @@ export default function Session_Select() {
 		if(session.List_Players.length === 0) {
 			navigate(`/session/${session.id}/players`, { replace: false })
 		} else {
-			navigate(`/session/preview?session_id=${session.id}`, { replace: false })
+			navigate(`/session/${session.id}/preview`, { replace: false })
 		}
 	}
 
@@ -82,6 +92,50 @@ export default function Session_Select() {
 			tmp[index].Checkbox_Checked = checked
 			return tmp
 		})
+
+	}
+
+	const change_show_session_names = () => {
+
+		setLoading_show_session_names(true)
+
+		axiosPrivate.patch('/user', { Show_Session_Names: !user.Show_Session_Names }).then(() => {
+
+			setUser(user => {
+				const tmp = { ...user }
+				tmp.Show_Session_Names = !tmp.Show_Session_Names
+				return tmp
+			})
+
+		}).catch(err => {
+
+			handle_error({
+				err, 
+			})
+
+		}).finally(() => setLoading_show_session_names(false))
+
+	}
+
+	const change_show_session_date = () => {
+
+		setLoading_show_session_date(true)
+
+		axiosPrivate.patch('/user', { Show_Session_Date: !user.Show_Session_Date }).then(() => {
+
+			setUser(user => {
+				const tmp = { ...user }
+				tmp.Show_Session_Date = !tmp.Show_Session_Date
+				return tmp
+			})
+
+		}).catch(err => {
+
+			handle_error({
+				err, 
+			})
+
+		}).finally(() => setLoading_show_session_date(false))
 
 	}
 
@@ -149,13 +203,14 @@ export default function Session_Select() {
 
 		{/* __________________________________________________ Page __________________________________________________ */}
 
-		<div className='select_container'>
+		<div className='session_select'>
 
 			<header>
 
 				<button 
+					ref={ref}
 					className='button button-reverse button-responsive'
-					onClick={() => console.log()}
+					onClick={() => setShow_settings(true)}
 				><svg viewBox='0 -960 960 960'><path d='M120-240v-80h240v80H120Zm0-200v-80h480v80H120Zm0-200v-80h720v80H120Z'/></svg></button>
 
 				{!loading && 
@@ -173,11 +228,9 @@ export default function Session_Select() {
 
 
 
-			{list_sessions?.length === 0 ? <>
+			{list_sessions?.length === 0 && <h1 className='no-game'>Es gibt noch keine Partie!</h1>}
 
-				<h1 className='no-game'>Es gibt noch keine Partie!</h1>
-
-			</>:<>
+			{list_sessions?.length !== 0 && <>
 
 				<dl>
 					{list_sessions?.map((session, index_session) => (
@@ -196,11 +249,11 @@ export default function Session_Select() {
 							<div onClick={() => select(session)}>
 
 								<label className='names'>
-									{session.List_Players.length === 0 && session.Name}
-									{session.List_Players.length > 0 && session.List_Players.map(p => p.Name).join(' vs ')}
+									{(user?.Show_Session_Names || session.List_Players.length === 0) && session.Name}
+									{!user?.Show_Session_Names && session.List_Players.length > 0 && session.List_Players.map(p => p.Name).join(' vs ')}
 								</label>
 
-								<label className='date'>{formatDate(session.LastPlayed)}</label>
+								{user?.Show_Session_Date && <label className='date'>{formatDate(session.LastPlayed)}</label>}
 
 							</div>
 
@@ -218,6 +271,30 @@ export default function Session_Select() {
 			/>
 
 		</div>
+		
+
+
+
+
+		<PopupDropdown
+			target_ref={ref}
+			show_popup={show_settings}
+			setShow_popup={setShow_settings}
+			className='session_select_popup_settings'
+			alignLeft={true}
+
+		>
+			<div className='session_select_popup_settings-show'>
+				{loading_show_session_names && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
+				{!loading_show_session_names && <input type='checkbox' checked={user?.Show_Session_Names} onChange={change_show_session_names}/>}
+				<span>Partienamen anzeigen</span>
+			</div>
+			<div className='session_select_popup_settings-show'>
+				{loading_show_session_date && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
+				{!loading_show_session_date && <input type='checkbox' checked={user?.Show_Session_Date} onChange={change_show_session_date}/>}
+				<span>Datum anzeigen</span>
+			</div>
+		</PopupDropdown>
 
 	</>
 }

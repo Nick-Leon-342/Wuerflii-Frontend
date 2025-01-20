@@ -1,12 +1,12 @@
 
 
 
-import './scss/Preview.scss'
+import './scss/Session_Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -18,18 +18,18 @@ import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import useInfiniteScrolling from '../../hooks/useInfiniteScrolling'
 import CustomLink from '../../components/NavigationElements/CustomLink'
-import PopupEditPlayers from '../../components/Popup/Popup_EditPlayers'
 
 
 
 
 
-export default function Preview() {
+export default function Session_Preview() {
 	
 	const navigate = useNavigate()
-	const location = useLocation()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
+
+	const { session_id } = useParams()
 
 	const [ user, setUser ] = useState()
 	const [ session, setSession ] = useState()
@@ -59,7 +59,6 @@ export default function Preview() {
 
 	useEffect(() => {
 
-		const session_id = new URLSearchParams(location.search).get('session_id')
 		if(!session_id) return navigate('/session/select', { replace: true })
 		setLoading_request(true)
 
@@ -237,7 +236,7 @@ export default function Preview() {
 
 
 
-		<div className='preview'>
+		<div className='session_preview'>
 
 			{loading_request && <Loader loading={true}/>}
 
@@ -255,14 +254,14 @@ export default function Preview() {
 
 
 
-			<div className='preview_body'>
-				<div className='preview_body-container'>
+			<div className='session_preview_body'>
+				<div className='session_preview_body-container'>
 					
 					{/* __________________________________________________ Table __________________________________________________ */}
 
 					{!loading_request && <>
-						<div className='preview_table-container'>
-							<table className='table preview_table'>
+						<div className='session_preview_table-container'>
+							<table className='table session_preview_table'>
 								<tbody>
 									<tr>
 										{list_players?.map(player => (
@@ -303,7 +302,7 @@ export default function Preview() {
 
 					{<>
 						<ul 
-							className='preview_list'
+							className='session_preview_list'
 							onScroll={handle_scroll}
 						>
 							{list_finalScores?.map((final_score, index_final_score) => {
@@ -386,9 +385,9 @@ export default function Preview() {
 			showPopup={show_customDate}
 			setShowPopup={setShow_customDate}
 			title='Beginn auswählen'
-			className='preview_popup_calendar'
+			className='session_preview_popup_calendar'
 		>
-			<div className='preview_popup'>
+			<div className='session_preview_popup'>
 				<Calendar
 					value={customDate}
 					onChange={(cd) => setCustomDate(cd)}
@@ -401,27 +400,6 @@ export default function Preview() {
 				/>
 			</div>
 		</Popup>
-
-
-
-
-
-		{/* __________________________________________________ Popup Edit __________________________________________________ */}
-
-		<PopupEditPlayers
-			setShow_customDate={setShow_customDate}
-
-			setShow_editPlayers={setShow_settings}
-			show_editPlayers={show_settings}
-
-			setSession={setSession}
-			session={session}
-
-			setList_players={setList_players}
-			list_players={list_players}
-
-			show_edit_customDate={true}
-		/>
 
 	</>
 }

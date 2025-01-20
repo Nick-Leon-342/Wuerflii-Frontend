@@ -1,6 +1,6 @@
 
 
-.preview {
+.session_preview {
 	display: flex;
 	flex-direction: column;
 	gap: var(--padding);
@@ -30,12 +30,12 @@
 
 
 
-	.preview_body {
+	.session_preview_body {
 		overflow-x: auto;
 		overflow-y: hidden;
 
 
-		.preview_body-container{
+		.session_preview_body-container{
 			display: flex;
 			flex-direction: column;
 			gap: 10px;
@@ -45,13 +45,13 @@
 	
 	
 	
-			.preview_table-container {
+			.session_preview_table-container {
 				overflow: hidden;
 				scrollbar-gutter: stable both-edges;
 
 
 
-				.preview_table { 
+				.session_preview_table { 
 					min-width: 100%;
 					overflow-x: hidden;
 					background-color: rgb(150, 250, 150);
@@ -86,11 +86,11 @@
 			
 	
 	
-			.preview_list_loader {
+			.session_preview_list_loader {
 				height: 100px;
 			}
 			
-			.preview_list {
+			.session_preview_list {
 				min-width: 100%;
 				list-style-type: none;
 				max-height: 400px;
@@ -98,7 +98,7 @@
 				scrollbar-gutter: stable both-edges;
 			
 			
-				.preview_list_element-date {
+				.session_preview_list_element-date {
 					display: flex;
 					flex-direction: row;
 					align-items: center;
@@ -110,7 +110,7 @@
 					}
 				}
 			
-				.preview_list_element-scores {
+				.session_preview_list_element-scores {
 					display: flex;
 					justify-content: space-between;
 					// width: 100%;
@@ -137,7 +137,7 @@
 
 
 
-.preview_popup_calendar {
+.session_preview_popup_calendar {
 	z-index: 10001;
 
 	.preview_popup {

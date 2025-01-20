@@ -15,9 +15,9 @@ import Profile from './pages/Profile'
 
 import SessionAddAndEdit from './pages/Session/Session_AddAndEdit'
 import SessionPlayers from './pages/Session/Session_Players'
+import SessionPreview from './pages/Session/Session_Preview'
+import SessionPreviewTable from './pages/Session/Session_Preview-Table'
 
-import Preview from './pages/Session/Preview'
-import PreviewTable from './pages/Session/Preview-Table'
 import SessionSelect from './pages/Session/Session_Select'
 
 
@@ -58,10 +58,10 @@ export default function App() {
 						<Route path='/session' element={<SessionAddAndEdit />} /> 
 						<Route path='/session/:session_id' element={<SessionAddAndEdit />} /> 
 						<Route path='/session/:session_id/players' element={<SessionPlayers />} />
+						<Route path='/session/:session_id/preview' element={<SessionPreview />} />
+						<Route path='/session/:session_id/preview/table' element={<SessionPreviewTable />} />
 
 						<Route path='/session/select' element={<SessionSelect />} />
-						<Route path='/session/preview' element={<Preview />} />
-						<Route path='/session/preview/table' element={<PreviewTable />} />
 
 
 						{/* __________ Game __________ */}

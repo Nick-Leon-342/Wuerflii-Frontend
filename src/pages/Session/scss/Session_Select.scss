@@ -1,6 +1,6 @@
 
 
-.select_container {
+.session_select {
 	width: 80vw;
 	max-width: 800px;
 	min-width: 300px;
@@ -102,10 +102,28 @@
 
 }
 
+.session_select_popup_settings {
+	padding: var(--padding);
 
+	.session_select_popup_settings-show {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 10px;
+		font-size: 20px;
 
+		.session_select_popup_settings-show-loader {
+			width: 20px;
+			height: 20px;
+			border-radius: 3px;
+		}
 
-
+		input {
+			width: 20px;
+			min-height: 20px;
+		}
+	}
+}
 
 
 
@@ -113,7 +131,7 @@
 
 @media ( max-width: 425px ) {
 	
-	.select_container {
+	.session_select_container {
 		width: 90vw;
 
 		dl dt {
