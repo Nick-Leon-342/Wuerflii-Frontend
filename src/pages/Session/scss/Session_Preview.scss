@@ -15,12 +15,13 @@
 		flex-direction: row;
 		overflow: hidden;
 		scrollbar-gutter: stable both-edges;
+		justify-content: space-between;
 		
 		button {
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			width: min-content;
+			width: fit-content;
 			gap: 5px;
 
 			span { font-size: 22px; }
@@ -187,4 +188,12 @@
 			}
 		}
 	}
+}
+
+
+
+
+
+.session_preview_popup_edit_session {
+	button { width: 200px; }
 }

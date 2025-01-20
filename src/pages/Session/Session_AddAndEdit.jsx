@@ -36,6 +36,8 @@ export default function Session_AddAndEdit() {
 	
 	// ____________________ Session ____________________
 
+	const [ session, setSession ] = useState()
+
 	const [ name, setName ] = useState('Partie')
 	const [ MAX_LENGTH_SESSION_NAME, setMAX_LENGTH_SESSION_NAME ] = useState(0)
 
@@ -62,6 +64,12 @@ export default function Session_AddAndEdit() {
 			} = data
 
 			setUser(User)
+			if(session_id) {
+				const session = data.Session
+				setSession(session)
+				setName(session.Name)
+				setColor(session.Color)
+			}
 
 			setMAX_LENGTH_SESSION_NAME(MAX_LENGTH_SESSION_NAME)
 			setMAX_COLUMNS(MAX_COLUMNS)
@@ -82,30 +90,38 @@ export default function Session_AddAndEdit() {
 		// eslint-disable-next-line
 	}, [])
 
-	const ok = () => {
+	const ok = async () => {
 		
 		if(!name) return setError('Bitte einen Namen für die Parte eingeben.')
 		if(name.length > MAX_LENGTH_SESSION_NAME) return setError(`Der Name der Partie darf nicht länger als ${MAX_LENGTH_SESSION_NAME} Zeichen sein.`)
-		if(!+columns) return setError('Bitte die Spaltenanzahl angeben.')
-		if(+columns > MAX_COLUMNS) return setError(`Die maximale Spaltenanzahl ist ${MAX_COLUMNS}.`) 
+		if(!session && !+columns) return setError('Bitte die Spaltenanzahl angeben.')
+		if(!session && +columns > MAX_COLUMNS) return setError(`Die maximale Spaltenanzahl ist ${MAX_COLUMNS}.`) 
 
 		setLoading(true)
 
-		axiosPrivate.post(`/session${session_id ? `?session_id=${session_id}` : ''}`, {
-			Name: name, 
-			Color: color, 
-			Columns: +columns, 
-		}).then(({ data }) => {
-
-			navigate(`/session/${data.SessionID}/players`, { replace: true })
-
-		}).catch(err => {
-			
+		try {
+			if(session) {
+				await axiosPrivate.patch('/session', {
+					SessionID: session.id, 
+					Name: name, 
+					Color: color, 
+				})
+				navigate(-1, { replace: false })
+			} else {
+				const { SessionID } = await axiosPrivate.post('/session', {
+					Name: name, 
+					Color: color, 
+					Columns: +columns, 
+				})
+				navigate(`/session/${SessionID}/players`, { replace: true })
+			}
+		} catch(err) {
 			handle_error({
 				err, 
 			})
+		}
 
-		}).finally(() => setLoading(false))
+		setLoading(false)
 
 	}
 
@@ -153,13 +169,15 @@ export default function Session_AddAndEdit() {
 
 			{/* ____________________ Columns ____________________ */}
 
-			<div className='session_addandedit_element'>
-				<label>Spaltenanzahl</label>
-				<select value={columns} onChange={({ target }) => setColumns(+target.value)}>
-					<option value='' disabled>Auswählen</option>
-					{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
-				</select>
-			</div>
+			{!session_id && <>
+				<div className='session_addandedit_element'>
+					<label>Spaltenanzahl</label>
+					<select value={columns} onChange={({ target }) => setColumns(+target.value)}>
+						<option value='' disabled>Auswählen</option>
+						{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
+					</select>
+				</div>
+			</>}
 
 
 
@@ -190,7 +208,7 @@ export default function Session_AddAndEdit() {
 			<CustomButton 
 				loading={loading || loading_request}
 				className='button' 
-				text='Weiter'
+				text={session_id ? 'Speichern' : 'Weiter'}
 				onClick={ok}
 			/>
 
