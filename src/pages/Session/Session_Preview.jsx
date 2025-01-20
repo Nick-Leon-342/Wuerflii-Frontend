@@ -19,6 +19,7 @@ import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
 import useInfiniteScrolling from '../../hooks/useInfiniteScrolling'
 import CustomLink from '../../components/NavigationElements/CustomLink'
+import PopupEditPreview from '../../components/Popup/Popup_Edit_Preview'
 
 
 
@@ -430,6 +431,18 @@ export default function Session_Preview() {
 				onClick={() => navigate(`/session/${session.id}/players`, { replace: false })}
 			>Spieler</button>
 		</PopupDropdown>
+
+		<PopupEditPreview
+			setShow_customDate={setShow_customDate}
+			show_customDate={show_customDate}
+
+			setShow_popup={setShow_edit_list}
+			show_popup={show_edit_list}
+			
+			setSession={setSession}
+			session={session}
+
+		/>
 
 	</>
 }

@@ -1,36 +1,31 @@
 
 
-import './scss/Popup_EditPlayers.scss'
+import './scss/Popup_Edit_Preview.scss'
 
 import { format } from 'date-fns'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
-import CustomButton from '../others/Custom_Button'
-import DragAndDropNameColorList from '../others/DragAndDropNameColorList'
+import PopupDropdown from './Popup_Dropdown'
 
 
 
 
 
-export default function Popup_EditPlayers({
+export default function Popup_Edit_View({
 	setShow_customDate, 
-
-	setShow_editPlayers, 
-	show_editPlayers, 
-
-	setList_players, 
-	list_players, 
+	show_customDate, 
+	
+	setShow_popup, 
+	show_popup, 
 
 	setSession, 
 	session, 
 
-	show_edit_customDate, 
 }) {
 
 	const navigate = useNavigate()
@@ -38,11 +33,6 @@ export default function Popup_EditPlayers({
 	const handle_error = useErrorHandling()
 
 	const [ loading, setLoading ] = useState(false)
-	const [ loading_update_view, setLoading_update_view ] = useState(false)
-
-	const [ list_edit_players, setList_edit_players ] = useState()
-
-	const [ MAX_LENGTH_PLAYER_NAME, setMAX_LENGTH_PLAYER_NAME ] = useState()
 
 	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
@@ -50,28 +40,9 @@ export default function Popup_EditPlayers({
 
 
 
-	useEffect(() => {
-
-		setLoading(true)
-
-		axiosPrivate.get('/game/create').then(({ data }) => {
-
-			setMAX_LENGTH_PLAYER_NAME(data.MAX_LENGTH_PLAYER_NAME)
-
-		}).catch(err => { 
-			
-			handle_error({ err }) 
-		
-		}).finally(() => setLoading(false))
-
-		// eslint-disable-next-line
-	}, [])
-
-	useEffect(() => setList_edit_players(structuredClone(list_players)), [ list_players ])
-
 	const update_view = async ( view, view_month, view_year ) => { 
 
-		setLoading_update_view(true)
+		setLoading(true)
 
 		await axiosPrivate.patch('/session', {
 			SessionID: session.id, 
@@ -88,7 +59,7 @@ export default function Popup_EditPlayers({
 				tmp.View_Year = view_year
 				return tmp
 			})
-			setShow_editPlayers(false)
+			setShow_popup(false)
 
 
 		}).catch(err => {
@@ -97,45 +68,11 @@ export default function Popup_EditPlayers({
 				err, 
 				handle_404: () => {
 					alert('Session nicht gefunden.')
-					navigate('/session/select', { replace: false })
+					navigate(-1, { replace: false })
 				}
 			})
 
-		}).finally(() => setLoading_update_view(false))
-
-	}
-
-	const save = async () => {
-
-		if(list_players === list_edit_players) return setShow_editPlayers(false)
-		if(!list_edit_players.every(p => (p.Name.length <= MAX_LENGTH_PLAYER_NAME && p.Name.length > 0))) return alert(`Spielername darf nicht leer oder länger als ${MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
-		setLoading(true)
-
-		axiosPrivate.patch('/player/list', { 
-			SessionID: session.id, 
-			List_Players: list_edit_players.map(p => {
-				return {
-					id: p.id, 
-					Name: p.Name, 
-					Color: p.Color
-				}
-			}), 
-		}).then(() => {
-
-			setList_players(structuredClone(list_edit_players))
-			setShow_editPlayers(false)
-
-		}).catch((err) => {
-
-			handle_error({ 
-				err, 
-				handle_404: (() => {
-					alert('Die Session wurde nicht gefunden!')
-					navigate('/session/select', { replace: true })
-				})
-			})
-
-		}).finally(() => setLoading(false))		
+		}).finally(() => setLoading(false))
 
 	}
 
@@ -144,16 +81,16 @@ export default function Popup_EditPlayers({
 
 
 	return <>
-		<Popup
-			showPopup={show_editPlayers}
-			setShowPopup={setShow_editPlayers}
-			title='Bearbeiten'
+		<PopupDropdown
+			showPopup={show_popup}
+			setShowPopup={setShow_popup}
+			
 		>
 			<div className='popup_editplayers'>		
 
-				{show_edit_customDate && loading_update_view && <LoaderBox className='popup_editplayers_select-loader' dark={true}/>}
+				{show_customDate && loading && <LoaderBox className='popup_editplayers_select-loader' dark={true}/>}
 
-				{show_edit_customDate && !loading_update_view && <>
+				{show_customDate && !loading && <>
 					<div className='popup_editplayers_select'>
 
 						{/* __________________________________________________ Year __________________________________________________ */}
@@ -228,25 +165,7 @@ export default function Popup_EditPlayers({
 					</div>
 				</>}
 
-
-				
-				{list_edit_players && <>
-					<DragAndDropNameColorList
-						list_edit_players={list_edit_players} 
-						setList_edit_players={setList_edit_players}
-						MAX_LENGTH_PLAYER_NAME={MAX_LENGTH_PLAYER_NAME}
-					/>
-				</>}
-
-
-
-				<CustomButton
-					loading={loading}
-					text='Speichern'
-					onClick={save}
-				/>
-
 			</div>
-		</Popup>
+		</PopupDropdown>
 	</>
 }

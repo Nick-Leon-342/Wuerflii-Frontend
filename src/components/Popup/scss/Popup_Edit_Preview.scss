@@ -1,19 +1,19 @@
 
 
-.popup_editplayers {
+.popup_edit_preview {
 	display: flex;
 	flex-direction: column;
 	gap: var(--padding);
 
 
 
-	.popup_editplayers_select {
+	.popup_edit_preview_select {
 		display: flex;
 		flex-direction: column;
 		border-bottom: 1px dashed;
 		padding-bottom: 25px;
 
-		.popup_editplayers_select-container {
+		.popup_edit_preview_select-container {
 			display: flex;
 			flex-direction: row;
 			justify-content: space-between;
@@ -42,7 +42,7 @@
 
 
 
-	.popup_editplayers_select-loader {
+	.popup_edit_preview_select-loader {
 		height: 60px;
 	}
 }
