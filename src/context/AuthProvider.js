@@ -10,7 +10,7 @@ const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }) => {
 
-    const [auth, setAuth] = useState({})
+    const [ auth, setAuth ] = useState({})
 
 
 

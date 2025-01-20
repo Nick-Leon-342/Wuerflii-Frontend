@@ -49,7 +49,7 @@ export default function Game() {
 
 		const session_id = new URLSearchParams(location.search).get('session_id')
 
-		if(!session_id) return navigate('/session/select', { replace: true })
+		if(!session_id) return navigate('/', { replace: true })
 
 		setLoading_request(true)
 
@@ -69,7 +69,7 @@ export default function Game() {
 				err, 
 				handle_404: () => {
 					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/session/select', { replace: true })
+					navigate('/', { replace: true })
 				},
 			})
 			
@@ -83,7 +83,7 @@ export default function Game() {
 	const finish_game = () => {
 	
 		if(!surrender_winner && list_players.some(p => p.List_Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
-		if(list_players.length === 1) return navigate('/session/select', { replace: true })
+		if(list_players.length === 1) return navigate('/', { replace: true })
 			
 		setLoading_finish_game(true)
 	

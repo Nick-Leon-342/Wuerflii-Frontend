@@ -65,7 +65,7 @@ export default function Login() {
 			setName('')
 			setPassword('')
 
-			navigate(next || '/session/select', { replace: true })
+			navigate(next || '/', { replace: true })
 
 
 		}).catch((err) => {
@@ -73,7 +73,7 @@ export default function Login() {
 			handle_error({
 				err, 
 				handle_409: () => {
-					setError('Falscher Benutzername \noder falsches Passwort!')
+					setError('Falscher Benutzername oder falsches Passwort!')
 				}
 			})
 
@@ -85,7 +85,7 @@ export default function Login() {
 
 
 	
-    return (
+    return <>
 		<div className='reglog-page'>
 
 			<h1>Anmeldung</h1>
@@ -133,5 +133,5 @@ export default function Login() {
 			/>
 			
 		</div>
-    )
+	</>
 }

@@ -32,13 +32,12 @@ import Game from './pages/Game/Game'
 
 export default function App() {
 
-	return (
+	return <>
 		<div className='App' id='App'>
 			<Router>
 				<Routes>
 
 					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/' element={<Login />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/registration' element={<Registration />} />
 					{/* <Route path='/joingame' element={<JoinGame />} /> */}
@@ -55,13 +54,12 @@ export default function App() {
 
 						{/* __________ Session __________ */}
 
+						<Route path='/' element={<SessionSelect />} />
 						<Route path='/session' element={<SessionAddAndEdit />} /> 
 						<Route path='/session/:session_id' element={<SessionAddAndEdit />} /> 
 						<Route path='/session/:session_id/players' element={<SessionPlayers />} />
 						<Route path='/session/:session_id/preview' element={<SessionPreview />} />
-						<Route path='/session/:session_id/preview/table' element={<SessionPreviewTable />} />
-
-						<Route path='/session/select' element={<SessionSelect />} />
+						<Route path='/session/:session_id/preview/table/:finalscore_id' element={<SessionPreviewTable />} />
 
 
 						{/* __________ Game __________ */}
@@ -76,6 +74,6 @@ export default function App() {
 				</Routes>
 			</Router>
 		</div>
-	)
+	</>
 
 }

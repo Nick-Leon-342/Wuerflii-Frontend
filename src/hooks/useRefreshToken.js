@@ -11,7 +11,7 @@ export default function useRefreshToken() {
 	
     const { setAuth } = useAuth()
 
-    const refresh = async () => {
+    return async () => {
         const response = await axios.get('/refreshtoken', {
             withCredentials: true
         })
@@ -20,7 +20,5 @@ export default function useRefreshToken() {
         })
         return response.data.accessToken
     }
-
-	return refresh
 
 }

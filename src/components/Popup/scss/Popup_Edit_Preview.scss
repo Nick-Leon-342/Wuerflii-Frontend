@@ -10,8 +10,6 @@
 	.popup_edit_preview_select {
 		display: flex;
 		flex-direction: column;
-		border-bottom: 1px dashed;
-		padding-bottom: 25px;
 
 		.popup_edit_preview_select-container {
 			display: flex;
@@ -22,6 +20,7 @@
 			span {
 				font-size: 20px;
 			}
+			&.view { width: 300px; }
 		}
 
 		.custom_date {

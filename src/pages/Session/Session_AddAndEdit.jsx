@@ -108,12 +108,12 @@ export default function Session_AddAndEdit() {
 				})
 				navigate(-1, { replace: false })
 			} else {
-				const { SessionID } = await axiosPrivate.post('/session', {
+				const { data } = await axiosPrivate.post('/session', {
 					Name: name, 
 					Color: color, 
 					Columns: +columns, 
 				})
-				navigate(`/session/${SessionID}/players`, { replace: true })
+				navigate(`/session/${data.SessionID}/players`, { replace: true })
 			}
 		} catch(err) {
 			handle_error({
@@ -214,7 +214,7 @@ export default function Session_AddAndEdit() {
 
 			{!session_id && <>
 				<CustomLink 
-					onClick={() => navigate('/session/select', { replace: false })}
+					onClick={() => navigate('/', { replace: false })}
 					text='Spiel laden'
 				/>
 			</>}

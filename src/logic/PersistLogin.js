@@ -31,7 +31,7 @@ export default function PersistLogin() {
 			try {
 				await refresh()
 			} catch(err) {
-				navigate(`/?next=${location.pathname}${location.search}`)
+				navigate(`/login?next=${location.pathname}${location.search}`)
 			} finally {
 				setIsLoading(false)
 			}
@@ -46,10 +46,10 @@ export default function PersistLogin() {
 
 
 
-	return (<>
+	return <>
 
-		{isLoading ? <Loader loaderVisible={true}/> : <Outlet/>}
+		{isLoading ? <Loader loading={true}/> : <Outlet/>}
 
-	</>)
+	</>
 	
 }

@@ -41,7 +41,7 @@ export default function EndScreen() {
 		const session_id = +urlParams.get('session_id')
 		const finalscore_id = +urlParams.get('finalscore_id')
 		
-		if(!session_id || !finalscore_id) return navigate('/session/select', { replace: true })
+		if(!session_id || !finalscore_id) return navigate('/', { replace: true })
 		setLoading(true)
 
 		axiosPrivate.get(`/game/end?session_id=${session_id}&finalscore_id=${finalscore_id}`).then(({ data }) => {
@@ -89,7 +89,7 @@ export default function EndScreen() {
 				err, 
 				handle_404: () => {
 					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/session/select')
+					navigate('/')
 				}
 			})
 			
@@ -102,7 +102,7 @@ export default function EndScreen() {
 
 
 
-	return (<>
+	return <>
 
 		<OptionsDialog
 			user={user}
@@ -156,10 +156,10 @@ export default function EndScreen() {
 
 			<button 
 				className='button' 
-				onClick={() => navigate('/session/select', { replace: false })}
+				onClick={() => navigate('/', { replace: false })}
 			>Ok</button>
 
 		</div>
 		
-	</>)
+	</>
 }

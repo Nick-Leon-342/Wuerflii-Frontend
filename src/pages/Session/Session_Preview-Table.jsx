@@ -3,7 +3,7 @@
 import '../Game/scss/Game.scss'
 
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -23,8 +23,7 @@ export default function Game() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-
-	const location = useLocation()
+	const { session_id, finalscore_id } = useParams()
 	
 	const [ user, setUser ] = useState()
 	const [ session, setSession ] = useState()
@@ -38,11 +37,7 @@ export default function Game() {
 
 	useEffect(() => {
 
-		const url_params = new URLSearchParams(location.search)
-		const session_id = url_params.get('session_id')
-		const finalscore_id = url_params.get('finalscore_id')
-
-		if(!session_id || !finalscore_id) return navigate(`/session/preview?session_id=${session_id}`, { replace: true })
+		if(!session_id || !finalscore_id) return navigate(-1, { replace: true })
 
 		setLoading_request(true)
 
@@ -82,7 +77,7 @@ export default function Game() {
 
 	if(loading_request) return <Loader loading={true}/>
 
-	return (<>
+	return <>
 
 		<OptionsDialog
 			user={user}
@@ -116,5 +111,5 @@ export default function Game() {
 			</div>
 		</div>
 
-	</>)
+	</>
 }

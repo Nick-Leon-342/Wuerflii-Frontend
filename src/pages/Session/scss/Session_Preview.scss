@@ -141,7 +141,7 @@
 .session_preview_popup_calendar {
 	z-index: 10001;
 
-	.preview_popup {
+	.session_preview_popup {
 		display: flex;
 		flex-direction: column;
 		gap: var(--padding);
@@ -194,6 +194,4 @@
 
 
 
-.session_preview_popup_edit_session {
-	button { width: 200px; }
-}
+.session_preview_popup_edit_session button { width: 200px; }

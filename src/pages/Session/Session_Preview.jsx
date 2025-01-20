@@ -54,7 +54,7 @@ export default function Session_Preview() {
 		url,  
 		handle_404: () => {
 			alert('Session nicht gefunden.')
-			navigate('/session/select', { replace: true })
+			navigate('/', { replace: true })
 		}
 	})
 
@@ -64,7 +64,7 @@ export default function Session_Preview() {
 
 	useEffect(() => {
 
-		if(!session_id) return navigate('/session/select', { replace: true })
+		if(!session_id) return navigate('/', { replace: true })
 		setLoading_request(true)
 
 
@@ -94,7 +94,7 @@ export default function Session_Preview() {
 				err, 
 				handle_404: (() => {
 					alert('Die Session exisiert nicht!')
-					navigate('/session/select', { replace: true })
+					navigate('/', { replace: true })
 				}) 
 			})
 
@@ -188,7 +188,7 @@ export default function Session_Preview() {
 				err, 
 				handle_404: () => {
 					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/session/select', { replace: true })
+					navigate('/', { replace: true })
 				}
 			})
 
@@ -334,7 +334,7 @@ export default function Session_Preview() {
 										<li 
 											ref={tmp_ref}
 											key={index_final_score}
-											className='preview_list_element-date'
+											className='session_preview_list_element-date'
 										>
 											<span>
 												{session?.View === 'show_month' && `${day}.`}
@@ -350,8 +350,8 @@ export default function Session_Preview() {
 										<li 
 											ref={tmp_ref}
 											key={index_final_score} 
-											onClick={() => navigate(`/session/preview/table?session_id=${session?.id}&finalscore_id=${final_score?.id}`, { replace: false })}
-											className={`preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
+											onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score?.id}`, { replace: false })}
+											className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
 										>
 											{list_players?.map((player, index_player) => 
 												<div key={`${index_final_score}.${index_player}`}>
@@ -365,7 +365,7 @@ export default function Session_Preview() {
 
 								}
 							})}
-							{loading && <li><LoaderBox className='preview_list_loader' dark={true}/></li>}
+							{loading && <li><LoaderBox className='session_preview_list_loader' dark={true}/></li>}
 							{error && <li>Fehler...</li>}
 						</ul>
 					</>}
@@ -384,7 +384,7 @@ export default function Session_Preview() {
 			</>}
 
 			<CustomLink 
-				onClick={() => navigate('/session/select',  { replace: false })}
+				onClick={() => navigate('/',  { replace: false })}
 				text='Zurück'
 			/>
 
@@ -416,6 +416,12 @@ export default function Session_Preview() {
 			</div>
 		</Popup>
 
+
+
+
+
+		{/* __________________________________________________ Popup Edit Session __________________________________________________ */}
+
 		<PopupDropdown
 			target_ref={ref_edit_session}
 			show_popup={show_edit_session}
@@ -432,9 +438,16 @@ export default function Session_Preview() {
 			>Spieler</button>
 		</PopupDropdown>
 
+
+
+
+
+		{/* __________________________________________________ Popup Edit Preview __________________________________________________ */}
+
 		<PopupEditPreview
+			target_ref={ref_edit_list}
+
 			setShow_customDate={setShow_customDate}
-			show_customDate={show_customDate}
 
 			setShow_popup={setShow_edit_list}
 			show_popup={show_edit_list}

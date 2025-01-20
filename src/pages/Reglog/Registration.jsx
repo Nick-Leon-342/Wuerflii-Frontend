@@ -63,7 +63,7 @@ export default function Registration() {
 			setName('')
 			setPassword('')
 
-			navigate('/game/create', { replace: true })
+			navigate('/session', { replace: true })
 
 
 		}).catch((err) => {

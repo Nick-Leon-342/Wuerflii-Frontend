@@ -50,7 +50,10 @@ export default function Table({
 					}
 
 					return (
-						<tr key={index_row} className={`${row.Border_Bottom ? 'border_bottom' : ''}${row.Border_Top ? 'border_top' : ''}`}>
+						<tr 
+							key={index_row} 
+							className={`${row.Border_Bottom ? 'border_bottom' : ''}${row.Border_Top ? 'border_top' : ''}`}
+						>
 							
 							{/* First two columns */}
 							{row.td}
@@ -62,13 +65,15 @@ export default function Table({
 									{list_columns.map(column => {
 
 										const className = `${column === session.Columns - 1 ? 'border-right' : ''}`
+										const key = `${index_player}_${column}`
 
 										if(!row.Possible_Entries || disabled) {
+											if(!player.List_Table_Columns[column]) return <div key={key}></div>
 											const value = player.List_Table_Columns[column][row.Name]
 											return (
 												<td 
+													key={key}
 													className={className} 
-													key={`${index_player}_${column}`}
 													style={{ backgroundColor: player.Color }} 
 												>
 													<span>{disabled ? value || 0 : value}</span>
@@ -78,8 +83,8 @@ export default function Table({
 
 										return (
 											<td 
+												key={key}	
 												className={className} 
-												key={`${index_player}_${column}`}
 												style={{ backgroundColor: player.Color }} 
 											>
 												<InputElement
@@ -197,7 +202,7 @@ const InputElement = ({
 
 	useEffect(() => {
 
-		if(!session) return
+		if(!session || !list_players[index_player].List_Table_Columns[column]) return
 
 		const tmp = list_players[index_player].List_Table_Columns[column][list_rows[index_row].Name]
 		const value = typeof tmp === 'number' ? tmp : ''

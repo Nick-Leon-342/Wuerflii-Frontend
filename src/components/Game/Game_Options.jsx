@@ -60,7 +60,7 @@ export default function Game_Options({
 				err, 
 				handle_404: () => {
 					alert('Session nicht gefunden.')
-					navigate('/session/select', { replace: true })
+					navigate('/', { replace: true })
 				}
 			})
 
@@ -90,7 +90,7 @@ export default function Game_Options({
 				err, 
 				handle_404: () => {
 					alert('Session nicht gefunden.')
-					navigate('/session/select', { replace: true })
+					navigate('/', { replace: true })
 				}
 			})
 
@@ -105,7 +105,7 @@ export default function Game_Options({
 	
 		axiosPrivate.delete(`/game?session_id=${session.id}`).then(() => {
 
-			navigate('/session/select', { replace: true })
+			navigate('/', { replace: true })
 
 		}).catch((err) => {
 
