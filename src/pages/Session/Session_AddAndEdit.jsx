@@ -146,7 +146,7 @@ export default function Session_AddAndEdit() {
 				isRequired={true}
 				setValue={setName}
 				text='Name für die Partie'
-				isRed={name.length > MAX_LENGTH_SESSION_NAME}
+				isRed={MAX_LENGTH_SESSION_NAME !== 0 && name.length > MAX_LENGTH_SESSION_NAME}
 			/>
 			
 
