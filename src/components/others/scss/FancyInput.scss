@@ -45,3 +45,10 @@
 		input { border-color: var(--red); }
 	}
 }
+
+body.dark { .fancyinput {
+	input:focus~label, 
+	input:not(:placeholder-shown)~label {
+		background-color: var(--background-color_dark_2);
+	}
+} }
