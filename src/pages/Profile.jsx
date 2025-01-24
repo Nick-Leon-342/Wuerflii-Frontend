@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
-import ErrorMessage from '../components/others/ErrorMessage'
+import PopupError from '../components/Popup/Popup_Error'
 import CustomButton from '../components/others/Custom_Button'
 import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/others/RegistrationForm'
@@ -29,8 +29,8 @@ export default function Profile() {
 	const [ loading_credentials, setLoading_credentials ] = useState(false)
 	const [ successfullyUpdated, setSuccessfullyUpdated ] = useState(false)
 
-	const [ NAME_REGEX, setNAME_REGEX ] = useState('')
-	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState('')
+	const [ NAME_REGEX, setNAME_REGEX ] = useState()
+	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
 
 	const [ loading_delete_account, setLoading_delete_account ] = useState(false)
 
@@ -89,7 +89,7 @@ export default function Profile() {
 
 		axiosPrivate.delete('/user').then(() => {
 
-			navigate('/', { replace: true })
+			navigate('/login', { replace: true })
 
 		}).catch(err => {
 
@@ -104,14 +104,21 @@ export default function Profile() {
 
 
 
-	return (<>
+	return <>
 		<div className='profile'>
 
 			<Previous onClick={() => navigate(-1, { replace: true })}/>
+			
+			<PopupError 
+				error={error}
+				setError={setError} 
+			/>
+
+
 
 			<form onSubmit={handleSubmit}>
 
-				{!successfullyUpdated && <h2>Erfolgreich gespeichert!</h2>}
+				{successfullyUpdated && <h2>Erfolgreich gespeichert!</h2>}
 
 				<RegistrationForm 
 					Name={Name} 
@@ -125,15 +132,12 @@ export default function Profile() {
 					setPASSWORD_REGEX={setPASSWORD_REGEX}
 				/>
 
-				<ErrorMessage error={error}/>
-
 				<CustomButton
 					text='Speichern'
 					loading={loading_credentials}
 				/>
 
 			</form>
-
 
 
 
@@ -145,5 +149,5 @@ export default function Profile() {
 			/>
 
 		</div>
-	</>)
+	</>
 }

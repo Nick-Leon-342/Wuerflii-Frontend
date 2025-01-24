@@ -101,7 +101,7 @@ export default function RegistrationForm({
 				err
 			})
 
-		}).finally(() => { setRequesting(false) })
+		}).finally(() => setRequesting(false))
 
 		// eslint-disable-next-line
 	}, [])

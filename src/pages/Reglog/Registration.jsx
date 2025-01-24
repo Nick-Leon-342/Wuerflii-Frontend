@@ -83,7 +83,7 @@ export default function Registration() {
 
 
 
-	return (
+	return <>
 		<div className='reglog-page'>
 
 			<h1>Registrierung</h1>
@@ -125,6 +125,5 @@ export default function Registration() {
 			/>
 
 		</div>
-	)
-
+	</>
 }
