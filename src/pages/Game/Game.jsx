@@ -67,10 +67,7 @@ export default function Game() {
 
 			handle_error({
 				err, 
-				handle_404: () => {
-					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/', { replace: true })
-				},
+				handle_404: () => navigate('/', { replace: true }),
 			})
 			
 		}).finally(() => setLoading_request(false))

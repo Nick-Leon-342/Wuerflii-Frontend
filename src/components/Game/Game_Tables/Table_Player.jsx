@@ -33,7 +33,7 @@ export default function Table_Player({
 
 
 
-	return (
+	return <>
 
 		<div className='table_player'>
 
@@ -95,11 +95,8 @@ export default function Table_Player({
 
 				</div>
 			</>}
-
 		</div>
-
-	)
-
+	</>
 }
 
 
@@ -125,7 +122,7 @@ const Gnadenwurf = ({
 
 	const change = async () => {
 
-		const bool = !list_players[index_player].Gnadenwurf
+		const bool = !list_players[index_player].Gnadenwurf_Used
 		
 		for(let i = 0; 100 > i; i++) {
 			
@@ -135,12 +132,12 @@ const Gnadenwurf = ({
 			await axiosPrivate.patch(`/player`, {
 				SessionID: session.id, 
 				PlayerID: list_players[index_player].id, 
-				Gnadenwurf: bool
+				Gnadenwurf_Used: bool
 			}).then(() => {
 	
 				setList_players(prev => {
 					const tmp = [ ...prev ]
-					tmp[index_player].Gnadenwurf = bool
+					tmp[index_player].Gnadenwurf_Used = bool
 					return tmp
 				})
 	
@@ -173,7 +170,7 @@ const Gnadenwurf = ({
 
 
 
-	return (<>
+	return <>
 		{loading &&
 			<div className='table_player_loader-container'>
 				<LoaderBox
@@ -187,9 +184,9 @@ const Gnadenwurf = ({
 			<input 
 				className='button-responsive' 
 				type='checkbox' 
-				checked={list_players[index_player].Gnadenwurf}
+				checked={list_players[index_player].Gnadenwurf_Used}
 				onChange={change} 
 			/>
 		}
-	</>)
+	</>
 }

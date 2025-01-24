@@ -133,7 +133,7 @@ export default function Popup_Edit_View({
 
 					{/* __________________________________________________ Custom_Date __________________________________________________ */}
 
-					{session?.View === 'custom_date' && <>
+					{session?.View === 'show_custom_date' && <>
 						<div className='popup_edit_preview_select-container custom_date'>
 							<span>Ansicht ab:</span>
 
@@ -141,7 +141,7 @@ export default function Popup_Edit_View({
 								onClick={() => setShow_customDate(true)}
 								className='button button-reverse'
 							>
-								{`${format(new Date(session?.CustomDate), 'dd.MM.yyyy')}` || 'Erstelle Ansicht'}
+								{`${format(new Date(session?.View_CustomDate), 'dd.MM.yyyy')}` || 'Erstelle Ansicht'}
 							</button>
 						</div>
 					</>}
@@ -158,7 +158,7 @@ export default function Popup_Edit_View({
 							<option key={0} value='show_all'>Gesamtansicht</option>
 							<option key={1} value='show_year'>Jahresansicht</option>
 							<option key={2} value='show_month'>Monatsansicht</option>
-							<option key={3} value='custom_date'>Benutzerdefiniert</option>
+							<option key={3} value='show_custom_date'>Benutzerdefiniert</option>
 						</select>
 					</div>
 

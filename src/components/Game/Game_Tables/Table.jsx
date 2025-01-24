@@ -40,16 +40,14 @@ export default function Table({
 
 
 
-	return (
+	return <>
 		<table className='table table_game'>
 			<tbody>
 				{list_rows.map((row, index_row) => {
 					
-					if(row.Name === 'Blank') {
-						return <tr key={index_row} className='blank'/>
-					}
+					if(row.Name === 'Blank') return <tr key={index_row} className='blank'/>
 
-					return (
+					return <>
 						<tr 
 							key={index_row} 
 							className={`${row.Border_Bottom ? 'border_bottom' : ''}${row.Border_Top ? 'border_top' : ''}`}
@@ -70,7 +68,7 @@ export default function Table({
 										if(!row.Possible_Entries || disabled) {
 											if(!player.List_Table_Columns[column]) return <div key={key}></div>
 											const value = player.List_Table_Columns[column][row.Name]
-											return (
+											return <>
 												<td 
 													key={key}
 													className={className} 
@@ -78,10 +76,10 @@ export default function Table({
 												>
 													<span>{disabled ? value || 0 : value}</span>
 												</td>
-											)
+											</>
 										}
 
-										return (
+										return <>
 											<td 
 												key={key}	
 												className={className} 
@@ -96,17 +94,17 @@ export default function Table({
 													column={column}
 												/>
 											</td>
-										)
+										</>
 									})}
 								</>
 							})}
 
 						</tr>
-					)
+					</>
 				})}
 			</tbody>
 		</table>
-	)
+	</>
 }
 
 
@@ -169,7 +167,7 @@ const InputElement = ({
 					}, 
 					handle_404: () => {
 						alert('Benutzer, Session oder Spieler wurde nicht gefunden!')
-						navigate(`/game/create`)
+						navigate(`/`)
 					}, 
 					handle_409: () => {
 						alert(`Der Eintrag '${value}' ist nicht zulässig!`)
@@ -215,7 +213,7 @@ const InputElement = ({
 
 
 
-	return (<>
+	return <>
 
 		{loading && <>
 			<div className='table_loader-container'>
@@ -261,5 +259,5 @@ const InputElement = ({
 				})}
 			</datalist>
 		</>}
-	</>)
+	</>
 }

@@ -133,7 +133,7 @@ export default function EndScreen() {
 						<tr>
 							<td>Gewonnen</td>
 							{list_players.map((p, i) => (
-								<td key={i}><span>{finalscore?.ScoresAfter[p.id]}</span></td>
+								<td key={i}><span>{finalscore?.Wins__After[p.id]}</span></td>
 							))}
 						</tr>
 

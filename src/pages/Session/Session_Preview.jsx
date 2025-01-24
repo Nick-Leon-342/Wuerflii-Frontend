@@ -83,7 +83,7 @@ export default function Session_Preview() {
 			setUser(User)
 			setSession(Session)
 			setList_players(List_Players)
-			setCustomDate(Session.CustomDate)
+			setView_customDate(Session.View_CustomDate)
 
 			setURL(`/session/preview/all?session_id=${Session.id}`)
 
@@ -114,10 +114,10 @@ export default function Session_Preview() {
 		const first = new Date(list_toEdit[0].End)
 		list_visibleFinalScores.push({ 
 			Group_Date: first, 
-			ScoresAfter: list_toEdit[0].ScoresAfter, 
-			ScoresAfter_Month: list_toEdit[0].ScoresAfter_Month,
-			ScoresAfter_Year: list_toEdit[0].ScoresAfter_Year, 
-			ScoresAfter_SinceCustomDate: list_toEdit[0].ScoresAfter_SinceCustomDate,
+			Wins__After: list_toEdit[0].Wins__After, 
+			Wins__After_Month: list_toEdit[0].Wins__After_Month,
+			Wins__After_Year: list_toEdit[0].Wins__After_Year, 
+			Wins__After_SinceCustomDate: list_toEdit[0].Wins__After_SinceCustomDate,
 		})
 		let currentDate = first
 	
@@ -127,10 +127,10 @@ export default function Session_Preview() {
 				rowHeights.push(height_dateElement)
 				list_visibleFinalScores.push({ 
 					Group_Date: d, 
-					ScoresAfter: e.ScoresAfter, 
-					ScoresAfter_Month: e.ScoresAfter_Month,
-					ScoresAfter_Year: e.ScoresAfter_Year, 
-					ScoresAfter_SinceCustomDate: e.ScoresAfter_SinceCustomDate,
+					Wins__After: e.Wins__After, 
+					Wins__After_Month: e.Wins__After_Month,
+					Wins__After_Year: e.Wins__After_Year, 
+					Wins__After_SinceCustomDate: e.Wins__After_SinceCustomDate,
 				})
 				currentDate = d
 			}
@@ -166,18 +166,21 @@ export default function Session_Preview() {
 	// __________________________________________________ Edit CustomDate __________________________________________________
 
 	const [ show_customDate, setShow_customDate ] = useState(false)
-	const [ customDate, setCustomDate ] = useState()
+	const [ view_customDate, setView_customDate ] = useState()
 	const [ loading_customDate, setLoading_customDate ] = useState(false)
 
 	const save_customDate = () => {
 
 		setLoading_customDate(true)
 
-		axiosPrivate.post('/session/date', { SessionID: session.id, CustomDate: customDate }).then(() => {
+		axiosPrivate.post('/session/date', { 
+			View_CustomDate: view_customDate, 
+			SessionID: session.id, 
+		}).then(() => {
 
 			setSession(prev => {
 				const tmp = { ...prev }
-				tmp.CustomDate = customDate
+				tmp.View_CustomDate = view_customDate
 				return tmp
 			})
 			setShow_customDate(false)
@@ -186,10 +189,7 @@ export default function Session_Preview() {
 
 			handle_error({
 				err, 
-				handle_404: () => {
-					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/', { replace: true })
-				}
+				handle_404: () => navigate('/', { replace: true })
 			})
 
 		}).finally(() => setLoading_customDate(false))
@@ -294,10 +294,10 @@ export default function Session_Preview() {
 											return (
 												<td key={id}>
 													<span>
-														{session?.View === 'show_month' && (e?.ScoresAfter_Month[id] || 0)}
-														{session?.View === 'show_year' && (e?.ScoresAfter_Year[id] || 0)}
-														{session?.View === 'custom_date' && (e?.ScoresAfter_SinceCustomDate[id] || 0)}
-														{session?.View === 'show_all' && (e?.ScoresAfter[id] || 0)}
+														{session?.View === 'show_month' && (e?.Wins__After_Month[id] || 0)}
+														{session?.View === 'show_year' && (e?.Wins__After_Year[id] || 0)}
+														{session?.View === 'show_custom_date' && (e?.Wins__After_SinceCustomDate[id] || 0)}
+														{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
 													</span>
 												</td>
 											)
@@ -339,7 +339,7 @@ export default function Session_Preview() {
 											<span>
 												{session?.View === 'show_month' && `${day}.`}
 												{session?.View === 'show_year' && `${day}.${month}.`}
-												{(session?.View === 'custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
+												{(session?.View === 'show_custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
 											</span>
 										</li>
 									)
@@ -404,8 +404,8 @@ export default function Session_Preview() {
 		>
 			<div className='session_preview_popup'>
 				<Calendar
-					value={customDate}
-					onChange={(cd) => setCustomDate(cd)}
+					value={view_customDate}
+					onChange={(cd) => setView_customDate(cd)}
 				/>
 
 				<CustomButton
