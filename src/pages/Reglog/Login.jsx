@@ -10,7 +10,6 @@ import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import PopupError from '../../components/Popup/Popup_Error'
 import FancyInput from '../../components/others/FancyInput'
 import CustomButton from '../../components/others/Custom_Button'
 import CustomLink from '../../components/NavigationElements/CustomLink'
@@ -19,7 +18,9 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
-export default function Login() {
+export default function Login({
+	setError, 
+}) {
 
     const { setAuth } = useAuth()
 	const location = useLocation()
@@ -31,7 +32,6 @@ export default function Login() {
     const [ Name, setName ] = useState('')
     const [ Password, setPassword ] = useState('')
 	
-    const [ error, setError ] = useState('')
 	const [ loading, setLoading ] = useState(false)
 
 
@@ -42,7 +42,7 @@ export default function Login() {
 	// eslint-disable-next-line
 	useEffect(() => setNext(new URLSearchParams(location.search).get('next')), [])
 
-	useEffect(() => setError(''), [ Name, Password ])
+	useEffect(() => setError(''), [ Name, Password, setError ])
 
     const handleSubmit = (e) => {
 
@@ -89,13 +89,6 @@ export default function Login() {
 		<div className='reglog-page'>
 
 			<h1>Anmeldung</h1>
-
-			<PopupError
-				error={error}
-				setError={setError}
-			/>
-
-
 
 			<form onSubmit={handleSubmit}>
 

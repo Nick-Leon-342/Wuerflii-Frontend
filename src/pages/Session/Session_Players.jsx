@@ -9,7 +9,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import PopupError from '../../components/Popup/Popup_Error'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
@@ -19,7 +18,9 @@ import DragAndDropNameColorList from '../../components/others/DragAndDropNameCol
 
 
 
-export default function Session_Players() {
+export default function Session_Players({
+	setError, 
+}) {
 
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
@@ -29,7 +30,6 @@ export default function Session_Players() {
 
 	const [ user, setUser ] = useState()
 
-	const [ error, setError ] = useState('')
 	const [ loading_request, setLoading_request ] = useState(false)
 	const [ loading, setLoading ] = useState(false)
 
@@ -165,11 +165,6 @@ export default function Session_Players() {
 		<OptionsDialog
 			user={user}
 			setUser={setUser}
-		/>
-
-		<PopupError
-			error={error}
-			setError={setError}
 		/>
 
 

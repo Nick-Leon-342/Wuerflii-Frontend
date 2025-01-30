@@ -9,7 +9,6 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import FancyInput from '../../components/others/FancyInput'
-import PopupError from '../../components/Popup/Popup_Error'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
@@ -19,7 +18,9 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
-export default function Session_AddAndEdit() {
+export default function Session_AddAndEdit({
+	setError, 
+}) {
 
 	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
@@ -29,7 +30,6 @@ export default function Session_AddAndEdit() {
 
 	const [ user, setUser ] = useState()
 
-	const [ error, setError ] = useState('')
 	const [ loading, setLoading ] = useState(false)
 	const [ loading_request, setLoading_request ] = useState(false)
 
@@ -134,11 +134,6 @@ export default function Session_AddAndEdit() {
 		<OptionsDialog
 			user={user}
 			setUser={setUser}
-		/>
-
-		<PopupError
-			error={error}
-			setError={setError}
 		/>
 
 

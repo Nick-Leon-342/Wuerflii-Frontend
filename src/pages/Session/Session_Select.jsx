@@ -11,7 +11,6 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Loader from '../../components/Loader/Loader'
 import LoaderBox from '../../components/Loader/Loader_Box'
-import PopupError from '../../components/Popup/Popup_Error'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
 import CustomLink from '../../components/NavigationElements/CustomLink'
@@ -20,7 +19,9 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
-export default function Session_Select() {
+export default function Session_Select({
+	setError, 
+}) {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -29,7 +30,6 @@ export default function Session_Select() {
 	const ref = useRef()
 
 	const [ user, setUser ] = useState()
-	const [ error, setError ] = useState('')
 	const [ loading, setLoading ] = useState(false)
 	const [ list_sessions, setList_sessions ] = useState() 
 
@@ -240,11 +240,6 @@ export default function Session_Select() {
 		<OptionsDialog
 			user={user}
 			setUser={setUser}
-		/>
-		
-		<PopupError
-			error={error}
-			setError={setError}
 		/>
 
 

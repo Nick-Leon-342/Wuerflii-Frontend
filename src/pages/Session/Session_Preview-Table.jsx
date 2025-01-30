@@ -17,7 +17,7 @@ import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
 
 
-export default function Game() {
+export default function Session_Preview_Table() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()

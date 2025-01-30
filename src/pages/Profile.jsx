@@ -1,6 +1,6 @@
 
 
-import './Profile.scss'
+import './scss/Profile.scss'
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
-import PopupError from '../components/Popup/Popup_Error'
 import CustomButton from '../components/others/Custom_Button'
 import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/others/RegistrationForm'
@@ -17,7 +16,9 @@ import RegistrationForm from '../components/others/RegistrationForm'
 
 
 
-export default function Profile() {
+export default function Profile({
+	setError, 
+}) {
 	
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -25,7 +26,7 @@ export default function Profile() {
 
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
-	const [ error, setError ] = useState('')
+	
 	const [ loading_credentials, setLoading_credentials ] = useState(false)
 	const [ successfullyUpdated, setSuccessfullyUpdated ] = useState(false)
 
@@ -109,13 +110,6 @@ export default function Profile() {
 
 			<Previous onClick={() => navigate(-1, { replace: true })}/>
 			
-			<PopupError 
-				error={error}
-				setError={setError} 
-			/>
-
-
-
 			<form onSubmit={handleSubmit}>
 
 				{successfullyUpdated && <h2>Erfolgreich gespeichert!</h2>}

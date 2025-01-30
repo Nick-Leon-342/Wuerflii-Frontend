@@ -41,7 +41,6 @@ export default function Session_Preview() {
 	const [ list_finalScores, setList_finalScores ] = useState([])
 	
 	const [ loading_request, setLoading_request ] = useState(false)
-	const [ loading_play, setLoading_play ] = useState(false)
 
 	const [ show_edit_session, setShow_edit_session ] = useState(false)
 	const [ show_edit_list, setShow_edit_list ] = useState(false)
@@ -52,10 +51,7 @@ export default function Session_Preview() {
 	const [ url, setURL ] = useState('')
 	const { ref, loading, error, list } = useInfiniteScrolling({ 
 		url,  
-		handle_404: () => {
-			alert('Session nicht gefunden.')
-			navigate('/', { replace: true })
-		}
+		handle_404: () => navigate('/', { replace: true })
 	})
 
 	
@@ -92,10 +88,7 @@ export default function Session_Preview() {
 
 			handle_error({ 
 				err, 
-				handle_404: (() => {
-					alert('Die Session exisiert nicht!')
-					navigate('/', { replace: true })
-				}) 
+				handle_404: () => navigate('/', { replace: true }) 
 			})
 
 		}).finally(() => setLoading_request(false))
@@ -377,7 +370,6 @@ export default function Session_Preview() {
 
 			{!loading_request && <>
 				<CustomButton
-					loading_request={loading_play}
 					text={`Los geht's!`}
 					onClick={() => navigate(`/game?session_id=${session?.id}`, { replace: false })}
 				/>

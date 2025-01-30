@@ -9,7 +9,6 @@ import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import PopupError from '../../components/Popup/Popup_Error'
 import CustomButton from '../../components/others/Custom_Button'
 import RegistrationForm from '../../components/others/RegistrationForm'
 import CustomLink from '../../components/NavigationElements/CustomLink'
@@ -18,7 +17,9 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 
 
-export default function Registration() {
+export default function Registration({
+	setError, 
+}) {
 
 	const navigate = useNavigate()
 	const { setAuth } = useAuth()
@@ -27,7 +28,6 @@ export default function Registration() {
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
 
-	const [ error, setError ] = useState('')
 	const [ loading, setLoading ] = useState(false)
 
 	const [ NAME_REGEX, setNAME_REGEX ] = useState()
@@ -37,7 +37,7 @@ export default function Registration() {
 
 
 
-	useEffect(() => setError(''), [ Name, Password ])
+	useEffect(() => setError(''), [ Name, Password, setError ])
 
 	const handleSubmit = (e) => {
 		
@@ -87,13 +87,6 @@ export default function Registration() {
 		<div className='reglog-page'>
 
 			<h1>Registrierung</h1>
-
-			<PopupError 
-				error={error}
-				setError={setError} 
-			/>
-
-
 
 			<form onSubmit={handleSubmit}>
 

@@ -87,10 +87,7 @@ export default function EndScreen() {
 			
 			handle_error({
 				err, 
-				handle_404: () => {
-					window.alert('Die Session wurde nicht gefunden!')
-					navigate('/')
-				}
+				handle_404: () => navigate('/', { replace: true })
 			})
 			
 		}).finally(() => setLoading(false))
