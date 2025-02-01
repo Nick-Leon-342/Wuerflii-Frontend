@@ -329,6 +329,7 @@ export default function Session_Select({
 			alignLeft={true}
 
 		>
+			
 			<div className='session_select_popup_settings-show'>
 				{loading_show_session_names && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
 				{!loading_show_session_names && <input type='checkbox' checked={user?.Show_Session_Names} onChange={change_show_session_names}/>}
@@ -357,6 +358,7 @@ export default function Session_Select({
 			})}
 
 			<Loader loading={loading_change_order}/>
+
 		</PopupDropdown>
 
 	</>
