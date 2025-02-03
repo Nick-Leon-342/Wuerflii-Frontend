@@ -1,0 +1,59 @@
+
+
+.analytics {
+	width: 90vw;
+	max-width: 1000px;
+
+	.analytics_select {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+
+		select { 
+			width: 150px;
+			text-align: center;
+		}
+	}
+
+
+
+	.analytics_accordion {
+		padding: 0px var(--padding);
+		border-radius: 10px;
+		background-color: var(--background-color_dark_3);
+
+
+
+		.analytics_sessions {
+			display: flex;
+			flex-direction: column;
+			font-size: 20px;
+
+			div {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				max-width: 500px;
+			}
+		}
+
+
+
+		.analytics_statistics {
+			display: flex;
+			flex-direction: column;
+			padding: var(--padding) 0px;
+			font-size: 20px;
+			font-weight: 600;
+			gap: 10px;
+
+			div {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				button { width: 47%; }
+			}
+		}
+	}
+}

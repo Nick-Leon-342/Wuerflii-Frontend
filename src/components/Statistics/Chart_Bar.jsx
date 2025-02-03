@@ -26,13 +26,13 @@ ChartJS.register(
 
 
 export default function Chart_Bar({
-	Counts, 
-
-	list_months, 
-
-	statistics_view, 
-	statistics_view_year, 
 	statistics_view_month, 	// January = 1, February = 2, ...
+	statistics_view_year, 
+	statistics_view, 
+	
+	list_months, 
+	
+	Counts, 
 }) {
 
 	const [ labels, setLabels ] = useState([])
@@ -93,7 +93,12 @@ export default function Chart_Bar({
 		setLabels(tmp_labels)
 
 		// eslint-disable-next-line
-	}, [ Counts, statistics_view, statistics_view_month, statistics_view_year ])
+	}, [ 
+		Counts, 
+		statistics_view, 
+		statistics_view_year, 
+		statistics_view_month, 
+	])
 
 
 
@@ -104,7 +109,7 @@ export default function Chart_Bar({
 			data={{
 				labels,
 				datasets: [{
-					label: 'Counts',
+					label: 'Spiele gespielt',
 					data: values,
 					backgroundColor: 'rgba(0, 230, 0, 0.3)',
 					borderColor: 'rgba(0, 230, 0, 1)',

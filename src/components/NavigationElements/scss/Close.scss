@@ -1,5 +1,11 @@
 
+
 .close-container {
 	display: flex;
 	justify-content: flex-end;
+
+	button { 
+		width: min-content; 
+		height: 40px;
+	}
 }

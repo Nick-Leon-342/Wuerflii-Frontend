@@ -8,99 +8,11 @@ import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
+import Accordion from '../../components/others/Accordion'
 import ChartBar from '../../components/Statistics/Chart_Bar'
 import Previous from '../../components/NavigationElements/Previous'
 
 
-
-
-const tmp = {
-	2021: {
-	  "Total": 287,
-	  1: {
-		"Total": 58,
-		"2": 10,
-		"5": 15,
-		"12": 18,
-		"25": 15
-	  },
-	  4: {
-		"Total": 72,
-		"3": 30,
-		"10": 22,
-		"18": 10,
-		"29": 10
-	  }
-	},
-	2022: {
-	  "Total": 315,
-	  2: {
-		"Total": 85,
-		"1": 25,
-		"7": 30,
-		"15": 20,
-		"23": 10
-	  },
-	  6: {
-		"Total": 90,
-		"5": 35,
-		"12": 25,
-		"20": 20,
-		"28": 10
-	  }
-	},
-	2023: {
-	  "Total": 400,
-	  3: {
-		"Total": 110,
-		"2": 40,
-		"9": 30,
-		"16": 20,
-		"27": 20
-	  },
-	  7: {
-		"Total": 140,
-		"6": 50,
-		"14": 40,
-		"21": 30,
-		"30": 20
-	  }
-	},
-	2024: {
-	  "Total": 375,
-	  5: {
-		"Total": 95,
-		"3": 35,
-		"11": 25,
-		"19": 20,
-		"24": 15
-	  },
-	  8: {
-		"Total": 130,
-		"4": 45,
-		"13": 40,
-		"22": 25,
-		"29": 20
-	  }
-	},
-	2025: {
-	  "Total": 410,
-	  2: {
-		"Total": 120,
-		"5": 2,
-		"10": 1,
-		"18": 2,
-		"26": 2
-	  },
-	  1: {
-		"Total": 140,
-		"7": 1,
-		"15": 1,
-		"23": 1,
-		"30": 2
-	  }
-	}
-  }
 
 
 
@@ -156,12 +68,9 @@ export default function Analytics({
 			setTotal_games_played(data.Total_Games_Played)
 
 
-			// const Counts = data.Counts
-			const Counts = tmp
+			const Counts = data.Counts
 			setCounts(Counts)
-
-			const list_years = Object.keys(Counts).map(year => +year)
-			setList_years(list_years)
+			setList_years(Object.keys(Counts).map(year => +year))
 
 
 		}).catch(err => 
@@ -181,56 +90,48 @@ export default function Analytics({
 
 	return <>
 		<div className='analytics'>
+
 			<Previous onClick={() => navigate(-1)}/>
 
-			<div className=''>
-				<span>Anzahl von Partien:</span>
-				<span>{total_sessions}</span>
-			</div>
-			
-			<div className=''>
-				<span>Anzahl von Spielen</span>
-				<span>{total_games_played}</span>
-			</div>
 
-			{/* <div className=''>
-				<span>Insgesamt Spiele gespielt</span>
-				<span>{counts}</span>
-			</div> */}
 
-			<select
-				value={statistics_view}
-				onChange={({ target }) => setStatistics_view(target.value)}
-			>
-				<option key={0} value='statistics_years'>Gesamt</option>
-				<option key={1} value='statistics_months_of_year'>Jahr</option>
-				<option key={2} value='statistics_days_of_month'>Monat</option>
-			</select>
+			<div className='analytics_select'>
 
-			{(statistics_view === 'statistics_months_of_year' || statistics_view === 'statistics_days_of_month') && <>
 				<select
-					value={statistics_view_year}
-					onChange={({ target }) => setStatistics_view_year(+target.value)}
+					value={statistics_view}
+					onChange={({ target }) => setStatistics_view(target.value)}
 				>
-					{list_years.map(year => <>
-						<option key={year} value={year}>{year}</option>
-					</>)}
+					<option key={0} value='statistics_years'>Gesamt</option>
+					<option key={1} value='statistics_months_of_year'>Jahr</option>
+					<option key={2} value='statistics_days_of_month'>Monat</option>
 				</select>
-			</>}
 
-			{statistics_view === 'statistics_days_of_month' && <>
-				<select
-					value={statistics_view_month}
-					onChange={({ target }) => setStatistics_view_month(+target.value)}
-				>
-					{list_months.map((month, index_month) => <>
-						<option key={month} value={index_month + 1}>{month}</option>
-					</>)}
-				</select>
-			</>}
+				{statistics_view === 'statistics_days_of_month' && <>
+					<select
+						value={statistics_view_month}
+						onChange={({ target }) => setStatistics_view_month(+target.value)}
+					>
+						{list_months.map((month, index_month) => <>
+							<option key={month} value={index_month + 1}>{month}</option>
+						</>)}
+					</select>
+				</>}
+
+				{(statistics_view === 'statistics_months_of_year' || statistics_view === 'statistics_days_of_month') && <>
+					<select
+						value={statistics_view_year}
+						onChange={({ target }) => setStatistics_view_year(+target.value)}
+					>
+						{list_years.map(year => <>
+							<option key={year} value={year}>{year}</option>
+						</>)}
+					</select>
+				</>}
+
+			</div>
 
 			<ChartBar
-				Counts={tmp}
+				Counts={counts}
 				list_months={list_months}
 
 				statistics_view={statistics_view}
@@ -238,10 +139,46 @@ export default function Analytics({
 				statistics_view_year={statistics_view_year}
 			/>
 
-			<label>Analysen von Spielern angucken</label>
-			<label>Analysen von Partien angucken</label>
 
-			<label>Bargraph für Spiele gespielt in den Jahren/Monaten</label>
+
+			<Accordion 
+				title='Weitere Statistiken'
+				className='analytics_accordion'
+			>
+
+				<div className='analytics_sessions'>
+					<div>
+						<span>Anzahl unterschiedlicher Partien:</span>
+						<span>{total_sessions}</span>
+					</div>
+					
+					<div>
+						<span>Anzahl von Spielen gespielt gesamt:</span>
+						<span>{total_games_played}</span>
+					</div>
+				</div>
+
+
+
+				<div className='analytics_statistics'>
+
+					<h2>Statistiken angucken</h2>
+
+					<div className=''>
+
+						<button
+							className='button'
+						>Spieler</button>
+
+						<button
+							className='button'
+						>Partien</button>
+
+					</div>
+
+				</div>
+
+			</Accordion>
 
 		</div>
 	</>

@@ -194,4 +194,24 @@
 
 
 
-.session_preview_popup_edit_session button { width: 200px; }
+.session_preview_popup_settings {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+
+	.session_preview_popup_settings-edit {
+		display: flex;
+		flex-direction: column;
+		font-size: 25px;
+		font-weight: 600;
+		gap: 10px;
+
+		div {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+
+			button { width: 200px; }
+		}
+	}
+} 

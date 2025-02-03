@@ -105,7 +105,7 @@ export default function Popup_Options({
 
 
 
-	return (<>
+	return <>
 
 		<button
 			onClick={() => setShow_options(true)} 
@@ -166,6 +166,5 @@ export default function Popup_Options({
 				
 			</div>
 		</Popup>
-	</>)
-
+	</>
 }

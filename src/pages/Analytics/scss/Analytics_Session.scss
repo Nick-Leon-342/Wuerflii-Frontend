@@ -1,0 +1,31 @@
+
+
+.analytics_session {
+
+
+	.analytics_session_select {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+
+		select { 
+			width: 150px;
+			text-align: center;
+		}
+	}
+
+
+	
+	.analytics_session_show_border {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		font-size: 20px;
+		gap: 10px;
+
+		input {
+			width: 20px;
+			min-height: 20px;
+		}
+	}
+}

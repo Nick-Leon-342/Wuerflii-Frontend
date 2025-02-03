@@ -8,10 +8,13 @@ import './scss/Close.scss'
 
 export default function Close({ onClick }) {
 	
-	return (
+	return <>
 		<div className='close-container'>
-			<svg className='button-responsive' onClick={onClick} height='28' viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg>
+			<button
+				onClick={onClick}
+				className='button button-reverse button-responsive'
+			><svg viewBox='0 -960 960 960'><path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z'/></svg></button>
 		</div>
-	)
+	</>
 
 }

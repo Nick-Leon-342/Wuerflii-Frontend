@@ -20,6 +20,7 @@ import Profile from './pages/Profile'
 // ____________________ Analytics ____________________
 
 import Analytics from './pages/Analytics/Analytics'
+import AnalyticsSession from './pages/Analytics/Analytics_Session'
 
 
 // ____________________ Session ____________________
@@ -61,7 +62,6 @@ export default function App() {
 					{/* 'Public' routes --> routes that can be accessed without token */}
 					<Route path='/login' element={<Login setError={setError}/>} />
 					<Route path='/registration' element={<Registration setError={setError} />} />
-					{/* <Route path='/joingame' element={<JoinGame />} /> */}
 
 
 					{/* 
@@ -76,6 +76,7 @@ export default function App() {
 						{/* __________ Analytics __________ */}
 
 						<Route path='/analytics' element={<Analytics setError={setError} />} />
+						<Route path='/session/:session_id/analytics' element={<AnalyticsSession setError={setError} />} />
 
 
 						{/* __________ Session __________ */}
