@@ -1,6 +1,9 @@
 
 
 .analytics_session {
+	width: 90vw;
+	max-width: 1000px;
+
 
 
 	.analytics_session_select {
@@ -26,6 +29,30 @@
 		input {
 			width: 20px;
 			min-height: 20px;
+		}
+	}
+
+
+
+	.analytics_session_accordion {
+		padding: 0px var(--padding);
+		border-radius: 10px;
+		background-color: var(--background-color_dark_3);
+
+
+
+		.analytics_session_accordion-container {
+			display: flex;
+			flex-direction: column;
+			font-size: 20px;
+			margin-bottom: var(--padding);
+
+			div {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				max-width: 500px;
+			}
 		}
 	}
 }

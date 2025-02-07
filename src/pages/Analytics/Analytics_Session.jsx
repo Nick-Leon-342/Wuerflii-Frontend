@@ -8,6 +8,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
+import Accordion from '../../components/others/Accordion'
+import PopupOptions from '../../components/Popup/Popup_Options'
+import ChartGraph from '../../components/Statistics/Chart_Graph'
 import Previous from '../../components/NavigationElements/Previous'
 import ChartDoughnut from '../../components/Statistics/Chart_Doughnut'
 
@@ -127,6 +130,14 @@ export default function Analytics_Session({
 
 
 	return <>
+
+		<PopupOptions 
+			user={user}
+			setUser={setUser}
+		/>
+
+
+
 		<div className='analytics_session'>
 
 			<Previous onClick={() => navigate(-1)}/>
@@ -188,16 +199,30 @@ export default function Analytics_Session({
 				Counts={counts}
 			/>
 
+			<ChartGraph
+				statistics_view={statistics_view}
+				statistics_view_year={statistics_view_year}
+				statistics_view_month={statistics_view_month}
 
+				IsBorderVisible={isBorderVisible}
+				List_Players={list_players}
+				List_Months={list_months}
+				Counts={counts}
+			/>
 
-			<div className=''>
+			<Accordion 
+				title='Weitere Statistiken'
+				className='analytics_session_accordion'
+			>
 
-				<div>
-					<span>Spiele gespielt</span>
-					<span>{games_played}</span>
+				<div className='analytics_session_accordion-container'>
+					<div>
+						<span>Spiele gespielt</span>
+						<span>{games_played}</span>
+					</div>
 				</div>
 
-			</div>
+			</Accordion>
 
 		</div>
 	</>
