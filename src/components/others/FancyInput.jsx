@@ -7,18 +7,18 @@ import './scss/FancyInput.scss'
 
 
 export default function FancyInput({ 
-	id, 
-	type, 
-	text, 
-	value, 
-	isRed, 
-	onBlur, 
-	isGreen, 
-	onFocus, 
-	setValue, 
-	maxLength, 
-	className,  
 	isRequired, 
+	className,  
+	maxLength, 
+	setValue, 
+	onFocus, 
+	isGreen, 
+	onBlur, 
+	isRed, 
+	value, 
+	text, 
+	type, 
+	id, 
 }) {
 
 	return <>
