@@ -2,36 +2,44 @@
 
 import './scss/RegistrationForm.scss'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 import FancyInput from './FancyInput'
-import Loader from '../Loader/Loader'
-import useErrorHandling from '../../hooks/useErrorHandling'
+import PopupDropdown from '../Popup/Popup_Dropdown'
 
 
 
 
 
 export default function RegistrationForm({ 
+	setPASSWORD_REGEX, 
+	PASSWORD_REGEX, 
+	setNAME_REGEX, 
+	NAME_REGEX, 
+	isRequired, 
+
+	setRequesting_regex, 
+	requesting_regex, 
+
 	setName, 
 	Name, 
 
 	setPassword, 
 	Password, 
-
-	isRequired, 
-	NAME_REGEX, 
-	setNAME_REGEX, 
-	PASSWORD_REGEX, 
-	setPASSWORD_REGEX 
 }) {
 
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
-	const [ requesting, setRequesting ] = useState(false)
+
+	const ref_name = useRef()
+	const ref_password = useRef()
 
 	const [ infoName, setInfoName ] = useState(true)
+	const [ show_popup_name, setShow_popup_name ] = useState(false)
+	const [ show_popup_password, setShow_popup_password ] = useState(false)
 
 	
 	const [ NAME_MIN_CHARACTER, setNAME_MIN_CHARACTER ] = useState()
@@ -55,7 +63,7 @@ export default function RegistrationForm({
 
 	useEffect(() => {
 
-		setRequesting(true)
+		setRequesting_regex(true)
 
 		axiosPrivate.get('/auth/regex').then(({ data }) => {
 
@@ -101,10 +109,13 @@ export default function RegistrationForm({
 				err
 			})
 
-		}).finally(() => setRequesting(false))
+		}).finally(() => setRequesting_regex(false))
 
 		// eslint-disable-next-line
 	}, [])
+
+	useEffect(() => setShow_popup_name(infoName && !requesting_regex && !NAME_REGEX?.test(Name)), [ infoName, requesting_regex, NAME_REGEX, Name ])
+	useEffect(() => setShow_popup_password(!infoName && !requesting_regex && !PASSWORD_REGEX?.test(Password)), [ infoName, requesting_regex, PASSWORD_REGEX, Password ])
 
 	const getIcon = ( valid ) => {
 
@@ -134,10 +145,13 @@ export default function RegistrationForm({
 
 	return <>
 		
+		{/* __________________________________________________ Name __________________________________________________ */}
+
 		<FancyInput 
 			value={Name} 
 			type='text' 
 			id='Username' 
+			ref={ref_name}
 			setValue={setName} 
 			text='Benutzername' 
 			isRequired={isRequired} 
@@ -147,10 +161,13 @@ export default function RegistrationForm({
 			isGreen={Name && NAME_REGEX && NAME_REGEX.test(Name)}
 		/>
 
-		{infoName && requesting && <Loader loading={true}/>}
-
-		{infoName && !requesting && !NAME_REGEX?.test(Name) && <>
-			
+		<PopupDropdown
+			alignLeft={true}
+			target_ref={ref_name}
+			widthSameAsTarget={true}
+			show_popup={show_popup_name}
+			setShow_popup={setShow_popup_name}
+		>
 			<div className='registrationform_error'>
 
 				<ROW REGEX={NAME_REGEX_MINMAX} value={Name} text={`${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`}/>
@@ -158,16 +175,20 @@ export default function RegistrationForm({
 				<ROW REGEX={NAME_REGEX_ALLOWEDCHARS} value={Name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
 
 			</div>
+		</PopupDropdown>
 
-		</>}
 
 
+
+
+		{/* __________________________________________________ Password __________________________________________________ */}
 
 		<FancyInput 
 			id='Password' 
 			type='password' 
 			text='Passwort' 
 			value={Password} 
+			ref={ref_password}
 			setValue={setPassword} 
 			isRequired={isRequired} 
 			onBlur={() => setInfoName(true)}
@@ -176,10 +197,12 @@ export default function RegistrationForm({
 			isGreen={Password && PASSWORD_REGEX && PASSWORD_REGEX.test(Password)}
 		/>
 
-		{!infoName && requesting && <Loader loading={requesting}/>}
-			
-		{!infoName && !requesting && !PASSWORD_REGEX?.test(Password) && <>
-			
+		<PopupDropdown
+			widthSameAsTarget={true}
+			target_ref={ref_password}
+			show_popup={show_popup_password}
+			setShow_popup={setShow_popup_password}
+		>
 			<div className='registrationform_error'>
 
 				<ROW REGEX={PASSWORD_REGEX_MINMAX} value={Password} text={`${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`}/>
@@ -187,8 +210,7 @@ export default function RegistrationForm({
 				<ROW REGEX={PASSWORD_REGEX_ALLOWEDCHARS} value={Password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
 
 			</div>
-
-		</>}
+		</PopupDropdown>
 
 	</>
 }

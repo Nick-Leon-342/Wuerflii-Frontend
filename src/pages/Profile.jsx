@@ -34,6 +34,7 @@ export default function Profile({
 	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
 
 	const [ loading_delete_account, setLoading_delete_account ] = useState(false)
+	const [ requesting_regex, setRequesting_regex ] = useState(false)
 
 
 
@@ -117,8 +118,13 @@ export default function Profile({
 				<RegistrationForm 
 					Name={Name} 
 					setName={setName} 
+
 					Password={Password} 
 					setPassword={setPassword} 
+					
+					requesting_regex={requesting_regex}
+					setRequesting_regex={setRequesting_regex}
+					
 					isRequired={false}
 					NAME_REGEX={NAME_REGEX}
 					setNAME_REGEX={setNAME_REGEX}

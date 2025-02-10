@@ -2,11 +2,12 @@
 
 import './scss/FancyInput.scss'
 
+import React, { forwardRef } from 'react'
 
 
 
 
-export default function FancyInput({ 
+const FancyInput = forwardRef(({ 
 	isRequired, 
 	className,  
 	maxLength, 
@@ -19,14 +20,15 @@ export default function FancyInput({
 	text, 
 	type, 
 	id, 
-}) {
-
+}, ref) => {
+	
 	return <>
 
 		<div className={`fancyinput${isRed ? ' fancyinput_red' : ''}${isGreen ? ' fancyinput_green' : ''}${className ? ` ${className}` : ''}`}>
 
 			<input
 				id={id}
+				ref={ref}
 				type={type}
 				value={value}
 				placeholder=''
@@ -44,4 +46,6 @@ export default function FancyInput({
 
 	</>
 
-}
+})
+
+export default FancyInput

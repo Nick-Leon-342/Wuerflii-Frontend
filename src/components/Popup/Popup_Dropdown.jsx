@@ -96,7 +96,7 @@ export default function Popup_Dropdown({
 		window.addEventListener('resize', updatePosition)
 		return () => window.removeEventListener('resize', updatePosition)
 		
-	}, [target_ref, alignLeft, widthSameAsTarget, move_x, move_y, show_popup, children])
+	}, [ target_ref, alignLeft, widthSameAsTarget, move_x, move_y, show_popup, children ])
 
 	useEffect(() => {
 

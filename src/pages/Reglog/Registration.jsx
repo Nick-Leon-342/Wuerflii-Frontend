@@ -29,6 +29,7 @@ export default function Registration({
 	const [ Password, setPassword ] = useState('')
 
 	const [ loading, setLoading ] = useState(false)
+	const [ requesting_regex, setRequesting_regex ] = useState(false)
 
 	const [ NAME_REGEX, setNAME_REGEX ] = useState()
 	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
@@ -93,8 +94,13 @@ export default function Registration({
 				<RegistrationForm 
 					Name={Name} 
 					setName={setName} 
+					
 					Password={Password} 
 					setPassword={setPassword} 
+
+					requesting_regex={requesting_regex}
+					setRequesting_regex={setRequesting_regex}
+
 					isRequired={true}
 					NAME_REGEX={NAME_REGEX}
 					setNAME_REGEX={setNAME_REGEX}
@@ -104,7 +110,7 @@ export default function Registration({
 
 				<CustomButton
 					text='Registrieren' 
-					loading={loading}
+					loading={loading || requesting_regex}
 				/>
 
 			</form>
