@@ -31,6 +31,7 @@ export default function Analytics_Session({
 	const [ loading, setLoading ] = useState(false)
 
 	const [ user, setUser ] = useState()
+	const [ draws, setDraws ] = useState()
 	const [ total, setTotal ] = useState()
 	const [ counts, setCounts ] = useState()
 	const [ list_players, setList_players ] = useState()
@@ -73,6 +74,7 @@ export default function Analytics_Session({
 
 
 			setUser(data.User)
+			setDraws(data.Draws)
 			setTotal(data.Total)
 			setList_players(data.List_Players)
 			setTotal_games_played(data.Total_Games_Played)
@@ -214,14 +216,19 @@ export default function Analytics_Session({
 				title='Weitere Statistiken'
 				className='analytics_session_accordion'
 			>
-
 				<div className='analytics_session_accordion-container'>
+					
 					<div>
 						<span>Spiele gespielt</span>
 						<span>{games_played}</span>
 					</div>
-				</div>
 
+					<div>
+						<span>Davon unentschieden</span>
+						<span>{draws}</span>
+					</div>
+
+				</div>
 			</Accordion>
 
 		</div>

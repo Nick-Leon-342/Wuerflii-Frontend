@@ -77,16 +77,18 @@ export default function Chart_Doughnut({
 
 
 	return <>
-		<Doughnut 
-			data={{
-				labels: List_Players?.map(player => player.Name), 
-				datasets: [{
-					data: values, 
-					borderWidth: IsBorderVisible ? 1 : 0,
-					borderColor: IsBorderVisible ? 'black' : '', 
-					backgroundColor: List_Players?.map(player => player.Color),
-				}], 
-			}}
-		/>
+		{values.some(v => v !== 0) && <>
+			<Doughnut 
+				data={{
+					labels: List_Players?.map(player => player.Name), 
+					datasets: [{
+						data: values, 
+						borderWidth: IsBorderVisible ? 1 : 0,
+						borderColor: IsBorderVisible ? 'black' : '', 
+						backgroundColor: List_Players?.map(player => player.Color),
+					}], 
+				}}
+			/>
+		</>}
 	</>
 }

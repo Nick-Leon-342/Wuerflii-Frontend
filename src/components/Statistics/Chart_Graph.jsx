@@ -51,16 +51,16 @@ export default function Chart_Graph({
 
 
 		if(statistics_view === 'statistics_year') {
-			tmp_labels = List_Months
+			tmp_labels = [ 0, ...List_Months ]
 			const year = Counts[statistics_view_year]
 			if(!year) {
-				tmp_values = List_Months.map(_ => {
+				tmp_values = tmp_labels.map(_ => {
 					const json = {}
 					List_Players.map(player => json[player.id] = 0)
 					return json
 				})
 			} else {
-				for(let i = 0; List_Months.length > i; i++) {
+				for(let i = 0; List_Months.length >= i; i++) {
 					const month = year[i]
 					if(!month) {
 						tmp_values.push(structuredClone(incremental_values))
@@ -75,16 +75,12 @@ export default function Chart_Graph({
 			}
 		}
 
-
-		if(statistics_view === 'statistics_month') {
-
-		}
-
 		setLabels(tmp_labels)
 		setValues(tmp_values)
 
 	}, [
 		Counts, 
+		List_Months, 
 		List_Players, 
 		statistics_view, 
 		statistics_view_year, 
@@ -96,7 +92,7 @@ export default function Chart_Graph({
 
 
 	return <>
-		{Counts && List_Players && <>
+		{Counts && List_Players && labels.length > 0 && values.length > 0 && <>
 			<Line
 				data={{
 					labels, 
