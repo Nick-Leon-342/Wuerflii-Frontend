@@ -9,6 +9,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Accordion from '../../components/others/Accordion'
+import LoaderBox from '../../components/Loader/Loader_Box'
 import ChartBar from '../../components/Statistics/Chart_Bar'
 import Previous from '../../components/NavigationElements/Previous'
 
@@ -31,10 +32,7 @@ export default function Analytics({
 	const [ total_games_played, setTotal_games_played ] = useState(0)
 
 	const [ loading, setLoading ] = useState(false)
-
-	const [ statistics_view, setStatistics_view ] = useState('statistics_years')
-	const [ statistics_view_month, setStatistics_view_month ] = useState(new Date().getMonth() + 1)
-	const [ statistics_view_year, setStatistics_view_year ] = useState(new Date().getFullYear())
+	const [ loading_sync, setLoading_sync ] = useState(false)
 
 	const [ list_years, setList_years ] = useState([])
 	const list_months = [
@@ -84,6 +82,34 @@ export default function Analytics({
 		// eslint-disable-next-line
 	}, [])
 
+	const sync_view = ( view, view_month, view_year ) => {
+
+		setLoading_sync(true)
+
+		axiosPrivate.patch('/user', {
+			Statistics_View: view,
+			Statistics_View_Month: view_month, 
+			Statistics_View_Year: view_year, 
+		}).then(() => {
+
+			setUser(prev => {
+				const tmp = { ...prev }
+				tmp.Statistics_View = view
+				tmp.Statistics_View_Month = view_month
+				tmp.Statistics_View_Year = view_year
+				return tmp
+			})
+
+		}).catch(err => {
+
+			handle_error({
+				err, 
+			})
+
+		}).finally(() => setLoading_sync(false))
+
+	}
+
 
 
 
@@ -97,46 +123,57 @@ export default function Analytics({
 
 			<div className='analytics_select'>
 
-				<select
-					value={statistics_view}
-					onChange={({ target }) => setStatistics_view(target.value)}
-				>
-					<option key={0} value='statistics_years'>Gesamt</option>
-					<option key={1} value='statistics_months_of_year'>Jahr</option>
-					<option key={2} value='statistics_days_of_month'>Monat</option>
-				</select>
-
-				{statistics_view === 'statistics_days_of_month' && <>
-					<select
-						value={statistics_view_month}
-						onChange={({ target }) => setStatistics_view_month(+target.value)}
-					>
-						{list_months.map((month, index_month) => <>
-							<option key={month} value={index_month + 1}>{month}</option>
-						</>)}
-					</select>
+				{loading_sync && <>
+					<LoaderBox
+						dark={true}
+						className='analytics_select-loader'
+					/>
 				</>}
 
-				{(statistics_view === 'statistics_months_of_year' || statistics_view === 'statistics_days_of_month') && <>
+				{!loading_sync && <>
 					<select
-						value={statistics_view_year}
-						onChange={({ target }) => setStatistics_view_year(+target.value)}
+						value={user?.Statistics_View}
+						onChange={({ target }) => sync_view(target.value, user.Statistics_View_Month, user.Statistics_View_Year)}
 					>
-						{list_years.map(year => <>
-							<option key={year} value={year}>{year}</option>
-						</>)}
+						<option key={0} value='statistics_years'>Gesamt</option>
+						<option key={1} value='statistics_months_of_year'>Jahr</option>
+						<option key={2} value='statistics_days_of_month'>Monat</option>
 					</select>
+
+					{user?.Statistics_View === 'statistics_days_of_month' && <>
+						<select
+							value={user?.Statistics_View_Month}
+							onChange={({ target }) => sync_view(user.Statistics_View, +target.value, user.Statistics_View_Year)}
+						>
+							{list_months.map((month, index_month) => <>
+								<option key={month} value={index_month + 1}>{month}</option>
+							</>)}
+						</select>
+					</>}
+
+					{(user?.Statistics_View === 'statistics_months_of_year' || user?.Statistics_View === 'statistics_days_of_month') && <>
+						<select
+							value={user?.Statistics_View_Year}
+							onChange={({ target }) => sync_view(user.Statistics_View, user.statistics_view_month, +target.value)}
+						>
+							{list_years.map(year => <>
+								<option key={year} value={year}>{year}</option>
+							</>)}
+						</select>
+					</>}
 				</>}
 
 			</div>
+
+
 
 			<ChartBar
 				Counts={counts}
 				list_months={list_months}
 
-				statistics_view={statistics_view}
-				statistics_view_month={statistics_view_month}
-				statistics_view_year={statistics_view_year}
+				statistics_view={user?.Statistics_View}
+				statistics_view_month={user?.Statistics_View_Month}
+				statistics_view_year={user?.Statistics_View_Year}
 			/>
 
 
@@ -145,8 +182,8 @@ export default function Analytics({
 				title='Weitere Statistiken'
 				className='analytics_accordion'
 			>
-
 				<div className='analytics_sessions'>
+					
 					<div>
 						<span>Anzahl unterschiedlicher Partien:</span>
 						<span>{total_sessions}</span>
@@ -156,28 +193,8 @@ export default function Analytics({
 						<span>Anzahl von Spielen gespielt gesamt:</span>
 						<span>{total_games_played}</span>
 					</div>
-				</div>
-
-
-
-				<div className='analytics_statistics'>
-
-					<h2>Statistiken angucken</h2>
-
-					<div className=''>
-
-						<button
-							className='button'
-						>Spieler</button>
-
-						<button
-							className='button'
-						>Partien</button>
-
-					</div>
 
 				</div>
-
 			</Accordion>
 
 		</div>

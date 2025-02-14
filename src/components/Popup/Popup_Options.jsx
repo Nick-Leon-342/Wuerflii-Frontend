@@ -152,6 +152,13 @@ export default function Popup_Options({
 						>Profil</button>
 					</section>
 
+					<section>
+						<button 
+							className='button button-reverse'
+							onClick={() => navigate('/analytics', { replace: false })}
+						>Statistiken</button>
+					</section>
+
 
 					<section>
 						<CustomButton

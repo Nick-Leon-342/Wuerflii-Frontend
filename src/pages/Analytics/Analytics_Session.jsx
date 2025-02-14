@@ -9,6 +9,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Accordion from '../../components/others/Accordion'
+import LoaderBox from '../../components/Loader/Loader_Box'
 import PopupOptions from '../../components/Popup/Popup_Options'
 import ChartGraph from '../../components/Statistics/Chart_Graph'
 import Previous from '../../components/NavigationElements/Previous'
@@ -29,20 +30,18 @@ export default function Analytics_Session({
 	const { session_id } = useParams()
 
 	const [ loading, setLoading ] = useState(false)
+	const [ loading_view, setLoading_view ] = useState(false)
+	const [ loading_show_border, setLoading_show_border ] = useState(false)
 
 	const [ user, setUser ] = useState()
 	const [ draws, setDraws ] = useState()
 	const [ total, setTotal ] = useState()
 	const [ counts, setCounts ] = useState()
+	const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState()
 	const [ total_games_played, setTotal_games_played ] = useState(0)
 
 	const [ games_played, setGames_played ] = useState(0)
-	const [ isBorderVisible, setIsBorderVisible ] = useState(false)
-
-	const [ statistics_view, setStatistics_view ] = useState('statistics_overall')
-	const [ statistics_view_month, setStatistics_view_month ] = useState(new Date().getMonth() + 1)
-	const [ statistics_view_year, setStatistics_view_year ] = useState(new Date().getFullYear())
 
 	const [ list_years, setList_years ] = useState([])
 	const list_months = [
@@ -76,6 +75,7 @@ export default function Analytics_Session({
 			setUser(data.User)
 			setDraws(data.Draws)
 			setTotal(data.Total)
+			setSession(data.Session)
 			setList_players(data.List_Players)
 			setTotal_games_played(data.Total_Games_Played)
 
@@ -99,33 +99,93 @@ export default function Analytics_Session({
 
 	useEffect(() => {
 
-		if(!counts) return
+		if(!counts || !session) return
 
-		if(statistics_view === 'statistics_overall') setGames_played(total_games_played)
+		const view = session.Statistics_View
+		const view_month = session?.Statistics_View_Month
+		const view_year = session?.Statistics_View_Year
 
-		if(statistics_view === 'statistics_year') {
-			if(!counts[statistics_view_year]) {
+		if(view === 'statistics_overall') setGames_played(total_games_played)
+
+		if(view === 'statistics_year') {
+			if(!counts[view_year]) {
 				setGames_played(0)
 			} else {
-				setGames_played(counts[statistics_view_year].Total)
+				setGames_played(counts[view_year].Total)
 			}			
 		}
 
-		if(statistics_view === 'statistics_month') {
-			if(!counts[statistics_view_year] || !counts[statistics_view_year][statistics_view_month]) {
+		if(view === 'statistics_month') {
+			if(!counts[view_year] || !counts[view_year][view_month]) {
 				setGames_played(0)
 			} else {
-				setGames_played(counts[statistics_view_year][statistics_view_month].Total)
+				setGames_played(counts[view_year][view_month].Total)
 			}	
 		}
 
 		// eslint-disable-next-line
 	}, [
 		counts, 
-		statistics_view, 
-		statistics_view_month, 
-		statistics_view_year, 
+		session?.Statistics_View, 
+		session?.Statistics_View_Month, 
+		session?.Statistics_View_Year, 
 	])
+
+	const sync_show_border = () => {
+
+		setLoading_show_border(true)
+
+		axiosPrivate.patch('/session', {
+			SessionID: +session_id, 
+			Statistics_Show_Border: !session.Statistics_Show_Border, 
+		}).then(() => {
+
+
+			setSession(prev => {
+				const tmp = { ...prev }
+				tmp.Statistics_Show_Border = !tmp.Statistics_Show_Border
+				return tmp
+			})
+
+
+		}).catch(err => {
+
+			handle_error({
+				err, 
+			})
+
+		}).finally(() => setLoading_show_border(false))
+
+	}
+
+	const sync_view = ( view, view_month, view_year ) => {
+
+		setLoading_view(true)
+
+		axiosPrivate.patch('/session', {
+			SessionID: +session_id, 
+			Statistics_View: view, 
+			Statistics_View_Month: view_month, 
+			Statistics_View_Year: view_year, 
+		}).then(() => {
+
+			setSession(prev => {
+				const tmp = { ...prev }
+				tmp.Statistics_View = view
+				tmp.Statistics_View_Month = view_month
+				tmp.Statistics_View_Year = view_year
+				return tmp
+			})
+
+		}).catch(err => {
+
+			handle_error({
+				err, 
+			})
+
+		}).finally(() => setLoading_view(false))
+
+	}
 
 
 
@@ -147,70 +207,75 @@ export default function Analytics_Session({
 
 
 			<div className='analytics_session_show_border'>
-				<input type='checkbox' checked={isBorderVisible} onChange={() => setIsBorderVisible(prev => !prev)}/>
+				{loading_show_border && <>
+					<LoaderBox
+						dark={true}
+						className='analytics_session_show_border-loader'
+					/>
+				</>}
+				{!loading_show_border && <>
+					<input 
+						type='checkbox' 
+						checked={session?.Statistics_Show_Border} 
+						onChange={sync_show_border}
+					/>
+				</>}
 				<span>Umrandung anzeigen</span>
 			</div>
 
+
+
+			{/* __________________________________________________ Select __________________________________________________ */}
+
 			<div className='analytics_session_select'>
 
-				<select
-					value={statistics_view}
-					onChange={({ target }) => setStatistics_view(target.value)}
-				>
-					<option key={0} value='statistics_overall'>Gesamt</option>
-					<option key={1} value='statistics_year'>Jahr</option>
-					<option key={2} value='statistics_month'>Monat</option>
-				</select>
-
-				{statistics_view === 'statistics_month' && <>
-					<select
-						value={statistics_view_month}
-						onChange={({ target }) => setStatistics_view_month(+target.value)}
-					>
-						{list_months.map((month, index_month) => <>
-							<option key={month} value={index_month + 1}>{month}</option>
-						</>)}
-					</select>
+				{loading_view && <>
+					<LoaderBox
+						dark={true}
+						className='analytics_session_select-loader'
+					/>
 				</>}
 
-				{(statistics_view === 'statistics_year' || statistics_view === 'statistics_month') && <>
+				{!loading_view && <>
+
 					<select
-						value={statistics_view_year}
-						onChange={({ target }) => setStatistics_view_year(+target.value)}
+						value={session?.Statistics_View}
+						onChange={({ target }) => sync_view(target.value, session.Statistics_View_Month, session.Statistics_View_Year)}
 					>
-						{list_years.map(year => <>
-							<option key={year} value={year}>{year}</option>
-						</>)}
+						<option key={0} value='statistics_overall'>Gesamt</option>
+						<option key={1} value='statistics_year'>Jahr</option>
+						<option key={2} value='statistics_month'>Monat</option>
 					</select>
+
+					{session?.Statistics_View === 'statistics_month' && <>
+						<select
+							value={session.Statistics_View_Month}
+							onChange={({ target }) => sync_view(session.Statistics_View, +target.value, session.Statistics_View_Year)}
+						>
+							{list_months.map((month, index_month) => <>
+								<option key={month} value={index_month + 1}>{month}</option>
+							</>)}
+						</select>
+					</>}
+
+					{(session?.Statistics_View === 'statistics_year' || session?.Statistics_View === 'statistics_month') && <>
+						<select
+							value={session.Statistics_View_Year}
+							onChange={({ target }) => sync_view(session.Statistics_View, session.Statistics_View_Month, +target.value)}
+						>
+							{list_years.map(year => <>
+								<option key={year} value={year}>{year}</option>
+							</>)}
+						</select>
+					</>}
+				
 				</>}
 
 			</div>
 
 
 
-			<ChartDoughnut
-				statistics_view={statistics_view}
-				statistics_view_year={statistics_view_year}
-				statistics_view_month={statistics_view_month}
-
-				IsBorderVisible={isBorderVisible}
-
-				List_Players={list_players}
-
-				Total={total}
-				Counts={counts}
-			/>
-
-			<ChartGraph
-				statistics_view={statistics_view}
-				statistics_view_year={statistics_view_year}
-				statistics_view_month={statistics_view_month}
-
-				IsBorderVisible={isBorderVisible}
-				List_Players={list_players}
-				List_Months={list_months}
-				Counts={counts}
-			/>
+			{/* __________________________________________________ More statistics __________________________________________________ */}
 
 			<Accordion 
 				title='Weitere Statistiken'
@@ -230,6 +295,34 @@ export default function Analytics_Session({
 
 				</div>
 			</Accordion>
+
+
+
+			{/* __________________________________________________ Charts __________________________________________________ */}
+
+			<ChartDoughnut
+				statistics_view={session?.Statistics_View}
+				statistics_view_year={session?.Statistics_View_Year}
+				statistics_view_month={session?.Statistics_View_Month}
+
+				IsBorderVisible={session?.Statistics_Show_Border}
+
+				List_Players={list_players}
+
+				Total={total}
+				Counts={counts}
+			/>
+
+			<ChartGraph
+				statistics_view={session?.Statistics_View}
+				statistics_view_year={session?.Statistics_View_Year}
+				statistics_view_month={session?.Statistics_View_Month}
+
+				IsBorderVisible={session?.Statistics_Show_Border}
+				List_Players={list_players}
+				List_Months={list_months}
+				Counts={counts}
+			/>
 
 		</div>
 	</>

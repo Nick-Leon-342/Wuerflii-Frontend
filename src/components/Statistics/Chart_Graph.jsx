@@ -92,7 +92,7 @@ export default function Chart_Graph({
 
 
 	return <>
-		{Counts && List_Players && labels.length > 0 && values.length > 0 && <>
+		{Counts && List_Players && labels?.length > 0 && values?.length > 0 && <>
 			<Line
 				data={{
 					labels, 

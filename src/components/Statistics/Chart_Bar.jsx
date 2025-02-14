@@ -61,7 +61,7 @@ export default function Chart_Bar({
 			tmp_labels = list_months
 
 			const year = Counts[statistics_view_year]
-			for(let i = 1; list_months.length > i; i++) {
+			for(let i = 1; list_months.length >= i; i++) {
 				const month = year && year[i]
 				if(!month) {
 					tmp_values.push(0)
@@ -85,7 +85,7 @@ export default function Chart_Bar({
 					console.log(month[i], i)
 					tmp_values.push(month[i] || 0)
 				}
-			}			
+			}
 		}
 		
 
