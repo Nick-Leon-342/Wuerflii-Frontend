@@ -82,7 +82,6 @@ export default function Chart_Bar({
 				tmp_values = tmp_labels.map(_ => 0)
 			} else {
 				for(let i = 1; tmp_labels.length > i; i++) {
-					console.log(month[i], i)
 					tmp_values.push(month[i] || 0)
 				}
 			}

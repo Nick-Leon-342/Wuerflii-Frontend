@@ -67,7 +67,7 @@ export default function useErrorHandling() {
 				if(handle_default) {
 					handle_default()
 				} else {
-					console.log(err)
+					console.error(err)
 					window.alert(`Ein unbehandelter Fehler trat auf: ${status}`)
 				}
 				break
