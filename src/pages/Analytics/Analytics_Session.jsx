@@ -34,14 +34,9 @@ export default function Analytics_Session({
 	const [ loading_show_border, setLoading_show_border ] = useState(false)
 
 	const [ user, setUser ] = useState()
-	const [ draws, setDraws ] = useState()
 	const [ total, setTotal ] = useState()
-	const [ counts, setCounts ] = useState()
 	const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState()
-	const [ total_games_played, setTotal_games_played ] = useState(0)
-
-	const [ games_played, setGames_played ] = useState(0)
 
 	const [ list_years, setList_years ] = useState([])
 	const list_months = [
@@ -73,16 +68,10 @@ export default function Analytics_Session({
 
 
 			setUser(data.User)
-			setDraws(data.Draws)
 			setTotal(data.Total)
 			setSession(data.Session)
+			setList_years(data.List_Years)
 			setList_players(data.List_Players)
-			setTotal_games_played(data.Total_Games_Played)
-
-
-			const Counts = data.Counts
-			setCounts(Counts)
-			setList_years(Object.keys(Counts).map(year => +year))
 
 
 		}).catch(err => {
@@ -95,37 +84,7 @@ export default function Analytics_Session({
 		}).finally(() => setLoading(false))
 
 		// eslint-disable-next-line
-	}, [])
-
-	useEffect(() => {
-
-		if(!counts || !session) return
-
-		const view = session.Statistics_View
-		const view_month = session?.Statistics_View_Month
-		const view_year = session?.Statistics_View_Year
-
-		if(view === 'statistics_overall') setGames_played(total_games_played)
-
-		if(view === 'statistics_year') {
-			if(!counts[view_year]) {
-				setGames_played(0)
-			} else {
-				setGames_played(counts[view_year].Total)
-			}			
-		}
-
-		if(view === 'statistics_month') {
-			if(!counts[view_year] || !counts[view_year][view_month]) {
-				setGames_played(0)
-			} else {
-				setGames_played(counts[view_year][view_month].Total)
-			}	
-		}
-
-		// eslint-disable-next-line
 	}, [
-		counts, 
 		session?.Statistics_View, 
 		session?.Statistics_View_Month, 
 		session?.Statistics_View_Year, 
@@ -285,12 +244,12 @@ export default function Analytics_Session({
 					
 					<div>
 						<span>Spiele gespielt</span>
-						<span>{games_played}</span>
+						<span>{total?.Total_Games_Played}</span>
 					</div>
 
 					<div>
 						<span>Davon unentschieden</span>
-						<span>{draws}</span>
+						<span>{total?.Total_Draws}</span>
 					</div>
 
 				</div>
@@ -301,27 +260,16 @@ export default function Analytics_Session({
 			{/* __________________________________________________ Charts __________________________________________________ */}
 
 			<ChartDoughnut
-				statistics_view={session?.Statistics_View}
-				statistics_view_year={session?.Statistics_View_Year}
-				statistics_view_month={session?.Statistics_View_Month}
-
-				IsBorderVisible={session?.Statistics_Show_Border}
-
 				List_Players={list_players}
-
-				Total={total}
-				Counts={counts}
+				Total_Wins={total?.Total_Wins} 
+				IsBorderVisible={session?.Statistics_Show_Border}
 			/>
 
 			<ChartGraph
-				statistics_view={session?.Statistics_View}
-				statistics_view_year={session?.Statistics_View_Year}
-				statistics_view_month={session?.Statistics_View_Month}
-
+				labels={session?.Statistics_View === 'statistics_year' ? [ 0, ...list_months ] : total?.Data ? Object.keys(total?.Data) : []}
 				IsBorderVisible={session?.Statistics_Show_Border}
 				List_Players={list_players}
-				List_Months={list_months}
-				Counts={counts}
+				Data={total?.Data}
 			/>
 
 		</div>
