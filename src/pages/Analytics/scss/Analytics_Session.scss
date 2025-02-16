@@ -25,26 +25,6 @@
 		border-radius: 10px;
 		background-color: var(--background-color_dark_3);
 		gap: 10px;
-
-
-
-		.analytics_session_select {
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-
-			.analytics_session_select-loader {
-				border-radius: 5px;
-				height: 60px;
-			}
-
-			select { 
-				width: 150px;
-				text-align: center;
-			}
-		}
-
-
 	
 		.analytics_session_show_border {
 			display: flex;

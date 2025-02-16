@@ -1,0 +1,17 @@
+
+
+.statistics_select_view {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+	.statistics_select_view-loader {
+		border-radius: 5px;
+		height: 60px;
+	}
+
+	select { 
+		width: 150px;
+		text-align: center;
+	}
+}

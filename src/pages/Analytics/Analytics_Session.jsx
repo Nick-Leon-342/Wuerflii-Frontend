@@ -15,6 +15,7 @@ import ChartGraph from '../../components/Statistics/Chart_Graph'
 import Previous from '../../components/NavigationElements/Previous'
 import ChartDoughnut from '../../components/Statistics/Chart_Doughnut'
 import ChartBarSession from '../../components/Statistics/Chart_Bar_Session'
+import StatisticsSelectView from '../../components/Statistics/Statistics_Select_View'
 
 
 
@@ -31,7 +32,6 @@ export default function Analytics_Session({
 	const { session_id } = useParams()
 
 	const [ loading, setLoading ] = useState(false)
-	const [ loading_view, setLoading_view ] = useState(false)
 	const [ loading_show_border, setLoading_show_border ] = useState(false)
 
 	const [ user, setUser ] = useState()
@@ -118,35 +118,6 @@ export default function Analytics_Session({
 
 	}
 
-	const sync_view = ( view, view_month, view_year ) => {
-
-		setLoading_view(true)
-
-		axiosPrivate.patch('/session', {
-			SessionID: +session_id, 
-			Statistics_View: view, 
-			Statistics_View_Month: view_month, 
-			Statistics_View_Year: view_year, 
-		}).then(() => {
-
-			setSession(prev => {
-				const tmp = { ...prev }
-				tmp.Statistics_View = view
-				tmp.Statistics_View_Month = view_month
-				tmp.Statistics_View_Year = view_year
-				return tmp
-			})
-
-		}).catch(err => {
-
-			handle_error({
-				err, 
-			})
-
-		}).finally(() => setLoading_view(false))
-
-	}
-
 
 
 
@@ -181,51 +152,15 @@ export default function Analytics_Session({
 
 					{/* ____________________ Select ____________________ */}
 
-					<div className='analytics_session_select'>
+					<StatisticsSelectView
+						list_months={list_months}
+						list_years={list_years}
 
-						{loading_view && <>
-							<LoaderBox
-								dark={true}
-								className='analytics_session_select-loader'
-							/>
-						</>}
+						setSession={setSession}
+						session={session}
 
-						{!loading_view && <>
-
-							<select
-								value={session?.Statistics_View}
-								onChange={({ target }) => sync_view(target.value, session.Statistics_View_Month, session.Statistics_View_Year)}
-							>
-								<option key={0} value='statistics_overall'>Gesamt</option>
-								<option key={1} value='statistics_year'>Jahr</option>
-								<option key={2} value='statistics_month'>Monat</option>
-							</select>
-
-							{session?.Statistics_View === 'statistics_month' && <>
-								<select
-									value={session.Statistics_View_Month}
-									onChange={({ target }) => sync_view(session.Statistics_View, +target.value, session.Statistics_View_Year)}
-								>
-									{list_months.map((month, index_month) => <>
-										<option key={month} value={index_month + 1}>{month}</option>
-									</>)}
-								</select>
-							</>}
-
-							{(session?.Statistics_View === 'statistics_year' || session?.Statistics_View === 'statistics_month') && <>
-								<select
-									value={session.Statistics_View_Year}
-									onChange={({ target }) => sync_view(session.Statistics_View, session.Statistics_View_Month, +target.value)}
-								>
-									{list_years.map(year => <>
-										<option key={year} value={year}>{year}</option>
-									</>)}
-								</select>
-							</>}
-						
-						</>}
-
-					</div>
+						isSession={true}
+					/>
 
 
 

@@ -7,22 +7,11 @@
 	width: 90vw;
 	max-width: 1000px;
 
-	
 
-	.analytics_select {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
 
-		.analytics_select-loader {
-			border-radius: 5px;
-			height: 60px;
-		}
-
-		select { 
-			width: 150px;
-			text-align: center;
-		}
+	.analytics_loader {
+		display: grid;
+		place-content: center;
 	}
 
 
