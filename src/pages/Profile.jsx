@@ -2,12 +2,14 @@
 
 import './scss/Profile.scss'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
+import LoaderDots from '../components/Loader/Loader_Dots'
+import PopupOptions from '../components/Popup/Popup_Options'
 import CustomButton from '../components/others/Custom_Button'
 import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/others/RegistrationForm'
@@ -24,6 +26,9 @@ export default function Profile({
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
+	const [ user, setUser ] = useState()
+	const [ loading, setLoading ] = useState(false)
+
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
 	
@@ -39,6 +44,25 @@ export default function Profile({
 
 
 
+
+	useEffect(() => {
+
+		setLoading(true)
+
+		axiosPrivate.get('/user').then(({ data }) => {
+
+			setUser(data.User)
+
+		}).catch(err => {
+
+			handle_error({
+				err, 
+			})
+
+		}).finally(() => setLoading(false))
+
+		// eslint-disable-next-line
+	}, [])
 
 	const handleSubmit = (e) => {
 
@@ -107,46 +131,65 @@ export default function Profile({
 
 
 	return <>
+	
+		<PopupOptions
+			setUser={setUser}
+			user={user}
+		/>
+	
+	
+
+
+
 		<div className='profile'>
 
 			<Previous onClick={() => navigate(-1, { replace: true })}/>
+
+			{/* ____________________ Loading animation ____________________ */}
+			{loading && <div className='profile_loader'><LoaderDots/></div>}
+
 			
-			<form onSubmit={handleSubmit}>
+			
+			{!loading && <>
 
-				{successfullyUpdated && <h2>Erfolgreich gespeichert!</h2>}
+				<form onSubmit={handleSubmit}>
 
-				<RegistrationForm 
-					Name={Name} 
-					setName={setName} 
+					{successfullyUpdated && <h2>Erfolgreich gespeichert!</h2>}
 
-					Password={Password} 
-					setPassword={setPassword} 
-					
-					requesting_regex={requesting_regex}
-					setRequesting_regex={setRequesting_regex}
-					
-					isRequired={false}
-					NAME_REGEX={NAME_REGEX}
-					setNAME_REGEX={setNAME_REGEX}
-					PASSWORD_REGEX={PASSWORD_REGEX}
-					setPASSWORD_REGEX={setPASSWORD_REGEX}
-				/>
+					<RegistrationForm 
+						Name={Name} 
+						setName={setName} 
+
+						Password={Password} 
+						setPassword={setPassword} 
+						
+						requesting_regex={requesting_regex}
+						setRequesting_regex={setRequesting_regex}
+						
+						isRequired={false}
+						NAME_REGEX={NAME_REGEX}
+						setNAME_REGEX={setNAME_REGEX}
+						PASSWORD_REGEX={PASSWORD_REGEX}
+						setPASSWORD_REGEX={setPASSWORD_REGEX}
+					/>
+
+					<CustomButton
+						text='Speichern'
+						loading={loading_credentials}
+					/>
+
+				</form>
+
+
 
 				<CustomButton
-					text='Speichern'
-					loading={loading_credentials}
+					text='Account löschen'
+					onClick={delete_account}
+					className='button-red-reverse'
+					loading={loading_delete_account}
 				/>
 
-			</form>
-
-
-
-			<CustomButton
-				text='Account löschen'
-				onClick={delete_account}
-				className='button-red-reverse'
-				loading={loading_delete_account}
-			/>
+			</>}
 
 		</div>
 	</>

@@ -10,6 +10,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 
 import LoaderDots from '../../components/Loader/Loader_Dots'
 import ChartBar from '../../components/Statistics/Chart_Bar'
+import PopupOptions from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
 import StatisticsSelectView from '../../components/Statistics/Statistics_Select_View'
 
@@ -83,6 +84,16 @@ export default function Analytics({
 
 
 	return <>
+
+		<PopupOptions
+			setUser={setUser}
+			user={user}
+		/>
+
+
+
+
+
 		<div className='analytics'>
 
 			<Previous onClick={() => navigate(-1)}/>

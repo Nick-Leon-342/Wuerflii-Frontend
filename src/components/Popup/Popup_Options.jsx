@@ -32,9 +32,21 @@ export default function Popup_Options({
 	
 	const [ loading_darkMode, setLoading_darkMode ] = useState(false)
 
+	const darkMode_string = 'Kniffel_DarkMode'
 
 
 
+
+
+	useEffect(() => {
+
+		const darkMode = localStorage.getItem(darkMode_string) === 'true'
+
+		if(darkMode) {
+			document.body.classList.add('dark')
+		}
+
+	}, [])
 
 	useEffect(() => {
 		
@@ -42,8 +54,10 @@ export default function Popup_Options({
 		
 		if(user.DarkMode) {
 			document.body.classList.add('dark')
+			localStorage.setItem(darkMode_string, 'true')
 		} else {
 			document.body.classList.remove('dark')
+			localStorage.setItem(darkMode_string, 'false')
 		}
 
 	}, [ user ])
