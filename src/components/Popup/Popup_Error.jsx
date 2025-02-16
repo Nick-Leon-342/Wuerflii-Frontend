@@ -8,6 +8,22 @@ import { useEffect, useState } from 'react'
 
 
 
+/**
+ * 
+ * Popup_Edit_View Component
+ *
+ * This component provides a popup interface for editing and selecting different views.
+ *
+ * @param {Object} props - Component properties
+ * @param {React.RefObject} props.target_ref - Reference to the target element
+ * @param {Function} props.setShow_customDate - Function to show the custom date selection
+ * @param {Function} props.setShow_popup - Function to toggle the popup visibility
+ * @param {boolean} props.show_popup - Controls the visibility of the popup
+ * @param {Function} props.setSession - Function to update the session state
+ * @param {Object} props.session - Current session data
+ * 
+ */
+
 export default function Popup_Error({
 	className, 
 	setError, 

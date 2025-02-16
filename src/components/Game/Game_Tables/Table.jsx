@@ -16,6 +16,31 @@ import LoaderBox from '../../Loader/Loader_Box'
 
 
 
+/**
+ * 
+ * Table component that renders a table with player data and allows input for scores or other data.
+ * It handles loading states, possible entries for input, and syncs with the server.
+ *
+ * @component
+ * @example
+ * // Example usage of Table component
+ * <Table 
+ *   setList_players={setListPlayers} 
+ *   list_players={listPlayers} 
+ *   disabled={false} 
+ *   session={session} 
+ * />
+ *
+ * @param {Object} props - The component props
+ * @param {Function} props.setList_players - Function to update the list of players
+ * @param {Array} props.list_players - List of players to display in the table
+ * @param {boolean} props.disabled - Boolean to control whether the input fields are disabled
+ * @param {Object} props.session - The session object containing the session settings (e.g., number of columns, input type, etc.)
+ *
+ * @returns {JSX.Element} The rendered Table component
+ * 
+ */
+
 export default function Table({ 
 	setList_players, 
 	list_players, 

@@ -2,7 +2,7 @@
 
 import './scss/Accordion.scss'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 
 
@@ -28,25 +28,8 @@ export default function Accordion({
 }) {
 
 	const ref = useRef()
+
 	const [ selected, setSelected ] = useState(true)
-
-
-
-
-
-	// useEffect(() => {
-
-	// 	// Set popup-children non-focusable with tab when popup isn't visible
-	// 	const focusableElements = ref.current.querySelectorAll(
-	// 		'a, button, input, select, textarea, [tabindex]'
-	// 	)
-	
-	// 	focusableElements.forEach(el => {
-	// 		if(selected) el.setAttribute('tabindex', '-1')
-	// 		if(!selected) el.setAttribute('tabindex', '0')
-	// 	})
-
-	// }, [ children, selected ])
 
 
 

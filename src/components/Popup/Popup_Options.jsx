@@ -17,6 +17,24 @@ import CustomButton from '../others/Custom_Button'
 
 
 
+/**
+ * 
+ * Popup_Options component that displays various user settings options, such as dark mode toggle,
+ * profile navigation, statistics navigation, and logout functionality.
+ *
+ * @component
+ * @example
+ * // Example usage of Popup_Options component
+ * <Popup_Options setUser={setUser} user={user} />
+ *
+ * @param {Object} props - The component props
+ * @param {Function} props.setUser - Function to update the user state
+ * @param {Object} props.user - The current user object containing user information like DarkMode
+ *
+ * @returns {JSX.Element} The rendered Popup_Options component
+ * 
+ */
+
 export default function Popup_Options({
 	setUser, 
 	user, 

@@ -10,23 +10,21 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * 
- * Popup_Dropdown is a component that creates a dropdown popup element relative to a target 
- * reference. The popup can be aligned left or right, its visibility is controlled via the 
- * `show_popup` state, and it can be positioned dynamically to avoid window overflow.
- * 
- * @param {Object} props - The properties passed to the Popup_Dropdown component.
- * @param {ReactNode} props.children - The content to be displayed within the popup.
- * @param {React.RefObject} props.target_ref - The reference to the target element (useRef) that the popup is anchored to.
- * @param {boolean} props.show_popup - Determines whether the popup is visible or not.
- * @param {Function} props.setShow_popup - Function to toggle the visibility of the popup.
- * @param {string} [props.className] - Optional additional class names for styling the popup.
- * @param {boolean} [props.alignLeft] - If true, aligns the popup to the left of the target. Otherwise, it aligns to the right.
- * @param {boolean} [props.widthSameAsTarget] - If true, sets the popup width equal to the width of the target element.
- * @param {boolean} [props.removePopupFromDOM] - If true, removes the popup from the DOM entirely when not visible, to avoid issues like unwanted scrollbars. Note that this disables fade animations.
- * @param {number} [props.move_x] - Optional X-axis offset to move the popup horizontally.
- * @param {number} [props.move_y] - Optional Y-axis offset to move the popup vertically.
- * 
- * @returns {JSX.Element} The rendered Popup_Dropdown component.
+ * Popup_Dropdown Component
+ *
+ * This component renders a dropdown popup positioned relative to a target element.
+ *
+ * @param {Object} props - Component properties
+ * @param {React.ReactNode} props.children - Content inside the popup
+ * @param {React.RefObject} props.target_ref - Reference to the target element
+ * @param {boolean} props.show_popup - Controls the visibility of the popup
+ * @param {Function} props.setShow_popup - Function to toggle popup visibility
+ * @param {string} [props.className] - Additional CSS classes for the popup
+ * @param {boolean} [props.alignLeft] - If true, aligns the popup to the left of the target
+ * @param {boolean} [props.widthSameAsTarget] - If true, sets the popup width equal to the target element
+ * @param {boolean} [props.removePopupFromDOM] - If true, removes the popup from the DOM when not visible
+ * @param {number} [props.move_x] - X-axis offset for the popup position
+ * @param {number} [props.move_y] - Y-axis offset for the popup position
  * 
  */
 

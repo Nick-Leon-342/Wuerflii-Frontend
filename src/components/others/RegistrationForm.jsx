@@ -14,6 +14,47 @@ import PopupDropdown from '../Popup/Popup_Dropdown'
 
 
 
+/**
+ * 
+ * RegistrationForm component handles the registration process, including username
+ * and password validation based on custom regular expressions. It displays input fields
+ * for username and password with live validation feedback, showing errors when the 
+ * user input doesn't match the required patterns.
+ *
+ * @component
+ * @example
+ * // Example usage of RegistrationForm component
+ * <RegistrationForm
+ *   setNAME_REGEX={setNAME_REGEX}
+ *   setPASSWORD_REGEX={setPASSWORD_REGEX}
+ *   PASSWORD_REGEX={PASSWORD_REGEX}
+ *   NAME_REGEX={NAME_REGEX}
+ *   isRequired={true}
+ *   setRequesting_regex={setRequesting_regex}
+ *   requesting_regex={requesting_regex}
+ *   setName={setName}
+ *   Name={Name}
+ *   setPassword={setPassword}
+ *   Password={Password}
+ * />
+ *
+ * @param {Object} props - The component props
+ * @param {Function} props.setNAME_REGEX - Function to update the regex for the username validation
+ * @param {RegExp} props.NAME_REGEX - Regular expression for validating the username
+ * @param {Function} props.setPASSWORD_REGEX - Function to update the regex for the password validation
+ * @param {RegExp} props.PASSWORD_REGEX - Regular expression for validating the password
+ * @param {boolean} props.isRequired - If true, the input fields will be required
+ * @param {Function} props.setRequesting_regex - Function to set the loading state for regex fetching
+ * @param {boolean} props.requesting_regex - State to indicate if regex data is being fetched
+ * @param {Function} props.setName - Function to update the name input value
+ * @param {string} props.Name - The current name input value
+ * @param {Function} props.setPassword - Function to update the password input value
+ * @param {string} props.Password - The current password input value
+ *
+ * @returns {JSX.Element} The rendered RegistrationForm component
+ * 
+ */
+
 export default function RegistrationForm({ 
 	setPASSWORD_REGEX, 
 	PASSWORD_REGEX, 

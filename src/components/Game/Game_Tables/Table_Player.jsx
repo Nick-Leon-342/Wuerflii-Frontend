@@ -14,6 +14,30 @@ import LoaderBox from '../../Loader/Loader_Box'
 
 
 
+/**
+ * 
+ * Table_Player component that displays the list of players, their scores, and allows toggling of the "Gnadenwurf" (grace throw) option.
+ * 
+ * @component
+ * @example
+ * // Example usage of Table_Player component
+ * <Table_Player 
+ *   setList_players={setListPlayers} 
+ *   list_players={listPlayers} 
+ *   disabled={false} 
+ *   session={session} 
+ * />
+ *
+ * @param {Object} props - The component props
+ * @param {Function} props.setList_players - Function to set the list of players
+ * @param {Array} props.list_players - List of players to display
+ * @param {boolean} props.disabled - Boolean to control whether the grace throw option is disabled
+ * @param {Object} props.session - The current session object containing session details like "ShowScores"
+ *
+ * @returns {JSX.Element} The rendered Table_Player component
+ * 
+ */
+
 export default function Table_Player({ 
 	setList_players, 
 	list_players, 

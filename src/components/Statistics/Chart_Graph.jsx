@@ -10,6 +10,31 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 
 
+/**
+ * 
+ * Chart_Graph component renders a line chart that visualizes player data over time.
+ * It uses the react-chartjs-2 library and the Chart.js library to generate the graph.
+ *
+ * @component
+ * @example
+ * // Example usage of Chart_Graph component
+ * <Chart_Graph
+ *   IsBorderVisible={true}
+ *   List_Players={playersList}
+ *   labels={timeLabels}
+ *   Data={playerData}
+ * />
+ *
+ * @param {Object} props - The component props
+ * @param {boolean} props.IsBorderVisible - Flag to determine whether to display borders with adjusted colors
+ * @param {Array} props.List_Players - Array of player objects containing details like `id`, `Name`, and `Color`
+ * @param {Array} props.labels - Array of labels for the x-axis representing time or data points
+ * @param {Object} props.Data - Object mapping time intervals to player data, specifically wins for each player
+ *
+ * @returns {JSX.Element} The rendered line chart component
+ * 
+ */
+
 export default function Chart_Graph({
 	IsBorderVisible, 
 	List_Players, 

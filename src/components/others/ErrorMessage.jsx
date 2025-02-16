@@ -6,9 +6,27 @@ import './scss/ErrorMessage.scss'
 
 
 
+/**
+ * 
+ * ErrorMessage component displays an error message when one is passed in.
+ * It shows an error icon, title, and the message content.
+ *
+ * @component
+ * @example
+ * // Example usage of ErrorMessage component
+ * <ErrorMessage error="An error occurred while fetching data" />
+ *
+ * @param {Object} props - The component props
+ * @param {string} props.error - The error message to display
+ *
+ * @returns {JSX.Element|null} The rendered ErrorMessage component or null if no error is provided
+ * 
+ */
+
 export default function ErrorMessage({ 
 	error 
 }) {
+
 	return <>
 		{error && <>
 			<div className='errormessage'>
@@ -23,4 +41,5 @@ export default function ErrorMessage({
 			</div>
 		</>}
 	</>
+
 }

@@ -16,6 +16,33 @@ import LoaderBox from '../Loader/Loader_Box'
 
 
 
+/**
+ * 
+ * Game_Options component that provides game settings, such as input type selection, score visibility toggle,
+ * player management, and options for starting a new game or surrendering.
+ *
+ * @component
+ * @example
+ * // Example usage of Game_Options component
+ * <Game_Options 
+ *   setShow_surrender={setShowSurrender} 
+ *   setShow_options={setShowOptions} 
+ *   show_options={showOptions} 
+ *   setSession={setSession} 
+ *   session={session} 
+ * />
+ *
+ * @param {Object} props - The component props
+ * @param {Function} props.setShow_surrender - Function to show/hide surrender option
+ * @param {Function} props.setShow_options - Function to show/hide options popup
+ * @param {boolean} props.show_options - Boolean value to control visibility of the options popup
+ * @param {Function} props.setSession - Function to update the session state
+ * @param {Object} props.session - The current game session object, containing details like input type and show scores option
+ *
+ * @returns {JSX.Element} The rendered Game_Options component
+ * 
+ */
+
 export default function Game_Options({
 	setShow_surrender, 
 

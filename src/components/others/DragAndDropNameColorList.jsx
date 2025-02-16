@@ -8,6 +8,29 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
 
 
+/**
+ * 
+ * DragAndDropNameColorList component allows users to drag and drop players to reorder them,
+ * and change their names and colors.
+ *
+ * @component
+ * @example
+ * // Example usage of DragAndDropNameColorList component
+ * <DragAndDropNameColorList 
+ *   MAX_LENGTH_PLAYER_NAME={20} 
+ *   setList_edit_players={setList} 
+ *   list_edit_players={players} 
+ * />
+ *
+ * @param {Object} props - The component props
+ * @param {number} props.MAX_LENGTH_PLAYER_NAME - The maximum allowed length for player names
+ * @param {Function} props.setList_edit_players - Function to update the list of edited players
+ * @param {Array} props.list_edit_players - List of players with names and colors that can be dragged and edited
+ *
+ * @returns {JSX.Element} The rendered DragAndDropNameColorList component with draggable player items
+ * 
+ */
+
 export default function DragAndDropNameColorList({ 
 	MAX_LENGTH_PLAYER_NAME, 
 	setList_edit_players,  

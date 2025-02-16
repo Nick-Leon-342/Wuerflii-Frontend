@@ -13,6 +13,38 @@ import LoaderBox from '../Loader/Loader_Box'
 
 
 
+/**
+ * 
+ * Statistics_Select_View component allows the user to select a view for displaying statistics
+ * (Overall, Yearly, or Monthly) and the corresponding month and year, updating the session or user data accordingly.
+ * It handles the interaction with the backend for syncing the selected view settings.
+ *
+ * @component
+ * @example
+ * // Example usage of Statistics_Select_View component
+ * <Statistics_Select_View
+ *   list_months={['January', 'February', 'March']}
+ *   list_years={[2022, 2023, 2024]}
+ *   setSession={setSession}
+ *   session={session}
+ *   setUser={setUser}
+ *   user={user}
+ *   isSession={true}
+ * />
+ *
+ * @param {Object} props - The component props
+ * @param {Array} props.list_months - List of month names for selecting a month in the 'statistics_month' view
+ * @param {Array} props.list_years - List of years for selecting a year in the 'statistics_year' or 'statistics_month' view
+ * @param {Function} props.setSession - Function to update session data
+ * @param {Object} props.session - Current session data containing the statistics view settings
+ * @param {Function} props.setUser - Function to update user data
+ * @param {Object} props.user - Current user data containing the statistics view settings
+ * @param {boolean} props.isSession - Flag to indicate if the data belongs to a session or a user
+ *
+ * @returns {JSX.Element} The rendered select view component for choosing statistics display options
+ * 
+ */
+
 export default function Statistics_Select_View({
 	list_months, 
 	list_years, 

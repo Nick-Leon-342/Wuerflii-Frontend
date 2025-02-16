@@ -31,7 +31,7 @@ export default function Custom_Button({
 	ok
 }) {
 
-    return (
+    return <>
         <button
 			onClick={onClick}
 			disabled={loading || ok}
@@ -43,6 +43,6 @@ export default function Custom_Button({
 			{!loading && !ok && text}
 
         </button>
-    )
+	</>
 
 }
