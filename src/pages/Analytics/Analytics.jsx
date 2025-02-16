@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Accordion from '../../components/others/Accordion'
 import LoaderDots from '../../components/Loader/Loader_Dots'
 import ChartBar from '../../components/Statistics/Chart_Bar'
 import Previous from '../../components/NavigationElements/Previous'
@@ -28,12 +27,9 @@ export default function Analytics({
 
 	const [ user, setUser ] = useState()
 
-	const [ counts, setCounts ] = useState()
-	const [ total_sessions, setTotal_sessions ] = useState(0)
-	const [ total_games_played, setTotal_games_played ] = useState(0)
+	const [ total, setTotal ] = useState()
 
 	const [ loading, setLoading ] = useState(false)
-	const [ loading_sync, setLoading_sync ] = useState(false)
 
 	const [ list_years, setList_years ] = useState([])
 	const list_months = [
@@ -63,13 +59,8 @@ export default function Analytics({
 
 			
 			setUser(data.User)
-			setTotal_sessions(data.Total_Sessions)
-			setTotal_games_played(data.Total_Games_Played)
-
-
-			const Counts = data.Counts
-			setCounts(Counts)
-			setList_years(Object.keys(Counts).map(year => +year))
+			setTotal(data.Total)
+			setList_years(data.List_Years)
 
 
 		}).catch(err => 
@@ -81,7 +72,11 @@ export default function Analytics({
 		).finally(() => setLoading(false))
 
 		// eslint-disable-next-line
-	}, [])
+	}, [
+		user?.Statistics_View, 
+		user?.Statistics_View_Month, 
+		user?.Statistics_View_Year, 
+	])
 
 
 
@@ -105,41 +100,34 @@ export default function Analytics({
 
 					setUser={setUser}
 					user={user}
-					
+
 					isSession={false}
 				/>
 
 
 
 				<ChartBar
-					Counts={counts}
-					list_months={list_months}
-
-					statistics_view={user?.Statistics_View}
-					statistics_view_month={user?.Statistics_View_Month}
-					statistics_view_year={user?.Statistics_View_Year}
+					labels={user?.Statistics_View === 'statistics_year' ? list_months : total?.Data ? Object.keys(total?.Data) : []}
+					JSON={total?.Data}
 				/>
 
 
 
-				<Accordion 
-					title='Weitere Statistiken'
-					className='analytics_accordion'
-				>
-					<div className='analytics_sessions'>
-						
+				<div className='analytics_more-statistics'>
+					
+					{user?.Statistics_View === 'statistics_overall' && <>
 						<div>
 							<span>Anzahl unterschiedlicher Partien:</span>
-							<span>{total_sessions}</span>
+							<span>{total?.Total_Sessions}</span>
 						</div>
-						
-						<div>
-							<span>Anzahl von Spielen gespielt gesamt:</span>
-							<span>{total_games_played}</span>
-						</div>
-
+					</>}
+					
+					<div>
+						<span>Anzahl von Spielen:</span>
+						<span>{total?.Total_Games_Played}</span>
 					</div>
-				</Accordion>
+
+				</div>
 
 			</>}
 
