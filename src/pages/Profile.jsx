@@ -51,7 +51,7 @@ export default function Profile({
 
 		axiosPrivate.get('/user').then(({ data }) => {
 
-			setUser(data.User)
+			setUser(data)
 
 		}).catch(err => {
 
@@ -148,7 +148,7 @@ export default function Profile({
 			{/* ____________________ Loading animation ____________________ */}
 			{loading && <div className='profile_loader'><LoaderDots/></div>}
 
-			
+
 			
 			{!loading && <>
 

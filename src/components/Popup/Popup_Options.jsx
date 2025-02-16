@@ -64,6 +64,8 @@ export default function Popup_Options({
 
 	const change_dark_mode = async () => {
 
+		if(!user) return
+
 		setLoading_darkMode(true)
 
 		axiosPrivate.patch('/user', { DarkMode: !user.DarkMode }).then(() => {
