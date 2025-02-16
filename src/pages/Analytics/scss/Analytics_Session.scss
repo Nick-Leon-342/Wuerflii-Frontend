@@ -10,6 +10,13 @@
 
 
 
+	.analytics_session-loader {
+		display: grid;
+		place-content: center;
+	}
+
+
+
 	.analytics_session_charts {
 		display: flex;
 		flex-direction: column;

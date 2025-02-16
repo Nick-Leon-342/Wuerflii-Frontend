@@ -8,8 +8,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Accordion from '../../components/others/Accordion'
 import LoaderBox from '../../components/Loader/Loader_Box'
+import LoaderDots from '../../components/Loader/Loader_Dots'
 import PopupOptions from '../../components/Popup/Popup_Options'
 import ChartGraph from '../../components/Statistics/Chart_Graph'
 import Previous from '../../components/NavigationElements/Previous'
@@ -164,174 +164,181 @@ export default function Analytics_Session({
 
 			<Previous onClick={() => navigate(-1)}/>
 
+			{/* __________ Loading animation __________ */}
+			{loading && <div className='analytics_session-loader'><LoaderDots/></div>}
 
 
 
 
-			{/* __________________________________________________ Charts __________________________________________________ */}
 
-			<div className='analytics_session_charts'>
+			{!loading && <>
+
+				{/* __________________________________________________ Charts __________________________________________________ */}
+
+				<div className='analytics_session_charts'>
 
 
 
-				{/* ____________________ Select ____________________ */}
+					{/* ____________________ Select ____________________ */}
 
-				<div className='analytics_session_select'>
+					<div className='analytics_session_select'>
 
-					{loading_view && <>
-						<LoaderBox
-							dark={true}
-							className='analytics_session_select-loader'
-						/>
-					</>}
-
-					{!loading_view && <>
-
-						<select
-							value={session?.Statistics_View}
-							onChange={({ target }) => sync_view(target.value, session.Statistics_View_Month, session.Statistics_View_Year)}
-						>
-							<option key={0} value='statistics_overall'>Gesamt</option>
-							<option key={1} value='statistics_year'>Jahr</option>
-							<option key={2} value='statistics_month'>Monat</option>
-						</select>
-
-						{session?.Statistics_View === 'statistics_month' && <>
-							<select
-								value={session.Statistics_View_Month}
-								onChange={({ target }) => sync_view(session.Statistics_View, +target.value, session.Statistics_View_Year)}
-							>
-								{list_months.map((month, index_month) => <>
-									<option key={month} value={index_month + 1}>{month}</option>
-								</>)}
-							</select>
+						{loading_view && <>
+							<LoaderBox
+								dark={true}
+								className='analytics_session_select-loader'
+							/>
 						</>}
 
-						{(session?.Statistics_View === 'statistics_year' || session?.Statistics_View === 'statistics_month') && <>
+						{!loading_view && <>
+
 							<select
-								value={session.Statistics_View_Year}
-								onChange={({ target }) => sync_view(session.Statistics_View, session.Statistics_View_Month, +target.value)}
+								value={session?.Statistics_View}
+								onChange={({ target }) => sync_view(target.value, session.Statistics_View_Month, session.Statistics_View_Year)}
 							>
-								{list_years.map(year => <>
-									<option key={year} value={year}>{year}</option>
-								</>)}
+								<option key={0} value='statistics_overall'>Gesamt</option>
+								<option key={1} value='statistics_year'>Jahr</option>
+								<option key={2} value='statistics_month'>Monat</option>
 							</select>
-						</>}
-					
-					</>}
 
-				</div>
+							{session?.Statistics_View === 'statistics_month' && <>
+								<select
+									value={session.Statistics_View_Month}
+									onChange={({ target }) => sync_view(session.Statistics_View, +target.value, session.Statistics_View_Year)}
+								>
+									{list_months.map((month, index_month) => <>
+										<option key={month} value={index_month + 1}>{month}</option>
+									</>)}
+								</select>
+							</>}
 
-
-
-				{/* ____________________ Doughnut ____________________ */}
-
-				<ChartDoughnut
-					List_Players={list_players}
-					Total_Wins={total?.Total_Wins} 
-					IsBorderVisible={session?.Statistics_Show_Border}
-				/>
-
-
-
-				{/* ____________________ Show border ____________________ */}
-
-				<div className='analytics_session_show_border'>
-					{loading_show_border && <>
-						<LoaderBox
-							dark={true}
-							className='analytics_session_show_border-loader'
-						/>
-					</>}
-					{!loading_show_border && <>
-						<input 
-							type='checkbox' 
-							checked={session?.Statistics_Show_Border} 
-							onChange={sync_show_border}
-						/>
-					</>}
-					<span>Umrandung anzeigen</span>
-				</div>
-
-
-
-				{/* ____________________ Graph ____________________ */}
-
-				<h2>Verlauf</h2>
-
-				<ChartGraph
-					labels={session?.Statistics_View === 'statistics_year' ? [ 0, ...list_months ] : total?.Data ? Object.keys(total?.Data) : []}
-					IsBorderVisible={session?.Statistics_Show_Border}
-					List_Players={list_players}
-					Data={total?.Data}
-				/>
-
-			</div>
-
-
-
-
-
-			{/* __________________________________________________ More statistics __________________________________________________ */}
-
-			{total && <>
-				<div className='analytics_session_more-statistics'>
-					
-					<h2>Mehr Statistiken</h2>
-
-					<div className='statistic'>
-						<span>Spiele gespielt</span>
-						<span>{total.Total_Games_Played}</span>
-					</div>
-
-					<div className='statistic'>
-						<span>Davon unentschieden</span>
-						<span>{total.Total_Draws}</span>
-					</div>
-
-
-
-					<div className='chart-container'>
-
-						<span>Niedriste Punktzahlen:</span>
-
-						<ChartBarSession
-							IsBorderVisible={session?.Statistics_Show_Border}
-							List_Players={list_players}
-							JSON={total.Scores_Lowest}
-						/>
-
-					</div>
-
-
-
-					<div className='chart-container'>
-
-						<span>Höchste Punktzahlen:</span>
-
-						<ChartBarSession
-							IsBorderVisible={session?.Statistics_Show_Border}
-							List_Players={list_players}
-							JSON={total.Scores_Highest}
-						/>
+							{(session?.Statistics_View === 'statistics_year' || session?.Statistics_View === 'statistics_month') && <>
+								<select
+									value={session.Statistics_View_Year}
+									onChange={({ target }) => sync_view(session.Statistics_View, session.Statistics_View_Month, +target.value)}
+								>
+									{list_years.map(year => <>
+										<option key={year} value={year}>{year}</option>
+									</>)}
+								</select>
+							</>}
 						
+						</>}
+
+					</div>
+
+
+
+					{/* ____________________ Doughnut ____________________ */}
+
+					<ChartDoughnut
+						List_Players={list_players}
+						Total_Wins={total?.Total_Wins} 
+						IsBorderVisible={session?.Statistics_Show_Border}
+					/>
+
+
+
+					{/* ____________________ Show border ____________________ */}
+
+					<div className='analytics_session_show_border'>
+						{loading_show_border && <>
+							<LoaderBox
+								dark={true}
+								className='analytics_session_show_border-loader'
+							/>
+						</>}
+						{!loading_show_border && <>
+							<input 
+								type='checkbox' 
+								checked={session?.Statistics_Show_Border} 
+								onChange={sync_show_border}
+							/>
+						</>}
+						<span>Umrandung anzeigen</span>
 					</div>
 
 
 
-					<div className='chart-container'>
+					{/* ____________________ Graph ____________________ */}
 
-						<span>⌀ Durschnittliche Punktzahlen:</span>
+					<h2>Verlauf</h2>
 
-						<ChartBarSession
-							IsBorderVisible={session?.Statistics_Show_Border}
-							List_Players={list_players}
-							JSON={total.Scores_Average}
-						/>
-
-					</div>
+					<ChartGraph
+						labels={session?.Statistics_View === 'statistics_year' ? [ 0, ...list_months ] : total?.Data ? Object.keys(total?.Data) : []}
+						IsBorderVisible={session?.Statistics_Show_Border}
+						List_Players={list_players}
+						Data={total?.Data}
+					/>
 
 				</div>
+
+
+
+
+
+				{/* __________________________________________________ More statistics __________________________________________________ */}
+
+				{total && <>
+					<div className='analytics_session_more-statistics'>
+						
+						<h2>Mehr Statistiken</h2>
+
+						<div className='statistic'>
+							<span>Spiele gespielt</span>
+							<span>{total.Total_Games_Played}</span>
+						</div>
+
+						<div className='statistic'>
+							<span>Davon unentschieden</span>
+							<span>{total.Total_Draws}</span>
+						</div>
+
+
+
+						<div className='chart-container'>
+
+							<span>Niedriste Punktzahlen:</span>
+
+							<ChartBarSession
+								IsBorderVisible={session?.Statistics_Show_Border}
+								List_Players={list_players}
+								JSON={total.Scores_Lowest}
+							/>
+
+						</div>
+
+
+
+						<div className='chart-container'>
+
+							<span>Höchste Punktzahlen:</span>
+
+							<ChartBarSession
+								IsBorderVisible={session?.Statistics_Show_Border}
+								List_Players={list_players}
+								JSON={total.Scores_Highest}
+							/>
+							
+						</div>
+
+
+
+						<div className='chart-container'>
+
+							<span>⌀ Durschnittliche Punktzahlen:</span>
+
+							<ChartBarSession
+								IsBorderVisible={session?.Statistics_Show_Border}
+								List_Players={list_players}
+								JSON={total.Scores_Average}
+							/>
+
+						</div>
+
+					</div>
+				</>}
+
 			</>}
 
 		</div>
