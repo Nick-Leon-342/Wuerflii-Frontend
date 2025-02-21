@@ -58,11 +58,7 @@ export default function Popup_Options({
 
 	useEffect(() => {
 
-		const darkMode = localStorage.getItem(darkMode_string) === 'true'
-
-		if(darkMode) {
-			document.body.classList.add('dark')
-		}
+		if(localStorage.getItem(darkMode_string) === 'true') document.body.classList.add('dark')
 
 	}, [])
 
