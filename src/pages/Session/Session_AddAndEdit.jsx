@@ -69,6 +69,7 @@ export default function Session_AddAndEdit({
 				setSession(session)
 				setName(session.Name)
 				setColor(session.Color)
+				setColumns(session.Columns)
 			}
 
 			setMAX_LENGTH_SESSION_NAME(MAX_LENGTH_SESSION_NAME)
@@ -105,6 +106,7 @@ export default function Session_AddAndEdit({
 					SessionID: session.id, 
 					Name: name, 
 					Color: color, 
+					Columns: +columns, 
 				})
 				navigate(-1, { replace: false })
 			} else {
@@ -164,15 +166,16 @@ export default function Session_AddAndEdit({
 
 			{/* ____________________ Columns ____________________ */}
 
-			{!session_id && <>
-				<div className='session_addandedit_element'>
-					<label>Spaltenanzahl</label>
-					<select value={columns} onChange={({ target }) => setColumns(+target.value)}>
-						<option value='' disabled>Auswählen</option>
-						{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
-					</select>
-				</div>
-			</>}
+			<div className='session_addandedit_element'>
+				<label>Spaltenanzahl</label>
+				<select 
+					value={columns} 
+					onChange={({ target }) => setColumns(+target.value)}
+				>
+					<option value='' disabled>Auswählen</option>
+					{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
+				</select>
+			</div>
 
 
 
