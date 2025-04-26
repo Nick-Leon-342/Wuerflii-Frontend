@@ -155,7 +155,7 @@ export default function Popup_Edit_View({
 
 							<button 
 								onClick={() => setShow_customDate(true)}
-								className='button button-reverse'
+								className='button button_reverse button_scale_2'
 							>
 								{`${format(new Date(session?.View_CustomDate), 'dd.MM.yyyy')}` || 'Erstelle Ansicht'}
 							</button>

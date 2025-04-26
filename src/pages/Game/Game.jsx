@@ -197,7 +197,7 @@ export default function Game() {
 						/>
 
 						<button 
-							className='button button-red-reverse' 
+							className='button button_reverse_red' 
 							onClick={() => setSurrender_winner()}
 						>Abbrechen</button>
 					</div>
@@ -208,8 +208,9 @@ export default function Game() {
 						<ul>
 							{list_players?.map((player, index_player) => (
 								<li 
-									className='responsive' 
+									className='button_scale_0 box' 
 									key={index_player} 
+									tabIndex={0}
 									onClick={() => setSurrender_winner(player)}
 								><label>{player.Name}</label></li>
 							))}

@@ -151,10 +151,10 @@ export default function EndScreen() {
 
 
 
-			<button 
+			<a 
+				href='/#/'
 				className='button' 
-				onClick={() => navigate('/', { replace: false })}
-			>Ok</button>
+			>Ok</a>
 
 		</div>
 		

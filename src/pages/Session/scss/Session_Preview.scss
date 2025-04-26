@@ -13,7 +13,6 @@
 	header {
 		display: flex;
 		flex-direction: row;
-		overflow: hidden;
 		scrollbar-gutter: stable both-edges;
 		justify-content: space-between;
 		
@@ -22,6 +21,7 @@
 			flex-direction: row;
 			align-items: center;
 			width: fit-content;
+			padding: 0 15px;
 			gap: 5px;
 
 			span { font-size: 22px; }
@@ -161,8 +161,8 @@
 			.react-calendar__tile--active:hover, 
 			.react-calendar__tile--hasActive, 
 			.react-calendar__tile--hasActive:hover{
-				background: var(--green) !important;
-				color: var(--button-text-color) !important;
+				background: var(--green-button) !important;
+				abbr { color: var(--bg) !important; }
 			}
 			
 			/* Navigation */
@@ -203,15 +203,16 @@
 		display: flex;
 		flex-direction: column;
 		font-size: 25px;
-		font-weight: 600;
 		gap: 10px;
+
+		span { font-size: 20px; }
 
 		div {
 			display: flex;
 			flex-direction: column;
 			gap: 5px;
 
-			button { width: 200px; }
+			a { width: 200px; }
 		}
 	}
 } 

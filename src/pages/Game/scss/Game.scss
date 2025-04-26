@@ -2,12 +2,18 @@
 
 .game_container {
 	position: absolute;
+	top: 0;
+	left: 0;
+
 	
+
 	.game {
+		position: relative;
 		display: flex;
 		flex-direction: column;
+		flex: 1;
 		gap: var(--padding);
-		margin: 1500px 1500px 1500px 1500px;
+		margin: 1500px;
 	
 	
 	
@@ -33,9 +39,14 @@
 
 .game_popup-surrender {
 
-	.askifsurrender h2 {
-		margin-bottom: 20px; 
-		text-align: center;
+	.askifsurrender {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		h2 {
+			margin-bottom: 10px; 
+			text-align: center;
+		}
 	}
 
 	.list-container {
@@ -54,7 +65,6 @@
 				font-size: 20px;
 				border-radius: 10px;
 				padding: var(--padding);
-				background-color: var(--bg_2);
 			}
 		}
 	}

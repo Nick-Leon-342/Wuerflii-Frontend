@@ -143,6 +143,10 @@ body {
 	min-height: 100vh;
 }
 
+a {
+	text-decoration: none;
+}
+
 .box {
 	display: flex;
 	flex-direction: column;
@@ -323,3 +327,30 @@ input[type=checkbox] {
 
 .w-fit-content { width: fit-content; }
 .h-fit-content { height: fit-content; }
+
+
+
+
+
+
+
+
+
+
+/* ____________________Table____________________ */
+
+.table {
+    table-layout: fixed;
+    border-collapse: collapse;
+
+	td, 
+	th {
+		flex: 1;
+		border: 1px solid;
+		text-align: center;
+		height: 50px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}

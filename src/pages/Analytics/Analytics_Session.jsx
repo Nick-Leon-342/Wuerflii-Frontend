@@ -146,7 +146,7 @@ export default function Analytics_Session({
 
 				{/* __________________________________________________ Charts __________________________________________________ */}
 
-				<div className='analytics_session_charts'>
+				<div className='analytics_session_charts box'>
 
 
 
@@ -215,7 +215,7 @@ export default function Analytics_Session({
 				{/* __________________________________________________ More statistics __________________________________________________ */}
 
 				{total && <>
-					<div className='analytics_session_more-statistics'>
+					<div className='analytics_session_more-statistics box'>
 						
 						<h2>Mehr Statistiken</h2>
 

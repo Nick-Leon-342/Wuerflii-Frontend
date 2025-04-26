@@ -35,7 +35,7 @@ export default function Custom_Button({
         <button
 			onClick={onClick}
 			disabled={loading || ok}
-			className={`button${className ? ` ${className}` : ''}`}
+			className={`button button_scale_0${className ? ` ${className}` : ''}`}
         >
             
 			{loading && <Loader loading={true} className='custom_button_loader'/>}

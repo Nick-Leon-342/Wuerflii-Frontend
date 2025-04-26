@@ -18,12 +18,7 @@
 
 
 	.analytics_session_charts {
-		display: flex;
-		flex-direction: column;
 		font-size: 20px;
-		padding: var(--padding);
-		border-radius: 10px;
-		background-color: var(--bg_3);
 		gap: 10px;
 	
 		.analytics_session_show_border {
@@ -50,12 +45,7 @@
 
 
 	.analytics_session_more-statistics {
-		display: flex;
-		flex-direction: column;
 		font-size: 20px;
-		padding: var(--padding);
-		border-radius: 10px;
-		background-color: var(--bg_3);
 		gap: 10px;
 
 		.statistic {
