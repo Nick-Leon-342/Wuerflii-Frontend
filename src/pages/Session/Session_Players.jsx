@@ -178,11 +178,11 @@ export default function Session_Players({
 				{isInit && <>
 					<div className='session_players_previous-container'>
 						<button 
-							className='button button-responsive session_players_previous button-red-reverse'
+							className='button button_reverse_red button_scale_3 session_players_previous'
 							onClick={remove_player}
 						><PersonRemove/></button>
 						<button 
-							className='button button-responsive session_players_previous button-reverse'
+							className='button button_reverse button_scale_3 session_players_previous'
 							onClick={add_player}
 						><PersonAdd/></button>
 					</div>

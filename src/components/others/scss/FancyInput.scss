@@ -14,7 +14,7 @@
 		color: var(--text-color);
 		padding: 15px 20px;
 		background: transparent;
-		border: 1px solid var(--text-color-light);
+		border: 1px solid var(--text-color_light_0);
 		outline: none;
 		border-radius: 5px;
 		transition: border-width .2s linear;
@@ -37,24 +37,13 @@
 
 	input:focus~label, 
 	input:not(:placeholder-shown)~label {
-		top: 0;
+		background-color: var(--bg);
 		font-size: 12px;
-		background-color: var(--background-color);
+		top: 0;
 	}
 
 
 
-	&.fancyinput_green input { border-right: 7px solid var(--green); }
-	&.fancyinput_red input { border-right: 7px solid var(--red); }
-}
-
-
-
-
-
-body.dark .fancyinput {
-	input:focus~label, 
-	input:not(:placeholder-shown)~label {
-		background-color: var(--background-color_dark_2);
-	}
+	&.fancyinput_green input { border-right: 7px solid var(--green) !important; }
+	&.fancyinput_red input { border-right: 7px solid var(--red) !important; }
 }

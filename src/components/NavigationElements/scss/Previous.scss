@@ -2,11 +2,13 @@
 
 .previous {
 	display: flex;
+	align-items: center;
 	justify-content: space-between;
 
-	svg { height: 50px; }
-	button { 
+	.previous-button {
 		width: 50px; 
 		height: 50px; 
+
+		svg { height: 30px; }
 	}
 }

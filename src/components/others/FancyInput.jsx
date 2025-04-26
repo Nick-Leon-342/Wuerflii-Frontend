@@ -54,7 +54,7 @@ const FancyInput = forwardRef(({
 	isRequired, 
 	className,  
 	maxLength, 
-	setValue, 
+	onChange, 
 	onFocus, 
 	isGreen, 
 	onBlur, 
@@ -78,9 +78,9 @@ const FancyInput = forwardRef(({
 				onBlur={onBlur}
 				onFocus={onFocus}
 				autoComplete='off'
+				onChange={onChange}
 				required={isRequired}
 				maxLength={maxLength}
-				onChange={({ target }) => setValue(target.value)}
 			/>
 
 			<label htmlFor={id}>{text}</label>

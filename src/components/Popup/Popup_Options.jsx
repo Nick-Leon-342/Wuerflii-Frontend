@@ -141,7 +141,7 @@ export default function Popup_Options({
 
 		<button
 			onClick={() => setShow_options(true)} 
-			className='button button-reverse button-responsive popup_options-icon'
+			className='button button_reverse button_scale_3 popup_options-icon'
 		><Settings/></button>
 	
 
@@ -155,7 +155,7 @@ export default function Popup_Options({
 		>
 			<div className='popup_options'>
 
-				<div className='container'>
+				<div className='box'>
 
 					<section className='darkmode'>
 						
@@ -179,14 +179,14 @@ export default function Popup_Options({
 
 					<section>
 						<button 
-							className='button button-reverse'
+							className='button button_reverse_green button_scale_3'
 							onClick={() => navigate('/profile', { replace: false })}
 						>Profil</button>
 					</section>
 
 					<section>
 						<button 
-							className='button button-reverse'
+							className='button button_reverse_green button_scale_3'
 							onClick={() => navigate('/analytics', { replace: false })}
 						>Statistiken</button>
 					</section>
@@ -197,7 +197,7 @@ export default function Popup_Options({
 							text='Ausloggen'
 							onClick={logout}
 							loading={loading_logout}
-							className='button-red-reverse'
+							className='button_reverse_red'
 						/>
 					</section>
 

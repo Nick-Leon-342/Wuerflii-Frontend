@@ -17,6 +17,7 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 import { ReactComponent as Trashcan } from '../../svg/Trashcan.svg'
 import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
+import { ReactComponent as ArrowDown } from '../../svg/Arrow_Down.svg'
 
 
 
@@ -257,13 +258,13 @@ export default function Session_Select({
 
 				<button 
 					ref={ref}
-					className='button button-reverse button-responsive'
+					className='button button_reverse button_scale_3'
 					onClick={() => setShow_settings(true)}
 				><ListSort/></button>
 
 				{!loading && 
 					<button
-						className={`button button-reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!loading_delete && list_sessions?.some(s => s.Checkbox_Checked) ? ' button-responsive' : ' disabled')}`}
+						className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!loading_delete && list_sessions?.some(s => s.Checkbox_Checked) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
 						onClick={handle_delete} 
 					><Trashcan/></button>
 				}
@@ -344,23 +345,21 @@ export default function Session_Select({
 				<span>Datum anzeigen</span>
 			</div>
 
-			{list_orderOptions.map((option, i) => {
+			{list_orderOptions.map(option => {
 				const cs = user?.View_Sessions === option.Alias
 				const desc = user?.View_Sessions_Desc
 
 				return <>
 					<button 
-						key={i}
-						className={`button button-reverse${cs ? ' session_select_popup_settings-currently_selected' : ''}${desc ? ' session_select_popup_settings-desc' : ''}`}
+						key={option.Text}
 						onClick={() => change_order(option)}
+						className={`button button_reverse${cs ? ' session_select_popup_settings-currently_selected' : ''}${desc ? ' session_select_popup_settings-desc' : ''}`}
 					>
 						{option.Text}
-						<svg  viewBox='0 -960 960 960'><path d='M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z'/></svg>
+						<ArrowDown/>
 					</button>
 				</>
 			})}
-
-			<Loader loading={loading_change_order}/>
 
 		</PopupDropdown>
 

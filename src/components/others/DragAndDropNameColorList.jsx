@@ -4,6 +4,8 @@ import './scss/DragAndDropNameColorList.scss'
 
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
+import { ReactComponent as DragHandle } from '../../svg/Drag_Handle.svg'
+
 
 
 
@@ -98,9 +100,7 @@ export default function DragAndDropNameColorList({
 										}}
 									>
 
-										<div>
-											<svg viewBox='-0.5 -0.5 741 450'><g><rect x='0' y='0' width='740' height='150' rx='16.5' ry='16.5' pointerEvents='all'/><rect x='0' y='260' width='740' height='150' rx='16.5' ry='16.5' pointerEvents='all'/></g></svg>
-										</div>
+										<DragHandle/>
 
 										<input
 											type='text'

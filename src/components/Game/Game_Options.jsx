@@ -204,7 +204,7 @@ export default function Game_Options({
 
 					<button
 						onClick={() => navigate(`/session/${session.id}/players`, { replace: false })} 
-						className='button button-reverse button-responsive edit'
+						className='button button_reverse button_scale_3 edit'
 					><PersonSettings/></button>
 				</section>
 
@@ -214,7 +214,7 @@ export default function Game_Options({
 
 				<section>
 					<button 
-						className='button button-red-reverse'
+						className='button button_reverse_red'
 						onClick={() => setShow_surrender(true)}
 					>Aufgeben</button>
 				</section>
@@ -228,7 +228,7 @@ export default function Game_Options({
 					{!loading_newGame && <>
 						<button 
 							onClick={new_game} 
-							className='button button-reverse'
+							className='button'
 						>Neues Spiel</button>
 					</>}
 				</section>

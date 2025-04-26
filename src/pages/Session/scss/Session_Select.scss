@@ -27,8 +27,7 @@
 				pointer-events: none;
 			}
 	
-			&.trashcan {				
-				rect { fill: none !important; }
+			&.trashcan {
 				&.notvisible { opacity: 0; }
 			}
 	
@@ -102,6 +101,8 @@
 
 }
 
+
+
 .session_select_popup_settings {
 
 	.session_select_popup_settings-show {
@@ -131,24 +132,21 @@
 
 
 	button {
-		display: flex;
 		justify-content: space-between;
-		align-items: center;
 		padding: 0 10px;
 		gap: 5px;
 		width: 100%;
 		height: 30px;
-		font-size: 20px;
-		color: var(--text-color); 
+		svg { transform: rotate(180deg); }
 
 		&.session_select_popup_settings-currently_selected { 
-			color: var(--green);
-			path { fill: var(--green); }
+			color: var(--green-button);
+			path { fill: var(--green-button); }
 			svg { opacity: 1; }
 		}
 
 		&.session_select_popup_settings-desc svg {
-			transform: rotate(180deg);
+			transform: rotate(0deg);
 		}
 
 		svg { 

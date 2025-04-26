@@ -141,7 +141,7 @@ export default function Game() {
 
 					<button
 						onClick={() => setShow_options(true)}
-						className='button button-reverse button-responsive options'
+						className='button button_reverse button_scale_3 options'
 					><Settings/></button>
 
 					<CustomButton 

@@ -31,6 +31,7 @@
 			padding: 0;
 			border: none;
 			min-width: 40px;
+			&:focus { outline: auto; }
 		
 			&::-webkit-color-swatch {
 				border: 1px solid;
