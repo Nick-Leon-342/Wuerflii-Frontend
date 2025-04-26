@@ -15,6 +15,9 @@ import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 
+import { ReactComponent as Trashcan } from '../../svg/Trashcan.svg'
+import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
+
 
 
 
@@ -256,13 +259,13 @@ export default function Session_Select({
 					ref={ref}
 					className='button button-reverse button-responsive'
 					onClick={() => setShow_settings(true)}
-				><svg viewBox='0 -960 960 960'><path d='M120-240v-80h240v80H120Zm0-200v-80h480v80H120Zm0-200v-80h720v80H120Z'/></svg></button>
+				><ListSort/></button>
 
 				{!loading && 
 					<button
 						className={`button button-reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!loading_delete && list_sessions?.some(s => s.Checkbox_Checked) ? ' button-responsive' : ' disabled')}`}
 						onClick={handle_delete} 
-					><svg viewBox='-0.5 -0.5 458 510'><g><rect x='58' y='55' width='340' height='440' rx='51' ry='51' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='15' y='55' width='427' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/><rect x='125' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='275' y='145' width='50' height='280' rx='9' ry='9' fill='none' strokeWidth='50' pointerEvents='all'/><rect x='158' y='15' width='142' height='30' rx='4.5' ry='4.5' fill='none' strokeWidth='30' pointerEvents='all'/></g></svg></button>
+					><Trashcan/></button>
 				}
 
 				<Loader loading={loading}/>
