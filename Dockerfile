@@ -1,4 +1,4 @@
-FROM node:20.8.0
+FROM node:23.11.0-slim
 
 WORKDIR /wuerflii-frontend
 
@@ -7,7 +7,5 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-
-EXPOSE 3000
 
 CMD [ "npm", "start" ]

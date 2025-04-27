@@ -2,7 +2,7 @@
 
 import './scss/DragAndDropNameColorList.scss'
 
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 
 import { ReactComponent as DragHandle } from '../../svg/Drag_Handle.svg'
 
