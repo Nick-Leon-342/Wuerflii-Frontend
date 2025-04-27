@@ -5,6 +5,7 @@ import './scss/Session_Players.scss'
 import { v4 } from 'uuid'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -16,6 +17,9 @@ import DragAndDropNameColorList from '../../components/others/DragAndDropNameCol
 
 import { ReactComponent as PersonAdd } from '../../svg/Person_Add.svg'
 import { ReactComponent as PersonRemove } from '../../svg/Person_Remove.svg'
+
+import { get__user } from '../../api/user'
+import { get__session_players } from '../../api/session/session_players'
 
 
 
@@ -31,55 +35,56 @@ export default function Session_Players({
 
 	const { session_id } = useParams()
 
-	const [ user, setUser ] = useState()
-
-	const [ loading_request, setLoading_request ] = useState(false)
-	const [ loading, setLoading ] = useState(false)
-
 
 	// ____________________ Players ____________________
 
 	const [ isInit, setIsInit ] = useState(false)
-	const [ MAX_PLAYERS, setMAX_PLAYERS ] = useState(0)
+	// const [ MAX_PLAYERS, setMAX_PLAYERS ] = useState(0)
 	const [ list_players, setList_players ] = useState([])
-	const [ MAX_LENGTH_PLAYER_NAME, setMAX_LENGTH_PLAYER_NAME ] = useState(0)
+	// const [ MAX_LENGTH_PLAYER_NAME, setMAX_LENGTH_PLAYER_NAME ] = useState(0)
 
 
 
 
+
+
+	// __________________________________________________ Queries __________________________________________________
+
+	// ____________________ User ____________________
+
+	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+		queryKey: [ 'user' ], 
+		queryFn: () => get__user(axiosPrivate), 
+	})
+
+
+	// ____________________ Env_Variables ____________________
+
+	const { data: env_variables, isLoading: isLoading__env_variables, isError: isError__env_variables } = useQuery({
+		queryKey: [ 'session', 'players', 'env' ], 
+		queryFn: () => get__session_players(axiosPrivate, session_id), 
+	})
+
+
+	// ____________________ List_Players ____________________
+
+	const { data: tmp__list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
+		queryKey: [ 'session', session_id, 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, session_id), 
+	})
 
 	useEffect(() => {
-
-		setLoading_request(true)
-
-		if(!session_id) return navigate(-1, { replace: true })
-
-		axiosPrivate.get(`/session/players?session_id=${session_id}`).then(({ data }) => {
-
-			const { 
-				User, 
-				MAX_PLAYERS, 
-				List_Players, 
-				MAX_LENGTH_PLAYER_NAME, 
-			} = data
-
-			setUser(User)
-
-			setIsInit(List_Players.length === 0)
-			setMAX_PLAYERS(MAX_PLAYERS)
-			setMAX_LENGTH_PLAYER_NAME(MAX_LENGTH_PLAYER_NAME)
-			setList_players(List_Players.length > 0 ? List_Players : [ new_player() ])
-
-		}).catch(err => { 
-			
-			handle_error({ 
-				err, 
-			}) 
 		
-		}).finally(() => setLoading_request(false))
+		setIsInit(tmp__list_players?.length === 0)
+		setList_players(tmp__list_players?.length > 0 ? tmp__list_players : [ new_player() ])
 
 		// eslint-disable-next-line
-	}, [])
+	}, [ tmp__list_players ])
+
+
+
+
+
 
 	const new_player = () => { 
 		return {
@@ -91,7 +96,7 @@ export default function Session_Players({
 
 	const add_player = () => {
 		
-		if(list_players.length === MAX_PLAYERS) return setError(`Es dürfen maximal nur ${MAX_PLAYERS} Spieler sein.`)
+		if(list_players.length === env_variables?.MAX_PLAYERS) return setError(`Es dürfen maximal nur ${env_variables?.MAX_PLAYERS} Spieler sein.`)
 
 		setList_players(prev => {
 			const list = [ ...prev ]
@@ -104,11 +109,7 @@ export default function Session_Players({
 	const remove_player = () => {
 
 		if(list_players.length === 1) {
-			return setList_players(() => [{
-				id: v4(), 
-				Name: `Spieler`, 
-				Color: '#ffffff', 
-			}])
+			return setList_players(() => [new_player])
 		}
 
 		setList_players(prev => {
@@ -121,9 +122,7 @@ export default function Session_Players({
 
 	const ok = async () => {
 
-		if(!list_players || list_players.some(p => p.Name.length > MAX_LENGTH_PLAYER_NAME)) return setError(`Die Spielernamen dürfen nicht länger als ${MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
-
-		setLoading(true)
+		if(!list_players || list_players.some(p => p.Name.length > env_variables?.MAX_LENGTH_PLAYER_NAME)) return setError(`Die Spielernamen dürfen nicht länger als ${env_variables?.MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
 
 
 		const url = '/session/players'
@@ -155,8 +154,6 @@ export default function Session_Players({
 
 		}
 
-		setLoading(false)
-
 	}
 
 
@@ -165,10 +162,7 @@ export default function Session_Players({
 
 	return <>
 
-		<OptionsDialog
-			user={user}
-			setUser={setUser}
-		/>
+		<OptionsDialog user={user}/>
 
 
 
@@ -195,7 +189,7 @@ export default function Session_Players({
 				<DragAndDropNameColorList
 					list_edit_players={list_players}
 					setList_edit_players={setList_players}
-					MAX_LENGTH_PLAYER_NAME={MAX_LENGTH_PLAYER_NAME}
+					MAX_LENGTH_PLAYER_NAME={env_variables?.MAX_LENGTH_PLAYER_NAME}
 				/>
 			</div>
 
@@ -204,7 +198,7 @@ export default function Session_Players({
 			<CustomButton 
 				text={isInit ? 'Los!' : 'Speichern'}
 				onClick={ok}
-				loading={loading || loading_request}
+				loading={isLoading__user || isLoading__list_players || isLoading__env_variables}
 			/>
 
 		</div>

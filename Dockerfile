@@ -1,6 +1,6 @@
 FROM node:20.8.0
 
-WORKDIR /kniffel-frontend
+WORKDIR /wuerflii-frontend
 
 COPY package*.json ./
 

@@ -78,7 +78,8 @@ export default function RegistrationForm({
 	const ref_name = useRef()
 	const ref_password = useRef()
 
-	const [ infoName, setInfoName ] = useState(true)
+	const [ infoName, setInfoName ] = useState(false)
+	const [ infoPassword, setInfoPassword ] = useState(false)
 	const [ show_popup_name, setShow_popup_name ] = useState(false)
 	const [ show_popup_password, setShow_popup_password ] = useState(false)
 
@@ -156,7 +157,7 @@ export default function RegistrationForm({
 	}, [])
 
 	useEffect(() => setShow_popup_name(infoName && !requesting_regex && !NAME_REGEX?.test(Name)), [ infoName, requesting_regex, NAME_REGEX, Name ])
-	useEffect(() => setShow_popup_password(!infoName && !requesting_regex && !PASSWORD_REGEX?.test(Password)), [ infoName, requesting_regex, PASSWORD_REGEX, Password ])
+	useEffect(() => setShow_popup_password(infoPassword && !requesting_regex && !PASSWORD_REGEX?.test(Password)), [ infoPassword, requesting_regex, PASSWORD_REGEX, Password ])
 
 	const getIcon = ( valid ) => {
 
@@ -193,11 +194,11 @@ export default function RegistrationForm({
 			type='text' 
 			id='Username' 
 			ref={ref_name}
-			setValue={setName} 
 			text='Benutzername' 
 			isRequired={isRequired} 
 			onFocus={() => setInfoName(true)}
 			onBlur={() => setInfoName(false)}
+			onChange={({ target }) => setName(target.value)} 
 			isRed={Name && NAME_REGEX && !NAME_REGEX.test(Name)}
 			isGreen={Name && NAME_REGEX && NAME_REGEX.test(Name)}
 		/>
@@ -230,10 +231,10 @@ export default function RegistrationForm({
 			text='Passwort' 
 			value={Password} 
 			ref={ref_password}
-			setValue={setPassword} 
 			isRequired={isRequired} 
-			onBlur={() => setInfoName(true)}
-			onFocus={() => setInfoName(false)}
+			onBlur={() => setInfoPassword(false)}
+			onFocus={() => setInfoPassword(true)}
+			onChange={({ target }) => setPassword(target.value)} 
 			isRed={Password && PASSWORD_REGEX && !PASSWORD_REGEX.test(Password)}
 			isGreen={Password && PASSWORD_REGEX && PASSWORD_REGEX.test(Password)}
 		/>

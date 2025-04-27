@@ -10,9 +10,8 @@ import PopupError from './components/Popup/Popup_Error'
 
 // ____________________ Reglog ____________________
 
-import Login from './pages/Reglog/Login'
+import Reglog from './pages/Reglog/Reglog'
 import PersistLogin from './logic/PersistLogin'
-import Registration from './pages/Reglog/Registration'
 
 import Profile from './pages/Profile'
 
@@ -60,8 +59,7 @@ export default function App() {
 				<Routes>
 
 					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/login' element={<Login setError={setError}/>} />
-					<Route path='/registration' element={<Registration setError={setError} />} />
+					<Route path='/reglog' element={<Reglog setError={setError} />} />
 
 
 					{/* 

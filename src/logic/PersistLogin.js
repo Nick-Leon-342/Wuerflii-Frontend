@@ -31,7 +31,7 @@ export default function PersistLogin() {
 			try {
 				await refresh()
 			} catch(err) {
-				navigate(`/login?next=${location.pathname}${location.search}`)
+				navigate(`/reglog?next=${location.pathname}${location.search}`)
 			} finally {
 				setIsLoading(false)
 			}

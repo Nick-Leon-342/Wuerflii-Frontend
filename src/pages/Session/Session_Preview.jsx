@@ -23,6 +23,9 @@ import PopupEditPreview from '../../components/Popup/Popup_Edit_Preview'
 
 import { ReactComponent as Settings } from '../../svg/Settings.svg'
 import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
+import { useQuery } from '@tanstack/react-query'
+import { get__session } from '../../api/session/session'
+import { get__user } from '../../api/user'
 
 
 
@@ -38,8 +41,8 @@ export default function Session_Preview() {
 	const ref_edit_list = useRef()
 	const ref_edit_session = useRef()
 
-	const [ user, setUser ] = useState()
-	const [ session, setSession ] = useState()
+	// const [ user, setUser ] = useState()
+	// const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState([])
 	const [ list_finalScores, setList_finalScores ] = useState([])
 	
@@ -53,51 +56,74 @@ export default function Session_Preview() {
 
 	const [ url, setURL ] = useState('')
 	const { ref, loading, error, list } = useInfiniteScrolling({ 
-		url,  
+		url, 
 		handle_404: () => navigate('/', { replace: true })
 	})
 
-	
+
+
+
+	// __________________________________________________ Queries __________________________________________________
+
+	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+		queryKey: [ 'user' ], 
+		queryFn: () => get__user(axiosPrivate), 
+	})
+
+	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
+		queryKey: [ 'session', session_id ], 
+		queryFn: () => get__session(axiosPrivate, session_id), 
+	})
+
+	// const { data: list_players, isLoading: isLoading__list_players } = useQuery({
+
+	// })
+
+	// const { data: list_finalScores, isLoading: isLoading__list_finalScores } = useQuery({
+
+	// })
 
 	
 
-	useEffect(() => {
+	
 
-		if(!session_id) return navigate('/', { replace: true })
-		setLoading_request(true)
+	// useEffect(() => {
 
-
-		axiosPrivate.get(`/session/preview?session_id=${session_id}`).then(({ data }) => {
-
-
-			const { 
-				Session, 
-				List_Players, 
-				User, 
-				Exists, 
-			} = data
-
-			if(Exists) return navigate(`/game?session_id=${session_id}`, { replace: true })
-
-			setUser(User)
-			setSession(Session)
-			setList_players(List_Players)
-			setView_customDate(Session.View_CustomDate)
-
-			setURL(`/session/preview/all?session_id=${Session.id}`)
+	// 	if(!session_id) return navigate('/', { replace: true })
+	// 	setLoading_request(true)
 
 
-		}).catch((err) => {
+	// 	axiosPrivate.get(`/session/preview?session_id=${session_id}`).then(({ data }) => {
 
-			handle_error({ 
-				err, 
-				handle_404: () => navigate('/', { replace: true }) 
-			})
 
-		}).finally(() => setLoading_request(false))
+	// 		const { 
+	// 			// Session, 
+	// 			List_Players, 
+	// 			// User, 
+	// 			Exists, 
+	// 		} = data
+
+	// 		if(Exists) return navigate(`/game?session_id=${session_id}`, { replace: true })
+
+	// 		// setUser(User)
+	// 		// setSession(Session)
+	// 		// setList_players(List_Players)
+	// 		// setView_customDate(Session.View_CustomDate)
+
+	// 		// setURL(`/session/preview/all?session_id=${Session.id}`)
+
+
+	// 	}).catch((err) => {
+
+	// 		handle_error({ 
+	// 			err, 
+	// 			handle_404: () => navigate('/', { replace: true }) 
+	// 		})
+
+	// 	}).finally(() => setLoading_request(false))
 		
-		// eslint-disable-next-line
-	}, [])
+	// 	// eslint-disable-next-line
+	// }, [])
 
 	// Filters list so that only relevant elements are displayed and 
 	const edit_list = ( list_toEdit, setList_toEdit ) => {
@@ -142,9 +168,9 @@ export default function Session_Preview() {
 	useEffect(() => {
 
 		// TODO surely could be solved way better, just 'temporarily' xD - Don't think imma change this at all
-		if(!session) return
-		setURL('')
-		setTimeout(() => setURL(`/session/preview/all?session_id=${session.id}`), 10)
+		// if(!session) return
+		// setURL('')
+		// setTimeout(() => setURL(`/session/preview/all?session_id=${session.id}`), 10)
 
 	}, [ session ])
 
@@ -167,28 +193,28 @@ export default function Session_Preview() {
 
 	const save_customDate = () => {
 
-		setLoading_customDate(true)
+		// setLoading_customDate(true)
 
-		axiosPrivate.post('/session/date', { 
-			View_CustomDate: view_customDate, 
-			SessionID: session.id, 
-		}).then(() => {
+		// axiosPrivate.post('/session/date', { 
+		// 	View_CustomDate: view_customDate, 
+		// 	SessionID: session.id, 
+		// }).then(() => {
 
-			setSession(prev => {
-				const tmp = { ...prev }
-				tmp.View_CustomDate = view_customDate
-				return tmp
-			})
-			setShow_customDate(false)
+		// 	setSession(prev => {
+		// 		const tmp = { ...prev }
+		// 		tmp.View_CustomDate = view_customDate
+		// 		return tmp
+		// 	})
+		// 	setShow_customDate(false)
 
-		}).catch((err) => {
+		// }).catch((err) => {
 
-			handle_error({
-				err, 
-				handle_404: () => navigate('/', { replace: true })
-			})
+		// 	handle_error({
+		// 		err, 
+		// 		handle_404: () => navigate('/', { replace: true })
+		// 	})
 
-		}).finally(() => setLoading_customDate(false))
+		// }).finally(() => setLoading_customDate(false))
 
 	}
 	
@@ -230,10 +256,7 @@ export default function Session_Preview() {
 
 	return <>
 
-		<OptionsDialog
-			user={user}
-			setUser={setUser}
-		/>
+		<OptionsDialog user={user}/>
 
 
 
@@ -459,7 +482,7 @@ export default function Session_Preview() {
 			setShow_popup={setShow_edit_list}
 			show_popup={show_edit_list}
 			
-			setSession={setSession}
+			// setSession={setSession}
 			session={session}
 
 		/>

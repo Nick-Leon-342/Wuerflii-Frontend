@@ -4,6 +4,7 @@ import './scss/Session_AddAndEdit.scss'
 
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -14,6 +15,9 @@ import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 
+import { get__user } from '../../api/user'
+import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
+
 
 
 
@@ -22,108 +26,106 @@ export default function Session_AddAndEdit({
 	setError, 
 }) {
 
-	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
-	const handle_error = useErrorHandling()
+	const query_client = useQueryClient()
+	const axiosPrivate = useAxiosPrivate()
 
 	const { session_id } = useParams()
-
-	const [ user, setUser ] = useState()
-
-	const [ loading, setLoading ] = useState(false)
-	const [ loading_request, setLoading_request ] = useState(false)
 
 	
 	// ____________________ Session ____________________
 
-	const [ session, setSession ] = useState()
-
 	const [ name, setName ] = useState('Partie')
-	const [ MAX_LENGTH_SESSION_NAME, setMAX_LENGTH_SESSION_NAME ] = useState(0)
-
 	const [ color, setColor ] = useState('#00FF00')
-
 	const [ columns, setColumns ] = useState('')
-	const [ MAX_COLUMNS, setMAX_COLUMNS ] = useState(0)
+
 	const [ options_columns, setOptions_columns ] = useState([])
 
 
 
 
 
+	// __________________________________________________ Queries __________________________________________________
+
+	// ____________________ User ____________________
+
+	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+		queryKey: [ 'user' ], 
+		queryFn: () => get__user(axiosPrivate), 
+	})
+
+
+	// ____________________ Session ____________________
+
+	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
+		enabled: Boolean(session_id), 
+		queryKey: [ 'session', session_id ], 
+		queryFn: () => get__session(axiosPrivate, session_id), 
+	})
+
 	useEffect(() => {
 
-		setLoading_request(true)
+		if(!session) return
 
-		axiosPrivate.get(`/session${session_id ? `?session_id=${session_id}` : ''}`).then(({ data }) => {
+		setName(session.Name)
+		setColor(session.Color)
+		setColumns(session.Columns)
 
-			const { 
-				User, 
-				MAX_COLUMNS, 
-				MAX_LENGTH_SESSION_NAME, 
-			} = data
+	}, [ session ])
 
-			setUser(User)
-			if(session_id) {
-				const session = data.Session
-				setSession(session)
-				setName(session.Name)
-				setColor(session.Color)
-				setColumns(session.Columns)
-			}
 
-			setMAX_LENGTH_SESSION_NAME(MAX_LENGTH_SESSION_NAME)
-			setMAX_COLUMNS(MAX_COLUMNS)
-			setOptions_columns(Array.from({ length: MAX_COLUMNS }, (_, index) => index + 1))
+	// ____________________ Env_Variables ____________________
 
-		}).catch(err => { 
-			
-			handle_error({ 
-				err, 
-				handle_404: () => {
-					alert('Session wurde nicht gefunden.')
-					navigate(-1, { replace: true })
-				}
-			}) 
-		
-		}).finally(() => setLoading_request(false))
+	const { data: env_variables, isLoading: isLoading__env_variables, isError: isError__env_variables } = useQuery({
+		queryKey: [ 'session', 'env' ], 
+		queryFn: () => get__session_env_variables(axiosPrivate)
+	})
 
-		// eslint-disable-next-line
-	}, [])
+	useEffect(() => setOptions_columns(Array.from({ length: env_variables?.MAX_COLUMNS }, (_, index) => index + 1)), [ env_variables ])
+
+
+
+
+
+	// __________________________________________________ Add / Edit __________________________________________________
+
+	const mutate__session_add = useMutation({
+		mutationFn: session_json => post__session(axiosPrivate, session_json),
+		onSuccess: data => {
+			query_client.setQueryData([ 'session', data.id ], data)
+			navigate(`/session/${data.id}/players`, { replace: true })
+		}
+	})
+
+	const mutate__session_edit = useMutation({
+		mutationFn: session_json => patch__session(axiosPrivate, session_json), 
+		onSuccess: ( _, session_json ) => {
+			query_client.setQueryData([ 'session', session_json.id ], prev => ({ ...prev, ...session_json }))
+			navigate(-1)
+		}
+	})
 
 	const ok = async () => {
 		
 		if(!name) return setError('Bitte einen Namen für die Parte eingeben.')
-		if(name.length > MAX_LENGTH_SESSION_NAME) return setError(`Der Name der Partie darf nicht länger als ${MAX_LENGTH_SESSION_NAME} Zeichen sein.`)
+		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) return setError(`Der Name der Partie darf nicht länger als ${env_variables?.MAX_LENGTH_SESSION_NAME} Zeichen sein.`)
 		if(!session && !+columns) return setError('Bitte die Spaltenanzahl angeben.')
-		if(!session && +columns > MAX_COLUMNS) return setError(`Die maximale Spaltenanzahl ist ${MAX_COLUMNS}.`) 
+		if(!session && +columns > env_variables?.MAX_COLUMNS) return setError(`Die maximale Spaltenanzahl ist ${env_variables?.MAX_COLUMNS}.`) 
 
-		setLoading(true)
-
-		try {
-			if(session) {
-				await axiosPrivate.patch('/session', {
-					SessionID: session.id, 
-					Name: name, 
-					Color: color, 
-					Columns: +columns, 
-				})
-				navigate(-1, { replace: false })
-			} else {
-				const { data } = await axiosPrivate.post('/session', {
-					Name: name, 
-					Color: color, 
-					Columns: +columns, 
-				})
-				navigate(`/session/${data.SessionID}/players`, { replace: true })
-			}
-		} catch(err) {
-			handle_error({
-				err, 
+		if(session) {
+			mutate__session_edit.mutate({
+				SessionID: session.id, 
+				Name: name, 
+				Color: color, 
+				Columns: +columns, 
+			})
+		} else {
+			mutate__session_add.mutate({
+				Name: name, 
+				Color: color, 
+				Columns: +columns, 
 			})
 		}
-
-		setLoading(false)
 
 	}
 
@@ -133,10 +135,7 @@ export default function Session_AddAndEdit({
 
 	return <>
 
-		<OptionsDialog
-			user={user}
-			setUser={setUser}
-		/>
+		<OptionsDialog user={user}/>
 
 
 
@@ -157,9 +156,9 @@ export default function Session_AddAndEdit({
 				type='text'
 				value={name}
 				isRequired={true}
-				setValue={setName}
 				text='Name für die Partie'
-				isRed={MAX_LENGTH_SESSION_NAME !== 0 && name.length > MAX_LENGTH_SESSION_NAME}
+				onChange={({ target }) => setName(target.value)}
+				isRed={env_variables?.MAX_LENGTH_SESSION_NAME !== 0 && name?.length > env_variables?.MAX_LENGTH_SESSION_NAME}
 			/>
 			
 
@@ -204,7 +203,7 @@ export default function Session_AddAndEdit({
 
 
 			<CustomButton 
-				loading={loading || loading_request}
+				loading={isLoading__user || isLoading__session || isLoading__env_variables}
 				className='button' 
 				text={session_id ? 'Speichern' : 'Weiter'}
 				onClick={ok}

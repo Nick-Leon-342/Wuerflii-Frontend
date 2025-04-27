@@ -195,7 +195,7 @@ export const list_rows = [
 		Possible_Entries: [ 0, 50 ], 
 		td:
 		<>
-			<td><label>Kniffel</label></td>
+			<td><label>Wuerflii</label></td>
 			<td><label>50<br/>Punkte</label></td>
 		</>, 
 	}, {

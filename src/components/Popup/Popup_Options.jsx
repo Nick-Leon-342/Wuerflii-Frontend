@@ -4,6 +4,7 @@ import './scss/Popup_Options.scss'
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import useAuth from '../../hooks/useAuth'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -14,6 +15,7 @@ import LoaderBox from '../Loader/Loader_Box'
 import CustomButton from '../others/Custom_Button'
 
 import { ReactComponent as Settings } from '../../svg/Settings.svg'
+import { patch__user } from '../../api/user'
 
 
 
@@ -38,21 +40,26 @@ import { ReactComponent as Settings } from '../../svg/Settings.svg'
  */
 
 export default function Popup_Options({
-	setUser, 
 	user, 
 }) {
 
     const { setAuth } = useAuth()
 
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
 	const [ show_options, setShow_options ] = useState(false)
-	
-	const [ loading_darkMode, setLoading_darkMode ] = useState(false)
 
-	const darkMode_string = 'Kniffel_DarkMode'
+	const darkMode_string = 'Wuerflii_DarkMode'
+
+	const change_dark_mode = useMutation({
+		mutationFn: () => patch__user(axiosPrivate, { DarkMode: !user.DarkMode }), 
+		onSuccess: () => {
+			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user.DarkMode })
+		}
+	})
 
 
 
@@ -78,34 +85,6 @@ export default function Popup_Options({
 
 	}, [ user ])
 
-	const change_dark_mode = async () => {
-
-		if(!user) return
-
-		setLoading_darkMode(true)
-
-		axiosPrivate.patch('/user', { DarkMode: !user.DarkMode }).then(() => {
-
-			setUser(prev => {
-				const tmp = { ...prev }
-				tmp.DarkMode = !tmp.DarkMode
-				return tmp
-			})
-
-		}).catch(err => {
-
-			handle_error({
-				err, 
-				handle_404: () => {
-					alert('Benutzer nicht gefunden.')
-					navigate('/', { replace: true })
-				}
-			})
-
-		}).finally(() => setLoading_darkMode(false))
-
-	}
-
 
 
 
@@ -121,7 +100,7 @@ export default function Popup_Options({
 		axiosPrivate.delete('/logout').then(() => {
 			
 			setAuth({ accessToken: '' })
-			navigate('/login', { replace: true })
+			navigate('/reglog', { replace: true })
 				
 		}).catch(err => {
 
@@ -159,17 +138,17 @@ export default function Popup_Options({
 
 					<section className='darkmode'>
 						
-						{loading_darkMode && <>
+						{change_dark_mode?.isPending && <>
 							<div className='popup_options_loading_darkmode-container'>
 								<LoaderBox className='popup_options_loading_darkmode' dark={true}/>
 							</div>
 						</>}
 						
-						{!loading_darkMode &&
+						{!change_dark_mode?.isPending &&
 							<input
 								type='checkbox'
 								checked={user?.DarkMode}
-								onChange={change_dark_mode}
+								onChange={() => change_dark_mode.mutate()}
 							/>
 						}
 

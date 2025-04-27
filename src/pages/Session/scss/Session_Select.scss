@@ -1,7 +1,7 @@
 
 
 .session_select {
-	width: 80vw;
+	width: 90vw;
 	max-width: 800px;
 	min-width: 300px;
 
@@ -41,16 +41,17 @@
 
 
 	
+	.session_select-loader {
+		border-radius: 5px;
+		height: 60px;
+	}
+
 	.no-game {
 		padding: 15px;
 		margin-bottom: 20px;
 		width: 100%;
 		text-align: center;
 	}
-
-
-
-
 
 	dl {
 		display: flex;
@@ -75,7 +76,7 @@
 				flex-shrink: 0;
 			}
 	
-			div {
+			a {
 				display: flex;
 				justify-content: space-between;
 				margin: 0 10px;
@@ -162,27 +163,20 @@
 
 
 @media ( max-width: 425px ) {
-	
-	.session_select_container {
-		width: 90vw;
+	.session_select_container dl dt {
 
-		dl dt {
+		input[type='checkbox'] {
+			width: 20px;
+			height: 20px;
+		}
 
-			input[type='checkbox'] {
-				width: 20px;
-				height: 20px;
-			}
-	
-			.names {
-				font-size: 20px;
-			}
-	
-			.date {
-				display: none;
-			}
+		.names {
+			font-size: 20px;
+		}
 
+		.date {
+			display: none;
 		}
 
 	}
-
 }

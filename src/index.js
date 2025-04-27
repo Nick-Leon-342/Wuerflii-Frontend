@@ -5,6 +5,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import reportWebVitals from './reportWebVitals'
 import { AuthProvider } from './context/AuthProvider'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+const query_client = new QueryClient()
 
 
 
@@ -12,9 +16,12 @@ import { AuthProvider } from './context/AuthProvider'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
-		<AuthProvider>
-			<App />
-		</AuthProvider>
+		<QueryClientProvider client={query_client}>
+			<AuthProvider>
+				<App />
+				<ReactQueryDevtools/>
+			</AuthProvider>
+		</QueryClientProvider>
 	</React.StrictMode>
 )
 

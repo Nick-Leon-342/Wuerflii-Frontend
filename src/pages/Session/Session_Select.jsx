@@ -5,9 +5,9 @@ import './scss/Session_Select.scss'
 import { useNavigate } from 'react-router-dom'
 import { formatDate } from '../../logic/utils'
 import React, { useEffect, useRef, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Loader from '../../components/Loader/Loader'
 import LoaderBox from '../../components/Loader/Loader_Box'
@@ -19,6 +19,9 @@ import { ReactComponent as Trashcan } from '../../svg/Trashcan.svg'
 import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
 import { ReactComponent as ArrowDown } from '../../svg/Arrow_Down.svg'
 
+import { get__user, patch__user } from '../../api/user'
+import { delete__session, get__sessions_list } from '../../api/session/session'
+
 
 
 
@@ -29,115 +32,77 @@ export default function Session_Select({
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const query_client = useQueryClient()
 
 	const ref = useRef()
 
-	const [ user, setUser ] = useState()
-	const [ loading, setLoading ] = useState(false)
-	const [ list_sessions, setList_sessions ] = useState() 
+	const [ list_sessions, setList_sessions ] = useState([]) 
 
 	const [ show_settings, setShow_settings ] = useState(false)
-
-	const [ loading_show_session_names, setLoading_show_session_names ] = useState(false)
-	const [ loading_show_session_date, setLoading_show_session_date ] = useState(false)
-	const [ loading_change_order, setLoading_change_order ] = useState(false)
 	const list_orderOptions = [
 		{ Text: 'Zuletzt gespielt', 	Alias: 'Last_Played'	},
 		{ Text: 'Erstellt', 			Alias: 'Created'		},
 		{ Text: 'Name', 				Alias: 'Name'			},
 	]
 
-	const change_order = async ( selectedOption ) => {
-
-		const alias = selectedOption.Alias
-		const descending = alias === user?.View_Sessions ? !user.View_Sessions_Desc : true
-
-		setLoading_change_order(true)
-
-		axiosPrivate.patch('/user', {
-			View_Sessions: alias, 
-			View_Sessions_Desc: descending
-		}).then(() => {
-
-			setUser(prev => {
-				const tmp = { ...prev }
-				tmp.View_Sessions = alias
-				tmp.View_Sessions_Desc = descending
-				return tmp
-			})
-
-		}).catch((err) => {
-
-			handle_error({ 
-				err, 
-			})
-
-		}).finally(() => setLoading_change_order(false))
-
-	}
 
 
+	// ________________________________________ User __________________________________________________
 
-
-
-
-	useEffect(() => {
+	// TODO implement error-handling
+	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+		queryKey: [ 'user' ], 
+		queryFn: () => get__user(axiosPrivate), 
 		
-		setLoading(true)
+	})
 
-		axiosPrivate.get('/user').then(({ data }) => {
-
-			setUser(data)
-
-		}).catch((err) => {
-
-			handle_error({ 
-				err, 
-			})
-
-		}).finally(() => setLoading(false))
-
-		// eslint-disable-next-line
-	}, [])
-
-	useEffect(() => {
-
-		if(!user) return
-		
-		setLoading(true)
-
-		axiosPrivate.get('/session/all').then(({ data }) => {
-
-			setList_sessions(data.List_Sessions.map(s => {
-				return {
-					...s, 
-					Checkbox_Checked: false, 
-				}
-			}))
-
-
-		}).catch((err) => {
-
-			handle_error({ 
-				err, 
-			})
-
-		}).finally(() => setLoading(false))
-
-		// eslint-disable-next-line
-	}, [ user?.View_Sessions, user?.View_Sessions_Desc ])
-
-	const select = ( session ) => {
-
-		if(loading_delete) return setError('Warte bitte, bis das Löschen vollständig durchgeführt wurde.')
-
-		if(session.List_Players.length === 0) {
-			navigate(`/session/${session.id}/players`, { replace: false })
-		} else {
-			navigate(`/session/${session.id}/preview`, { replace: false })
+	const mutate__show_session_date = useMutation({
+		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user.Show_Session_Date }), 
+		onSuccess: () => {
+			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user.Show_Session_Date })
 		}
-	}
+	})
+
+	const mutate__show_session_names = useMutation({
+		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user.Show_Session_Names }), 
+		onSuccess: () => {
+			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user.Show_Session_Names })
+		}
+	})
+
+	const mutate__order = useMutation({
+		mutationFn: json => patch__user(axiosPrivate, json), 
+		onSuccess: ( _, json ) => {
+			query_client.setQueryData([ 'user' ], { ...user, ...json })
+			query_client.invalidateQueries([ 'session', 'list' ], { exact: true })
+		}
+	})
+
+
+
+	// __________________________________________________ List_Sessions __________________________________________________
+
+	// TODO implement error-handling
+	const { data: tmp_list_sessions, isLoading: isLoading__list_sessions, isError: isError__list_sessions } = useQuery({
+		queryKey: [ 'session', 'list' ], 
+		queryFn: () => get__sessions_list(axiosPrivate), 
+		
+	})
+
+	useEffect(() => setList_sessions(tmp_list_sessions || []), [ tmp_list_sessions ])
+
+	const mutate__delete = useMutation({
+		mutationFn: session_id => delete__session(axiosPrivate, session_id),
+		onSuccess: ( _, session_id ) => {
+			query_client.setQueryData([ 'session', 'list' ], list_sessions => list_sessions.filter(session => session.id !== session_id))
+		}
+	})
+
+
+
+
+
+	// __________________________________________________ Functions __________________________________________________
 
 	const checkbox_click = ( index, checked ) => {
 
@@ -149,89 +114,27 @@ export default function Session_Select({
 
 	}
 
-	const change_show_session_names = () => {
+	const change_order = async selected_option => {
 
-		setLoading_show_session_names(true)
+		const alias = selected_option.Alias
+		const descending = alias === user?.View_Sessions ? !user.View_Sessions_Desc : true
 
-		axiosPrivate.patch('/user', { Show_Session_Names: !user.Show_Session_Names }).then(() => {
-
-			setUser(user => {
-				const tmp = { ...user }
-				tmp.Show_Session_Names = !tmp.Show_Session_Names
-				return tmp
-			})
-
-		}).catch(err => {
-
-			handle_error({
-				err, 
-			})
-
-		}).finally(() => setLoading_show_session_names(false))
+		mutate__order.mutate({
+			View_Sessions: alias, 
+			View_Sessions_Desc: descending
+		})
 
 	}
-
-	const change_show_session_date = () => {
-
-		setLoading_show_session_date(true)
-
-		axiosPrivate.patch('/user', { Show_Session_Date: !user.Show_Session_Date }).then(() => {
-
-			setUser(user => {
-				const tmp = { ...user }
-				tmp.Show_Session_Date = !tmp.Show_Session_Date
-				return tmp
-			})
-
-		}).catch(err => {
-
-			handle_error({
-				err, 
-			})
-
-		}).finally(() => setLoading_show_session_date(false))
-
-	}
-
-
-
-
-
-	// __________________________________________________ Delete __________________________________________________
-
-	const [ loading_delete, setLoading_delete ] = useState(false)
 
 	const handle_delete = async () => {
 
-		if(!window.confirm(`Bist du sicher, dass du diese Session${list_sessions?.filter(s => s.Checkbox_Checked).length > 1 ? '(s)' : ''} löschen willst?`)) return
-
-		setLoading_delete(true)
+		if(!window.confirm(`Sicher, dass du diese Session${list_sessions?.filter(s => s.Checkbox_Checked).length > 1 ? '(s)' : ''} löschen willst?`)) return
 
 		for(const session of list_sessions) { if(session.Checkbox_Checked) {
-				
-			await axiosPrivate.delete(`/session?session_id=${session.id}`).then(() => {
 
-				setList_sessions(prev => {
-					const tmp = []
-					for(const s of prev) {if(s.id !== session.id) tmp.push(s)}
-					return tmp
-				})
-
-			}).catch((err) => {
-			
-				handle_error({ 
-					err, 
-					handle_404: () => {
-						alert(`Die Session '${session.Name}' konnte nicht mehr auf dem Server gefunden werden. Die Seite wird jetzt automatisch neu geladen.`)
-						window.location.reload()
-					}
-				})
-			
-			})
+			mutate__delete.mutate(session.id)
 
 		}}
-
-		setLoading_delete(false)
 
 	}
 
@@ -241,10 +144,7 @@ export default function Session_Select({
 
 	return <>
 
-		<OptionsDialog
-			user={user}
-			setUser={setUser}
-		/>
+		<OptionsDialog user={user}/>
 
 
 
@@ -253,7 +153,7 @@ export default function Session_Select({
 		{/* __________________________________________________ Page __________________________________________________ */}
 
 		<div className='session_select'>
-
+			
 			<header>
 
 				<button 
@@ -262,24 +162,32 @@ export default function Session_Select({
 					onClick={() => setShow_settings(true)}
 				><ListSort/></button>
 
-				{!loading && 
-					<button
-						className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!loading_delete && list_sessions?.some(s => s.Checkbox_Checked) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
-						onClick={handle_delete} 
-					><Trashcan/></button>
-				}
+				<button
+					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions?.some(session => session.Checkbox_Checked) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
+					onClick={handle_delete} 
+				><Trashcan/></button>
 
-				<Loader loading={loading}/>
+				<Loader loading={isLoading__user}/>
 
 			</header>
-			
 
 
 
+			{/* __________________________________________________ Loading list_sessions __________________________________________________ */}
 
-			{list_sessions?.length === 0 && <h1 className='no-game'>Es gibt noch keine Partie!</h1>}
+			{isLoading__list_sessions && <LoaderBox className='session_select-loader' dark={true}/>}
 
-			{list_sessions?.length !== 0 && <>
+
+
+			{/* __________________________________________________ No session in list __________________________________________________ */}
+
+			{!isLoading__list_sessions && list_sessions?.length === 0 && <h1 className='no-game'>Es gibt noch keine Partie!</h1>}
+
+
+
+			{/* __________________________________________________ Session list __________________________________________________ */}
+
+			{!isLoading__list_sessions && list_sessions?.length !== 0 && <>
 
 				<dl>
 					{list_sessions?.map((session, index_session) => (
@@ -292,10 +200,10 @@ export default function Session_Select({
 								className='button-responsive'
 								type='checkbox' 
 								checked={session.Checkbox_Checked}
-								onChange={({ target }) => !loading_delete && checkbox_click(index_session, target.checked)} 
+								onChange={({ target }) => !mutate__delete.isPending && checkbox_click(index_session, target.checked)} 
 							/>
 
-							<div onClick={() => select(session)}>
+							<a href={`/#/session/${session.id}/${session.List_Players.length === 0 ? 'players' : 'preview'}`}>
 
 								<label className='names'>
 									{(user?.Show_Session_Names || session.List_Players.length === 0) && session.Name}
@@ -304,7 +212,7 @@ export default function Session_Select({
 
 								{user?.Show_Session_Date && <label className='date'>{formatDate(session.LastPlayed)}</label>}
 
-							</div>
+							</a>
 
 						</dt>
 					))}
@@ -331,17 +239,16 @@ export default function Session_Select({
 			setShow_popup={setShow_settings}
 			className='session_select_popup_settings'
 			alignLeft={true}
-
 		>
 			
 			<div className='session_select_popup_settings-show'>
-				{loading_show_session_names && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
-				{!loading_show_session_names && <input type='checkbox' checked={user?.Show_Session_Names} onChange={change_show_session_names}/>}
+				{mutate__show_session_names.isPending && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
+				{!mutate__show_session_names.isPending && <input type='checkbox' checked={user?.Show_Session_Names} onChange={() => mutate__show_session_names.mutate()}/>}
 				<span>Partienamen anzeigen</span>
 			</div>
 			<div className='session_select_popup_settings-show'>
-				{loading_show_session_date && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
-				{!loading_show_session_date && <input type='checkbox' checked={user?.Show_Session_Date} onChange={change_show_session_date}/>}
+				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
+				{!mutate__show_session_date.isPending && <input type='checkbox' checked={user?.Show_Session_Date} onChange={() => mutate__show_session_date.mutate()}/>}
 				<span>Datum anzeigen</span>
 			</div>
 

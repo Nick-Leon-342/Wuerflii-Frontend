@@ -115,7 +115,7 @@ export default function Profile({
 
 		axiosPrivate.delete('/user').then(() => {
 
-			navigate('/login', { replace: true })
+			navigate('/reglog', { replace: true })
 
 		}).catch(err => {
 

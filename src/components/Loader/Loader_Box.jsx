@@ -30,7 +30,7 @@ export default function Loader_Box({
 }) {
 
 	return <>
-		<div className={`loader_box${className ? ` ${className}` : ''}${dark ? ' dark' : ''}`}/>
+		<div className={`loader_box${className ? ` ${className}` : ''}${dark ? ' loader_box-dark' : ''}`}/>
 	</>
 
 }
