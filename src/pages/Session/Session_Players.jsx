@@ -5,7 +5,7 @@ import './scss/Session_Players.scss'
 import { v4 } from 'uuid'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -19,7 +19,7 @@ import { ReactComponent as PersonAdd } from '../../svg/Person_Add.svg'
 import { ReactComponent as PersonRemove } from '../../svg/Person_Remove.svg'
 
 import { get__user } from '../../api/user'
-import { get__session_players } from '../../api/session/session_players'
+import { get__session_players, patch__session_players, post__session_players } from '../../api/session/session_players'
 
 
 
@@ -29,8 +29,9 @@ export default function Session_Players({
 	setError, 
 }) {
 
-	const axiosPrivate = useAxiosPrivate()
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
+	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
 	const { session_id } = useParams()
@@ -39,10 +40,7 @@ export default function Session_Players({
 	// ____________________ Players ____________________
 
 	const [ isInit, setIsInit ] = useState(false)
-	// const [ MAX_PLAYERS, setMAX_PLAYERS ] = useState(0)
 	const [ list_players, setList_players ] = useState([])
-	// const [ MAX_LENGTH_PLAYER_NAME, setMAX_LENGTH_PLAYER_NAME ] = useState(0)
-
 
 
 
@@ -69,17 +67,40 @@ export default function Session_Players({
 	// ____________________ List_Players ____________________
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
-		queryKey: [ 'session', session_id, 'players' ], 
+		queryKey: [ 'session', +session_id, 'players' ], 
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
 
 	useEffect(() => {
 		
 		setIsInit(tmp__list_players?.length === 0)
-		setList_players(tmp__list_players?.length > 0 ? tmp__list_players : [ new_player() ])
+		// setList_players(tmp__list_players?.length > 0 ? tmp__list_players : [ new_player() ])
+		setList_players(tmp__list_players?.length > 0 ? structuredClone(tmp__list_players) : [ new_player() ])
 
 		// eslint-disable-next-line
 	}, [ tmp__list_players ])
+
+
+
+
+
+	// __________________________________________________ Mutations __________________________________________________
+
+	const mutate__players_add = useMutation({
+		mutationFn: json => post__session_players(axiosPrivate, json), 
+		onSuccess: data => {
+			query_client.setQueryData([ 'session', +session_id, 'players' ], data.List_Players)
+			navigate(`/game?session_id=${session_id}`, { replace: true })
+		}
+	})
+
+	const mutate__players_edit = useMutation({
+		mutationFn: json => patch__session_players(axiosPrivate, json), 
+		onSuccess: () => {
+			query_client.setQueryData([ 'session', +session_id, 'players' ], list_players)
+			navigate(-1, { replace: false })
+		}
+	})
 
 
 
@@ -108,9 +129,7 @@ export default function Session_Players({
 
 	const remove_player = () => {
 
-		if(list_players.length === 1) {
-			return setList_players(() => [new_player])
-		}
+		if(list_players.length === 1) return setList_players(() => [ new_player() ])
 
 		setList_players(prev => {
 			const list = [ ...prev ]
@@ -124,34 +143,15 @@ export default function Session_Players({
 
 		if(!list_players || list_players.some(p => p.Name.length > env_variables?.MAX_LENGTH_PLAYER_NAME)) return setError(`Die Spielernamen dürfen nicht länger als ${env_variables?.MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
 
-
-		const url = '/session/players'
 		const json = { 
-			List_Players: list_players, 
 			SessionID: +session_id, 
+			List_Players: list_players, 
 		}
 
-
-		try {
-
-			if(isInit) {
-				await axiosPrivate.post(url, json)
-				navigate(`/game?session_id=${session_id}`, { replace: true })
-			} else {
-				await axiosPrivate.patch(url, json)
-				navigate(-1, { replace: false })
-			}
-
-		} catch(err) {
-
-			handle_error({ 
-				err, 
-				handle_404: () => {
-					alert('Partie nicht gefunden.')
-					navigate(-1, { replace: true })
-				}
-			})
-
+		if(isInit) {
+			mutate__players_add.mutate(json)
+		} else {
+			mutate__players_edit.mutate(json)
 		}
 
 	}

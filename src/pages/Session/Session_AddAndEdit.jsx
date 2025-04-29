@@ -59,7 +59,7 @@ export default function Session_AddAndEdit({
 
 	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
 		enabled: Boolean(session_id), 
-		queryKey: [ 'session', session_id ], 
+		queryKey: [ 'session', +session_id ], 
 		queryFn: () => get__session(axiosPrivate, session_id), 
 	})
 

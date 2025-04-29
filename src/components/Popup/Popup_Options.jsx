@@ -158,14 +158,14 @@ export default function Popup_Options({
 
 					<section>
 						<button 
-							className='button button_reverse_green button_scale_3'
+							className='button button_reverse_green button_scale_2'
 							onClick={() => navigate('/profile', { replace: false })}
 						>Profil</button>
 					</section>
 
 					<section>
 						<button 
-							className='button button_reverse_green button_scale_3'
+							className='button button_reverse_green button_scale_2'
 							onClick={() => navigate('/analytics', { replace: false })}
 						>Statistiken</button>
 					</section>

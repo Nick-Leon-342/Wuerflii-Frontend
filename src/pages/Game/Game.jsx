@@ -17,6 +17,11 @@ import OptionsDialog from '../../components/Popup/Popup_Options'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
 import { ReactComponent as Settings } from '../../svg/Settings.svg'
+import { useQuery } from '@tanstack/react-query'
+import { get__user } from '../../api/user'
+import { get__session } from '../../api/session/session'
+import { get__session_players } from '../../api/session/session_players'
+import { get__table_columns } from '../../api/table_columns'
 
 
 
@@ -30,10 +35,12 @@ export default function Game() {
 
 
 	const location = useLocation()
+	const session_id = new URLSearchParams(location.search).get('session_id')
 	
-	const [ user, setUser ] = useState()
-	const [ session, setSession ] = useState()
+	// const [ user, setUser ] = useState()
+	// const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState()
+	const [ list_table_columns, setList_table_columns ] = useState()
 
 	const [ loading_request, setLoading_request ] = useState(false)
 	const [ loading_finish_game, setLoading_finish_game ] = useState(false)
@@ -46,38 +53,55 @@ export default function Game() {
 
 
 
+	// __________________________________________________ Queries __________________________________________________
+		
+	// ____________________ User ____________________
+
+	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+		queryKey: [ 'user' ], 
+		queryFn: () => get__user(axiosPrivate), 
+	})
+	
+	
+	// ____________________ Session ____________________
+
+	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
+		queryKey: [ 'session', +session_id ], 
+		queryFn: () => get__session(axiosPrivate, session_id), 
+	})
+	
+
+	// ____________________ List_Players ____________________
+
+	const { data: tmp__list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
+		queryKey: [ 'session', +session_id, 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, session_id), 
+	})
+
+	useEffect(() => setList_players(tmp__list_players), [ tmp__list_players ])
+	
+
+	// ____________________ List_Table_Columns ____________________
+
+	const { data: tmp__list_table_columns, isLoading: isLoading__list_table_columns, isError: isError__list_table_columns } = useQuery({
+		queryKey: [ 'session', +session_id, 'table_columns' ], 
+		queryFn: () => get__table_columns(axiosPrivate, session_id), 
+	})
+
+	useEffect(() => setList_table_columns(tmp__list_table_columns), [ tmp__list_table_columns ])
+
+
+
+
 
 	useEffect(() => {
 
-		const session_id = new URLSearchParams(location.search).get('session_id')
-
 		if(!session_id) return navigate('/', { replace: true })
-
-		setLoading_request(true)
-
-		axiosPrivate.get(`/game?session_id=${session_id}`).then(({ data }) => {
-			
-			
-			setUser(data.User)
-			setList_players(data.List_Players)
-			setSession(data.Session)
-
-			setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
-
-
-		}).catch((err) => {
-
-			handle_error({
-				err, 
-				handle_404: () => navigate('/', { replace: true }),
-			})
-			
-		}).finally(() => setLoading_request(false))
-
 		
+		setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
 
 		// eslint-disable-next-line
-	}, [])
+	}, [ session ])
 
 	const finish_game = () => {
 	
@@ -115,10 +139,7 @@ export default function Game() {
 
 	return <>
 
-		<OptionsDialog
-			user={user}
-			setUser={setUser}
-		/>
+		<OptionsDialog user={user}/>
 
 
 
@@ -129,12 +150,14 @@ export default function Game() {
 					session={session}
 					list_players={list_players}
 					setList_players={setList_players}
+					list_table_columns={list_table_columns}
 				/>
 
 				<Table 
 					session={session}
 					list_players={list_players}
-					setList_players={setList_players}
+					list_table_columns={list_table_columns}
+					setList_table_columns={setList_table_columns}
 				/>
 
 				<footer>
@@ -168,7 +191,7 @@ export default function Game() {
 			show_options={show_options}
 
 			session={session}
-			setSession={setSession}
+			// setSession={setSession} // TODO
 		/>
 
 

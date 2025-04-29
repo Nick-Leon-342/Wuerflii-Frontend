@@ -89,7 +89,20 @@ export default function Session_Select({
 		
 	})
 
-	useEffect(() => setList_sessions(tmp_list_sessions || []), [ tmp_list_sessions ])
+	useEffect(() => {
+
+		// List_Session is edited only in frontend (checkbox to delete multiple sessions), that's why the read-only tmp_list_sessions has to be copied into a editable variable
+		setList_sessions(tmp_list_sessions || [])
+
+		if(!tmp_list_sessions) return 
+		// Cache all sessions and players to increase performance when selecting session
+		for(const session of tmp_list_sessions) {
+			query_client.setQueryData([ 'session', session.id ], session)
+			query_client.setQueryData([ 'session', session.id, 'players' ], session.List_Players)
+		}
+
+		// eslint-disable-next-line
+	}, [ tmp_list_sessions ])
 
 	const mutate__delete = useMutation({
 		mutationFn: session_id => delete__session(axiosPrivate, session_id),

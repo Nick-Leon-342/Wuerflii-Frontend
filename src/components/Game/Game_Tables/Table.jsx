@@ -2,15 +2,17 @@
 
 import './scss/Table.scss'
 
-import { useEffect, useState } from 'react'
-
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { list_rows } from '../../../logic/utils'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../../hooks/useErrorHandling'
 
 import LoaderBox from '../../Loader/Loader_Box'
+
+import { patch__table_columns } from '../../../api/table_columns'
 
 
 
@@ -25,14 +27,14 @@ import LoaderBox from '../../Loader/Loader_Box'
  * @example
  * // Example usage of Table component
  * <Table 
- *   setList_players={setListPlayers} 
  *   list_players={listPlayers} 
  *   disabled={false} 
  *   session={session} 
  * />
  *
  * @param {Object} props - The component props
- * @param {Function} props.setList_players - Function to update the list of players
+ * @param {Array} props.setList_table_columns - Function to edit list of table_columns
+ * @param {Array} props.list_table_columns - List of all columns for each player
  * @param {Array} props.list_players - List of players to display in the table
  * @param {boolean} props.disabled - Boolean to control whether the input fields are disabled
  * @param {Object} props.session - The session object containing the session settings (e.g., number of columns, input type, etc.)
@@ -42,7 +44,8 @@ import LoaderBox from '../../Loader/Loader_Box'
  */
 
 export default function Table({ 
-	setList_players, 
+	setList_table_columns, 
+	list_table_columns, 
 	list_players, 
 	disabled, 
 	session, 
@@ -60,10 +63,13 @@ export default function Table({
 		setList_columns(Array.from({ length: session.Columns }, (_, index) => index))		
 
 		// eslint-disable-next-line
-	}, [])
+	}, [ session ])
 
 
 
+
+
+	if(!list_table_columns) return 
 
 	return <>
 		<table className='table table_game'>
@@ -91,8 +97,8 @@ export default function Table({
 										const key = `${index_player}_${column}`
 
 										if(!row.Possible_Entries || disabled) {
-											if(!player.List_Table_Columns[column]) return <div key={key}></div>
-											const value = player.List_Table_Columns[column][row.Name]
+											if(!list_table_columns[index_player].List_Table_Columns[column]) return <div key={key}></div>
+											const value = list_table_columns[index_player].List_Table_Columns[column][row.Name]
 											return <>
 												<td 
 													key={key}
@@ -111,7 +117,8 @@ export default function Table({
 												style={{ backgroundColor: player.Color }} 
 											>
 												<InputElement
-													setList_players={setList_players}
+													setList_table_columns={setList_table_columns}
+													list_table_columns={list_table_columns}
 													list_players={list_players}
 													index_player={index_player}
 													index_row={index_row}
@@ -137,7 +144,8 @@ export default function Table({
 
 
 const InputElement = ({
-	setList_players, 
+	setList_table_columns, 
+	list_table_columns, 
 	list_players, 
 	index_player, 
 	index_row, 
@@ -145,13 +153,53 @@ const InputElement = ({
 	column, 
 }) => {
 
+	const ref = useRef()
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
 	const [ id, setId ] = useState('')
-	const [ loading, setLoading ] = useState(false)
 	const [ input_value, setInput_value ] = useState('')
+
+	const mutate__table_columns = useMutation({
+		mutationFn: json => patch__table_columns(axiosPrivate, json), 
+		onSuccess: data => {
+			setList_table_columns(prev => {
+				const tmp = [ ...prev ]
+				tmp[index_player].List_Table_Columns[column] = data
+				query_client.setQueryData([ 'session', session.id, 'table_columns' ], tmp)
+				return tmp 
+			})
+		}, 
+		onError: ( err, json ) => {
+			const value = json.Value
+			handle_error({
+				err, 
+				handle_no_server_response: () => {
+					if(window.confirm(`Der Server antwortet nicht.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) {
+						mutate__table_columns.mutate(json)
+					} else {
+						init_value()
+					}
+				}, 
+				handle_404: () => {
+					alert('Eine Ressource wurde nicht gefunden!')
+					navigate(`/`)
+				}, 
+				handle_409: () => {
+					alert(`Der Eintrag '${value}' ist nicht zulässig!`)
+				}, 
+				handle_500: () => {
+					if(window.confirm(`Beim Server ist ein Fehler aufgetreten.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) {
+						mutate__table_columns.mutate(json)
+					} else {
+						init_value()
+					}
+				}
+			})
+		}
+	})
 
 
 
@@ -160,56 +208,14 @@ const InputElement = ({
 	const onBlur = async ( e ) => {
 
 		const value = e.target.value
-		
-		
-		for(let i = 0; 100 > i; i++) {
-			
-			let try_again = false
-			setLoading(true)
 
-			await axiosPrivate.post('/player/input', {
-				SessionID: session.id, 
-				PlayerID: list_players[index_player].id, 
-				Column: column, 
-				Name: list_rows[index_row].Name, 
-				Value: value === '' ? null : +value, 
-			}).then(({ data }) => {
-
-	
-				setList_players(prev => {
-					const tmp = [ ...prev ]
-					tmp[index_player].List_Table_Columns[column] = data.Column
-					return tmp
-				})
-
-	
-			}).catch(err => {
-	
-				handle_error({
-					err, 
-					handle_no_server_response: () => {
-						if(window.confirm(`Der Server antwortet nicht.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
-					}, 
-					handle_404: () => {
-						alert('Benutzer, Session oder Spieler wurde nicht gefunden!')
-						navigate(`/`)
-					}, 
-					handle_409: () => {
-						alert(`Der Eintrag '${value}' ist nicht zulässig!`)
-						e.target.value = ''
-						setInput_value('')
-					}, 
-					handle_500: () => {
-						if(window.confirm(`Beim Server ist ein Fehler aufgetreten.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) try_again = true
-					}
-				})
-	
-			}).finally(() => setLoading(false))
-
-
-			if(!try_again) return
-
-		}
+		mutate__table_columns.mutate({
+			SessionID: session.id, 
+			PlayerID: list_players[index_player].id, 
+			Column: column, 
+			Name: list_rows[index_row].Name, 
+			Value: value === '' ? null : +value, 
+		})
 
 	}
 
@@ -224,30 +230,35 @@ const InputElement = ({
 	useEffect(() => setId(index_player + '.' + index_row + '.' + column), [ index_player, index_row, column ])
 
 	useEffect(() => {
-
-		if(!session || !list_players[index_player].List_Table_Columns[column]) return
-
-		const tmp = list_players[index_player].List_Table_Columns[column][list_rows[index_row].Name]
-		const value = typeof tmp === 'number' ? tmp : ''
-		setInput_value(value)
-
+		
+		if(!session || !list_table_columns || !list_table_columns[index_player].List_Table_Columns[column]) return
+		init_value()
 		// eslint-disable-next-line
 	}, [])
 
-	
+	const init_value = () => {
+
+		const tmp = list_table_columns[index_player].List_Table_Columns[column][list_rows[index_row].Name]
+		const value = typeof tmp === 'number' ? tmp : ''
+		setInput_value(value)
+
+	}
+
+
 
 
 
 	return <>
 
-		{loading && <>
+		{mutate__table_columns.isPending && <>
 			<div className='table_loader-container'>
 				<LoaderBox className='table_loader' dark={true}/>
 			</div>
 		</>}
 
-		{!loading && session?.InputType === 'type' && <>
+		{!mutate__table_columns.isPending && session?.InputType === 'type' && <>
 			<input 
+				ref={ref}
 				tabIndex={0}
 				value={input_value}
 				onChange={({ target }) => setInput_value(target.value)}
@@ -255,8 +266,9 @@ const InputElement = ({
 			/>
 		</>}
 
-		{!loading && session?.InputType === 'select' && <>
+		{!mutate__table_columns.isPending && session?.InputType === 'select' && <>
 			<select 
+				ref={ref}
 				tabIndex={0}
 				value={input_value}
 				className={`${isIOS() ? 'isios' : ''}`}
@@ -269,9 +281,10 @@ const InputElement = ({
 			</select>
 		</>}
 
-		{!loading && session?.InputType === 'select_and_type' && <>
+		{!mutate__table_columns.isPending && session?.InputType === 'select_and_type' && <>
 			<input 
 				list={id} 
+				ref={ref}
 				tabIndex={0}
 				onBlur={onBlur}
 				value={input_value}

@@ -26,6 +26,7 @@ import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
 import { useQuery } from '@tanstack/react-query'
 import { get__session } from '../../api/session/session'
 import { get__user } from '../../api/user'
+import { get__session_players } from '../../api/session/session_players'
 
 
 
@@ -43,7 +44,7 @@ export default function Session_Preview() {
 
 	// const [ user, setUser ] = useState()
 	// const [ session, setSession ] = useState()
-	const [ list_players, setList_players ] = useState([])
+	// const [ list_players, setList_players ] = useState([])
 	const [ list_finalScores, setList_finalScores ] = useState([])
 	
 	const [ loading_request, setLoading_request ] = useState(false)
@@ -64,20 +65,29 @@ export default function Session_Preview() {
 
 
 	// __________________________________________________ Queries __________________________________________________
+		
+	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
 		queryKey: [ 'user' ], 
 		queryFn: () => get__user(axiosPrivate), 
 	})
+	
+	
+	// ____________________ Session ____________________
 
 	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
-		queryKey: [ 'session', session_id ], 
+		queryKey: [ 'session', +session_id ], 
 		queryFn: () => get__session(axiosPrivate, session_id), 
 	})
+	
 
-	// const { data: list_players, isLoading: isLoading__list_players } = useQuery({
+	// ____________________ List_Players ____________________
 
-	// })
+	const { data: list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
+		queryKey: [ 'session', +session_id, 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, session_id), 
+	})
 
 	// const { data: list_finalScores, isLoading: isLoading__list_finalScores } = useQuery({
 
