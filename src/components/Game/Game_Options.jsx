@@ -4,6 +4,7 @@ import './scss/Game_Options.scss'
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -13,6 +14,8 @@ import Loader from '../Loader/Loader'
 import LoaderBox from '../Loader/Loader_Box'
 
 import { ReactComponent as PersonSettings } from '../../svg/Person_Settings.svg'
+
+import { patch__session } from '../../api/session/session'
 
 
 
@@ -30,7 +33,6 @@ import { ReactComponent as PersonSettings } from '../../svg/Person_Settings.svg'
  *   setShow_surrender={setShowSurrender} 
  *   setShow_options={setShowOptions} 
  *   show_options={showOptions} 
- *   setSession={setSession} 
  *   session={session} 
  * />
  *
@@ -38,7 +40,6 @@ import { ReactComponent as PersonSettings } from '../../svg/Person_Settings.svg'
  * @param {Function} props.setShow_surrender - Function to show/hide surrender option
  * @param {Function} props.setShow_options - Function to show/hide options popup
  * @param {boolean} props.show_options - Boolean value to control visibility of the options popup
- * @param {Function} props.setSession - Function to update the session state
  * @param {Object} props.session - The current game session object, containing details like input type and show scores option
  *
  * @returns {JSX.Element} The rendered Game_Options component
@@ -51,81 +52,69 @@ export default function Game_Options({
 	setShow_options, 
 	show_options, 
 
-	setSession, 
 	session, 
 }) {
 
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
 	const [ loading_newGame, setLoading_newGame ] = useState(false)
-	const [ loading_inputType, setLoading_inputType ] = useState(false)
-	const [ loading_showScores, setLoading_showScores ] = useState(false)
-	
 
 
 
 
-	const change_inputType = ( e ) => {
 
-		const v = e.target.value
-		setLoading_inputType(true)
+	// __________________________________________________ Input Type __________________________________________________
 
-		axiosPrivate.patch('/session', {
-			SessionID: session.id, 
-			InputType: v
-		}).then(() => {
-
-			setSession(prev => {
+	const mutate__input_type = useMutation({
+		mutationFn: json => patch__session(axiosPrivate, json), 
+		onSuccess: (_, json) => {
+			query_client.setQueryData([ 'session', session.id ], prev => {
 				const tmp = { ...prev }
-				tmp.InputType = v
+				tmp.InputType = json.InputType
 				return tmp
 			})
+		}
+	})
 
-		}).catch(err => {
+	const change_inputType = event => {
 
-			handle_error({
-				err, 
-				handle_404: () => {
-					alert('Session nicht gefunden.')
-					navigate('/', { replace: true })
-				}
-			})
-
-		}).finally(() => setLoading_inputType(false))
+		const json = {
+			SessionID: session.id, 
+			InputType: event.target.value
+		}
+		mutate__input_type.mutate(json)
 
 	}
 
-	const change_showScores = ( e ) => {
 
-		const v = e.target.checked
-		setLoading_showScores(true)
+	// __________________________________________________ Show Scores __________________________________________________
 
-		axiosPrivate.patch('/session', {
-			SessionID: session.id, 
-			ShowScores: v
-		}).then(() => {
-
-			setSession(prev => {
+	const mutate__show_scores = useMutation({
+		mutationFn: json => patch__session(axiosPrivate, json), 
+		onSuccess: (_, json) => {
+			query_client.setQueryData([ 'session', session.id ], prev => {
 				const tmp = { ...prev }
-				tmp.ShowScores = v
+				tmp.ShowScores = json.ShowScores
 				return tmp
 			})
+		}
+	})
 
-		}).catch(err => {
+	const change_showScores = event => {
 
-			handle_error({
-				err, 
-				handle_404: () => {
-					alert('Session nicht gefunden.')
-					navigate('/', { replace: true })
-				}
-			})
-
-		}).finally(() => setLoading_showScores(false))
+		const json = {
+			SessionID: session.id, 
+			ShowScores: event.target.checked
+		}
+		mutate__show_scores.mutate(json)
 
 	}
+
+
+	// __________________________________________________ New Game __________________________________________________
 
 	const new_game = () => {
 
@@ -163,9 +152,9 @@ export default function Game_Options({
 				<section>
 					<label>Eingabetyp</label>
 
-					{loading_inputType && <LoaderBox className='game_options_loader-inputtype' dark={true}/>}
+					{mutate__input_type.isPending && <LoaderBox className='game_options_loader-inputtype' dark={true}/>}
 
-					{!loading_inputType && <>
+					{!mutate__input_type.isPending && <>
 						<select
 							value={session?.InputType}
 							onChange={change_inputType}
@@ -184,9 +173,9 @@ export default function Game_Options({
 				<section>
 					<label>Summe anzeigen</label>
 
-					{loading_showScores && <LoaderBox className='game_options_loader-showscores' dark={true}/>}
+					{mutate__show_scores.isPending && <LoaderBox className='game_options_loader-showscores' dark={true}/>}
 
-					{!loading_showScores && <>
+					{!mutate__show_scores.isPending && <>
 						<input
 							type='checkbox'
 							checked={session?.ShowScores}
@@ -202,10 +191,10 @@ export default function Game_Options({
 				<section>
 					<label>Spieler bearbeiten</label>
 
-					<button
-						onClick={() => navigate(`/session/${session.id}/players`, { replace: false })} 
+					<a
+						href={`/#/session/${session?.id}/players`}
 						className='button button_reverse button_scale_3 edit'
-					><PersonSettings/></button>
+					><PersonSettings/></a>
 				</section>
 
 

@@ -2,6 +2,7 @@
 
 import './scss/Game.scss'
 
+import { useQuery } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -9,7 +10,6 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../../components/Popup/Popup'
-import Loader from '../../components/Loader/Loader'
 import Table from '../../components/Game/Game_Tables/Table'
 import GameOptions from '../../components/Game/Game_Options'
 import CustomButton from '../../components/others/Custom_Button'
@@ -17,11 +17,11 @@ import OptionsDialog from '../../components/Popup/Popup_Options'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
 import { ReactComponent as Settings } from '../../svg/Settings.svg'
-import { useQuery } from '@tanstack/react-query'
+
 import { get__user } from '../../api/user'
 import { get__session } from '../../api/session/session'
-import { get__session_players } from '../../api/session/session_players'
 import { get__table_columns } from '../../api/table_columns'
+import { get__session_players } from '../../api/session/session_players'
 
 
 
@@ -33,22 +33,19 @@ export default function Game() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
 	
-	// const [ user, setUser ] = useState()
-	// const [ session, setSession ] = useState()
 	const [ list_players, setList_players ] = useState()
 	const [ list_table_columns, setList_table_columns ] = useState()
 
-	const [ loading_request, setLoading_request ] = useState(false)
 	const [ loading_finish_game, setLoading_finish_game ] = useState(false)
 
 	const [ surrender_winner, setSurrender_winner ] = useState()	// Player-Object of the 'winner'
 
 	const [ show_options, setShow_options ] = useState(false)
 	const [ show_surrender, setShow_surrender ] = useState(false)
+
 
 
 
@@ -105,15 +102,15 @@ export default function Game() {
 
 	const finish_game = () => {
 	
-		if(!surrender_winner && list_players.some(p => p.List_Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
+		if(!surrender_winner && list_table_columns.some(table_column => table_column.List_Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
 		if(list_players.length === 1) return navigate('/', { replace: true })
-			
-		setLoading_finish_game(true)
-	
-		const json = { SessionID: session.id }
-		if(surrender_winner) json.Surrendered_PlayerID = surrender_winner.id
 
-		axiosPrivate.post('/game', json).then(({ data }) => {
+		setLoading_finish_game(true)
+
+		axiosPrivate.post('/game', { 
+			SessionID: session.id, 
+			Surrendered_PlayerID: surrender_winner?.id
+		}).then(({ data }) => {
 
 			navigate(`/game/end?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
 
@@ -129,13 +126,8 @@ export default function Game() {
 	}
 
 
-	
 
 
-
-
-
-	if(loading_request) return <Loader loading={true}/>
 
 	return <>
 
@@ -143,7 +135,9 @@ export default function Game() {
 
 
 
-		<div className='game_container'>
+		{/* __________________________________________________ Game __________________________________________________ */}
+
+		<div className='game-container'>
 			<div className='game'>
 
 				<TablePlayer 
@@ -168,17 +162,15 @@ export default function Game() {
 					><Settings/></button>
 
 					<CustomButton 
-						loading={loading_finish_game}
 						text='Spiel beenden'
 						onClick={finish_game}
+						loading={loading_finish_game}
 					/>
 
 				</footer>
 				
 			</div>
 		</div>
-
-			
 
 
 
@@ -191,10 +183,7 @@ export default function Game() {
 			show_options={show_options}
 
 			session={session}
-			// setSession={setSession} // TODO
 		/>
-
-
 
 
 

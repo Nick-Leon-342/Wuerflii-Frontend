@@ -1,21 +1,17 @@
 
 
-.game_container {
+.game-container {
 	position: absolute;
 	top: 0;
 	left: 0;
 
-	
-
 	.game {
-		position: relative;
 		display: flex;
+		position: relative;
 		flex-direction: column;
-		flex: 1;
 		gap: var(--padding);
 		margin: 1500px;
-	
-	
+		flex: 1;
 	
 		footer {
 			display: flex;
@@ -43,6 +39,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+
 		h2 {
 			margin-bottom: 10px; 
 			text-align: center;
@@ -57,12 +54,13 @@
 		ul {
 			display: flex;
 			flex-direction: column;
-			gap: 10px;
 			list-style-type: none;
 			padding: 5px 10px;
+			gap: 10px;
 
 			li {
 				font-size: 20px;
+				cursor: pointer;
 				border-radius: 10px;
 				padding: var(--padding);
 			}
