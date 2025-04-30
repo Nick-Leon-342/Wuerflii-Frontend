@@ -5,28 +5,29 @@ import './scss/Session_Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
-import React, { useEffect, useRef, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
 import { useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../../components/Popup/Popup'
-import Loader from '../../components/Loader/Loader'
 import LoaderBox from '../../components/Loader/Loader_Box'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
-import useInfiniteScrolling from '../../hooks/useInfiniteScrolling'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import PopupEditPreview from '../../components/Popup/Popup_Edit_Preview'
 
 import { ReactComponent as Settings } from '../../svg/Settings.svg'
 import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
-import { useQuery } from '@tanstack/react-query'
-import { get__session } from '../../api/session/session'
+
 import { get__user } from '../../api/user'
+import { get__final_scores_page } from '../../api/final_score'
 import { get__session_players } from '../../api/session/session_players'
+import { get__session, patch__session_date } from '../../api/session/session'
 
 
 
@@ -35,6 +36,7 @@ import { get__session_players } from '../../api/session/session_players'
 export default function Session_Preview() {
 	
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
@@ -42,12 +44,9 @@ export default function Session_Preview() {
 	const ref_edit_list = useRef()
 	const ref_edit_session = useRef()
 
-	// const [ user, setUser ] = useState()
-	// const [ session, setSession ] = useState()
-	// const [ list_players, setList_players ] = useState([])
 	const [ list_finalScores, setList_finalScores ] = useState([])
 	
-	const [ loading_request, setLoading_request ] = useState(false)
+	const [ loading_preparing_game, setLoading_preparing_game ] = useState(false)
 
 	const [ show_edit_session, setShow_edit_session ] = useState(false)
 	const [ show_edit_list, setShow_edit_list ] = useState(false)
@@ -55,11 +54,6 @@ export default function Session_Preview() {
 	const height_dateElement = 70
 	const height_element = 70
 
-	const [ url, setURL ] = useState('')
-	const { ref, loading, error, list } = useInfiniteScrolling({ 
-		url, 
-		handle_404: () => navigate('/', { replace: true })
-	})
 
 
 
@@ -80,7 +74,7 @@ export default function Session_Preview() {
 		queryKey: [ 'session', +session_id ], 
 		queryFn: () => get__session(axiosPrivate, session_id), 
 	})
-	
+
 
 	// ____________________ List_Players ____________________
 
@@ -89,53 +83,28 @@ export default function Session_Preview() {
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
 
-	// const { data: list_finalScores, isLoading: isLoading__list_finalScores } = useQuery({
 
-	// })
+	// ____________________ List_FinalScores ____________________
 
-	
-
-	
-
-	// useEffect(() => {
-
-	// 	if(!session_id) return navigate('/', { replace: true })
-	// 	setLoading_request(true)
-
-
-	// 	axiosPrivate.get(`/session/preview?session_id=${session_id}`).then(({ data }) => {
-
-
-	// 		const { 
-	// 			// Session, 
-	// 			List_Players, 
-	// 			// User, 
-	// 			Exists, 
-	// 		} = data
-
-	// 		if(Exists) return navigate(`/game?session_id=${session_id}`, { replace: true })
-
-	// 		// setUser(User)
-	// 		// setSession(Session)
-	// 		// setList_players(List_Players)
-	// 		// setView_customDate(Session.View_CustomDate)
-
-	// 		// setURL(`/session/preview/all?session_id=${Session.id}`)
+	const { ref, inView } = useInView()
+	const { 
+		data, 
+		error, 
+		refetch, 
+		fetchNextPage, 
+		isLoading: isLoading__list_finalscores, 
+	} = useInfiniteQuery({
+		queryKey: [ 'session', +session_id, 'finalscores' ], 
+		getNextPageParam: prevData => prevData.nextPage, 
+		queryFn: ({ pageParam = 1 }) => get__final_scores_page(axiosPrivate, session_id, pageParam), 
+	})
+	useEffect(() => { if(inView) fetchNextPage() }, [ fetchNextPage, inView ])
 
 
-	// 	}).catch((err) => {
 
-	// 		handle_error({ 
-	// 			err, 
-	// 			handle_404: () => navigate('/', { replace: true }) 
-	// 		})
 
-	// 	}).finally(() => setLoading_request(false))
-		
-	// 	// eslint-disable-next-line
-	// }, [])
 
-	// Filters list so that only relevant elements are displayed and 
+	// Filters list so that only relevant elements are displayed and date is added
 	const edit_list = ( list_toEdit, setList_toEdit ) => {
 
 		if(!list_toEdit || list_toEdit.length === 0) return setList_toEdit([])
@@ -177,19 +146,36 @@ export default function Session_Preview() {
 
 	useEffect(() => {
 
-		// TODO surely could be solved way better, just 'temporarily' xD - Don't think imma change this at all
-		// if(!session) return
-		// setURL('')
-		// setTimeout(() => setURL(`/session/preview/all?session_id=${session.id}`), 10)
+		if(!session) return
+		refetch()
 
-	}, [ session ])
+	}, [ session, refetch ])
 
 	useEffect(() => {
 	
-		if(loading) return 
-		edit_list(list, setList_finalScores)
+		if(isLoading__list_finalscores) return 
+		edit_list(data?.pages.flatMap(data => data.list_finalscores), setList_finalScores)
 	
-	}, [ list, loading ])
+	}, [ data, isLoading__list_finalscores ])
+
+	const start_game = () => {
+
+		if(session?.CurrentGameStart) return navigate(`/game?session_id=${session?.id}`, { replace: false })
+
+		setLoading_preparing_game(true)
+		axiosPrivate.get(`/game?session_id=${session?.id}`).then(() => {
+
+			navigate(`/game?session_id=${session?.id}`, { replace: false })
+
+		}).catch(err => {
+
+			handle_error({
+				err, 
+			})
+
+		}).finally(() => setLoading_preparing_game(true))
+
+	}
 
 
 
@@ -199,32 +185,30 @@ export default function Session_Preview() {
 
 	const [ show_customDate, setShow_customDate ] = useState(false)
 	const [ view_customDate, setView_customDate ] = useState()
-	const [ loading_customDate, setLoading_customDate ] = useState(false)
+
+	const mutate__custom_date = useMutation({
+		mutationFn: json => patch__session_date(axiosPrivate, json), 
+		onSuccess: (_, json) => {
+			query_client.setQueryData([ 'session', session.id ], prev => {
+				const tmp = { ...prev }
+				tmp.View_CustomDate = json.View_CustomDate
+				return tmp
+			})
+			setShow_customDate(false)
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
+		}
+	})
 
 	const save_customDate = () => {
 
-		// setLoading_customDate(true)
-
-		// axiosPrivate.post('/session/date', { 
-		// 	View_CustomDate: view_customDate, 
-		// 	SessionID: session.id, 
-		// }).then(() => {
-
-		// 	setSession(prev => {
-		// 		const tmp = { ...prev }
-		// 		tmp.View_CustomDate = view_customDate
-		// 		return tmp
-		// 	})
-		// 	setShow_customDate(false)
-
-		// }).catch((err) => {
-
-		// 	handle_error({
-		// 		err, 
-		// 		handle_404: () => navigate('/', { replace: true })
-		// 	})
-
-		// }).finally(() => setLoading_customDate(false))
+		mutate__custom_date.mutate({ 
+			View_CustomDate: view_customDate, 
+			SessionID: session.id, 
+		})
 
 	}
 	
@@ -234,12 +218,12 @@ export default function Session_Preview() {
 
 	// __________________________________________________ Scroll __________________________________________________
 
-	const [ index_visible_row, setIndex_visible_row ] = useState(0)
 	const [ rowHeights, setRowHeights ] = useState([])
+	const [ index_visible_row, setIndex_visible_row ] = useState(0)
 
-	const handle_scroll = ( e ) => {
+	const handle_scroll = event => {
 
-		const scrollTop = e.target.scrollTop
+		const scrollTop = event.target.scrollTop
 		let totalHeight = 0
 		let index_newRow = 0
 
@@ -272,29 +256,25 @@ export default function Session_Preview() {
 
 		<div className='session_preview'>
 
-			{loading_request && <Loader loading={true}/>}
+			<header>
+				<button
+					ref={ref_edit_list}
+					onClick={() => setShow_edit_list(true)}
+					className='button button_reverse button_scale_2'
+				>
+					<ListSort/>
+					<span>Liste</span>
+				</button>
 
-			{!loading_request && <>
-				<header>
-					<button
-						ref={ref_edit_list}
-						onClick={() => setShow_edit_list(true)}
-						className='button button_reverse button_scale_2'
-					>
-						<ListSort/>
-						<span>Liste</span>
-					</button>
-
-					<button
-						ref={ref_edit_session}
-						onClick={() => setShow_edit_session(true)}
-						className='button button_reverse button_scale_1'
-					>
-						<span>Einstellungen</span>
-						<Settings/>
-					</button>
-				</header>
-			</>}
+				<button
+					ref={ref_edit_session}
+					onClick={() => setShow_edit_session(true)}
+					className='button button_reverse button_scale_1'
+				>
+					<span>Einstellungen</span>
+					<Settings/>
+				</button>
+			</header>
 
 
 
@@ -303,40 +283,38 @@ export default function Session_Preview() {
 					
 					{/* __________________________________________________ Table __________________________________________________ */}
 
-					{!loading_request && <>
-						<div className='session_preview_table-container'>
-							<table className='table session_preview_table'>
-								<tbody>
-									<tr>
-										{list_players?.map(player => (
-											<td key={player.id}>
-												<span>{player.Name}</span>
+					<div className='session_preview_table-container'>
+						<table className='table session_preview_table'>
+							<tbody>
+								<tr>
+									{list_players?.map(player => (
+										<td key={player.id}>
+											<span>{player.Name}</span>
+										</td>
+									))}
+								</tr>
+								<tr>
+									{list_players?.map(player => {
+
+										const id = player.id
+										const e = list_finalScores.at(index_visible_row)
+
+										return <>
+											<td key={id}>
+												<span>
+													{session?.View === 'show_month' && (e?.Wins__After_Month[id] || 0)}
+													{session?.View === 'show_year' && (e?.Wins__After_Year[id] || 0)}
+													{session?.View === 'show_custom_date' && (e?.Wins__After_SinceCustomDate[id] || 0)}
+													{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
+												</span>
 											</td>
-										))}
-									</tr>
-									<tr>
-										{list_players?.map(player => {
+										</>
 
-											const id = player.id
-											const e = list_finalScores.at(index_visible_row)
-
-											return (
-												<td key={id}>
-													<span>
-														{session?.View === 'show_month' && (e?.Wins__After_Month[id] || 0)}
-														{session?.View === 'show_year' && (e?.Wins__After_Year[id] || 0)}
-														{session?.View === 'show_custom_date' && (e?.Wins__After_SinceCustomDate[id] || 0)}
-														{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
-													</span>
-												</td>
-											)
-
-										})}
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</>}
+									})}
+								</tr>
+							</tbody>
+						</table>
+					</div>
 
 
 
@@ -344,72 +322,69 @@ export default function Session_Preview() {
 
 					{/* __________________________________________________ List __________________________________________________ */}
 
-					{<>
-						<ul 
-							className='session_preview_list'
-							onScroll={handle_scroll}
-						>
-							{list_finalScores?.map((final_score, index_final_score) => {
+					<ul 
+						className='session_preview_list'
+						onScroll={handle_scroll}
+					>
+						{list_finalScores?.map((final_score, index_final_score) => {
 
-								const tmp_ref = list_finalScores.length - 1 === index_final_score ? ref : 	null
+							const tmp_ref = list_finalScores.length - 1 === index_final_score ? ref : null
 
-								if(final_score.Group_Date) {
+							if(final_score.Group_Date) {
 
-									const day = new Date(final_score.Group_Date).getDate()
-									const month = new Date(final_score.Group_Date).getMonth() + 1
-									const year = new Date(final_score.Group_Date).getFullYear()
+								const day = new Date(final_score.Group_Date).getDate()
+								const month = new Date(final_score.Group_Date).getMonth() + 1
+								const year = new Date(final_score.Group_Date).getFullYear()
 
-									return (
-										<li 
-											ref={tmp_ref}
-											key={index_final_score}
-											className='session_preview_list_element-date'
-										>
-											<span>
-												{session?.View === 'show_month' && `${day}.`}
-												{session?.View === 'show_year' && `${day}.${month}.`}
-												{(session?.View === 'show_custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
-											</span>
-										</li>
-									)
+								return (
+									<li 
+										ref={tmp_ref}
+										key={index_final_score}
+										className='session_preview_list_element-date'
+									>
+										<span>
+											{session?.View === 'show_month' && `${day}.`}
+											{session?.View === 'show_year' && `${day}.${month}.`}
+											{(session?.View === 'show_custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
+										</span>
+									</li>
+								)
 
-								} else {
+							} else {
 
-									return (
-										<li 
-											ref={tmp_ref}
-											key={index_final_score} 
-											onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score?.id}`, { replace: false })}
-											className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
-										>
-											{list_players?.map((player, index_player) => 
-												<div key={`${index_final_score}.${index_player}`}>
-													<span>
-														{final_score.PlayerScores[player.id]}
-													</span>
-												</div>
-											)}
-										</li>
-									)
+								return (
+									<li 
+										ref={tmp_ref}
+										key={index_final_score} 
+										onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score?.id}`, { replace: false })}
+										className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
+									>
+										{list_players?.map((player, index_player) => 
+											<div key={`${index_final_score}.${index_player}`}>
+												<span>
+													{final_score.PlayerScores[player.id]}
+												</span>
+											</div>
+										)}
+									</li>
+								)
 
-								}
-							})}
-							{loading && <li><LoaderBox className='session_preview_list_loader' dark={true}/></li>}
-							{error && <li>Fehler...</li>}
-						</ul>
-					</>}
+							}
+						})}
+						{isLoading__list_finalscores && <li><LoaderBox className='session_preview_list_loader' dark={true}/></li>}
+						{error && <li>Fehler...</li>}
+					</ul>
 
 				</div>
 			</div>
 
 
 
-			{!loading_request && <>
-				<CustomButton
-					text={`Los geht's!`}
-					onClick={() => navigate(`/game?session_id=${session?.id}`, { replace: false })}
-				/>
-			</>}
+			<CustomButton
+				text={`Los geht's!`}
+				onClick={start_game}
+				loading={loading_preparing_game}
+			/>
 
 			<CustomLink 
 				onClick={() => navigate('/',  { replace: false })}
@@ -437,9 +412,9 @@ export default function Session_Preview() {
 				/>
 
 				<CustomButton
-					loading_request={loading_customDate}
-					text='Speichern'
+					loading_request={mutate__custom_date.isPending}
 					onClick={save_customDate}
+					text='Speichern'
 				/>
 			</div>
 		</Popup>
@@ -492,7 +467,6 @@ export default function Session_Preview() {
 			setShow_popup={setShow_edit_list}
 			show_popup={show_edit_list}
 			
-			// setSession={setSession}
 			session={session}
 
 		/>

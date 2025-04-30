@@ -99,6 +99,7 @@ export default function Popup_Options({
 
 		axiosPrivate.delete('/logout').then(() => {
 			
+			query_client.clear()
 			setAuth({ accessToken: '' })
 			navigate('/reglog', { replace: true })
 				
@@ -157,17 +158,17 @@ export default function Popup_Options({
 					</section>
 
 					<section>
-						<button 
+						<a 
+							href='/#/profile'
 							className='button button_reverse_green button_scale_2'
-							onClick={() => navigate('/profile', { replace: false })}
-						>Profil</button>
+						>Profil</a>
 					</section>
 
 					<section>
-						<button 
+						<a 
+							href='/#/analytics'
 							className='button button_reverse_green button_scale_2'
-							onClick={() => navigate('/analytics', { replace: false })}
-						>Statistiken</button>
+						>Statistiken</a>
 					</section>
 
 

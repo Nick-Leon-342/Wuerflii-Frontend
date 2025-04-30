@@ -70,14 +70,6 @@ export default function Session_Select({
 		}
 	})
 
-	const mutate__order = useMutation({
-		mutationFn: json => patch__user(axiosPrivate, json), 
-		onSuccess: ( _, json ) => {
-			query_client.setQueryData([ 'user' ], { ...user, ...json })
-			query_client.invalidateQueries([ 'session', 'list' ], { exact: true })
-		}
-	})
-
 
 
 	// __________________________________________________ List_Sessions __________________________________________________
@@ -104,40 +96,44 @@ export default function Session_Select({
 		// eslint-disable-next-line
 	}, [ tmp_list_sessions ])
 
-	const mutate__delete = useMutation({
-		mutationFn: session_id => delete__session(axiosPrivate, session_id),
-		onSuccess: ( _, session_id ) => {
-			query_client.setQueryData([ 'session', 'list' ], list_sessions => list_sessions.filter(session => session.id !== session_id))
+
+
+
+
+	// __________________________________________________ Change Order __________________________________________________
+
+	const mutate__change_order = useMutation({
+		mutationFn: json => patch__user(axiosPrivate, json), 
+		onSuccess: ( _, json ) => {
+			query_client.setQueryData([ 'user' ], { ...user, ...json })
+			query_client.invalidateQueries([ 'session', 'list' ], { exact: true })
 		}
 	})
-
-
-
-
-
-	// __________________________________________________ Functions __________________________________________________
-
-	const checkbox_click = ( index, checked ) => {
-
-		setList_sessions(prev => {
-			const tmp = [ ...prev ]
-			tmp[index].Checkbox_Checked = checked
-			return tmp
-		})
-
-	}
 
 	const change_order = async selected_option => {
 
 		const alias = selected_option.Alias
 		const descending = alias === user?.View_Sessions ? !user.View_Sessions_Desc : true
 
-		mutate__order.mutate({
+		mutate__change_order.mutate({
 			View_Sessions: alias, 
 			View_Sessions_Desc: descending
 		})
 
 	}
+
+
+
+
+
+	// __________________________________________________ Delete __________________________________________________
+
+	const mutate__delete = useMutation({
+		mutationFn: session_id => delete__session(axiosPrivate, session_id),
+		onSuccess: ( _, session_id ) => {
+			query_client.setQueryData([ 'session', 'list' ], list_sessions => list_sessions.filter(session => session.id !== session_id))
+		}
+	})
 
 	const handle_delete = async () => {
 
@@ -148,6 +144,22 @@ export default function Session_Select({
 			mutate__delete.mutate(session.id)
 
 		}}
+
+	}
+
+
+
+
+
+	// __________________________________________________ Select Checkbox __________________________________________________
+
+	const checkbox_click = ( index, checked ) => {
+
+		setList_sessions(prev => {
+			const tmp = [ ...prev ]
+			tmp[index].Checkbox_Checked = checked
+			return tmp
+		})
 
 	}
 
@@ -175,12 +187,12 @@ export default function Session_Select({
 					onClick={() => setShow_settings(true)}
 				><ListSort/></button>
 
+				<Loader loading={isLoading__user}/>
+
 				<button
 					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions?.some(session => session.Checkbox_Checked) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
 					onClick={handle_delete} 
 				><Trashcan/></button>
-
-				<Loader loading={isLoading__user}/>
 
 			</header>
 

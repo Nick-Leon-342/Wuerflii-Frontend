@@ -60,6 +60,8 @@ export default function Popup_Dropdown({
 
 	useEffect(() => {
 
+		if(!show_popup) return 
+
 		function updatePosition() {
 			if (target_ref?.current && popup_ref?.current) {
 				const targetRect = target_ref.current.getBoundingClientRect()
@@ -89,7 +91,7 @@ export default function Popup_Dropdown({
 				}
 			}
 		}
-	
+
 		updatePosition()
 		window.addEventListener('resize', updatePosition)
 		return () => window.removeEventListener('resize', updatePosition)

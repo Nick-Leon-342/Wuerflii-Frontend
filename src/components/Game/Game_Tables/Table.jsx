@@ -93,7 +93,7 @@ export default function Table({
 								return <>
 									{list_columns.map(column => {
 
-										const className = `${column === session.Columns - 1 ? 'border-right' : ''}`
+										const className = `${column === session?.Columns - 1 ? 'border-right' : ''}`
 										const key = `${index_player}_${column}`
 
 										if(!row.Possible_Entries || disabled) {

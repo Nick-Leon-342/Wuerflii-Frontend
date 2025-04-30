@@ -7,7 +7,7 @@
 	align-items: center;
 	height: 100vh;
 	background-color: var(--bg);
-	gap: 20px;
+	gap: 50px;
 	
 
 
@@ -16,21 +16,25 @@
 		flex-direction: row;
 		align-items: center;
 		gap: 10px;
+		h1 { color: var(--text-color_light_0); }
 
-		svg {  
+		svg { 
 			height: 50px;
 			width: 50px;
-			rect { fill: none; }
+			ellipse { fill: var(--text-color_light_0); }
+			rect { 
+				stroke: var(--text-color_light_0);
+				fill: none; 
+			}
 		}
 	}
 
 
 
 	.reglog-line {
-		background-color: var(--text-color);
-		width: 1px;
+		background-color: var(--text-color_light_1);
+		width: 2px;
 		height: 400px;
-		box-shadow: 0 0 3px 0px;
 	}
 
 
@@ -65,11 +69,11 @@
 
 @media ( max-width: 850px ) {
 	.reglog { 
-		flex-direction: column; 
-		gap: 50px !important;
+		flex-direction: column-reverse; 
+		gap: 70px !important;
 	}
 	.reglog-line {
-		height: 1px !important;
+		height: 2px !important;
 		width: 100% !important;
 	}
 	.reglog-page button {

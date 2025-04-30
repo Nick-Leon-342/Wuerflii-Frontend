@@ -123,6 +123,7 @@ export default function Game_Options({
 	
 		axiosPrivate.delete(`/game?session_id=${session.id}`).then(() => {
 
+			query_client.removeQueries([ 'session', session.id, 'table_columns' ])
 			navigate('/', { replace: true })
 
 		}).catch((err) => {

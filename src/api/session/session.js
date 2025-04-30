@@ -22,6 +22,16 @@ export function delete__session(axiosPrivate, session_id) {
 
 
 
+// __________________________________________________ Session Custom Date __________________________________________________
+
+export function patch__session_date(axiosPrivate, json) {
+	return axiosPrivate.patch('/session/date', json).then(({ data }) => data)
+}
+
+
+
+
+
 // __________________________________________________ Session Env_Variables __________________________________________________
 
 export function get__session_env_variables(axiosPrivate) {

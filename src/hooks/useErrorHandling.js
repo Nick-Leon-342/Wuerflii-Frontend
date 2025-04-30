@@ -70,7 +70,7 @@ export default function useErrorHandling() {
 		const status = err?.response?.status
 		switch (status) {
 			case 400:
-				window.alert('Clientanfrage fehlerhaft!')
+				window.alert(`Clientanfrage fehlerhaft!\n${err.response.data}`)
 				break
 
 			case 401:

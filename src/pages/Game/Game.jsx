@@ -2,7 +2,7 @@
 
 import './scss/Game.scss'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -30,6 +30,7 @@ import { get__session_players } from '../../api/session/session_players'
 export default function Game() {
 
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
@@ -50,7 +51,7 @@ export default function Game() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________
+	// __________________________________________________ Queries __________________________________________________ // TODO implement loading and error handling
 		
 	// ____________________ User ____________________
 
@@ -112,6 +113,7 @@ export default function Game() {
 			Surrendered_PlayerID: surrender_winner?.id
 		}).then(({ data }) => {
 
+			query_client.removeQueries([ 'session', session.id, 'table_columns' ])
 			navigate(`/game/end?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
 
 		}).catch((err) => {
