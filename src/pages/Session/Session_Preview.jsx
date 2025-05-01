@@ -14,7 +14,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../../components/Popup/Popup'
-import LoaderBox from '../../components/Loader/Loader_Box'
+import Loader from '../../components/Loader/Loader'
 import CustomButton from '../../components/others/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
@@ -43,8 +43,6 @@ export default function Session_Preview() {
 	const { session_id } = useParams()
 	const ref_edit_list = useRef()
 	const ref_edit_session = useRef()
-
-	const [ list_finalScores, setList_finalScores ] = useState([])
 	
 	const [ loading_preparing_game, setLoading_preparing_game ] = useState(false)
 
@@ -58,7 +56,7 @@ export default function Session_Preview() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________
+	// __________________________________________________ Queries __________________________________________________	// TODO implement error handling
 		
 	// ____________________ User ____________________
 
@@ -70,10 +68,13 @@ export default function Session_Preview() {
 	
 	// ____________________ Session ____________________
 
-	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
+	const [ session, setSession ] = useState()
+
+	const { data: tmp__session, isLoading: isLoading__session, isError: isError__session } = useQuery({
 		queryKey: [ 'session', +session_id ], 
 		queryFn: () => get__session(axiosPrivate, session_id), 
 	})
+	useEffect(() => setSession(tmp__session), [ tmp__session ])
 
 
 	// ____________________ List_Players ____________________
@@ -86,6 +87,8 @@ export default function Session_Preview() {
 
 	// ____________________ List_FinalScores ____________________
 
+	const [ list_finalScores, setList_finalScores ] = useState([])
+
 	const { ref, inView } = useInView()
 	const { 
 		data, 
@@ -94,7 +97,7 @@ export default function Session_Preview() {
 		fetchNextPage, 
 		isLoading: isLoading__list_finalscores, 
 	} = useInfiniteQuery({
-		queryKey: [ 'session', +session_id, 'finalscores' ], 
+		queryKey: [ 'session', +session_id, 'finalscores' ],  
 		getNextPageParam: prevData => prevData.nextPage, 
 		queryFn: ({ pageParam = 1 }) => get__final_scores_page(axiosPrivate, session_id, pageParam), 
 	})
@@ -145,13 +148,6 @@ export default function Session_Preview() {
 	}
 
 	useEffect(() => {
-
-		if(!session) return
-		refetch()
-
-	}, [ session, refetch ])
-
-	useEffect(() => {
 	
 		if(isLoading__list_finalscores) return 
 		edit_list(data?.pages.flatMap(data => data.list_finalscores), setList_finalScores)
@@ -189,9 +185,10 @@ export default function Session_Preview() {
 	const mutate__custom_date = useMutation({
 		mutationFn: json => patch__session_date(axiosPrivate, json), 
 		onSuccess: (_, json) => {
-			query_client.setQueryData([ 'session', session.id ], prev => {
+			setSession(prev => {
 				const tmp = { ...prev }
 				tmp.View_CustomDate = json.View_CustomDate
+				query_client.setQueryData([ 'session', session.id ], tmp)
 				return tmp
 			})
 			setShow_customDate(false)
@@ -257,6 +254,7 @@ export default function Session_Preview() {
 		<div className='session_preview'>
 
 			<header>
+
 				<button
 					ref={ref_edit_list}
 					onClick={() => setShow_edit_list(true)}
@@ -266,6 +264,12 @@ export default function Session_Preview() {
 					<span>Liste</span>
 				</button>
 
+
+
+				<Loader loading={isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_finalscores}/>
+
+
+
 				<button
 					ref={ref_edit_session}
 					onClick={() => setShow_edit_session(true)}
@@ -274,6 +278,7 @@ export default function Session_Preview() {
 					<span>Einstellungen</span>
 					<Settings/>
 				</button>
+
 			</header>
 
 
@@ -371,7 +376,6 @@ export default function Session_Preview() {
 
 							}
 						})}
-						{isLoading__list_finalscores && <li><LoaderBox className='session_preview_list_loader' dark={true}/></li>}
 						{error && <li>Fehler...</li>}
 					</ul>
 
@@ -467,7 +471,9 @@ export default function Session_Preview() {
 			setShow_popup={setShow_edit_list}
 			show_popup={show_edit_list}
 			
+			setSession={setSession}
 			session={session}
+			refetch={refetch}
 
 		/>
 

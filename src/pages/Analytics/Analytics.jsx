@@ -4,6 +4,7 @@ import './scss/Analytics.scss'
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -13,6 +14,8 @@ import ChartBar from '../../components/Statistics/Chart_Bar'
 import PopupOptions from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
 import StatisticsSelectView from '../../components/Statistics/Statistics_Select_View'
+
+import { get__user } from '../../api/user'
 
 
 
@@ -25,13 +28,10 @@ export default function Analytics({
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
-
-	const [ user, setUser ] = useState()
-
-	const [ total, setTotal ] = useState()
-
+	
 	const [ loading, setLoading ] = useState(false)
-
+	
+	const [ total, setTotal ] = useState()
 	const [ list_years, setList_years ] = useState([])
 	const list_months = [
 		'Januar', 
@@ -49,20 +49,24 @@ export default function Analytics({
 	]
 
 
+	// __________________________________________________ Queries __________________________________________________
+
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+		queryFn: () => get__user(axiosPrivate), 
+		queryKey: [ 'user' ], 
+	})
+
+
 
 
 
 	useEffect(() => {
-
 		setLoading(true)
 
 		axiosPrivate.get('/analytics').then(({ data }) => {
 
-			
-			setUser(data.User)
 			setTotal(data.Total)
 			setList_years(data.List_Years)
-
 
 		}).catch(err => 
 
@@ -85,10 +89,7 @@ export default function Analytics({
 
 	return <>
 
-		<PopupOptions
-			setUser={setUser}
-			user={user}
-		/>
+		<PopupOptions user={user}/>
 
 
 
@@ -109,7 +110,6 @@ export default function Analytics({
 					list_years={list_years}
 					list_months={list_months}
 
-					setUser={setUser}
 					user={user}
 
 					isSession={false}
@@ -124,7 +124,7 @@ export default function Analytics({
 
 
 
-				<div className='analytics_more-statistics'>
+				<div className='analytics_more-statistics box'>
 					
 					{user?.Statistics_View === 'statistics_overall' && <>
 						<div>

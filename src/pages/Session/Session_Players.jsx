@@ -90,7 +90,7 @@ export default function Session_Players({
 		mutationFn: json => post__session_players(axiosPrivate, json), 
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', +session_id, 'players' ], data.List_Players)
-			navigate(`/game?session_id=${session_id}`, { replace: true })
+			navigate(`/session/${session_id}/preview`, { replace: true })
 		}
 	})
 
@@ -139,7 +139,7 @@ export default function Session_Players({
 
 	}
 
-	const ok = async () => {
+	const save = async () => {
 
 		if(!list_players || list_players.some(p => p.Name.length > env_variables?.MAX_LENGTH_PLAYER_NAME)) return setError(`Die Spielernamen dürfen nicht länger als ${env_variables?.MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
 
@@ -196,8 +196,8 @@ export default function Session_Players({
 
 
 			<CustomButton 
-				text={isInit ? 'Los!' : 'Speichern'}
-				onClick={ok}
+				onClick={save}
+				text={'Speichern'}
 				loading={isLoading__user || isLoading__list_players || isLoading__env_variables}
 			/>
 

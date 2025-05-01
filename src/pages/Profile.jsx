@@ -4,6 +4,7 @@ import './scss/Profile.scss'
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
@@ -13,6 +14,7 @@ import PopupOptions from '../components/Popup/Popup_Options'
 import CustomButton from '../components/others/Custom_Button'
 import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/others/RegistrationForm'
+import { get__user, patch__user } from '../api/user'
 
 
 
@@ -23,11 +25,9 @@ export default function Profile({
 }) {
 	
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
-
-	const [ user, setUser ] = useState()
-	const [ loading, setLoading ] = useState(false)
 
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
@@ -41,35 +41,35 @@ export default function Profile({
 	const [ loading_delete_account, setLoading_delete_account ] = useState(false)
 	const [ requesting_regex, setRequesting_regex ] = useState(false)
 
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+		queryFn: () => get__user(axiosPrivate), 
+		queryKey: [ 'user' ], 
+	})
 
-
-
-
-	useEffect(() => {
-
-		setLoading(true)
-
-		axiosPrivate.get('/user').then(({ data }) => {
-
-			setUser(data)
-
-		}).catch(err => {
-
+	const mutate__user = useMutation({
+		mutationFn: json => patch__user(axiosPrivate, json), 
+		onSuccess: (_, json) => {
+			navigate(-1)
+		}, onError: err => {
 			handle_error({
-				err, 
+				err,
+				handle_409: () => {
+					setError('Name bereits vergeben!')
+				}
 			})
+		}
+	})
 
-		}).finally(() => setLoading(false))
 
-		// eslint-disable-next-line
-	}, [])
+
+
 
 	const handleSubmit = (e) => {
 
 		e.preventDefault()
 		setError('')
 
-		if ((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) return
+		if((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) return
 
 
 		let json = {}
@@ -85,24 +85,7 @@ export default function Profile({
 			json.Password = Password
 		}
 
-		setLoading_credentials(true)
-
-		axiosPrivate.patch('/user', json).then(() => {
-
-			setSuccessfullyUpdated(true)
-			setName('')
-			setPassword('')
-
-		}).catch((err) => {
-
-			handle_error({
-				err,
-				handle_409: () => {
-					setError('Name bereits vergeben!')
-				}
-			})
-
-		}).finally(() => setLoading_credentials(false))
+		mutate__user.mutate(json)
 
 	}
 
@@ -115,6 +98,7 @@ export default function Profile({
 
 		axiosPrivate.delete('/user').then(() => {
 
+			query_client.clear()
 			navigate('/reglog', { replace: true })
 
 		}).catch(err => {
@@ -132,10 +116,7 @@ export default function Profile({
 
 	return <>
 	
-		<PopupOptions
-			setUser={setUser}
-			user={user}
-		/>
+		<PopupOptions user={user}/>
 	
 	
 
@@ -146,11 +127,11 @@ export default function Profile({
 			<Previous onClick={() => navigate(-1, { replace: true })}/>
 
 			{/* ____________________ Loading animation ____________________ */}
-			{loading && <div className='profile_loader'><LoaderDots/></div>}
+			{isLoading__user && <div className='profile_loader'><LoaderDots/></div>}
 
 
 			
-			{!loading && <>
+			{!isLoading__user && <>
 
 				<form onSubmit={handleSubmit}>
 
@@ -185,7 +166,7 @@ export default function Profile({
 				<CustomButton
 					text='Account löschen'
 					onClick={delete_account}
-					className='button-red-reverse'
+					className='button_reverse_red'
 					loading={loading_delete_account}
 				/>
 

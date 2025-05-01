@@ -23,6 +23,10 @@
 			width: fit-content;
 			padding: 0 15px;
 			gap: 5px;
+			width: 210px;
+
+			&:first-of-type { justify-content: flex-start; }
+			&:last-of-type { justify-content: flex-end; }
 
 			span { font-size: 22px; }
 			svg { width: 30px; }
@@ -84,13 +88,9 @@
 					}
 				}
 			}
-			
-	
-	
-			.session_preview_list_loader {
-				height: 100px;
-			}
-			
+
+
+
 			.session_preview_list {
 				min-width: 100%;
 				list-style-type: none;
