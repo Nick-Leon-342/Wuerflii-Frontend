@@ -112,21 +112,24 @@
 				}
 			
 				.session_preview_list_element-scores {
-					display: flex;
-					justify-content: space-between;
-					// width: 100%;
 			
 					&.no_border_bottom div { border-bottom: none; }
-			
-					div {
-						display: grid;
-						place-content: center;
-						border: 1px solid;
-						width: 100%;
-						min-width: 100px;
-						height: 70px;
-			
-						&:not(:last-of-type) { border-right: none; }
+
+					a {
+						display: flex;
+						justify-content: space-between;
+						cursor: pointer;
+
+						div {
+							display: grid;
+							place-content: center;
+							border: 1px solid;
+							width: 100%;
+							min-width: 100px;
+							height: 70px;
+				
+							&:not(:last-of-type) { border-right: none; }
+						}
 					}
 				}
 			}

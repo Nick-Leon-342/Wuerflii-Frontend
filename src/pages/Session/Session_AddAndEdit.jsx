@@ -93,7 +93,7 @@ export default function Session_AddAndEdit({
 		mutationFn: session_json => post__session(axiosPrivate, session_json),
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', data.id ], data)
-			navigate(`/session/${data.id}/players`, { replace: true })
+			navigate(`/session/${data.id}/players`, { replace: false })
 		}
 	})
 

@@ -47,7 +47,7 @@ export default function Chart_Doughnut({
 			data={{
 				labels: List_Players?.map(player => player.Name), 
 				datasets: [{
-					data: List_Players?.map(player => Total_Wins[player.id] || 0), 
+					data: List_Players?.map(player => (Total_Wins && Total_Wins[player.id]) || 0), 
 					borderColor: IsBorderVisible ? 'black' : List_Players?.map(player => player.Color), 
 					backgroundColor: List_Players?.map(player => player.Color + '70'),
 					borderWidth: 2,

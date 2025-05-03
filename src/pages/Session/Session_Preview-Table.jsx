@@ -2,6 +2,7 @@
 
 import '../Game/scss/Game.scss'
 
+import { useQuery } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -13,6 +14,11 @@ import Table from '../../components/Game/Game_Tables/Table'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
+import { get__user } from '../../api/user'
+import { get__session } from '../../api/session/session'
+import { get__session_players } from '../../api/session/session_players'
+import { get__table_columns_archive } from '../../api/table_columns'
+
 
 
 
@@ -21,15 +27,43 @@ export default function Session_Preview_Table() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const handle_error = useErrorHandling()	// TODO implement error handling
 
 	const { session_id, finalscore_id } = useParams()
-	
-	const [ user, setUser ] = useState()
-	const [ session, setSession ] = useState()
-	const [ list_players, setList_players ] = useState()
 
-	const [ loading_request, setLoading_request ] = useState(false)
+
+	// __________________________________________________ Queries __________________________________________________
+
+	// ____________________ User ____________________
+
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+		queryFn: () => get__user(axiosPrivate), 
+		queryKey: [ 'user' ], 
+	})
+
+
+	// ____________________ Session ____________________
+
+	const { data: session, isLoading__session, error: error__session } = useQuery({
+		queryFn: () => get__session(axiosPrivate, session_id), 
+		queryKey: [ 'session', +session_id ]
+	})
+
+
+	// ____________________ List_Players ____________________
+
+	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
+		queryFn: () => get__session_players(axiosPrivate, session_id), 
+		queryKey: [ 'session', +session_id, 'players' ], 
+	})
+		
+	
+	// ____________________ List_Table_Columns ____________________
+
+	const { data: list_table_columns, isLoading: isLoading__list_table_columns, isError: isError__list_table_columns } = useQuery({
+		queryFn: () => get__table_columns_archive(axiosPrivate, session_id, finalscore_id), 
+		queryKey: [ 'session', +session_id, 'table_columns' ], 
+	})
 
 
 
@@ -37,70 +71,40 @@ export default function Session_Preview_Table() {
 
 	useEffect(() => {
 
-		if(!session_id || !finalscore_id) return navigate(-1, { replace: true })
-
-		setLoading_request(true)
-
-		axiosPrivate.get(`/session/preview/table?session_id=${session_id}&finalscore_id=${finalscore_id}`).then(({ data }) => {
-			
-			
-			setUser(data.User)
-			setList_players(data.List_Players)
-			setSession(data.Session)
-
-			setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
-
-
-		}).catch((err) => {
-
-			handle_error({
-				err, 
-				handle_404: () => {
-					window.alert('Die Session oder die Tabelle wurde nicht gefunden!')
-					navigate(`/session/preview?session_id=${session_id}`, { replace: true })
-				},
-			})
-			
-		}).finally(() => setLoading_request(false))
-
+		if(!session_id) return navigate('/', { replace: true })
 		
+		setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
 
 		// eslint-disable-next-line
-	}, [])
-
-
-	
+	}, [ session ])
 
 
 
 
-
-	if(loading_request) return <Loader loading={true}/>
 
 	return <>
 
-		<OptionsDialog
-			user={user}
-			setUser={setUser}
-		/>
+		<OptionsDialog user={user}/>
 
 
 
-		<div className='game_container'>
+		<div className='game-container'>
 			<div className='game'>
+
+				<Loader loading={isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns}/>
 
 				<TablePlayer 
 					disabled={true}
 					session={session}
 					list_players={list_players}
-					setList_players={setList_players}
+					list_table_columns={list_table_columns}
 				/>
 
 				<Table 
 					disabled={true}
 					session={session}
 					list_players={list_players}
-					setList_players={setList_players}
+					list_table_columns={list_table_columns}
 				/>
 
 				<button

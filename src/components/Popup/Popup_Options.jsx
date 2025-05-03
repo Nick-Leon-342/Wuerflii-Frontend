@@ -15,6 +15,7 @@ import LoaderBox from '../Loader/Loader_Box'
 import CustomButton from '../others/Custom_Button'
 
 import { ReactComponent as Settings } from '../../svg/Settings.svg'
+
 import { patch__user } from '../../api/user'
 
 
@@ -54,10 +55,11 @@ export default function Popup_Options({
 
 	const darkMode_string = 'Wuerflii_DarkMode'
 
+	const [ darkmode, setDarkmode ] = useState(false)
 	const change_dark_mode = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { DarkMode: !user.DarkMode }), 
+		mutationFn: () => patch__user(axiosPrivate, { DarkMode: !darkmode }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user.DarkMode })
+			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !darkmode })
 		}
 	})
 
@@ -74,6 +76,7 @@ export default function Popup_Options({
 	useEffect(() => {
 		
 		if(!user) return
+		setDarkmode(user.DarkMode)
 		
 		if(user.DarkMode) {
 			document.body.classList.add('dark')
@@ -148,7 +151,7 @@ export default function Popup_Options({
 						{!change_dark_mode?.isPending &&
 							<input
 								type='checkbox'
-								checked={user?.DarkMode}
+								checked={darkmode}
 								onChange={() => change_dark_mode.mutate()}
 							/>
 						}

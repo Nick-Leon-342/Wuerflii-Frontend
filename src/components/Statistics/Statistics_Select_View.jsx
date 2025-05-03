@@ -38,7 +38,6 @@ import { patch__session } from '../../api/session/session'
  * @param {Array} props.list_months - List of month names for selecting a month in the 'statistics_month' view
  * @param {Array} props.list_years - List of years for selecting a year in the 'statistics_year' or 'statistics_month' view
  * @param {Object} props.session - Current session data containing the statistics view settings
- * @param {Object} props.setUser - Function to set user data
  * @param {Object} props.user - Current user data containing the statistics view settings
  * @param {boolean} props.isSession - Flag to indicate if the data belongs to a session or a user
  *
@@ -52,7 +51,6 @@ export default function Statistics_Select_View({
 
 	session, 
 
-	setUser, 
 	user, 
 
 	isSession, 
@@ -65,18 +63,9 @@ export default function Statistics_Select_View({
 	const [ view_month, setView_month ] = useState()
 	const [ view_year, setView_year ] = useState()
 
-	// useEffect(() => {
-
-	// 	setView(user.View)
-	// 	setView_month(user.View_Month)
-	// 	setView_year(user.View_Year)
-
-	// }, [ user ])
-
 	const mutate__user = useMutation({
 		mutationFn: json => patch__user(axiosPrivate, json), 
 		onSuccess: (_, json) => {
-			console.log(json)
 			query_client.setQueryData([ 'user' ], prev => {
 				const tmp = { ...prev }
 				tmp.Statistics_View = json.Statistics_View
@@ -147,7 +136,7 @@ export default function Statistics_Select_View({
 				/>
 			</>}
 
-			{(!mutate__session.isPending || !mutate__user.isPending) && <>
+			{!mutate__session.isPending && !mutate__user.isPending && <>
 
 				<select
 					value={view}

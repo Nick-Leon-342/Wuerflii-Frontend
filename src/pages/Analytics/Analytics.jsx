@@ -16,6 +16,7 @@ import Previous from '../../components/NavigationElements/Previous'
 import StatisticsSelectView from '../../components/Statistics/Statistics_Select_View'
 
 import { get__user } from '../../api/user'
+import { get__analytics } from '../../api/analytics'
 
 
 
@@ -27,9 +28,7 @@ export default function Analytics({
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
-	
-	const [ loading, setLoading ] = useState(false)
+	const handle_error = useErrorHandling() // TODO implement error handling
 	
 	const [ total, setTotal ] = useState()
 	const [ list_years, setList_years ] = useState([])
@@ -51,30 +50,33 @@ export default function Analytics({
 
 	// __________________________________________________ Queries __________________________________________________
 
+	// ____________________ User ____________________
+
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryFn: () => get__user(axiosPrivate), 
 		queryKey: [ 'user' ], 
 	})
 
 
+	// ____________________ Analytics ____________________
+
+	const { data: analytics, isLoading: isLoading__analytics, error: error__analytics, refetch } = useQuery({
+		queryFn: () => get__analytics(axiosPrivate), 
+		queryKey: [ 'analytics' ], 
+	})
+	useEffect(() => {
+		if(!analytics) return
+		setTotal(analytics.Total)
+		setList_years(analytics.List_Years)
+	}, [ analytics ])
+
+
 
 
 
 	useEffect(() => {
-		setLoading(true)
 
-		axiosPrivate.get('/analytics').then(({ data }) => {
-
-			setTotal(data.Total)
-			setList_years(data.List_Years)
-
-		}).catch(err => 
-
-			handle_error({
-				err, 
-			})
-
-		).finally(() => setLoading(false))
+		refetch()
 
 		// eslint-disable-next-line
 	}, [
@@ -100,47 +102,43 @@ export default function Analytics({
 			<Previous onClick={() => navigate(-1)}/>
 
 			{/* __________ Loading animation __________ */}
-			{loading && <div className='analytics_loader'><LoaderDots/></div>}
+			{(isLoading__user || isLoading__analytics) && <div className='analytics_loader'><LoaderDots/></div>}
 
 
 
-			{!loading && <>
+			<StatisticsSelectView
+				list_years={list_years}
+				list_months={list_months}
 
-				<StatisticsSelectView
-					list_years={list_years}
-					list_months={list_months}
+				user={user}
 
-					user={user}
-
-					isSession={false}
-				/>
+				isSession={false}
+			/>
 
 
 
-				<ChartBar
-					labels={user?.Statistics_View === 'statistics_year' ? list_months : total?.Data ? Object.keys(total?.Data) : []}
-					JSON={total?.Data}
-				/>
+			<ChartBar
+				labels={user?.Statistics_View === 'statistics_year' ? list_months : total?.Data ? Object.keys(total?.Data) : []}
+				JSON={total?.Data}
+			/>
 
 
 
-				<div className='analytics_more-statistics box'>
-					
-					{user?.Statistics_View === 'statistics_overall' && <>
-						<div>
-							<span>Anzahl unterschiedlicher Partien:</span>
-							<span>{total?.Total_Sessions}</span>
-						</div>
-					</>}
-					
+			<div className='analytics_more-statistics box'>
+				
+				{user?.Statistics_View === 'statistics_overall' && <>
 					<div>
-						<span>Anzahl von Spielen:</span>
-						<span>{total?.Total_Games_Played}</span>
+						<span>Anzahl unterschiedlicher Partien:</span>
+						<span>{total?.Total_Sessions}</span>
 					</div>
-
+				</>}
+				
+				<div>
+					<span>Anzahl von Spielen:</span>
+					<span>{total?.Total_Games_Played}</span>
 				</div>
 
-			</>}
+			</div>
 
 		</div>
 	</>

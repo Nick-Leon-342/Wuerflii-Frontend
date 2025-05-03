@@ -304,7 +304,7 @@ export default function Session_Preview() {
 										const id = player.id
 										const e = list_finalScores.at(index_visible_row)
 
-										return <>
+										return (
 											<td key={id}>
 												<span>
 													{session?.View === 'show_month' && (e?.Wins__After_Month[id] || 0)}
@@ -313,8 +313,8 @@ export default function Session_Preview() {
 													{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
 												</span>
 											</td>
-										</>
-
+										)
+										
 									})}
 								</tr>
 							</tbody>
@@ -361,16 +361,17 @@ export default function Session_Preview() {
 									<li 
 										ref={tmp_ref}
 										key={index_final_score} 
-										onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score?.id}`, { replace: false })}
 										className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
 									>
-										{list_players?.map((player, index_player) => 
-											<div key={`${index_final_score}.${index_player}`}>
-												<span>
-													{final_score.PlayerScores[player.id]}
-												</span>
-											</div>
-										)}
+										<a href={`/#/session/${session?.id}/preview/table/${final_score?.id}`}>
+											{list_players?.map((player, index_player) => 
+												<div key={`${index_final_score}.${index_player}`}>
+													<span>
+														{final_score.PlayerScores[player.id]}
+													</span>
+												</div>
+											)}
+										</a>
 									</li>
 								)
 

@@ -281,16 +281,17 @@ export default function Session_Select({
 				const cs = user?.View_Sessions === option.Alias
 				const desc = user?.View_Sessions_Desc
 
-				return <>
+				return (
 					<button 
-						key={option.Text}
+						key={option?.Text}
 						onClick={() => change_order(option)}
 						className={`button button_reverse${cs ? ' session_select_popup_settings-currently_selected' : ''}${desc ? ' session_select_popup_settings-desc' : ''}`}
 					>
 						{option.Text}
 						<ArrowDown/>
 					</button>
-				</>
+				)
+				
 			})}
 
 		</PopupDropdown>
