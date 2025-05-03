@@ -163,9 +163,7 @@ export default function Statistics_Select_View({
 						value={view_year}
 						onChange={({ target }) => sync_view(view, view_month, +target.value)}
 					>
-						{list_years.map(year => <>
-							<option key={year} value={year}>{year}</option>
-						</>)}
+						{list_years.map(year => <option key={year} value={year}>{year}</option>)}
 					</select>
 				</>}
 			

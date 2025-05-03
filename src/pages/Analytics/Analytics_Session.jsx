@@ -205,7 +205,7 @@ export default function Analytics_Session({
 					{!loading_show_border && <>
 						<input 
 							type='checkbox' 
-							checked={session?.Statistics_Show_Border} 
+							checked={session?.Statistics_Show_Border || false} 
 							onChange={sync_show_border}
 						/>
 					</>}
