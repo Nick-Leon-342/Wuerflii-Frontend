@@ -6,8 +6,8 @@ import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
 import { useInView } from 'react-intersection-observer'
-import { useNavigate, useParams } from 'react-router-dom'
 import React, { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -363,7 +363,7 @@ export default function Session_Preview() {
 										key={index_final_score} 
 										className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
 									>
-										<a href={`/#/session/${session?.id}/preview/table/${final_score?.id}`}>
+										<Link to={`/session/${session?.id}/preview/table/${final_score?.id}`}>
 											{list_players?.map((player, index_player) => 
 												<div key={`${index_final_score}.${index_player}`}>
 													<span>
@@ -371,7 +371,7 @@ export default function Session_Preview() {
 													</span>
 												</div>
 											)}
-										</a>
+										</Link>
 									</li>
 								)
 
@@ -436,23 +436,23 @@ export default function Session_Preview() {
 			setShow_popup={setShow_edit_session}
 		>
 			<div className='session_preview_popup_settings'>
-				<a
+				<Link
 					className='button button_scale_1'
-					href={`/#/session/${session?.id}/analytics`}
-				>Statistiken</a>
+					to={`/session/${session?.id}/analytics`}
+				>Statistiken</Link>
 
 				<div className='session_preview_popup_settings-edit'>
 					<span>Bearbeiten</span>
 
 					<div>
-						<a
+						<Link
 							className='button button_scale_1'
-							href={`/#/session/${session?.id}`}
-						>Partie</a>
-						<a
+							to={`/session/${session?.id}`}
+						>Partie</Link>
+						<Link
 							className='button button_scale_1'
-							href={`/#/session/${session?.id}/players`}
-						>Spieler</a>
+							to={`/session/${session?.id}/players`}
+						>Spieler</Link>
 					</div>
 				</div>
 			</div>

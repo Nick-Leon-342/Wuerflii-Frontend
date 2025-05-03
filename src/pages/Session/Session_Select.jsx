@@ -2,8 +2,8 @@
 
 import './scss/Session_Select.scss'
 
-import { useNavigate } from 'react-router-dom'
 import { formatDate } from '../../logic/utils'
+import { Link, useNavigate } from 'react-router-dom'
 import React, { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -228,7 +228,7 @@ export default function Session_Select({
 								onChange={({ target }) => !mutate__delete.isPending && checkbox_click(index_session, target.checked)} 
 							/>
 
-							<a href={`/#/session/${session.id}/${session.List_Players.length === 0 ? 'players' : 'preview'}`}>
+							<Link to={`/session/${session.id}/${session.List_Players.length === 0 ? 'players' : 'preview'}`}>
 
 								<label className='names'>
 									{(user?.Show_Session_Names || session.List_Players.length === 0) && session.Name}
@@ -237,7 +237,7 @@ export default function Session_Select({
 
 								{user?.Show_Session_Date && <label className='date'>{formatDate(session.LastPlayed)}</label>}
 
-							</a>
+							</Link>
 
 						</dt>
 					))}

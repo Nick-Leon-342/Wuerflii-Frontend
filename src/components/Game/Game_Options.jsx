@@ -3,7 +3,7 @@
 import './scss/Game_Options.scss'
 
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -192,10 +192,10 @@ export default function Game_Options({
 				<section>
 					<label>Spieler bearbeiten</label>
 
-					<a
-						href={`/#/session/${session?.id}/players`}
+					<Link
+						to={`/session/${session?.id}/players`}
 						className='button button_reverse button_scale_3 edit'
-					><PersonSettings/></a>
+					><PersonSettings/></Link>
 				</section>
 
 

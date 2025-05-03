@@ -2,7 +2,7 @@
 
 import './scss/End.scss'
 
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 
@@ -152,10 +152,10 @@ export default function EndScreen() {
 
 
 
-			<a 
-				href='/#/'
+			<Link 
+				to='/'
 				className='button' 
-			>Ok</a>
+			>Ok</Link>
 
 		</div>
 		

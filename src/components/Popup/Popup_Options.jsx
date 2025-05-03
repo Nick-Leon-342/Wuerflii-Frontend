@@ -3,7 +3,7 @@
 import './scss/Popup_Options.scss'
 
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import useAuth from '../../hooks/useAuth'
@@ -161,17 +161,17 @@ export default function Popup_Options({
 					</section>
 
 					<section>
-						<a 
-							href='/#/profile'
+						<Link 
+							to='/profile'
 							className='button button_reverse_green button_scale_2'
-						>Profil</a>
+						>Profil</Link>
 					</section>
 
 					<section>
-						<a 
-							href='/#/analytics'
+						<Link 
+							to='/analytics'
 							className='button button_reverse_green button_scale_2'
-						>Statistiken</a>
+						>Statistiken</Link>
 					</section>
 
 

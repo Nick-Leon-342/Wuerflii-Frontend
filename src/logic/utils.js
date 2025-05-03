@@ -26,13 +26,6 @@ export const formatDate = date => {
 
 }
 
-export const updateURL = urlParams => {
-
-	const updatedURL = window.location.href.split('?')[0] + '?' + urlParams.toString()
-	window.history.pushState({ path: updatedURL }, '', updatedURL)
-
-}
-
 
 
 
