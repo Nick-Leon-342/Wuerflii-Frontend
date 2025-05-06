@@ -21,7 +21,7 @@ import { ReactComponent as Icon } from '../../svg/default.svg'
 
 
 
-export default function Login({
+export default function Reglog({
 	setError, 
 }) {
 
