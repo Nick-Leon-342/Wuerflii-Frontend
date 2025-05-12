@@ -1,6 +1,9 @@
 
 
 .session_select {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 	width: 90vw;
 	max-width: 800px;
 	min-width: 300px;
@@ -13,12 +16,13 @@
 		justify-content: space-between;
 		align-items: center;
 		opacity: 1;
-		margin-bottom: 20px;
 		padding: 0 10px;
 	
 		button {
 			height: 40px;
 			width: 40px;
+
+			svg { height: fit-content; }
 	
 			&:not(.disabled):hover { height: 30px; }
 	
@@ -57,7 +61,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
-		margin-bottom: 20px;
 		width: 100%;
 	
 		dt {
