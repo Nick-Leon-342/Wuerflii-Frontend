@@ -3,11 +3,12 @@
 import './scss/Session_Select.scss'
 
 import { formatDate } from '../../logic/utils'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import React, { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Loader from '../../components/Loader/Loader'
 import LoaderBox from '../../components/Loader/Loader_Box'
@@ -26,13 +27,12 @@ import { delete__session, get__sessions_list } from '../../api/session/session'
 
 
 
-export default function Session_Select({
-	setError, 
-}) {
+export default function Session_Select() {
 
 	const navigate = useNavigate()
-	const axiosPrivate = useAxiosPrivate()
 	const query_client = useQueryClient()
+	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const ref = useRef()
 
@@ -49,17 +49,27 @@ export default function Session_Select({
 
 	// ________________________________________ User __________________________________________________
 
-	// TODO implement error-handling
-	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
 		queryFn: () => get__user(axiosPrivate), 
 		
 	})
 
+	if(error__user) {
+		handle_error({
+			err: error__user
+		})
+	}
+
 	const mutate__show_session_date = useMutation({
 		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user.Show_Session_Date }), 
 		onSuccess: () => {
 			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user.Show_Session_Date })
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
 		}
 	})
 
@@ -67,6 +77,11 @@ export default function Session_Select({
 		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user.Show_Session_Names }), 
 		onSuccess: () => {
 			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user.Show_Session_Names })
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
 		}
 	})
 
@@ -74,12 +89,16 @@ export default function Session_Select({
 
 	// __________________________________________________ List_Sessions __________________________________________________
 
-	// TODO implement error-handling
-	const { data: tmp_list_sessions, isLoading: isLoading__list_sessions, isError: isError__list_sessions } = useQuery({
-		queryKey: [ 'session', 'list' ], 
+	const { data: tmp_list_sessions, isLoading: isLoading__list_sessions, error: error__list_sessions } = useQuery({
 		queryFn: () => get__sessions_list(axiosPrivate), 
-		
+		queryKey: [ 'session', 'list' ], 
 	})
+
+	if(error__list_sessions) {
+		handle_error({
+			err: error__list_sessions, 
+		})
+	}
 
 	useEffect(() => {
 
@@ -107,6 +126,11 @@ export default function Session_Select({
 		onSuccess: ( _, json ) => {
 			query_client.setQueryData([ 'user' ], { ...user, ...json })
 			query_client.invalidateQueries([ 'session', 'list' ], { exact: true })
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
 		}
 	})
 
@@ -132,6 +156,15 @@ export default function Session_Select({
 		mutationFn: session_id => delete__session(axiosPrivate, session_id),
 		onSuccess: ( _, session_id ) => {
 			query_client.setQueryData([ 'session', 'list' ], list_sessions => list_sessions.filter(session => session.id !== session_id))
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+				handle_404: () => {
+					alert('Die Partie wurde nicht gefunden.')
+					window.location.reload()
+				}
+			})
 		}
 	})
 

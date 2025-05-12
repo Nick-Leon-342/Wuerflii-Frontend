@@ -2,12 +2,13 @@
 
 import './scss/Reglog.scss'
 
-import { useState } from 'react'
-import React, { useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import packageJson from '../../../package.json'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
+import { ErrorContext } from '../../context/Error'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import FancyInput from '../../components/others/FancyInput'
@@ -21,16 +22,15 @@ import { ReactComponent as Icon } from '../../svg/default.svg'
 
 
 
-export default function Reglog({
-	setError, 
-}) {
+export default function Reglog() {
 
     const { setAuth } = useAuth()
 	const location = useLocation()
+    const navigate = useNavigate()
 	const [ next, setNext ] = useState('')
 	const handle_error = useErrorHandling()
 
-    const navigate = useNavigate()
+	const { setError } = useContext(ErrorContext)
 
     const [ Name, setName ] = useState('')
     const [ Password, setPassword ] = useState('')
@@ -151,10 +151,15 @@ export default function Reglog({
     return <>
 		<div className='reglog'>
 
-			<div className='reglog-logo'>
+			<div className='reglog-logo_container'>
 
-				<Icon/>
-				<h1>Wuerflii</h1>
+				<div className='reglog-logo'>
+					<Icon/>
+					<h1>Wuerflii</h1>
+				</div>
+				<div className='reglog-version'>
+					<span>v_{packageJson.version}</span>
+				</div>
 
 			</div>
 
@@ -229,6 +234,7 @@ export default function Reglog({
 				/>
 				
 			</div>
+
 		</div>
 	</>
 }

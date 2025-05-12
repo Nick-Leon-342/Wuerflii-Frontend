@@ -3,7 +3,8 @@
 import './scss/Session_Players.scss'
 
 import { v4 } from 'uuid'
-import React, { useEffect, useState } from 'react'
+import { ErrorContext } from '../../context/Error'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -25,9 +26,7 @@ import { get__session_players, patch__session_players, post__session_players } f
 
 
 
-export default function Session_Players({
-	setError, 
-}) {
+export default function Session_Players() {
 
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
@@ -35,6 +34,7 @@ export default function Session_Players({
 	const handle_error = useErrorHandling()
 
 	const { session_id } = useParams()
+	const { setError } = useContext(ErrorContext)
 
 
 	// ____________________ Players ____________________
@@ -50,26 +50,48 @@ export default function Session_Players({
 
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
 		queryFn: () => get__user(axiosPrivate), 
 	})
 
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
+
 
 	// ____________________ Env_Variables ____________________
 
-	const { data: env_variables, isLoading: isLoading__env_variables, isError: isError__env_variables } = useQuery({
+	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
 		queryKey: [ 'session', 'players', 'env' ], 
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
 
+	if(error__env_variables) {
+		handle_error({
+			err: error__env_variables, 
+		})
+	}
+
 
 	// ____________________ List_Players ____________________
 
-	const { data: tmp__list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
+	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +session_id, 'players' ], 
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
+
+	if(error__list_players) {
+		handle_error({
+			err: error__list_players, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 
 	useEffect(() => {
 		
@@ -89,9 +111,22 @@ export default function Session_Players({
 	const mutate__players_add = useMutation({
 		mutationFn: json => post__session_players(axiosPrivate, json), 
 		onSuccess: data => {
-			query_client.setQueryData([ 'session', +session_id, 'players' ], data.List_Players)
+			query_client.setQueryData([ 'session', +session_id, 'players' ], data)
 			navigate(`/session/${session_id}/preview`, { replace: true })
-		}
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+				handle_404: () => {
+					alert('Die Partie wurde nicht gefunden.')
+					navigate('/', { replace: true })
+				}, 
+				handle_409: () => {
+					alert('Es trat ein Fehler auf.\nFür diese Partie wurde Spieler bereits angelegt.')
+					navigate(`/session/${session_id}/players`, { replace: true })
+				}
+			})
+		}, 
 	})
 
 	const mutate__players_edit = useMutation({
@@ -99,7 +134,16 @@ export default function Session_Players({
 		onSuccess: () => {
 			query_client.setQueryData([ 'session', +session_id, 'players' ], list_players)
 			navigate(-1, { replace: false })
-		}
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+				handle_404: () => {
+					alert('Die Partie wurde nicht gefunden.')
+					navigate('/', { replace: true })
+				}
+			})
+		}, 
 	})
 
 

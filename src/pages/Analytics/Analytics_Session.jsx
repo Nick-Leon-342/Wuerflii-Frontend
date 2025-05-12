@@ -27,9 +27,7 @@ import { get__analytics_session } from '../../api/analytics'
 
 
 
-export default function Analytics_Session({
-	setError, 
-}) {
+export default function Analytics_Session() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -37,12 +35,10 @@ export default function Analytics_Session({
 
 	const { session_id } = useParams()
 
-	const [ loading, setLoading ] = useState(false)
 	const [ loading_show_border, setLoading_show_border ] = useState(false)
 
 	const [ total, setTotal ] = useState()
 	const [ session, setSession ] = useState()
-	// const [ list_players, setList_players ] = useState()
 
 	const [ list_years, setList_years ] = useState([])
 	const list_months = [
@@ -69,6 +65,12 @@ export default function Analytics_Session({
 		queryKey: [ 'user' ], 
 	})
 
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
+
 
 	// ____________________ Session ____________________
 
@@ -76,6 +78,17 @@ export default function Analytics_Session({
 		queryFn: () => get__session(axiosPrivate, session_id), 
 		queryKey: [ 'session', +session_id ], 
 	})
+
+	if(error__session) {
+		handle_error({
+			err: error__session, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
+
 	useEffect(() => { if(tmp__session) setSession(tmp__session) }, [ tmp__session ])
 	
 
@@ -86,6 +99,16 @@ export default function Analytics_Session({
 		queryKey: [ 'session', +session_id, 'players' ], 
 	})
 
+	if(error__list_players) {
+		handle_error({
+			err: error__list_players, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
+
 
 	// ____________________ Analytics ____________________
 
@@ -93,6 +116,13 @@ export default function Analytics_Session({
 		queryFn: () => get__analytics_session(axiosPrivate, session_id), 
 		queryKey: [ 'session', +session_id, 'analytics' ], 
 	})
+
+	if(error__analytics) {
+		handle_error({
+			err: error__analytics, 
+		})
+	}
+
 	useEffect(() => {
 		if(!analytics) return 
 		setTotal(analytics.Total)

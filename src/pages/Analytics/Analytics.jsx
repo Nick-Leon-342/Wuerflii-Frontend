@@ -22,13 +22,11 @@ import { get__analytics } from '../../api/analytics'
 
 
 
-export default function Analytics({
-	setError
-}) {
+export default function Analytics() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling() // TODO implement error handling
+	const handle_error = useErrorHandling()
 	
 	const [ total, setTotal ] = useState()
 	const [ list_years, setList_years ] = useState([])
@@ -57,6 +55,12 @@ export default function Analytics({
 		queryKey: [ 'user' ], 
 	})
 
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
+
 
 	// ____________________ Analytics ____________________
 
@@ -64,6 +68,13 @@ export default function Analytics({
 		queryFn: () => get__analytics(axiosPrivate), 
 		queryKey: [ 'analytics' ], 
 	})
+
+	if(error__analytics) {
+		handle_error({
+			err: error__analytics, 
+		})
+	}
+
 	useEffect(() => {
 		if(!analytics) return
 		setTotal(analytics.Total)
@@ -100,6 +111,8 @@ export default function Analytics({
 		<div className='analytics'>
 
 			<Previous onClick={() => navigate(-1)}/>
+
+
 
 			{/* __________ Loading animation __________ */}
 			{(isLoading__user || isLoading__analytics) && <div className='analytics_loader'><LoaderDots/></div>}

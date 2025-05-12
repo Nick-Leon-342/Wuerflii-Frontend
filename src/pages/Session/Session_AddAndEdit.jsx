@@ -2,10 +2,11 @@
 
 import './scss/Session_AddAndEdit.scss'
 
-import React, { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
+import { ErrorContext } from '../../context/Error'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
@@ -22,15 +23,15 @@ import { get__session, get__session_env_variables, patch__session, post__session
 
 
 
-export default function Session_AddAndEdit({
-	setError, 
-}) {
+export default function Session_AddAndEdit() {
 
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const { session_id } = useParams()
+	const { setError } = useContext(ErrorContext)
 
 	
 	// ____________________ Session ____________________
@@ -49,19 +50,35 @@ export default function Session_AddAndEdit({
 
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+	const { data: user, isLoading: isLoading__user, isError: error__user } = useQuery({
 		queryKey: [ 'user' ], 
 		queryFn: () => get__user(axiosPrivate), 
 	})
 
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
+
 
 	// ____________________ Session ____________________
 
-	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
-		enabled: Boolean(session_id), 
-		queryKey: [ 'session', +session_id ], 
+	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
 		queryFn: () => get__session(axiosPrivate, session_id), 
+		queryKey: [ 'session', +session_id ], 
+		enabled: Boolean(session_id), 
 	})
+
+	if(error__session) {
+		handle_error({
+			err: error__session, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 
 	useEffect(() => {
 
@@ -76,10 +93,16 @@ export default function Session_AddAndEdit({
 
 	// ____________________ Env_Variables ____________________
 
-	const { data: env_variables, isLoading: isLoading__env_variables, isError: isError__env_variables } = useQuery({
+	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
+		queryFn: () => get__session_env_variables(axiosPrivate), 
 		queryKey: [ 'session', 'env' ], 
-		queryFn: () => get__session_env_variables(axiosPrivate)
 	})
+
+	if(error__env_variables) {
+		handle_error({
+			err: error__env_variables, 
+		})
+	}
 
 	useEffect(() => setOptions_columns(Array.from({ length: env_variables?.MAX_COLUMNS }, (_, index) => index + 1)), [ env_variables ])
 
@@ -94,6 +117,11 @@ export default function Session_AddAndEdit({
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', data.id ], data)
 			navigate(`/session/${data.id}/players`, { replace: false })
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
 		}
 	})
 
@@ -102,6 +130,15 @@ export default function Session_AddAndEdit({
 		onSuccess: ( _, session_json ) => {
 			query_client.setQueryData([ 'session', session_json.id ], prev => ({ ...prev, ...session_json }))
 			navigate(-1)
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+				handle_404: () => {
+					alert('Die Partie wurde nicht gefunden.')
+					navigate('/', { replace: true })
+				}
+			})
 		}
 	})
 

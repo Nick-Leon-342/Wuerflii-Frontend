@@ -2,10 +2,11 @@
 
 import './scss/Profile.scss'
 
-import { useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
+import { ErrorContext } from '../context/Error'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
@@ -14,26 +15,24 @@ import PopupOptions from '../components/Popup/Popup_Options'
 import CustomButton from '../components/others/Custom_Button'
 import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/others/RegistrationForm'
+
 import { get__user, patch__user } from '../api/user'
 
 
 
 
 
-export default function Profile({
-	setError, 
-}) {
+export default function Profile() {
 	
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
+	const { setError } = useContext(ErrorContext)
+
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
-	
-	const [ loading_credentials, setLoading_credentials ] = useState(false)
-	const [ successfullyUpdated, setSuccessfullyUpdated ] = useState(false)
 
 	const [ NAME_REGEX, setNAME_REGEX ] = useState()
 	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
@@ -41,21 +40,30 @@ export default function Profile({
 	const [ loading_delete_account, setLoading_delete_account ] = useState(false)
 	const [ requesting_regex, setRequesting_regex ] = useState(false)
 
+
+
+	// __________________________________________________ User __________________________________________________
+
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryFn: () => get__user(axiosPrivate), 
 		queryKey: [ 'user' ], 
 	})
 
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
+
 	const mutate__user = useMutation({
 		mutationFn: json => patch__user(axiosPrivate, json), 
-		onSuccess: (_, json) => {
+		onSuccess: () => {
 			navigate(-1)
-		}, onError: err => {
+		}, 
+		onError: err => {
 			handle_error({
 				err,
-				handle_409: () => {
-					setError('Name bereits vergeben!')
-				}
+				handle_409: () => setError('Name bereits vergeben!')
 			})
 		}
 	})
@@ -64,9 +72,9 @@ export default function Profile({
 
 
 
-	const handleSubmit = (e) => {
+	const handleSubmit = event => {
 
-		e.preventDefault()
+		event.preventDefault()
 		setError('')
 
 		if((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) return
@@ -135,7 +143,7 @@ export default function Profile({
 
 				<form onSubmit={handleSubmit}>
 
-					{successfullyUpdated && <h2>Erfolgreich gespeichert!</h2>}
+					{mutate__user.isSuccess && <h2>Erfolgreich gespeichert!</h2>}
 
 					<RegistrationForm 
 						Name={Name} 
@@ -156,7 +164,7 @@ export default function Profile({
 
 					<CustomButton
 						text='Speichern'
-						loading={loading_credentials}
+						loading={mutate__user.isPending}
 					/>
 
 				</form>
@@ -173,5 +181,6 @@ export default function Profile({
 			</>}
 
 		</div>
+		
 	</>
 }

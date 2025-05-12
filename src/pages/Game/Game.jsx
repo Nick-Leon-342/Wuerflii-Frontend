@@ -2,12 +2,13 @@
 
 import './scss/Game.scss'
 
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
 import Table from '../../components/Game/Game_Tables/Table'
@@ -34,6 +35,8 @@ export default function Game() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
+	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
 	
@@ -51,46 +54,84 @@ export default function Game() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________ // TODO implement loading and error handling
+	// __________________________________________________ Queries __________________________________________________
 		
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
 		queryFn: () => get__user(axiosPrivate), 
 	})
+
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
 	
 	
 	// ____________________ Session ____________________
 
-	const { data: session, isLoading: isLoading__session, isError: isError__session } = useQuery({
+	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
 		queryKey: [ 'session', +session_id ], 
 		queryFn: () => get__session(axiosPrivate, session_id), 
 	})
+
+	if(error__session) {
+		handle_error({
+			err: error__session, 
+			handle_404: err => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 	
 
 	// ____________________ List_Players ____________________
 
-	const { data: tmp__list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
+	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +session_id, 'players' ], 
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
+
+	if(error__list_players) {
+		handle_error({
+			err: error__list_players, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 
 	useEffect(() => setList_players(tmp__list_players), [ tmp__list_players ])
 	
 
 	// ____________________ List_Table_Columns ____________________
 
-	const { data: tmp__list_table_columns, isLoading: isLoading__list_table_columns, isError: isError__list_table_columns } = useQuery({
+	const { data: tmp__list_table_columns, isLoading: isLoading__list_table_columns, error: error__list_table_columns } = useQuery({
 		queryKey: [ 'session', +session_id, 'table_columns' ], 
 		queryFn: () => get__table_columns(axiosPrivate, session_id), 
 	})
+
+	if(error__list_table_columns) {
+		handle_error({
+			err: error__list_table_columns, 
+			handle_404: () => {
+				alert('Eine Ressource wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 
 	useEffect(() => setList_table_columns(tmp__list_table_columns), [ tmp__list_table_columns ])
 
 
 
 
+
+	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list_table_columns ])
 
 	useEffect(() => {
 

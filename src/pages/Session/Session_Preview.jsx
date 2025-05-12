@@ -5,8 +5,8 @@ import './scss/Session_Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
+import { useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -56,33 +56,60 @@ export default function Session_Preview() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________	// TODO implement error handling
+	// __________________________________________________ Queries __________________________________________________
 		
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
-		queryKey: [ 'user' ], 
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryFn: () => get__user(axiosPrivate), 
+		queryKey: [ 'user' ], 
 	})
+
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
 	
 	
 	// ____________________ Session ____________________
 
 	const [ session, setSession ] = useState()
 
-	const { data: tmp__session, isLoading: isLoading__session, isError: isError__session } = useQuery({
-		queryKey: [ 'session', +session_id ], 
+	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
 		queryFn: () => get__session(axiosPrivate, session_id), 
+		queryKey: [ 'session', +session_id ], 
 	})
+
+	if(error__session) {
+		handle_error({
+			err: error__session, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
+
 	useEffect(() => setSession(tmp__session), [ tmp__session ])
 
 
 	// ____________________ List_Players ____________________
 
-	const { data: list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
+	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +session_id, 'players' ], 
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
+
+	if(error__list_players) {
+		handle_error({
+			err: error__list_players, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 
 
 	// ____________________ List_FinalScores ____________________
@@ -95,12 +122,14 @@ export default function Session_Preview() {
 		error, 
 		refetch, 
 		fetchNextPage, 
+		isFetchingNextPage, 
 		isLoading: isLoading__list_finalscores, 
 	} = useInfiniteQuery({
+		queryFn: ({ pageParam = 1 }) => get__final_scores_page(axiosPrivate, session_id, pageParam), 
 		queryKey: [ 'session', +session_id, 'finalscores' ],  
 		getNextPageParam: prevData => prevData.nextPage, 
-		queryFn: ({ pageParam = 1 }) => get__final_scores_page(axiosPrivate, session_id, pageParam), 
 	})
+
 	useEffect(() => { if(inView) fetchNextPage() }, [ fetchNextPage, inView ])
 
 
@@ -196,6 +225,10 @@ export default function Session_Preview() {
 		onError: err => {
 			handle_error({
 				err, 
+				handle_404: () => {
+					alert('Die Partie wurde nicht gefunden.')
+					navigate('/', { replace: true })
+				}
 			})
 		}
 	})
@@ -235,11 +268,6 @@ export default function Session_Preview() {
 		setIndex_visible_row(index_newRow)
 
 	}
-
-
-
-
-
 
 
 
@@ -377,6 +405,9 @@ export default function Session_Preview() {
 
 							}
 						})}
+						{(isLoading__list_finalscores || isFetchingNextPage) && <>
+							<li>Wird geladen...</li>
+						</>}
 						{error && <li>Fehler...</li>}
 					</ul>
 

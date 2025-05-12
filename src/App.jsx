@@ -2,10 +2,7 @@
 
 import './App.scss'
 
-import { useState } from 'react'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
-
-import PopupError from './components/Popup/Popup_Error'
 
 
 // ____________________ Reglog ____________________
@@ -43,23 +40,13 @@ import Game from './pages/Game/Game'
 
 export default function App() {
 
-	const [ error, setError ] = useState('')
-
 	return <>
 		<div className='App' id='App'>
-
-			<PopupError
-				error={error}
-				setError={setError}
-			/>
-
-
-
 			<Router>
 				<Routes>
 
 					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/reglog' element={<Reglog setError={setError} />} />
+					<Route path='/reglog' element={<Reglog />} />
 
 
 					{/* 
@@ -68,29 +55,29 @@ export default function App() {
 					*/}
 					<Route element={<PersistLogin />}>
 
-						<Route path='/profile' element={<Profile setError={setError} />} />
+						<Route path='/profile' element={<Profile />} />
 
 
 						{/* __________ Analytics __________ */}
 
-						<Route path='/analytics' element={<Analytics setError={setError} />} />
-						<Route path='/session/:session_id/analytics' element={<AnalyticsSession setError={setError} />} />
+						<Route path='/analytics' element={<Analytics />} />
+						<Route path='/session/:session_id/analytics' element={<AnalyticsSession />} />
 
 
 						{/* __________ Session __________ */}
 
-						<Route path='/' element={<SessionSelect setError={setError} />} />
-						<Route path='/session' element={<SessionAddAndEdit setError={setError} />} /> 
-						<Route path='/session/:session_id' element={<SessionAddAndEdit setError={setError} />} /> 
-						<Route path='/session/:session_id/players' element={<SessionPlayers setError={setError} />} />
-						<Route path='/session/:session_id/preview' element={<SessionPreview setError={setError} />} />
-						<Route path='/session/:session_id/preview/table/:finalscore_id' element={<SessionPreviewTable setError={setError} />} />
+						<Route path='/' element={<SessionSelect />} />
+						<Route path='/session' element={<SessionAddAndEdit />} /> 
+						<Route path='/session/:session_id' element={<SessionAddAndEdit />} /> 
+						<Route path='/session/:session_id/players' element={<SessionPlayers />} />
+						<Route path='/session/:session_id/preview' element={<SessionPreview />} />
+						<Route path='/session/:session_id/preview/table/:finalscore_id' element={<SessionPreviewTable />} />
 
 
 						{/* __________ Game __________ */}
 
-						<Route path='/game' element={<Game setError={setError} />} />
-						<Route path='/game/end' element={<End setError={setError} />} />
+						<Route path='/game' element={<Game />} />
+						<Route path='/game/end' element={<End />} />
 						
 					</Route>
 

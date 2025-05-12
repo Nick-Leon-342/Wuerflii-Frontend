@@ -2,11 +2,12 @@
 
 import './scss/End.scss'
 
-import { Link, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Loader from '../../components/Loader/Loader'
 import OptionsDialog from '../../components/Popup/Popup_Options'
@@ -21,7 +22,9 @@ import { get__session_players } from '../../api/session/session_players'
 
 export default function EndScreen() {
 
+	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const [ header, setHeader ] = useState('')
 
@@ -34,32 +37,58 @@ export default function EndScreen() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________ // TODO implement error handling
+	// __________________________________________________ Queries __________________________________________________ 
 
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, isError: isError__user } = useQuery({
-		queryKey: [ 'user' ], 
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryFn: () => get__user(axiosPrivate), 
+		queryKey: [ 'user' ], 
 	})
+
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
 
 
 	// ____________________ List_Players ____________________
 
-	const { data: list_players, isLoading: isLoading__list_players, isError: isError__list_players } = useQuery({
+	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		enable: Boolean(session_id), 
 		queryKey: [ 'session', session_id, 'players' ], 
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
 
+	if(error__list_players) {
+		handle_error({
+			err: error__list_players, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
+
 
 	// ____________________ FinalScore ____________________
 
-	const { data: final_score, isLoading: isLoading__final_score, isError: isError__final_score } = useQuery({
+	const { data: final_score, isLoading: isLoading__final_score, error: error__final_score } = useQuery({
 		enable: Boolean(session_id), 
 		queryKey: [ 'session', session_id, 'finalscore', finalscore_id ], 
 		queryFn: () => get__final_score(axiosPrivate, session_id, finalscore_id), 
 	})
+
+	if(error__final_score) {
+		handle_error({
+			err: error__final_score, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 
 
 

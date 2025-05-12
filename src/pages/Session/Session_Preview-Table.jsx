@@ -2,8 +2,8 @@
 
 import '../Game/scss/Game.scss'
 
+import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -27,7 +27,7 @@ export default function Session_Preview_Table() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()	// TODO implement error handling
+	const handle_error = useErrorHandling()
 
 	const { session_id, finalscore_id } = useParams()
 
@@ -41,6 +41,12 @@ export default function Session_Preview_Table() {
 		queryKey: [ 'user' ], 
 	})
 
+	if(error__user) {
+		handle_error({
+			err: error__user, 
+		})
+	}
+
 
 	// ____________________ Session ____________________
 
@@ -49,6 +55,16 @@ export default function Session_Preview_Table() {
 		queryKey: [ 'session', +session_id ]
 	})
 
+	if(error__session) {
+		handle_error({
+			err: error__session, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
+
 
 	// ____________________ List_Players ____________________
 
@@ -56,14 +72,34 @@ export default function Session_Preview_Table() {
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 		queryKey: [ 'session', +session_id, 'players' ], 
 	})
+
+	if(error__list_players) {
+		handle_error({
+			err: error__list_players, 
+			handle_404: () => {
+				alert('Die Partie wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 		
 	
 	// ____________________ List_Table_Columns ____________________
 
-	const { data: list_table_columns, isLoading: isLoading__list_table_columns, isError: isError__list_table_columns } = useQuery({
+	const { data: list_table_columns, isLoading: isLoading__list_table_columns, error: error__list_table_columns } = useQuery({
 		queryFn: () => get__table_columns_archive(axiosPrivate, session_id, finalscore_id), 
 		queryKey: [ 'session', +session_id, 'table_columns' ], 
 	})
+
+	if(error__list_table_columns) {
+		handle_error({
+			err: error__list_table_columns, 
+			handle_404: () => {
+				alert('Eine Ressource wurde nicht gefunden.')
+				navigate('/', { replace: true })
+			}
+		})
+	}
 
 
 
