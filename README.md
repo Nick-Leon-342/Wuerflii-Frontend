@@ -1,5 +1,6 @@
 
 # Wuerflii
+
 ___
 
 
@@ -19,12 +20,19 @@ If anyone ever sees this project and wants to help me improve this project, I wo
 ___
 
 
+Wuerflii uses `domain.com/wuerflii` as url but you can change it by editing **homepage** in _package.json_.
+
+
+### Development
+
+Create a _.env.development.local_-file (e.g. edit _.env.example_). Keep in mind that you have to completely restart ReactJS if you edited any _.env_-file for React to correctly implement those values.
 Use `npm start` to start the dev-server.
+
+
+### Production
+
+Create a _.env.production.local_-file. If you edit this _.env_ you have to rebuild the frontend. (This may be made dynamic in the future if frontend and backend are moved into one Docker-Stack.)
 Use `npm build` to get the optimized frontend as html. Copy the folder **build** to the destination and get started with a apache or nginx server.
 
-In */src/logic/utils-env* set the REACT_APP_BACKEND_URL to your backend url.
-`export const REACT_APP_BACKEND_URL = ... `
 Other env-variables have to be changed in the backend because the frontend just requests them.
-
-Wuerflii uses `domain.com/wuerflii` as url but you can change it by editing **homepage** in package.json.
 
