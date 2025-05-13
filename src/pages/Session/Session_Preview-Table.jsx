@@ -2,22 +2,22 @@
 
 import '../Game/scss/Game.scss'
 
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
-import Loader from '../../components/Loader/Loader'
 import Table from '../../components/Game/Game_Tables/Table'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
 import { get__user } from '../../api/user'
 import { get__session } from '../../api/session/session'
-import { get__session_players } from '../../api/session/session_players'
 import { get__table_columns_archive } from '../../api/table_columns'
+import { get__session_players } from '../../api/session/session_players'
 
 
 
@@ -28,8 +28,10 @@ export default function Session_Preview_Table() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
-
+	
 	const { session_id, finalscore_id } = useParams()
+
+	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
 
 
 	// __________________________________________________ Queries __________________________________________________
@@ -88,7 +90,7 @@ export default function Session_Preview_Table() {
 
 	const { data: list_table_columns, isLoading: isLoading__list_table_columns, error: error__list_table_columns } = useQuery({
 		queryFn: () => get__table_columns_archive(axiosPrivate, session_id, finalscore_id), 
-		queryKey: [ 'session', +session_id, 'table_columns' ], 
+		queryKey: [ 'session', +session_id, +finalscore_id, 'table_columns' ], 
 	})
 
 	if(error__list_table_columns) {
@@ -96,7 +98,7 @@ export default function Session_Preview_Table() {
 			err: error__list_table_columns, 
 			handle_404: () => {
 				alert('Eine Ressource wurde nicht gefunden.')
-				navigate('/', { replace: true })
+				navigate(`/session/${session_id}/preview`, { replace: true })
 			}
 		})
 	}
@@ -114,6 +116,9 @@ export default function Session_Preview_Table() {
 		// eslint-disable-next-line
 	}, [ session ])
 
+	// Loading animation
+	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list_table_columns ])
+
 
 
 
@@ -127,21 +132,25 @@ export default function Session_Preview_Table() {
 		<div className='game-container'>
 			<div className='game'>
 
-				<Loader loading={isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns}/>
+				{!(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns) && <>
 
-				<TablePlayer 
-					disabled={true}
-					session={session}
-					list_players={list_players}
-					list_table_columns={list_table_columns}
-				/>
+					<TablePlayer 
+						disabled={true}
+						session={session}
+						list_players={list_players}
+						list_table_columns={list_table_columns}
+					/>
 
-				<Table 
-					disabled={true}
-					session={session}
-					list_players={list_players}
-					list_table_columns={list_table_columns}
-				/>
+					<Table 
+						disabled={true}
+						session={session}
+						list_players={list_players}
+						list_table_columns={list_table_columns}
+					/>
+
+				</>}
+
+
 
 				<button
 					className='button'
