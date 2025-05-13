@@ -3,8 +3,20 @@
 ___
 
 
-This is a classic dice game where players roll five dice to form specific combinations and achieve the highest score. Players have multiple rolls per turn to strategically choose which dice to keep and which to reroll. The game rewards combinations like three of a kind, full house, and a five-of-a-kind (often called "Yahtzee" or "Kniffel"). Plan carefully, maximize your points, and aim for the perfect roll!
+The name wuerflii can be somewhat translated into dicelii.
 
+This is a classic dice game where players roll five dice to form specific combinations and achieve the highest score. Players have multiple rolls per turn to strategically choose which dice to keep and which to reroll. The game rewards combinations like three of a kind, full house, and a five-of-a-kind (often called "Yahtzee" or "Kniffel"). Plan carefully, maximize your points, and aim for the perfect roll!
+~ ChatGPT
+
+I made this project for my parents, so that they are able to store their matches and have a better history of their matches. 
+This is my first ever ReactJS build and therefore also a bit of a playground to test new concepts I learned or want to try out. The UI is german only at this point. 
+
+The backend can be found at wuerflii-backend.
+
+If anyone ever sees this project and wants to help me improve this project, I would be really grateful and also a bit proud. ;) 
+
+
+___
 
 
 Use `npm start` to start the dev-server.
