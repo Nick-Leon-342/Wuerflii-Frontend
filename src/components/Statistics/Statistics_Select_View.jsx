@@ -3,6 +3,7 @@
 import './scss/Statistics_Select_View.scss'
 
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -56,8 +57,10 @@ export default function Statistics_Select_View({
 	isSession, 
 }) {
 
+	const navigate = useNavigate()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
+	const handle_error = useErrorHandling()
 
 	const [ view, setView ] = useState()
 	const [ view_month, setView_month ] = useState()
@@ -73,6 +76,11 @@ export default function Statistics_Select_View({
 				tmp.Statistics_View_Year = json.Statistics_View_Year
 				return tmp
 			})
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
 		}
 	})
 
@@ -85,6 +93,15 @@ export default function Statistics_Select_View({
 				tmp.Statistics_View_Month = json.Statistics_View_Month
 				tmp.Statistics_View_Year = json.Statistics_View_Year
 				return tmp
+			})
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+				handle_404: () => {
+					alert('Die Partie wurde nicht gefunden.')
+					navigate('/', { replace: true })
+				}
 			})
 		}
 	})
