@@ -5,13 +5,14 @@ import './scss/Session_Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
 import Loader from '../../components/Loader/Loader'
@@ -131,6 +132,15 @@ export default function Session_Preview() {
 	})
 
 	useEffect(() => { if(inView) fetchNextPage() }, [ fetchNextPage, inView ])
+
+
+
+
+
+	// __________________________________________________ Universal Loader __________________________________________________
+
+	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_finalscores || isFetchingNextPage), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list_finalscores, isFetchingNextPage ])
 
 
 
@@ -291,12 +301,6 @@ export default function Session_Preview() {
 					<ListSort/>
 					<span>Liste</span>
 				</button>
-
-
-
-				<Loader loading={isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_finalscores}/>
-
-
 
 				<button
 					ref={ref_edit_session}

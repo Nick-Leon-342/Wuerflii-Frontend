@@ -3,14 +3,14 @@
 import './scss/Session_Select.scss'
 
 import { formatDate } from '../../logic/utils'
-import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
-import Loader from '../../components/Loader/Loader'
 import LoaderBox from '../../components/Loader/Loader_Box'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
@@ -47,7 +47,9 @@ export default function Session_Select() {
 
 
 
-	// ________________________________________ User __________________________________________________
+	// ________________________________________ Queries __________________________________________________
+
+	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
@@ -61,33 +63,8 @@ export default function Session_Select() {
 		})
 	}
 
-	const mutate__show_session_date = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user.Show_Session_Date }), 
-		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user.Show_Session_Date })
-		}, 
-		onError: err => {
-			handle_error({
-				err, 
-			})
-		}
-	})
 
-	const mutate__show_session_names = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user.Show_Session_Names }), 
-		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user.Show_Session_Names })
-		}, 
-		onError: err => {
-			handle_error({
-				err, 
-			})
-		}
-	})
-
-
-
-	// __________________________________________________ List_Sessions __________________________________________________
+	// ____________________ List_Sessions ____________________
 
 	const { data: tmp_list_sessions, isLoading: isLoading__list_sessions, error: error__list_sessions } = useQuery({
 		queryFn: () => get__sessions_list(axiosPrivate), 
@@ -119,7 +96,31 @@ export default function Session_Select() {
 
 
 
-	// __________________________________________________ Change Order __________________________________________________
+	// __________________________________________________ Change List __________________________________________________
+
+	const mutate__show_session_date = useMutation({
+		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user.Show_Session_Date }), 
+		onSuccess: () => {
+			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user.Show_Session_Date })
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
+		}
+	})
+
+	const mutate__show_session_names = useMutation({
+		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user.Show_Session_Names }), 
+		onSuccess: () => {
+			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user.Show_Session_Names })
+		}, 
+		onError: err => {
+			handle_error({
+				err, 
+			})
+		}
+	})
 
 	const mutate__change_order = useMutation({
 		mutationFn: json => patch__user(axiosPrivate, json), 
@@ -200,6 +201,15 @@ export default function Session_Select() {
 
 
 
+	// __________________________________________________ Universal Loader __________________________________________________
+
+	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__list_sessions || mutate__change_order?.isPending), [ setLoading__universal_loader, isLoading__user, isLoading__list_sessions, mutate__change_order?.isPending ])
+
+
+
+
+
 	return <>
 
 		<OptionsDialog user={user}/>
@@ -220,8 +230,6 @@ export default function Session_Select() {
 					onClick={() => setShow_settings(true)}
 				><ListSort/></button>
 
-				<Loader loading={isLoading__user}/>
-
 				<button
 					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions?.some(session => session.Checkbox_Checked) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
 					onClick={handle_delete} 
@@ -230,10 +238,6 @@ export default function Session_Select() {
 			</header>
 
 
-
-			{/* __________________________________________________ Loading list_sessions __________________________________________________ */}
-
-			{isLoading__list_sessions && <LoaderBox className='session_select-loader' dark={true}/>}
 
 
 
@@ -277,6 +281,8 @@ export default function Session_Select() {
 				</dl>
 
 			</>}
+
+
 
 
 
