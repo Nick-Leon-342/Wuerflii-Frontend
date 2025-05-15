@@ -393,7 +393,7 @@ export default function Session_Preview() {
 									<li 
 										ref={tmp_ref}
 										key={index_final_score} 
-										className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}`}
+										className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' no_border_top'}`}
 									>
 										<Link to={`/session/${session?.id}/preview/table/${final_score?.id}`}>
 											{list_players?.map((player, index_player) => 
