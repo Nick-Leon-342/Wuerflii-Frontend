@@ -255,7 +255,11 @@ export default function Session_Select() {
 					{list_sessions?.map((session, index_session) => (
 						<dt 
 							key={index_session}
-							style={{ backgroundColor: session.Color + '70' }}
+							style={{ 
+								backgroundColor: session.Color + '70', 
+								border: '2px solid', 
+								borderColor: session.Color + '90', 
+							}}
 						>
 
 							<input 

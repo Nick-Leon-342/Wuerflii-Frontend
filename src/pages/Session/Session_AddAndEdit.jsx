@@ -232,7 +232,13 @@ export default function Session_AddAndEdit() {
 
 			<div className='session_addandedit_element session_addandedit_preview'>
 				<label>Vorschau</label>
-				<div style={{ backgroundColor: `${color}70` }}>
+				<div 
+					style={{ 
+						backgroundColor: session.Color + '70', 
+						border: '2px solid', 
+						borderColor: session.Color + '90', 
+					}}
+				>
 					<span>{name}</span>
 				</div>
 			</div>
