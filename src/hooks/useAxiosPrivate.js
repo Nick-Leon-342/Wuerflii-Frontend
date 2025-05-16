@@ -14,6 +14,10 @@ export default function useAxiosPrivate() {
     const refresh = useRefreshToken()
     const { auth } = useAuth()
 
+
+
+
+
     useEffect(() => {
 
         const requestIntercept = axiosPrivate.interceptors.request.use(
@@ -43,7 +47,11 @@ export default function useAxiosPrivate() {
             axiosPrivate.interceptors.request.eject(requestIntercept)
             axiosPrivate.interceptors.response.eject(responseIntercept)
         }
-    }, [auth, refresh])
+    }, [ auth, refresh ])
+
+
+
+
 
     return axiosPrivate
 	

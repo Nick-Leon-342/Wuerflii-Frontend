@@ -142,21 +142,25 @@ export default function Popup_Options({
 
 					<section className='darkmode'>
 						
-						{change_dark_mode?.isPending && <>
-							<div className='popup_options_loading_darkmode-container'>
-								<LoaderBox className='popup_options_loading_darkmode' dark={true}/>
-							</div>
-						</>}
-						
-						{!change_dark_mode?.isPending &&
-							<input
-								type='checkbox'
-								checked={darkmode}
-								onChange={() => change_dark_mode.mutate()}
-							/>
-						}
+						<div>
+							{change_dark_mode?.isPending && <>
+								<div className='popup_options_loading_darkmode-container'>
+									<LoaderBox className='popup_options_loading_darkmode' dark={true}/>
+								</div>
+							</>}
+							
+							{!change_dark_mode?.isPending &&
+								<input
+									type='checkbox'
+									checked={darkmode}
+									onChange={() => change_dark_mode.mutate()}
+								/>
+							}
 
-						<label>Dark mode</label>
+							<label>Dark mode</label>
+						</div>
+
+						<span>Server: {axiosPrivate.defaults.baseURL}</span>
 						
 					</section>
 

@@ -2,12 +2,12 @@
 
 import './scss/Reglog.scss'
 
-import { useState, useEffect, useContext } from 'react'
 import packageJson from '../../../package.json'
+import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
+import { axiosDefault } from '../../api/axios'
 import { ErrorContext } from '../../context/Error'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
@@ -80,7 +80,7 @@ export default function Reglog() {
 		setError('')
 
 
-		axios.post('/auth/registration', 
+		axiosDefault.post('/auth/registration', 
 			{ Name, Password },  
 			{
 				headers: { 'Content-Type': 'application/json' },
@@ -115,7 +115,7 @@ export default function Reglog() {
 		setError('')
 
 
-		axios.post('/auth/login', 
+		axiosDefault.post('/auth/login', 
 			{ Name, Password }, 
 			{
 				headers: { 'Content-Type': 'application/json' },

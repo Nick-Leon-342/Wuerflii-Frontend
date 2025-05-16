@@ -1,6 +1,6 @@
 
 
-import axios from '../api/axios'
+import { axiosDefault } from '../api/axios'
 import useAuth from './useAuth'
 
 
@@ -12,7 +12,7 @@ export default function useRefreshToken() {
     const { setAuth } = useAuth()
 
     return async () => {
-        const response = await axios.get('/refreshtoken', {
+        const response = await axiosDefault.get('/refreshtoken', {
             withCredentials: true
         })
         setAuth(prev => {

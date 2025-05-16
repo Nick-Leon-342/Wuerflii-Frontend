@@ -2,7 +2,11 @@
 
 import './App.scss'
 
+import { useEffect, useState } from 'react'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+
+import { axiosDefault, axiosPrivate } from './api/axios'
+import { check_if_local_server_is_available, REACT_APP_EXTERNAL_BACKEND_URL, REACT_APP_INTERNAL_BACKEND_URL } from './logic/utils'
 
 
 // ____________________ Reglog ____________________
@@ -39,6 +43,31 @@ import Game from './pages/Game/Game'
 
 
 export default function App() {
+
+	const [ checking_if_local_server_is_available, setChecking_if_local_server_is_available ] = useState(true)
+
+
+
+
+
+	useEffect(() => {
+		async function configure_server() {
+			const isLocal = await check_if_local_server_is_available()
+
+			const base_url = isLocal ? REACT_APP_INTERNAL_BACKEND_URL : REACT_APP_EXTERNAL_BACKEND_URL
+			axiosDefault.defaults.baseURL = base_url
+			axiosPrivate.defaults.baseURL = base_url
+
+			setChecking_if_local_server_is_available(false)
+		}
+		configure_server()
+	}, [])
+
+
+
+
+
+	if(checking_if_local_server_is_available) return <div>Auf Server warten...</div>
 
 	return <>
 		<div className='App' id='App'>

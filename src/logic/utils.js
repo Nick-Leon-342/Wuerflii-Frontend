@@ -12,6 +12,32 @@ import { ReactComponent as ArrowLeft } from '../svg/Arrow_Left.svg'
 
 
 
+export const REACT_APP_EXTERNAL_BACKEND_URL = process.env.REACT_APP_EXTERNAL_BACKEND_URL
+export const REACT_APP_INTERNAL_BACKEND_URL = process.env.REACT_APP_INTERNAL_BACKEND_URL
+
+export async function check_if_local_server_is_available(timeout = 1000) {
+	console.log('AAA', REACT_APP_EXTERNAL_BACKEND_URL, REACT_APP_INTERNAL_BACKEND_URL)
+	const controller = new AbortController()
+	const id = setTimeout(() => controller.abort(), timeout)
+
+	try {
+		const response = await fetch(`${REACT_APP_INTERNAL_BACKEND_URL}/ping`, {
+			method: 'GET', 
+			signal: controller.signal, 
+		})
+		clearTimeout(id)
+		return response.status === 200
+	} catch {
+		clearTimeout(id)
+		return false
+	}
+
+}
+
+
+
+
+
 export const formatDate = date => {
 
 	const d = new Date(date)
