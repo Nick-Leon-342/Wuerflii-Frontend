@@ -234,9 +234,9 @@ export default function Session_AddAndEdit() {
 				<label>Vorschau</label>
 				<div 
 					style={{ 
-						backgroundColor: session.Color + '70', 
+						backgroundColor: color + '70', 
 						border: '2px solid', 
-						borderColor: session.Color + '90', 
+						borderColor: color + '90', 
 					}}
 				>
 					<span>{name}</span>
