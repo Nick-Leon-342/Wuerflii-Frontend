@@ -2,7 +2,7 @@
   "name": "wuerflii",
   "version": "1.3.0",
   "private": true,
-  "homepage": "/wuerflii",
+  "homepage": "",
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@tanstack/react-query": "^5.74.7",

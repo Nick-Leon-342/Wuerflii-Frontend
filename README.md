@@ -20,7 +20,7 @@ If anyone ever sees this project and wants to help me improve this project, I wo
 ___
 
 
-Wuerflii uses `domain.com/wuerflii` as url but you can change it by editing **homepage** in _package.json_.
+Wuerflii uses only `domain.com/` as url but you can change it by editing **homepage** in _package.json_.
 
 
 ### Development

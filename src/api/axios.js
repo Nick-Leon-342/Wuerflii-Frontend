@@ -2,10 +2,12 @@
 
 import axios from 'axios'
 
-export const axiosDefault = axios.create({})
+import { REACT_APP_BACKEND_URL } from '../logic/utils'
 
+export const axiosDefault = axios.create({ baseURL: REACT_APP_BACKEND_URL })
 
 export const axiosPrivate = axios.create({
 	headers: { 'Content-Type': 'application/json' },
-	withCredentials: true
+	baseURL: REACT_APP_BACKEND_URL, 
+	withCredentials: true, 
 })

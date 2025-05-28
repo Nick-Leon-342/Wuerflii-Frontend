@@ -143,6 +143,7 @@ export default function Reglog() {
 		}).finally(() => setLoading(false))
 
 	}
+	// TODO dont request regex everytime a switch between login and registration happens
 
 
 
