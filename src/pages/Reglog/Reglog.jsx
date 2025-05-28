@@ -17,6 +17,7 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 import RegistrationForm from '../../components/others/RegistrationForm'
 
 import { ReactComponent as Icon } from '../../svg/default.svg'
+import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
 
 
@@ -31,6 +32,7 @@ export default function Reglog() {
 	const handle_error = useErrorHandling()
 
 	const { setError } = useContext(ErrorContext)
+	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
 
     const [ Name, setName ] = useState('')
     const [ Password, setPassword ] = useState('')
@@ -47,7 +49,7 @@ export default function Reglog() {
 
 
 
-	
+
 	useEffect(() => {
 
 		setError('')
@@ -57,8 +59,11 @@ export default function Reglog() {
 		// eslint-disable-next-line
 	}, [ show_login ])
 
-	// eslint-disable-next-line
-	useEffect(() => setNext(new URLSearchParams(location.search).get('next')), [])
+	useEffect(() => {
+		setLoading__universal_loader(false)
+		setNext(new URLSearchParams(location.search).get('next'))
+		// eslint-disable-next-line
+	}, [])
 
 	useEffect(() => setError(''), [ Name, Password, setError ])
 
