@@ -2,13 +2,15 @@
 
 import './scss/Popup_Options.scss'
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import useAuth from '../../hooks/useAuth'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+
+import { ServerVersionContext } from '../../context/Server_Version'
 
 import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
@@ -33,7 +35,6 @@ import { patch__user } from '../../api/user'
  * <Popup_Options setUser={setUser} user={user} />
  *
  * @param {Object} props - The component props
- * @param {Function} props.setUser - Function to update the user state
  * @param {Object} props.user - The current user object containing user information like DarkMode
  *
  * @returns {JSX.Element} The rendered Popup_Options component
@@ -50,6 +51,8 @@ export default function Popup_Options({
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
+
+	const { server_version } = useContext(ServerVersionContext)
 
 	const [ show_options, setShow_options ] = useState(false)
 
@@ -160,7 +163,7 @@ export default function Popup_Options({
 							<label>Dark mode</label>
 						</div>
 
-						<span>Server: {axiosPrivate.defaults.baseURL}</span>
+						<span>Server Version: {server_version}</span>
 						
 					</section>
 

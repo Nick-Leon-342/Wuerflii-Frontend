@@ -33,14 +33,13 @@ import SessionSelect from './pages/Session/Session_Select'
 
 import End from './pages/Game/End'
 import Game from './pages/Game/Game'
-import { REACT_APP_BACKEND_URL } from './logic/utils'
 
 
 
 
 
 export default function App() {
-console.log(REACT_APP_BACKEND_URL)
+	
 	return <>
 		<div className='App' id='App'>
 			<Router>
