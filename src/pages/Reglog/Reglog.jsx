@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { axiosDefault } from '../../api/axios'
 import { ErrorContext } from '../../context/Error'
+import { RegexContext } from '../../context/Regex'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import FancyInput from '../../components/others/FancyInput'
@@ -32,16 +33,13 @@ export default function Reglog() {
 	const handle_error = useErrorHandling()
 
 	const { setError } = useContext(ErrorContext)
+	const { NAME_REGEX, PASSWORD_REGEX } = useContext(RegexContext)
 	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
 
     const [ Name, setName ] = useState('')
     const [ Password, setPassword ] = useState('')
-
-	const [ NAME_REGEX, setNAME_REGEX ] = useState()
-	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
 	
 	const [ loading, setLoading ] = useState(false)
-	const [ requesting_regex, setRequesting_regex ] = useState(false)
 
 	const [ show_login, setShow_login ] = useState(true)
 
@@ -148,7 +146,6 @@ export default function Reglog() {
 		}).finally(() => setLoading(false))
 
 	}
-	// TODO dont request regex everytime a switch between login and registration happens
 
 
 
@@ -210,14 +207,7 @@ export default function Reglog() {
 							Password={Password} 
 							setPassword={setPassword} 
 	
-							requesting_regex={requesting_regex}
-							setRequesting_regex={setRequesting_regex}
-	
 							isRequired={true}
-							NAME_REGEX={NAME_REGEX}
-							setNAME_REGEX={setNAME_REGEX}
-							PASSWORD_REGEX={PASSWORD_REGEX}
-							setPASSWORD_REGEX={setPASSWORD_REGEX}
 						/>
 
 					</>}

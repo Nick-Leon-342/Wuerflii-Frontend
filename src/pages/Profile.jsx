@@ -17,6 +17,7 @@ import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/others/RegistrationForm'
 
 import { get__user, patch__user } from '../api/user'
+import { RegexContext } from '../context/Regex'
 
 
 
@@ -33,12 +34,9 @@ export default function Profile() {
 
 	const [ Name, setName ] = useState('')
 	const [ Password, setPassword ] = useState('')
-
-	const [ NAME_REGEX, setNAME_REGEX ] = useState()
-	const [ PASSWORD_REGEX, setPASSWORD_REGEX ] = useState()
+	const { NAME_REGEX, PASSWORD_REGEX } = useContext(RegexContext)
 
 	const [ loading_delete_account, setLoading_delete_account ] = useState(false)
-	const [ requesting_regex, setRequesting_regex ] = useState(false)
 
 
 
@@ -152,14 +150,7 @@ export default function Profile() {
 						Password={Password} 
 						setPassword={setPassword} 
 						
-						requesting_regex={requesting_regex}
-						setRequesting_regex={setRequesting_regex}
-						
 						isRequired={false}
-						NAME_REGEX={NAME_REGEX}
-						setNAME_REGEX={setNAME_REGEX}
-						PASSWORD_REGEX={PASSWORD_REGEX}
-						setPASSWORD_REGEX={setPASSWORD_REGEX}
 					/>
 
 					<CustomButton
