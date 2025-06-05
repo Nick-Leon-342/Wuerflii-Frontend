@@ -21,7 +21,8 @@ export const UniversalLoader = ({ children }) => {
 
 	return <>
 		<UniversalLoaderContext.Provider value={{ loading__universal_loader, setLoading__universal_loader }}>
-			{loading__universal_loader && <LoaderDots className='universal_loader'/>}
+			{/* {loading__universal_loader && <LoaderDots className='universal_loader'/>} */}
+			{true && <LoaderDots className='universal_loader'/>}
 			{children}
 		</UniversalLoaderContext.Provider>
 	</>
