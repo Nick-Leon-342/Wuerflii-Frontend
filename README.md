@@ -31,7 +31,7 @@ Use `npm start` to start the dev-server.
 
 ### Production
 
-Create a _.env.production.local_-file. If you edit this _.env_ you have to rebuild the frontend. (This may be made dynamic in the future if frontend and backend are moved into one Docker-Stack.)
+The backend url can only be edited in nginx.conf.
 Use `npm build` to get the optimized frontend as html. Copy the folder **build** to the destination and get started with a apache or nginx server.
 
 Other env-variables have to be changed in the backend because the frontend just requests them.
