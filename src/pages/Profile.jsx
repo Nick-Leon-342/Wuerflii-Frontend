@@ -12,9 +12,9 @@ import useErrorHandling from '../hooks/useErrorHandling'
 
 import LoaderDots from '../components/Loader/Loader_Dots'
 import PopupOptions from '../components/Popup/Popup_Options'
-import CustomButton from '../components/others/Custom_Button'
+import CustomButton from '../components/misc/Custom_Button'
 import Previous from '../components/NavigationElements/Previous'
-import RegistrationForm from '../components/others/RegistrationForm'
+import RegistrationForm from '../components/misc/Form__Username_And_Password'
 
 import { get__user, patch__user } from '../api/user'
 import { RegexContext } from '../context/Regex'
@@ -105,7 +105,7 @@ export default function Profile() {
 		axiosPrivate.delete('/user').then(() => {
 
 			query_client.clear()
-			navigate('/reglog', { replace: true })
+			navigate('/registration_and_login', { replace: true })
 
 		}).catch(err => {
 

@@ -219,7 +219,7 @@ export default function Game_Options({
 						<button 
 							onClick={new_game} 
 							className='button'
-						>Neues Spiel</button>
+						>Spiel verwerfen</button>
 					</>}
 				</section>
 

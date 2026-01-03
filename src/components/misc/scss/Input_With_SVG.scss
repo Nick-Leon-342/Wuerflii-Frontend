@@ -1,0 +1,25 @@
+
+
+.input_with_svg--container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid var(--text--muted);
+
+	&.valid path { fill: var(--green); }
+	&.invalid path { fill: var(--red); }
+
+	svg {
+		width: 30px;
+		height: 30px;
+		path { fill: var(--text--muted); }
+	}
+
+	input {
+		border: none;
+		padding: 10px;
+		min-height: fit-content;
+		&:focus { border: none !important; }
+	}
+}

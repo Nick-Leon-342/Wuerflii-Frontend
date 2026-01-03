@@ -11,10 +11,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import CustomButton from '../../components/others/Custom_Button'
+import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
-import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
+import DragAndDropNameColorList from '../../components/misc/DragAndDropNameColorList'
 
 import { ReactComponent as PersonAdd } from '../../svg/Person_Add.svg'
 import { ReactComponent as PersonRemove } from '../../svg/Person_Remove.svg'
