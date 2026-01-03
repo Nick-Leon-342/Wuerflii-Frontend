@@ -8,7 +8,7 @@ import { ReactComponent as DiceFive } from '../svg/Dice_Five.svg'
 import { ReactComponent as DiceSix } from '../svg/Dice_Six.svg'
 import { ReactComponent as ArrowLeft } from '../svg/Arrow_Left.svg'
 
-export const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL
+export const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
 
 
 
