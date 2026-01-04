@@ -11,10 +11,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import CustomButton from '../../components/others/Custom_Button'
+import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
-import DragAndDropNameColorList from '../../components/others/DragAndDropNameColorList'
+import DragAndDropNameColorList from '../../components/misc/DragAndDropNameColorList'
 
 import { ReactComponent as PersonAdd } from '../../svg/Person_Add.svg'
 import { ReactComponent as PersonRemove } from '../../svg/Person_Remove.svg'
@@ -39,8 +39,8 @@ export default function Session_Players() {
 
 	// ____________________ Players ____________________
 
-	const [ isInit, setIsInit ] = useState(false)
-	const [ list_players, setList_players ] = useState([])
+	const [ isInit, 		setIsInit		] = useState(false)
+	const [ list_players, 	setList_players	] = useState([])
 
 
 
@@ -96,11 +96,9 @@ export default function Session_Players() {
 	useEffect(() => {
 		
 		setIsInit(tmp__list_players?.length === 0)
-		// setList_players(tmp__list_players?.length > 0 ? tmp__list_players : [ new_player() ])
-		setList_players(tmp__list_players?.length > 0 ? structuredClone(tmp__list_players) : [ new_player() ])
+		setList_players(tmp__list_players?.length > 0 ? structuredClone(tmp__list_players) : [ new_player([]) ])
 
-		// eslint-disable-next-line
-	}, [ tmp__list_players ])
+	}, [ tmp__list_players ]) // eslint-disable-line
 
 
 
@@ -151,11 +149,11 @@ export default function Session_Players() {
 
 
 
-	const new_player = () => { 
+	const new_player = ( list ) => { 
 		return {
 			id: v4(), 
-			Name: `Spieler`, 
-			Color: list_players.length % 2 === 0 ? '#ffffff' : '#ADD8E6'
+			Name: `Spieler_${list.length + 1}`, 
+			Color: list.length % 2 === 0 ? '#ffffff' : '#ADD8E6'
 		}
 	}
 
@@ -165,7 +163,7 @@ export default function Session_Players() {
 
 		setList_players(prev => {
 			const list = [ ...prev ]
-			list.push(new_player())
+			list.push(new_player(prev))
 			return list
 		})
 		
@@ -173,7 +171,7 @@ export default function Session_Players() {
 
 	const remove_player = () => {
 
-		if(list_players.length === 1) return setList_players(() => [ new_player() ])
+		if(list_players.length === 1) return setList_players(() => [ new_player([]) ])
 
 		setList_players(prev => {
 			const list = [ ...prev ]

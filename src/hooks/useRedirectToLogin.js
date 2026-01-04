@@ -11,5 +11,5 @@ export default function useRedirectToLogin() {
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	return () => navigate(`/reglog?next=${location.pathname}${location.search}`)
+	return () => navigate(`/registration_and_login?next=${location.pathname}${location.search}`)
 }

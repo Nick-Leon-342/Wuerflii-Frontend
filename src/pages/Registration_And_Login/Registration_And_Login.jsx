@@ -1,6 +1,6 @@
 
 
-import './scss/Reglog.scss'
+import './scss/Registration_And_Login.scss'
 
 import packageJson from '../../../package.json'
 import { useState, useEffect, useContext } from 'react'
@@ -12,19 +12,22 @@ import { ErrorContext } from '../../context/Error'
 import { RegexContext } from '../../context/Regex'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import FancyInput from '../../components/others/FancyInput'
-import CustomButton from '../../components/others/Custom_Button'
+import CustomButton from '../../components/misc/Custom_Button'
+import InputWithSVG from '../../components/misc/Input_With_SVG'
+import RegistrationForm from '../../components/misc/Form__Username_And_Password'
 import CustomLink from '../../components/NavigationElements/CustomLink'
-import RegistrationForm from '../../components/others/RegistrationForm'
 
+import { ReactComponent as Key } from '../../svg/Key.svg'
 import { ReactComponent as Icon } from '../../svg/default.svg'
+import { ReactComponent as Person } from '../../svg/Person.svg'
+
 import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
 
 
 
 
-export default function Reglog() {
+export default function Registration_And_Login() {
 
     const { setAuth } = useAuth()
 	const location = useLocation()
@@ -36,12 +39,13 @@ export default function Reglog() {
 	const { NAME_REGEX, PASSWORD_REGEX } = useContext(RegexContext)
 	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
 
-    const [ Name, setName ] = useState('')
-    const [ Password, setPassword ] = useState('')
+    const [ name, 				setName				] = useState('')
+    const [ password, 			setPassword			] = useState('')
+    const [ password_confirm,	setPassword_confirm	] = useState('')
 	
-	const [ loading, setLoading ] = useState(false)
+	const [ loading, 			setLoading			] = useState(false)
 
-	const [ show_login, setShow_login ] = useState(true)
+	const [ show_login, 		setShow_login		] = useState(true)
 
 
 
@@ -63,7 +67,11 @@ export default function Reglog() {
 		// eslint-disable-next-line
 	}, [])
 
-	useEffect(() => setError(''), [ Name, Password, setError ])
+	useEffect(() => setError(''), [ name, password, setError ])
+
+
+
+
 
     const handleSubmit = event => {
 
@@ -78,14 +86,17 @@ export default function Reglog() {
 
 	const registration = () => {
 		
-		if(!Name || !NAME_REGEX.test(Name) || !Password || !PASSWORD_REGEX.test(Password)) return setError('Bitte alles richtig ausfüllen!')		
+		if(!name || !NAME_REGEX.test(name) || !password || !PASSWORD_REGEX.test(password)) return setError('Bitte alles richtig ausfüllen.')
+		if(password !== password_confirm) return setError('Passwörter stimmen nicht überein.')
 		setLoading(true)
 		setError('')
 
 
 		axiosDefault.post('/auth/registration', 
-			{ Name, Password },  
-			{
+			{ 
+				Name: name, 
+				Password: password, 
+			}, {
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
@@ -119,8 +130,10 @@ export default function Reglog() {
 
 
 		axiosDefault.post('/auth/login', 
-			{ Name, Password }, 
-			{
+			{ 
+				Name: name, 
+				Password: password, 
+			}, {
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
@@ -152,46 +165,46 @@ export default function Reglog() {
 
 	
     return <>
-		<div className='reglog'>
+		<div className='registration_and_login'>
 
-			<div className='reglog-logo_container'>
+			<div className='registration_and_login--logo_container'>
 
-				<div className='reglog-logo'>
+				<div className='registration_and_login--logo'>
 					<Icon/>
 					<h1>Wuerflii</h1>
 				</div>
-				<div className='reglog-version'>
+				<div className='registration_and_login--version'>
 					<span>v_{packageJson.version}</span>
 				</div>
 
 			</div>
 
 
-			<div className='reglog-line'/>
+			<div className='registration_and_login--line'/>
 
 
-			<div className='reglog-page'>
+			<div className='registration_and_login--page'>
 
 				<form onSubmit={handleSubmit}>
 
 					{show_login && <>
 
-						<FancyInput 
-							id='Username' 
-							type='text' 
-							text='Benutzername' 
-							value={Name} 
+						<InputWithSVG
+							type='text'
+							value={name}
+							SVG={<Person/>}
 							isRequired={true}
-							onChange={({ target }) => setName(target.value)} 
+							name='Benutzername'
+							onValueChange={({ target }) => setName(target.value)}
 						/>
 
-						<FancyInput 
-							id='Password' 
-							type='password' 
-							text='Passwort' 
-							value={Password} 
+						<InputWithSVG
+							SVG={<Key/>}
+							type='password'
+							name='Passwort'
+							value={password}
 							isRequired={true}
-							onChange={({ target }) => setPassword(target.value)} 
+							onValueChange={({ target }) => setPassword(target.value)}
 						/>
 
 					</>}
@@ -201,12 +214,15 @@ export default function Reglog() {
 					{!show_login && <>
 
 						<RegistrationForm 
-							Name={Name} 
+							name={name} 
 							setName={setName} 
 							
-							Password={Password} 
+							password={password} 
 							setPassword={setPassword} 
 	
+							password_confirm={password_confirm}
+							setPassword_confirm={setPassword_confirm}
+
 							isRequired={true}
 						/>
 

@@ -5,12 +5,12 @@
 	height: 50px;
 	border-radius: 10px;
 	border: 1px solid;
-	background: linear-gradient(90deg, var(--bg) 25%, var(--bg_2) 50%, var(--bg) 75%);
+	background: linear-gradient(90deg, var(--bg) 25%, var(--bg--dark) 50%, var(--bg) 75%);
 	background-size: 200% 100%;
 	animation: loader_box_effect 3s infinite;
 	
 	&.loader_box-dark {
-		background: linear-gradient(90deg, var(--bg_2) 25%, var(--text-color) 50%, var(--bg_2) 75%);
+		background: linear-gradient(90deg, var(--bg--dark) 25%, var(--text) 50%, var(--bg--dark) 75%);
 		background-size: 200% 100%;
 		animation: loader_box_effect 3s infinite;
 	}

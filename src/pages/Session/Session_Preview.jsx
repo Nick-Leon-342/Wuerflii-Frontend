@@ -15,7 +15,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
-import CustomButton from '../../components/others/Custom_Button'
+import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
 import CustomLink from '../../components/NavigationElements/CustomLink'

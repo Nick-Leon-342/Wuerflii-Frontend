@@ -14,7 +14,7 @@ import { ServerVersionContext } from '../../context/Server_Version'
 
 import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
-import CustomButton from '../others/Custom_Button'
+import CustomButton from '../misc/Custom_Button'
 
 import { ReactComponent as Settings } from '../../svg/Settings.svg'
 
@@ -107,7 +107,7 @@ export default function Popup_Options({
 			
 			query_client.clear()
 			setAuth({ accessToken: '' })
-			navigate('/reglog', { replace: true })
+			navigate('/registration_and_login', { replace: true })
 				
 		}).catch(err => {
 
@@ -171,7 +171,7 @@ export default function Popup_Options({
 						<Link 
 							to='/profile'
 							className='button button_reverse_green button_scale_2'
-						>Profil</Link>
+						>Anmeldedaten ändern</Link>
 					</section>
 
 					<section>

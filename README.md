@@ -20,13 +20,20 @@ If anyone ever sees this project and wants to help me improve this project, I wo
 ___
 
 
-Wuerflii uses only `domain.com/` as url but you can change it by editing **homepage** in _package.json_.
+Wuerflii uses only `wuerflii.domain.com/` as url but you can change it by editing **homepage** in _package.json_.
 
 
 ### Development
 
 Create a _.env.development.local_-file (e.g. edit _.env.example_). Keep in mind that you have to completely restart ReactJS if you edited any _.env_-file for React to correctly implement those values.
 Use `npm start` to start the dev-server.
+
+You can set the backend URL in a `.env.development.local` file. (Make a copy of `.env.example`)
+
+For generating icons: `https://www.npmjs.com/package/pwa-asset-generator`
+```
+npx pwa-asset-generator public/default.svg public -m public/manifest.json --icon-only --favicon
+```
 
 
 ### Production

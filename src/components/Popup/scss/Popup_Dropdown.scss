@@ -4,14 +4,13 @@
 	position: absolute;
 	background-color: var(--bg);
 	border-radius: 10px;
-	border: 1px solid;
 	opacity: 0;
 	transform: translateY(-20px);
 	transition: opacity ease .3s, transform ease .3s, z-index ease .3s;
 	z-index: -1;
 	font-size: 20px;
 	
-	box-shadow: 0px 0px 10px 1px var(--box-shadow-color);
+	box-shadow: 0px 5px 10px 1px var(--text--muted);
 	
 	&.popup_dropdown_show {
 		opacity: 1;

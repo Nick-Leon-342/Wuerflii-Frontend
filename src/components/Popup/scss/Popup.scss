@@ -19,9 +19,9 @@
 		flex-direction: column;
 		gap: var(--padding);
 		background-color: var(--bg);
-		box-shadow: 0 0 20px 0 var(--box-shadow-color);
+		box-shadow: 0 0 20px -5px var(--text--muted);
 		padding: var(--padding);
-		border-radius: 5px;
+		border-radius: var(--padding);
 	
 		.close-container svg { height: 40px; }
 

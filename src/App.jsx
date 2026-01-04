@@ -5,9 +5,9 @@ import './App.scss'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
 
-// ____________________ Reglog ____________________
+// ____________________ RegistrationAndLogin ____________________
 
-import Reglog from './pages/Reglog/Reglog'
+import RegistrationAndLogin from './pages/Registration_And_Login/Registration_And_Login'
 import PersistLogin from './logic/PersistLogin'
 
 import Profile from './pages/Profile'
@@ -46,7 +46,7 @@ export default function App() {
 				<Routes>
 
 					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/reglog' element={<Reglog />} />
+					<Route path='/registration_and_login' element={<RegistrationAndLogin />} />
 
 
 					{/* 
