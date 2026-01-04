@@ -151,7 +151,7 @@ export const list_rows = [
 		Possible_Entries: [ 50, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 0 ], // Feedback from my parents: You often get higher values than lower values
 		td: 
 		<>
-			<td><label>Dreiferpasch</label></td>
+			<td><label>Dreierpasch</label></td>
 			<td><label>alle Augen<br/>zählen</label></td>
 		</>,
 	}, {
