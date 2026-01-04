@@ -130,7 +130,9 @@ export default function Profile() {
 
 		<div className='profile'>
 
-			<Previous onClick={() => navigate(-1, { replace: true })}/>
+			<Previous onClick={() => navigate(-1, { replace: true })}>
+				<h1>Anmeldedaten ändern</h1>
+			</Previous>
 
 			{/* ____________________ Loading animation ____________________ */}
 			{isLoading__user && <div className='profile_loader'><LoaderDots/></div>}
@@ -154,7 +156,7 @@ export default function Profile() {
 					/>
 
 					<CustomButton
-						text='Speichern'
+						text='Ändern'
 						loading={mutate__user.isPending}
 					/>
 

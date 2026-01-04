@@ -86,7 +86,8 @@ export default function Registration_And_Login() {
 
 	const registration = () => {
 		
-		if(!name || !NAME_REGEX.test(name) || !password || !PASSWORD_REGEX.test(password)) return setError('Bitte alles richtig ausfüllen!')		
+		if(!name || !NAME_REGEX.test(name) || !password || !PASSWORD_REGEX.test(password)) return setError('Bitte alles richtig ausfüllen.')
+		if(password !== password_confirm) return setError('Passwörter stimmen nicht überein.')
 		setLoading(true)
 		setError('')
 

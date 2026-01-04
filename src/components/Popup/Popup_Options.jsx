@@ -171,7 +171,7 @@ export default function Popup_Options({
 						<Link 
 							to='/profile'
 							className='button button_reverse_green button_scale_2'
-						>Profil</Link>
+						>Anmeldedaten ändern</Link>
 					</section>
 
 					<section>
