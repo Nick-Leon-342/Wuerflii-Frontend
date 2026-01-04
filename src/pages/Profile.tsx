@@ -6,7 +6,7 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { ErrorContext } from '../context/Error'
+import { ErrorContext } from '../context/Provider__Error'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
@@ -17,7 +17,7 @@ import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/misc/Form__Username_And_Password'
 
 import { get__user, patch__user } from '../api/user'
-import { RegexContext } from '../context/Regex'
+import { RegexContext } from '../context/Provider__Regex'
 
 
 

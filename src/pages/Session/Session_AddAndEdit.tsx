@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { ErrorContext } from '../../context/Error'
+import { ErrorContext } from '../../context/Provider__Error'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 

@@ -8,8 +8,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import useAuth from '../../hooks/useAuth'
 import { axiosDefault } from '../../api/axios'
-import { ErrorContext } from '../../context/Error'
-import { RegexContext } from '../../context/Regex'
+import { RegexContext } from '../../context/Provider__Regex'
+import Context__Error from '../../context/Provider__Error'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import CustomButton from '../../components/misc/Custom_Button'
@@ -17,9 +17,9 @@ import InputWithSVG from '../../components/misc/Input_With_SVG'
 import RegistrationForm from '../../components/misc/Form__Username_And_Password'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 
-import { ReactComponent as Key } from '../../svg/Key.svg'
-import { ReactComponent as Icon } from '../../svg/default.svg'
-import { ReactComponent as Person } from '../../svg/Person.svg'
+import Key from '../../svg/Key.svg'
+import Icon from '../../svg/default.svg'
+import Person from '../../svg/Person.svg'
 
 import { UniversalLoaderContext } from '../../context/Universal_Loader'
 
@@ -35,7 +35,7 @@ export default function Registration_And_Login() {
 	const [ next, setNext ] = useState('')
 	const handle_error = useErrorHandling()
 
-	const { setError } = useContext(ErrorContext)
+	const { setError } = useContext(Context__Error)
 	const { NAME_REGEX, PASSWORD_REGEX } = useContext(RegexContext)
 	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
 

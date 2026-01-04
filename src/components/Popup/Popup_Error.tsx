@@ -4,18 +4,19 @@ import './scss/Popup_Error.scss'
 
 import { useEffect, useState } from 'react'
 
+import type { Type__Context__Error } from '../../types/Type__Context__Error'
+
 
 
 
 
 export default function Popup_Error({
-	className, 
 	setError, 
 	error, 
-}) {
+}: Type__Context__Error) {
 
-	const [ progress, setProgress ] = useState(100)
-	const [ isHovered, setIsHovered ] = useState(false)
+	const [ progress, 	setProgress		] = useState<number>(100)
+	const [ isHovered, 	setIsHovered	] = useState<boolean>(false)
 
 
 
@@ -28,9 +29,9 @@ export default function Popup_Error({
 		setTimeout(() => setProgress(0), 50)
   
 		// clear popup
-		let timeout
+		let timeout: ReturnType<typeof setTimeout> | undefined
 		if(!isHovered) 
-			timeout = setTimeout(() => setError(), 5000) // 5sec timer ( if you want to edit the timer you also have to edit the progress-transition time in scss )
+			timeout = setTimeout(() => setError(''), 5000) // 5sec timer ( if you want to edit the timer you also have to edit the progress-transition time in scss )
 
 		return () => {
 			clearTimeout(timeout)
@@ -39,14 +40,14 @@ export default function Popup_Error({
 
 	}, [ error, setError, isHovered ])
 
-	useEffect(() => {
-		if(error) setTimeout(() => setProgress(isHovered ? 100 : 0) , 50)
-	}, [ isHovered, error ])
+	useEffect(() => { if(error) setTimeout(() => setProgress(isHovered ? 100 : 0) , 50) }, [ isHovered, error ])
 
-	useEffect(() => {
-		setIsHovered(true)
-		setTimeout(() => setIsHovered(false), 10)
-	}, [ error ])
+	// useEffect(() => {
+	// 	if(!error) return
+	// 	setProgress(0)
+	// 	// setIsHovered(true)
+	// 	// setTimeout(() => setIsHovered(false), 10)
+	// }, [ error ])
 
 
 
@@ -56,7 +57,7 @@ export default function Popup_Error({
 
 	return <>
 		<div 
-			className={`popup_error${className ? ` ${className}` : ''}`}
+			className='popup_error'
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>

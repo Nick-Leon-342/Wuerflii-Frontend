@@ -1,20 +1,22 @@
 
 
-import { ReactComponent as DiceOne } from '../svg/Dice_One.svg'
-import { ReactComponent as DiceTwo } from '../svg/Dice_Two.svg'
-import { ReactComponent as DiceThree } from '../svg/Dice_Three.svg'
-import { ReactComponent as DiceFour } from '../svg/Dice_Four.svg'
-import { ReactComponent as DiceFive } from '../svg/Dice_Five.svg'
-import { ReactComponent as DiceSix } from '../svg/Dice_Six.svg'
-import { ReactComponent as ArrowLeft } from '../svg/Arrow_Left.svg'
+import DiceOne from '../svg/Dice_One.svg'
+import DiceTwo from '../svg/Dice_Two.svg'
+import DiceThree from '../svg/Dice_Three.svg'
+import DiceFour from '../svg/Dice_Four.svg'
+import DiceFive from '../svg/Dice_Five.svg'
+import DiceSix from '../svg/Dice_Six.svg'
+import ArrowLeft from '../svg/Arrow_Left.svg'
 
-export const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
+import type { Type__Row } from '../types/Type__Row'
+
+export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
 
 
 
 
 
-export const formatDate = date => {
+export function formatDate(date: Date): string {
 
 	const d = new Date(date)
 	const day = d.getDate()
@@ -31,14 +33,13 @@ export const formatDate = date => {
 
 
 
-
-export const list_rows = [
+export const list_rows: Array<Type__Row> = [
 
 	{
-		Name: 'Upper_Table_1', 
-		Possible_Entries: [ 0, 1, 2, 3, 4, 50 ],
-		Border_Top: true, 
-		td:
+		Name: 				'Upper_Table_1', 
+		Possible_Entries: 	[ 0, 1, 2, 3, 4, 50 ],
+		Border_Top: 		true, 
+		td: 
 		<>
 			<td>
 				<DiceOne/>
@@ -48,8 +49,8 @@ export const list_rows = [
 			<td><label>Nur Einser<br/>zählen</label></td>
 		</>, 
 	}, {
-		Name: 'Upper_Table_2', 
-		Possible_Entries: [ 0, 2, 4, 6, 8, 50 ],
+		Name: 				'Upper_Table_2', 
+		Possible_Entries: 	[ 0, 2, 4, 6, 8, 50 ],
 		td: 
 		<>
 			<td>
