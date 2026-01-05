@@ -23,7 +23,7 @@ import { get__session, get__session_env_variables, patch__session, post__session
 
 
 
-export default function Session_AddAndEdit() {
+export default function Session__Add_And_Edit() {
 
 	const navigate = useNavigate()
 	const query_client = useQueryClient()

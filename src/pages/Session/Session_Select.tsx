@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { UniversalLoaderContext } from '../../context/Universal_Loader'
+import { UniversalLoaderContext } from '../../context/Provider/Provider__Universal_Loader'
 
 import LoaderBox from '../../components/Loader/Loader_Box'
 import OptionsDialog from '../../components/Popup/Popup_Options'

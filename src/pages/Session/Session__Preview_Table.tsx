@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { UniversalLoaderContext } from '../../context/Universal_Loader'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import Table from '../../components/Game/Game_Tables/Table'
 import OptionsDialog from '../../components/Popup/Popup_Options'
@@ -23,7 +23,7 @@ import { get__session_players } from '../../api/session/session_players'
 
 
 
-export default function Session_Preview_Table() {
+export default function Session__Preview_Table() {
 
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
@@ -31,7 +31,7 @@ export default function Session_Preview_Table() {
 	
 	const { session_id, finalscore_id } = useParams()
 
-	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 
 	// __________________________________________________ Queries __________________________________________________

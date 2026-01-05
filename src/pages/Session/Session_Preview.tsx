@@ -12,7 +12,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { UniversalLoaderContext } from '../../context/Universal_Loader'
+import { UniversalLoaderContext } from '../../context/Provider/Provider__Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
 import CustomButton from '../../components/misc/Custom_Button'
@@ -21,8 +21,8 @@ import PopupDropdown from '../../components/Popup/Popup_Dropdown'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 import PopupEditPreview from '../../components/Popup/Popup_Edit_Preview'
 
-import { ReactComponent as Settings } from '../../svg/Settings.svg'
-import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
+import Settings from '../../svg/Settings.svg'
+import List_Sort from '../../svg/List_Sort.svg'
 
 import { get__user } from '../../api/user'
 import { get__final_scores_page } from '../../api/final_score'
@@ -33,7 +33,7 @@ import { get__session, patch__session_date } from '../../api/session/session'
 
 
 
-export default function Session_Preview() {
+export default function Session__Preview() {
 	
 	const navigate = useNavigate()
 	const query_client = useQueryClient()

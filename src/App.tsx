@@ -7,32 +7,32 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
 // ____________________ RegistrationAndLogin ____________________
 
-import RegistrationAndLogin from './pages/Registration_And_Login/Registration_And_Login'
-// import PersistLogin from './logic/PersistLogin'
+import Registration_And_Login from './pages/Registration_And_Login/Registration_And_Login'
+import PersistLogin from './logic/PersistLogin'
 
-// import Profile from './pages/Profile'
-
-
-// // ____________________ Analytics ____________________
-
-// import Analytics from './pages/Analytics/Analytics'
-// import AnalyticsSession from './pages/Analytics/Analytics_Session'
+import Profile from './pages/Profile'
 
 
-// // ____________________ Session ____________________
+// ____________________ Analytics ____________________
 
-// import SessionAddAndEdit from './pages/Session/Session_AddAndEdit'
-// import SessionPlayers from './pages/Session/Session_Players'
-// import SessionPreview from './pages/Session/Session_Preview'
-// import SessionPreviewTable from './pages/Session/Session_Preview-Table'
-
-// import SessionSelect from './pages/Session/Session_Select'
+import Analytics from './pages/Analytics/Analytics'
+import Analytics__Session from './pages/Analytics/Analytics_Session'
 
 
-// // ____________________ Game ____________________
+// ____________________ Session ____________________
 
-// import End from './pages/Game/End'
-// import Game from './pages/Game/Game'
+import Session__Add_And_Edit from './pages/Session/Session__Add_And_Edit'
+import Session__Players from './pages/Session/Session__Players'
+import Session__Preview from './pages/Session/Session_Preview'
+import Session__Preview_Table from './pages/Session/Session__Preview_Table'
+
+import Session__Select from './pages/Session/Session_Select'
+
+
+// ____________________ Game ____________________
+
+import End from './pages/Game/End'
+import Game from './pages/Game/Game'
 
 
 
@@ -46,13 +46,42 @@ export default function App() {
 				<Routes>
 
 					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/registration_and_login' element={<RegistrationAndLogin />} />
+					<Route path='/registration_and_login' element={<Registration_And_Login />} />
 
 
 					{/* 
 						Routes that are protected by a token
 						PersistLogin is needed, so that the user doesn't have to login after page refresh
 					*/}
+					<Route element={<PersistLogin />}>
+
+						<Route path='/profile' element={<Profile />} />
+
+
+						{/* __________ Analytics __________ */}
+
+						<Route path='/analytics' element={<Analytics />} />
+						<Route path='/session/:session_id/analytics' element={<Analytics__Session />} />
+
+
+						{/* __________ Session __________ */}
+
+						<Route path='/' element={<Session__Select />} />
+						<Route path='/session' element={<Session__Add_And_Edit />} /> 
+						<Route path='/session/:session_id' element={<Session__Add_And_Edit />} /> 
+						<Route path='/session/:session_id/players' element={<Session__Players />} />
+						<Route path='/session/:session_id/preview' element={<Session__Preview />} />
+						<Route path='/session/:session_id/preview/table/:finalscore_id' element={<Session__Preview_Table />} />
+
+
+						{/* __________ Game __________ */}
+
+						<Route path='/game' element={<Game />} />
+						<Route path='/game/end' element={<End />} />
+						
+					</Route>
+
+					<Route path='*' element={<Session__Select />} />
 
 				</Routes>
 			</Router>

@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { UniversalLoaderContext } from '../../context/Universal_Loader'
+import { UniversalLoaderContext } from '../../context/Provider/Provider__Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
 import Table from '../../components/Game/Game_Tables/Table'

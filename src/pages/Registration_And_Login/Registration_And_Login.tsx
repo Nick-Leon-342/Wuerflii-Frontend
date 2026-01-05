@@ -8,20 +8,21 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import useAuth from '../../hooks/useAuth'
 import { axiosDefault } from '../../api/axios'
-import { RegexContext } from '../../context/Provider__Regex'
-import Context__Error from '../../context/Provider__Error'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import CustomButton from '../../components/misc/Custom_Button'
-import InputWithSVG from '../../components/misc/Input_With_SVG'
-import RegistrationForm from '../../components/misc/Form__Username_And_Password'
-import CustomLink from '../../components/NavigationElements/CustomLink'
+import Custom_Button from '../../components/misc/Custom_Button'
+import Input_With_SVG from '../../components/misc/Input_With_SVG'
+import Custom_Link from '../../components/NavigationElements/CustomLink'
+import Form__Username_And_Password from '../../components/misc/Form__Username_And_Password'
+import type { AxiosError } from 'axios'
 
 import Key from '../../svg/Key.svg'
 import Icon from '../../svg/default.svg'
 import Person from '../../svg/Person.svg'
 
-import { UniversalLoaderContext } from '../../context/Universal_Loader'
+import Context__Regex from '../../Provider_And_Context/Provider_And_Context__Regex'
+import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 
 
@@ -36,12 +37,12 @@ export default function Registration_And_Login() {
 	const handle_error = useErrorHandling()
 
 	const { setError } = useContext(Context__Error)
-	const { NAME_REGEX, PASSWORD_REGEX } = useContext(RegexContext)
-	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+	const { NAME_REGEX, PASSWORD_REGEX } = useContext(Context__Regex)
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
-    const [ name, 				setName				] = useState('')
-    const [ password, 			setPassword			] = useState('')
-    const [ password_confirm,	setPassword_confirm	] = useState('')
+    const [ name, 				setName				] = useState<string>('')
+    const [ password, 			setPassword			] = useState<string>('')
+    const [ password_confirm,	setPassword_confirm	] = useState<string>('')
 	
 	const [ loading, 			setLoading			] = useState(false)
 
@@ -53,19 +54,21 @@ export default function Registration_And_Login() {
 
 
 	useEffect(() => {
-
-		setError('')
-		setName('')
-		setPassword('')
-
-		// eslint-disable-next-line
-	}, [ show_login ])
+		function reset_ui() {
+			setError('')
+			setName('')
+			setPassword('')
+		}
+		reset_ui()
+	}, [ show_login ]) // eslint-disable-line
 
 	useEffect(() => {
-		setLoading__universal_loader(false)
-		setNext(new URLSearchParams(location.search).get('next'))
-		// eslint-disable-next-line
-	}, [])
+		function start() {
+			setLoading__universal_loader(false)
+			setNext(new URLSearchParams(location.search).get('next') || '')
+		}
+		start()
+	}, []) // eslint-disable-line
 
 	useEffect(() => setError(''), [ name, password, setError ])
 
@@ -73,7 +76,7 @@ export default function Registration_And_Login() {
 
 
 
-    const handleSubmit = event => {
+	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 
 		event.preventDefault()
 		if(show_login) {
@@ -147,7 +150,7 @@ export default function Registration_And_Login() {
 			navigate(next || '/', { replace: true })
 
 
-		}).catch((err) => {
+		}).catch((err: AxiosError) => {
 
 			handle_error({
 				err, 
@@ -189,7 +192,7 @@ export default function Registration_And_Login() {
 
 					{show_login && <>
 
-						<InputWithSVG
+						<Input_With_SVG
 							type='text'
 							value={name}
 							SVG={<Person/>}
@@ -198,7 +201,7 @@ export default function Registration_And_Login() {
 							onValueChange={({ target }) => setName(target.value)}
 						/>
 
-						<InputWithSVG
+						<Input_With_SVG
 							SVG={<Key/>}
 							type='password'
 							name='Passwort'
@@ -213,7 +216,7 @@ export default function Registration_And_Login() {
 
 					{!show_login && <>
 
-						<RegistrationForm 
+						<Form__Username_And_Password 
 							name={name} 
 							setName={setName} 
 							
@@ -230,7 +233,7 @@ export default function Registration_And_Login() {
 
 
 
-					<CustomButton 
+					<Custom_Button 
 						text={show_login ? 'Anmelden' : 'Registrieren'}
 						loading={loading}
 					/>
@@ -239,7 +242,7 @@ export default function Registration_And_Login() {
 
 
 
-				<CustomLink 
+				<Custom_Link 
 					text={show_login ? 'Erstellen' : 'Anmelden'}
 					textBefore={show_login ? 'Noch keinen Account?' : 'Bereits einen Account?'}
 					onClick={() => setShow_login(prev => !prev)}

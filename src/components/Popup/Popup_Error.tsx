@@ -4,7 +4,7 @@ import './scss/Popup_Error.scss'
 
 import { useEffect, useState } from 'react'
 
-import type { Type__Context__Error } from '../../types/Type__Context__Error'
+import type { Type__Context__Error } from '../../types/Type__Context/Type__Context__Error'
 
 
 

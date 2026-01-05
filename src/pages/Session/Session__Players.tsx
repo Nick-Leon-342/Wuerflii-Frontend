@@ -3,7 +3,6 @@
 import './scss/Session_Players.scss'
 
 import { v4 } from 'uuid'
-import { ErrorContext } from '../../context/Provider__Error'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -16,8 +15,10 @@ import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
 import DragAndDropNameColorList from '../../components/misc/DragAndDropNameColorList'
 
-import { ReactComponent as PersonAdd } from '../../svg/Person_Add.svg'
-import { ReactComponent as PersonRemove } from '../../svg/Person_Remove.svg'
+import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
+
+import Person_Add from '../../svg/Person_Add.svg'
+import Person_Remove from '../../svg/Person_Remove.svg'
 
 import { get__user } from '../../api/user'
 import { get__session_players, patch__session_players, post__session_players } from '../../api/session/session_players'
@@ -26,7 +27,7 @@ import { get__session_players, patch__session_players, post__session_players } f
 
 
 
-export default function Session_Players() {
+export default function Session__Players() {
 
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
@@ -34,7 +35,7 @@ export default function Session_Players() {
 	const handle_error = useErrorHandling()
 
 	const { session_id } = useParams()
-	const { setError } = useContext(ErrorContext)
+	const { setError } = useContext(Context__Error)
 
 
 	// ____________________ Players ____________________

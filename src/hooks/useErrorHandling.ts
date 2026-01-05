@@ -4,10 +4,22 @@ import { format } from 'date-fns'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import useRedirectToLogin from './useRedirectToLogin'
+import type { AxiosError } from 'axios';
 
 
 
 
+
+interface Type__Use__Error_Handling {
+    err:						AxiosError
+    handle_no_server_response?:	() => void
+    handle_401?:				() => void
+    handle_403?:				() => void
+    handle_404?:				() => void
+    handle_409?:				() => void
+    handle_500?:				() => void
+    handle_default?:			() => void
+}
 
 /**
  * 
@@ -49,7 +61,7 @@ export default function useErrorHandling() {
 		handle_500, 
 		
 		handle_default, 
-	}) => {
+	}: Type__Use__Error_Handling) => {
 
 		
 		// Server doesn't respond
@@ -92,7 +104,11 @@ export default function useErrorHandling() {
 				break
 
 			case 409:
-				handle_409()
+				if(handle_409) {
+					handle_409()
+				} else {
+					alert(err.response.data)
+				}
 				break
 
 			case 500:

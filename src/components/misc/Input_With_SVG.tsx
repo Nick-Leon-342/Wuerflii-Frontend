@@ -2,13 +2,32 @@
 
 import './scss/Input_With_SVG.scss'
 
-import { forwardRef } from 'react'
+import { forwardRef, type FocusEvent, type ChangeEvent, type ReactNode } from 'react'
 
 
 
 
 
-const Input_With_SVG = forwardRef(({
+interface Props__Input_With_SVG {
+	name:						string
+	type?:						'text' | 'password'
+	value:						string | number
+	onValueChange:				(event: ChangeEvent<HTMLInputElement>) => void
+
+	SVG?:						ReactNode
+	list__possible_entries?:	Array<number>
+	classNames?:				string
+	step?:						number
+
+	onFocus?:					(event: FocusEvent<HTMLInputElement>) => void
+	onBlur?:					(event: FocusEvent<HTMLInputElement>) => void
+
+	isRequired?: 				boolean
+	isInvalid?: 				boolean
+	isValid?: 					boolean
+}
+
+const Input_With_SVG = forwardRef<HTMLInputElement, Props__Input_With_SVG>(({
 	list__possible_entries, 
 	onValueChange, 
 	classNames, 
@@ -39,7 +58,7 @@ const Input_With_SVG = forwardRef(({
 				onFocus={onFocus}
 				placeholder={name}
 				list={`${name}-list`}
-				isRequired={isRequired}
+				required={isRequired}
 				onChange={onValueChange}
 			/>
 			{list__possible_entries && <>
