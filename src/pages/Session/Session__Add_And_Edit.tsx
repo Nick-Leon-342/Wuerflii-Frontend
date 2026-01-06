@@ -6,7 +6,6 @@ import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { ErrorContext } from '../../context/Provider__Error'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
@@ -18,6 +17,8 @@ import CustomLink from '../../components/NavigationElements/CustomLink'
 
 import { get__user } from '../../api/user'
 import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
+
+import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 
 
 
@@ -31,16 +32,16 @@ export default function Session__Add_And_Edit() {
 	const handle_error = useErrorHandling()
 
 	const { session_id } = useParams()
-	const { setError } = useContext(ErrorContext)
+	const { setError } = useContext(Context__Error)
 
 	
 	// ____________________ Session ____________________
 
-	const [ name, setName ] = useState('Partie')
-	const [ color, setColor ] = useState('#00FF00')
-	const [ columns, setColumns ] = useState('')
+	const [ name,				setName				] = useState('Partie')
+	const [ color,				setColor			] = useState('#00FF00')
+	const [ columns,			setColumns			] = useState('')
 
-	const [ options_columns, setOptions_columns ] = useState([])
+	const [ options_columns,	setOptions_columns	] = useState<Array<number>>([])
 
 
 
@@ -50,7 +51,7 @@ export default function Session__Add_And_Edit() {
 
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, isError: error__user } = useQuery({
+	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
 		queryFn: () => get__user(axiosPrivate), 
 	})
@@ -66,7 +67,7 @@ export default function Session__Add_And_Edit() {
 
 	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
 		queryFn: () => get__session(axiosPrivate, session_id), 
-		queryKey: [ 'session', +session_id ], 
+		queryKey: [ 'session', +(session_id || -1) ], 
 		enabled: Boolean(session_id), 
 	})
 
@@ -81,13 +82,13 @@ export default function Session__Add_And_Edit() {
 	}
 
 	useEffect(() => {
-
-		if(!session) return
-
-		setName(session.Name)
-		setColor(session.Color)
-		setColumns(session.Columns)
-
+		function initialize_existing_session() {
+			if(!session) return	
+			setName(session.Name)
+			setColor(session.Color)
+			setColumns(session.Columns)
+		}
+		initialize_existing_session()
 	}, [ session ])
 
 
@@ -104,7 +105,7 @@ export default function Session__Add_And_Edit() {
 		})
 	}
 
-	useEffect(() => setOptions_columns(Array.from({ length: env_variables?.MAX_COLUMNS }, (_, index) => index + 1)), [ env_variables ])
+	useEffect(() => setOptions_columns(Array.from({ length: env_variables?.MAX_COLUMNS }, (_, index) => index + 1)), [ env_variables ]) // eslint-disable-line
 
 
 
@@ -144,10 +145,10 @@ export default function Session__Add_And_Edit() {
 
 	const ok = async () => {
 		
-		if(!name) return setError('Bitte einen Namen für die Parte eingeben.')
-		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) return setError(`Der Name der Partie darf nicht länger als ${env_variables?.MAX_LENGTH_SESSION_NAME} Zeichen sein.`)
-		if(!session && !+columns) return setError('Bitte die Spaltenanzahl angeben.')
-		if(!session && +columns > env_variables?.MAX_COLUMNS) return setError(`Die maximale Spaltenanzahl ist ${env_variables?.MAX_COLUMNS}.`) 
+		if(!name)													return setError('Bitte einen Namen für die Parte eingeben.')
+		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) 	return setError(`Der Name der Partie darf nicht länger als ${env_variables?.MAX_LENGTH_SESSION_NAME} Zeichen sein.`)
+		if(!session && !+columns) 									return setError('Bitte die Spaltenanzahl angeben.')
+		if(!session && +columns > env_variables?.MAX_COLUMNS) 		return setError(`Die maximale Spaltenanzahl ist ${env_variables?.MAX_COLUMNS}.`) 
 
 		if(session) {
 			mutate__session_edit.mutate({

@@ -23,10 +23,10 @@ import Analytics__Session from './pages/Analytics/Analytics_Session'
 
 import Session__Add_And_Edit from './pages/Session/Session__Add_And_Edit'
 import Session__Players from './pages/Session/Session__Players'
-import Session__Preview from './pages/Session/Session_Preview'
+import Session__Preview from './pages/Session/Session__Preview'
 import Session__Preview_Table from './pages/Session/Session__Preview_Table'
 
-import Session__Select from './pages/Session/Session_Select'
+import Session__Select from './pages/Session/Session__Select'
 
 
 // ____________________ Game ____________________

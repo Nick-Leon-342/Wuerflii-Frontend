@@ -9,25 +9,26 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { UniversalLoaderContext } from '../../context/Provider/Provider__Universal_Loader'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import LoaderBox from '../../components/Loader/Loader_Box'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
 import CustomLink from '../../components/NavigationElements/CustomLink'
 
-import { ReactComponent as Trashcan } from '../../svg/Trashcan.svg'
-import { ReactComponent as ListSort } from '../../svg/List_Sort.svg'
-import { ReactComponent as ArrowDown } from '../../svg/Arrow_Down.svg'
+import Trashcan from '../../svg/Trashcan.svg'
+import ListSort from '../../svg/List_Sort.svg'
+import ArrowDown from '../../svg/Arrow_Down.svg'
 
 import { get__user, patch__user } from '../../api/user'
 import { delete__session, get__sessions_list } from '../../api/session/session'
+import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
 
 
 
 
 
-export default function Session_Select() {
+export default function Session__Select() {
 
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
@@ -203,7 +204,7 @@ export default function Session_Select() {
 
 	// __________________________________________________ Universal Loader __________________________________________________
 
-	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+	const { setLoading__universal_loader } = useContext<Type__Context__Universal_Loader>(Context__Universal_Loader)
 	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__list_sessions || mutate__change_order?.isPending), [ setLoading__universal_loader, isLoading__user, isLoading__list_sessions, mutate__change_order?.isPending ])
 
 

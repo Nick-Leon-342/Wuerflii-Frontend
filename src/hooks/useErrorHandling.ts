@@ -3,15 +3,17 @@
 import { format } from 'date-fns'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import type { AxiosError } from 'axios'
+
 import useRedirectToLogin from './useRedirectToLogin'
-import type { AxiosError } from 'axios';
+import axios from 'axios'
 
 
 
 
 
 interface Type__Use__Error_Handling {
-    err:						AxiosError
+    err:						AxiosError | Error
     handle_no_server_response?:	() => void
     handle_401?:				() => void
     handle_403?:				() => void
@@ -62,8 +64,13 @@ export default function useErrorHandling() {
 		
 		handle_default, 
 	}: Type__Use__Error_Handling) => {
-
 		
+		if(!axios.isAxiosError(err)) {
+			if(handle_default) return handle_default()
+			console.error(format(new Date(), 'HH:mm.ss:'), err)
+			return window.alert(`Ein unerwarteter Fehler ist aufgetreten: ${err?.message || 'Unbekannt'}`)
+		}
+
 		// Server doesn't respond
 		if(!err?.response) {
 	
