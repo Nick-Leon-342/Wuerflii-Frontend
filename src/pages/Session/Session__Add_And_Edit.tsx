@@ -9,16 +9,20 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import FancyInput from '../../components/misc/FancyInput'
+import Input_Fancy from '../../components/misc/Input_Fancy'
 import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import Previous from '../../components/NavigationElements/Previous'
-import CustomLink from '../../components/NavigationElements/CustomLink'
+import Custom_Link from '../../components/NavigationElements/Custom_Link'
 
 import { get__user } from '../../api/user'
 import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
 
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
+
+import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
+import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 
 
 
@@ -37,9 +41,9 @@ export default function Session__Add_And_Edit() {
 	
 	// ____________________ Session ____________________
 
-	const [ name,				setName				] = useState('Partie')
-	const [ color,				setColor			] = useState('#00FF00')
-	const [ columns,			setColumns			] = useState('')
+	const [ name,				setName				] = useState<string>('Partie')
+	const [ color,				setColor			] = useState<string>('#00FF00')
+	const [ columns,			setColumns			] = useState<number>(0)
 
 	const [ options_columns,	setOptions_columns	] = useState<Array<number>>([])
 
@@ -66,7 +70,7 @@ export default function Session__Add_And_Edit() {
 	// ____________________ Session ____________________
 
 	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(axiosPrivate, session_id), 
+		queryFn: () => get__session(axiosPrivate, +(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ], 
 		enabled: Boolean(session_id), 
 	})
@@ -114,7 +118,7 @@ export default function Session__Add_And_Edit() {
 	// __________________________________________________ Add / Edit __________________________________________________
 
 	const mutate__session_add = useMutation({
-		mutationFn: session_json => post__session(axiosPrivate, session_json),
+		mutationFn: (session_json: Type__Client_To_Server__Session__POST) => post__session(axiosPrivate, session_json),
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', data.id ], data)
 			navigate(`/session/${data.id}/players`, { replace: false })
@@ -127,9 +131,9 @@ export default function Session__Add_And_Edit() {
 	})
 
 	const mutate__session_edit = useMutation({
-		mutationFn: session_json => patch__session(axiosPrivate, session_json), 
+		mutationFn: (session_json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, session_json), 
 		onSuccess: ( _, session_json ) => {
-			query_client.setQueryData([ 'session', session_json.id ], prev => ({ ...prev, ...session_json }))
+			query_client.setQueryData([ 'session', session_json.SessionID ], (prev: Type__Session) => ({ ...prev, ...session_json }))
 			navigate(-1)
 		}, 
 		onError: err => {
@@ -152,16 +156,16 @@ export default function Session__Add_And_Edit() {
 
 		if(session) {
 			mutate__session_edit.mutate({
-				SessionID: session.id, 
-				Name: name, 
-				Color: color, 
-				Columns: +columns, 
+				SessionID:	session.id, 
+				Name: 		name, 
+				Color: 		color, 
+				Columns: 	+columns, 
 			})
 		} else {
 			mutate__session_add.mutate({
-				Name: name, 
-				Color: color, 
-				Columns: +columns, 
+				Name:		name, 
+				Color:		color, 
+				Columns:	+columns, 
 			})
 		}
 
@@ -189,13 +193,13 @@ export default function Session__Add_And_Edit() {
 
 			{/* ____________________ Name ____________________ */}
 
-			<FancyInput 
+			<Input_Fancy 
 				id='Name'
 				type='text'
 				value={name}
 				isRequired={true}
 				text='Name für die Partie'
-				onChange={({ target }) => setName(target.value)}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
 				isRed={env_variables?.MAX_LENGTH_SESSION_NAME !== 0 && name?.length > env_variables?.MAX_LENGTH_SESSION_NAME}
 			/>
 			
@@ -254,7 +258,7 @@ export default function Session__Add_And_Edit() {
 			/>
 
 			{!session_id && <>
-				<CustomLink 
+				<Custom_Link 
 					onClick={() => navigate('/', { replace: false })}
 					text='Spiel laden'
 				/>

@@ -2,30 +2,25 @@
 
 import './scss/Previous.scss'
 
-import { ReactComponent as ArrowBack } from '../../svg/Arrow_Back.svg'
+import ArrowBack from '../../svg/Arrow_Back.svg'
+
+import type { MouseEventHandler, ReactNode } from 'react'
 
 
 
 
 
-/**
- * 
- * A previous button component that triggers an onClick event and displays optional child elements.
- *
- * @param {Object} props - The properties passed to the component.
- * @param {string} [props.className] - An optional additional class name to style the previous button container.
- * @param {React.ReactNode} [props.children] - Optional child elements to display next to the button.
- * @param {function} props.onClick - The function to call when the button is clicked.
- *
- * @returns {JSX.Element} The rendered previous button element with optional children.
- * 
- */
+interface Props__Previous {
+	children?: 	ReactNode
+	onClick?: 	MouseEventHandler<HTMLButtonElement>
+	className?: string
+}
 
 export default function Previous({ 
 	className, 
 	children, 
 	onClick, 
-}) {
+}: Props__Previous) {
 
 	return <>
 		<div className={`previous${className ? ` ${className}` : ''}`}>

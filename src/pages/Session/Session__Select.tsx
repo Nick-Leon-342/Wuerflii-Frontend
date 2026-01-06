@@ -14,7 +14,7 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 import LoaderBox from '../../components/Loader/Loader_Box'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
-import CustomLink from '../../components/NavigationElements/CustomLink'
+import Custom_Link from '../../components/NavigationElements/Custom_Link'
 
 import Trashcan from '../../svg/Trashcan.svg'
 import ListSort from '../../svg/List_Sort.svg'
@@ -291,7 +291,7 @@ export default function Session__Select() {
 
 
 
-			<CustomLink 
+			<Custom_Link 
 				onClick={() => navigate('/session', { replace: false })}
 				text='Spiel erstellen'
 			/>

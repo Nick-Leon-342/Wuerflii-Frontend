@@ -16,7 +16,7 @@ interface Props__Input_With_SVG {
 
 	SVG?:						ReactNode
 	list__possible_entries?:	Array<number>
-	classNames?:				string
+	className?:				string
 	step?:						number
 
 	onFocus?:					(event: FocusEvent<HTMLInputElement>) => void
@@ -30,7 +30,7 @@ interface Props__Input_With_SVG {
 const Input_With_SVG = forwardRef<HTMLInputElement, Props__Input_With_SVG>(({
 	list__possible_entries, 
 	onValueChange, 
-	classNames, 
+	className, 
 	value, 
 	type, 
 	name, 
@@ -46,7 +46,7 @@ const Input_With_SVG = forwardRef<HTMLInputElement, Props__Input_With_SVG>(({
 	isValid, 
 }, ref) => {
 	return <>
-		<div className={`input_with_svg--container${isValid ? ' valid' : ''}${isInvalid ? ' invalid' : ''}${classNames ? ' ' + classNames : ''}`}>
+		<div className={`input_with_svg--container${isValid ? ' valid' : ''}${isInvalid ? ' invalid' : ''}${className ? ' ' + className : ''}`}>
 			{SVG}
 
 			<input

@@ -18,7 +18,7 @@ import Popup from '../../components/Popup/Popup'
 import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import PopupDropdown from '../../components/Popup/Popup_Dropdown'
-import CustomLink from '../../components/NavigationElements/CustomLink'
+import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import PopupEditPreview from '../../components/Popup/Popup_Edit_Preview'
 
 import Settings from '../../svg/Settings.svg'
@@ -425,7 +425,7 @@ export default function Session__Preview() {
 				loading={loading_preparing_game}
 			/>
 
-			<CustomLink 
+			<Custom_Link 
 				onClick={() => navigate('/',  { replace: false })}
 				text='Zurück'
 			/>

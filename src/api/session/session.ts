@@ -2,8 +2,10 @@
 
 import type { Axios } from 'axios'
 
+import type { Type__Session } from '../../types/Type__Session'
 import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
+import type { Type__Client_To_Server__Session_Date__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
 
 
 
@@ -15,21 +17,21 @@ import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__C
 export async function get__session(
 	axiosPrivate: 	Axios, 
 	session_id: 	number, 
-) {
+): Promise<Type__Session> {
 	return axiosPrivate.get(`/session?session_id=${session_id}`).then(({ data }) => data)
 }
 
 export async function post__session(
 	axiosPrivate: 	Axios, 
 	json: 			Type__Client_To_Server__Session__POST, 
-) {
+): Promise<Type__Session> {
 	return axiosPrivate.post('/session', json).then(({ data }) => data)
 }
 
 export async function patch__session(
 	axiosPrivate: 	Axios, 
 	json: 			Type__Client_To_Server__Session__PATCH, 
-) {
+): Promise<undefined> {
 	return axiosPrivate.patch('/session', json).then(({ data }) => data)
 }
 
@@ -48,7 +50,7 @@ export async function delete__session(
 
 export async function patch__session_date(
 	axiosPrivate: 	Axios, 
-	json:			
+	json:			Type__Client_To_Server__Session_Date__PATCH, 
 ) {
 	return axiosPrivate.patch('/session/date', json).then(({ data }) => data)
 }

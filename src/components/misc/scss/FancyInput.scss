@@ -1,6 +1,6 @@
 
 
-.fancyinput {
+.input_fancy {
 	position: relative;
 	display: flex;
 	height: 60px;
@@ -44,6 +44,6 @@
 
 
 
-	&.fancyinput_green input { border-right: 7px solid var(--green-button) !important; }
-	&.fancyinput_red input { border-right: 7px solid var(--red) !important; }
+	&.input_fancy_green input { border-right: 7px solid var(--green-button) !important; }
+	&.input_fancy_red input { border-right: 7px solid var(--red) !important; }
 }

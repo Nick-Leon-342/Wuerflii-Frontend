@@ -217,11 +217,11 @@ export default function Session__Players() {
 						<button 
 							className='button button_reverse_red button_scale_3 session_players_previous'
 							onClick={remove_player}
-						><PersonRemove/></button>
+						><Person_Remove/></button>
 						<button 
 							className='button button_reverse button_scale_3 session_players_previous'
 							onClick={add_player}
-						><PersonAdd/></button>
+						><Person_Add/></button>
 					</div>
 				</>}
 			</Previous>
