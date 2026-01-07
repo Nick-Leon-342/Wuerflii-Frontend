@@ -1,34 +1,32 @@
 
 
-import './scss/Popup_Dropdown.scss'
+import './scss/Popup__Dropdown.scss'
 
-import { useEffect, useRef, useState } from 'react'
-
-
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react'
 
 
 
-/**
- * 
- * Popup_Dropdown Component
- *
- * This component renders a dropdown popup positioned relative to a target element.
- *
- * @param {Object} props - Component properties
- * @param {React.ReactNode} props.children - Content inside the popup
- * @param {React.RefObject} props.target_ref - Reference to the target element
- * @param {boolean} props.show_popup - Controls the visibility of the popup
- * @param {Function} props.setShow_popup - Function to toggle popup visibility
- * @param {string} [props.className] - Additional CSS classes for the popup
- * @param {boolean} [props.alignLeft] - If true, aligns the popup to the left of the target
- * @param {boolean} [props.widthSameAsTarget] - If true, sets the popup width equal to the target element
- * @param {boolean} [props.removePopupFromDOM] - If true, removes the popup from the DOM when not visible
- * @param {number} [props.move_x] - X-axis offset for the popup position
- * @param {number} [props.move_y] - Y-axis offset for the popup position
- * 
- */
 
-export default function Popup_Dropdown({ 
+
+interface Props__Popup__Dropdown {
+	children: 				ReactNode
+	target_ref: 			RefObject<HTMLButtonElement | null>
+	show_popup:				boolean
+	setShow_popup:			(show: boolean) => void
+	className?:				string
+	alignLeft?:				boolean
+	widthSameAsTarget?: 	boolean
+	removePopupFromDOM?: 	boolean
+	move_x?: 				number
+	move_y?: 				number
+}
+
+interface PopupPosition {
+    top: number;
+    left?: number;
+}
+
+export default function Popup__Dropdown({ 
 	children, 
 	target_ref, 
 	show_popup, 
@@ -40,18 +38,21 @@ export default function Popup_Dropdown({
 	
 	move_x, 
 	move_y, 
-}) {
+}: Props__Popup__Dropdown) {
 
-	const popup_ref = useRef(null)
-	const [ popup_position, setPopup_position ] = useState({ top: 0 })
-	const [ popup_width, setPopup_width ] = useState()
+	const popup_ref = useRef<HTMLDivElement>(null)
+	const [ popup_position,	setPopup_position	] = useState<PopupPosition>({ top: 0 })
+	const [ popup_width,	setPopup_width		] = useState<number | null>(null)
 
 
 
 
 	useEffect(() => {
 
-		function handler(e) { if(!target_ref?.current?.contains(e.target) && !popup_ref?.current?.contains(e.target)) setShow_popup(false) }
+		function handler(e: MouseEvent) { 
+			const target = e.target as Node
+			if(!target_ref?.current?.contains(target) && !popup_ref?.current?.contains(target)) setShow_popup(false)
+		}
 		document.addEventListener('mousedown', handler)
 		
 		return () => document.removeEventListener('mousedown', handler)
@@ -99,6 +100,8 @@ export default function Popup_Dropdown({
 	}, [ target_ref, alignLeft, widthSameAsTarget, move_x, move_y, show_popup, children ])
 
 	useEffect(() => {
+		
+		if(!popup_ref.current) return
 
 		// Set popup-children non-focusable with tab when popup isn't visible
 		const focusableElements = popup_ref.current.querySelectorAll(

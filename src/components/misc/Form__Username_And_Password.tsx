@@ -7,7 +7,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { RegexContext } from '../../context/Provider__Regex'
 
 import InputWithSVG from './Input_With_SVG'
-import PopupDropdown from '../Popup/Popup_Dropdown'
+import Popup__Dropdown from '../Popup/Popup__Dropdown'
 
 import { ReactComponent as Key } from '../../svg/Key.svg'
 import { ReactComponent as Person } from '../../svg/Person.svg'
@@ -142,7 +142,7 @@ export default function Form__Username_And_Password({
 				isInvalid={name && NAME_REGEX && !NAME_REGEX.test(name)}
 			/>
 
-			<PopupDropdown
+			<Popup__Dropdown
 				alignLeft={true}
 				target_ref={ref__name}
 				widthSameAsTarget={true}
@@ -156,7 +156,7 @@ export default function Form__Username_And_Password({
 					<ROW REGEX={NAME_REGEX_ALLOWEDCHARS} value={name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
 
 				</div>
-			</PopupDropdown>
+			</Popup__Dropdown>
 		</>
 
 
@@ -182,7 +182,7 @@ export default function Form__Username_And_Password({
 				isInvalid={password && PASSWORD_REGEX && !PASSWORD_REGEX.test(password)}
 			/>
 
-			<PopupDropdown
+			<Popup__Dropdown
 				widthSameAsTarget={true}
 				target_ref={ref__password}
 				show_popup={show__popup_password}
@@ -195,7 +195,7 @@ export default function Form__Username_And_Password({
 					<ROW REGEX={PASSWORD_REGEX_ALLOWEDCHARS} value={password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
 
 				</div>
-			</PopupDropdown>
+			</Popup__Dropdown>
 		</>
 
 

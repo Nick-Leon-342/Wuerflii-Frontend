@@ -5,21 +5,21 @@ import './scss/Session_Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
-import { useContext, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { UniversalLoaderContext } from '../../context/Provider/Provider__Universal_Loader'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
 import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
-import PopupDropdown from '../../components/Popup/Popup_Dropdown'
+import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
-import PopupEditPreview from '../../components/Popup/Popup_Edit_Preview'
+import Popup__Edit_Preview from '../../components/Popup/Popup__Edit_Preview'
 
 import Settings from '../../svg/Settings.svg'
 import List_Sort from '../../svg/List_Sort.svg'
@@ -28,6 +28,8 @@ import { get__user } from '../../api/user'
 import { get__final_scores_page } from '../../api/final_score'
 import { get__session_players } from '../../api/session/session_players'
 import { get__session, patch__session_date } from '../../api/session/session'
+
+import type { Type__Session } from '../../types/Type__Session'
 
 
 
@@ -44,10 +46,10 @@ export default function Session__Preview() {
 	const ref_edit_list = useRef()
 	const ref_edit_session = useRef()
 	
-	const [ loading_preparing_game, setLoading_preparing_game ] = useState(false)
+	const [ loading_preparing_game, setLoading_preparing_game	] = useState<boolean>(false)
 
-	const [ show_edit_session, setShow_edit_session ] = useState(false)
-	const [ show_edit_list, setShow_edit_list ] = useState(false)
+	const [ show_edit_session,		setShow_edit_session		] = useState<boolean>(false)
+	const [ show_edit_list,			setShow_edit_list			] = useState<boolean>(false)
 
 	const height_dateElement = 70
 	const height_element = 70
@@ -74,11 +76,11 @@ export default function Session__Preview() {
 	
 	// ____________________ Session ____________________
 
-	const [ session, setSession ] = useState()
+	const [ session, setSession ] = useState<Type__Session>()
 
 	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(axiosPrivate, session_id), 
-		queryKey: [ 'session', +session_id ], 
+		queryFn: () => get__session(axiosPrivate, +(session_id || -1)), 
+		queryKey: [ 'session', +(session_id || -1) ], 
 	})
 
 	if(error__session) {
@@ -97,8 +99,8 @@ export default function Session__Preview() {
 	// ____________________ List_Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryKey: [ 'session', +session_id, 'players' ], 
-		queryFn: () => get__session_players(axiosPrivate, session_id), 
+		queryKey: [ 'session', +(session_id || -1), 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
 	})
 
 	if(error__list_players) {
@@ -125,9 +127,10 @@ export default function Session__Preview() {
 		isFetchingNextPage, 
 		isLoading: isLoading__list_finalscores, 
 	} = useInfiniteQuery({
-		queryFn: ({ pageParam = 1 }) => get__final_scores_page(axiosPrivate, session_id, pageParam), 
-		queryKey: [ 'session', +session_id, 'finalscores' ],  
+		queryFn: ({ pageParam }) => get__final_scores_page(axiosPrivate, session_id, pageParam), 
+		queryKey: [ 'session', +(session_id || -1), 'finalscores' ],  
 		getNextPageParam: prevData => prevData.nextPage, 
+		initialPageParam: 1, 
 	})
 
 	useEffect(() => { if(inView) fetchNextPage() }, [ fetchNextPage, inView ])
@@ -138,7 +141,7 @@ export default function Session__Preview() {
 
 	// __________________________________________________ Universal Loader __________________________________________________
 
-	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_finalscores || isFetchingNextPage), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list_finalscores, isFetchingNextPage ])
 
 
@@ -464,7 +467,7 @@ export default function Session__Preview() {
 
 		{/* __________________________________________________ Popup Settings __________________________________________________ */}
 
-		<PopupDropdown
+		<Popup__Dropdown
 			target_ref={ref_edit_session}
 			show_popup={show_edit_session}
 			setShow_popup={setShow_edit_session}
@@ -490,7 +493,7 @@ export default function Session__Preview() {
 					</div>
 				</div>
 			</div>
-		</PopupDropdown>
+		</Popup__Dropdown>
 
 
 
@@ -498,7 +501,7 @@ export default function Session__Preview() {
 
 		{/* __________________________________________________ Popup Edit Preview __________________________________________________ */}
 
-		<PopupEditPreview
+		<Popup__Edit_Preview
 			target_ref={ref_edit_list}
 
 			setShow_customDate={setShow_customDate}

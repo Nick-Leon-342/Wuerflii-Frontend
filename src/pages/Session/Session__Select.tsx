@@ -13,7 +13,7 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 
 import LoaderBox from '../../components/Loader/Loader_Box'
 import OptionsDialog from '../../components/Popup/Popup_Options'
-import PopupDropdown from '../../components/Popup/Popup_Dropdown'
+import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
 
 import Trashcan from '../../svg/Trashcan.svg'
@@ -23,6 +23,9 @@ import ArrowDown from '../../svg/Arrow_Down.svg'
 import { get__user, patch__user } from '../../api/user'
 import { delete__session, get__sessions_list } from '../../api/session/session'
 import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
+import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__USER__PATCH'
+import type { Type__Enum__View_Sessions } from '../../types/Type__Enum/Type__Enum__View_Sessions'
 
 
 
@@ -35,12 +38,17 @@ export default function Session__Select() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const ref = useRef()
+	const ref = useRef<HTMLButtonElement>(null)
 
-	const [ list_sessions, setList_sessions ] = useState([]) 
+	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
 
-	const [ show_settings, setShow_settings ] = useState(false)
-	const list_orderOptions = [
+	const [ show_settings, setShow_settings ] = useState<boolean>(false)
+
+	interface option {
+		Text: 	string
+		Alias:	Type__Enum__View_Sessions
+	}
+	const list_orderOptions: Array<option> = [
 		{ Text: 'Zuletzt gespielt', 	Alias: 'Last_Played'	},
 		{ Text: 'Erstellt', 			Alias: 'Created'		},
 		{ Text: 'Name', 				Alias: 'Name'			},
@@ -79,19 +87,19 @@ export default function Session__Select() {
 	}
 
 	useEffect(() => {
-
-		// List_Session is edited only in frontend (checkbox to delete multiple sessions), that's why the read-only tmp_list_sessions has to be copied into a editable variable
-		setList_sessions(tmp_list_sessions || [])
-
-		if(!tmp_list_sessions) return 
-		// Cache all sessions and players to increase performance when selecting session
-		for(const session of tmp_list_sessions) {
-			query_client.setQueryData([ 'session', session.id ], session)
-			query_client.setQueryData([ 'session', session.id, 'players' ], session.List_Players)
+		function init() {
+			// List_Session is edited only in frontend (checkbox to delete multiple sessions), that's why the read-only tmp_list_sessions has to be copied into a editable variable
+			setList_sessions(tmp_list_sessions || [])
+	
+			if(!tmp_list_sessions) return 
+			// Cache all sessions and players to increase performance when selecting session
+			for(const session of tmp_list_sessions) {
+				query_client.setQueryData([ 'session', session.id ], session)
+				query_client.setQueryData([ 'session', session.id, 'players' ], session.List_Players)
+			}
 		}
-
-		// eslint-disable-next-line
-	}, [ tmp_list_sessions ])
+		init()
+	}, [ tmp_list_sessions ]) // eslint-disable-line
 
 
 
@@ -100,9 +108,9 @@ export default function Session__Select() {
 	// __________________________________________________ Change List __________________________________________________
 
 	const mutate__show_session_date = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user.Show_Session_Date }), 
+		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user?.Show_Session_Date }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user.Show_Session_Date })
+			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user?.Show_Session_Date })
 		}, 
 		onError: err => {
 			handle_error({
@@ -112,9 +120,9 @@ export default function Session__Select() {
 	})
 
 	const mutate__show_session_names = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user.Show_Session_Names }), 
+		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user?.Show_Session_Names }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user.Show_Session_Names })
+			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user?.Show_Session_Names })
 		}, 
 		onError: err => {
 			handle_error({
@@ -124,10 +132,13 @@ export default function Session__Select() {
 	})
 
 	const mutate__change_order = useMutation({
-		mutationFn: json => patch__user(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(axiosPrivate, json), 
 		onSuccess: ( _, json ) => {
 			query_client.setQueryData([ 'user' ], { ...user, ...json })
-			query_client.invalidateQueries([ 'session', 'list' ], { exact: true })
+			query_client.invalidateQueries({
+				queryKey: [ 'session', 'list' ], 
+				exact: true
+			})
 		}, 
 		onError: err => {
 			handle_error({
@@ -136,14 +147,11 @@ export default function Session__Select() {
 		}
 	})
 
-	const change_order = async selected_option => {
-
-		const alias = selected_option.Alias
-		const descending = alias === user?.View_Sessions ? !user.View_Sessions_Desc : true
+	function change_order(selected_option: Type__Enum__View_Sessions) {
 
 		mutate__change_order.mutate({
-			View_Sessions: alias, 
-			View_Sessions_Desc: descending
+			View_Sessions: 		selected_option, 
+			View_Sessions_Desc: selected_option === user?.View_Sessions ? !user?.View_Sessions_Desc : true
 		})
 
 	}
@@ -155,9 +163,9 @@ export default function Session__Select() {
 	// __________________________________________________ Delete __________________________________________________
 
 	const mutate__delete = useMutation({
-		mutationFn: session_id => delete__session(axiosPrivate, session_id),
+		mutationFn: (session_id: number) => delete__session(axiosPrivate, session_id),
 		onSuccess: ( _, session_id ) => {
-			query_client.setQueryData([ 'session', 'list' ], list_sessions => list_sessions.filter(session => session.id !== session_id))
+			query_client.setQueryData([ 'session', 'list' ], (list_sessions: Array<Type__Session>) => list_sessions.filter(session => session.id !== session_id))
 		}, 
 		onError: err => {
 			handle_error({
@@ -172,9 +180,9 @@ export default function Session__Select() {
 
 	const handle_delete = async () => {
 
-		if(!window.confirm(`Sicher, dass du diese Session${list_sessions?.filter(s => s.Checkbox_Checked).length > 1 ? '(s)' : ''} löschen willst?`)) return
+		if(!window.confirm(`Sicher, dass du diese Session${list_sessions?.filter(s => s.Checkbox_Checked_To_Delete).length > 1 ? '(s)' : ''} löschen willst?`)) return
 
-		for(const session of list_sessions) { if(session.Checkbox_Checked) {
+		for(const session of list_sessions) { if(session.Checkbox_Checked_To_Delete) {
 
 			mutate__delete.mutate(session.id)
 
@@ -188,11 +196,11 @@ export default function Session__Select() {
 
 	// __________________________________________________ Select Checkbox __________________________________________________
 
-	const checkbox_click = ( index, checked ) => {
+	const checkbox_click = ( index: number, checked: boolean ) => {
 
 		setList_sessions(prev => {
 			const tmp = [ ...prev ]
-			tmp[index].Checkbox_Checked = checked
+			tmp[index].Checkbox_Checked_To_Delete = checked
 			return tmp
 		})
 
@@ -232,7 +240,7 @@ export default function Session__Select() {
 				><ListSort/></button>
 
 				<button
-					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions?.some(session => session.Checkbox_Checked) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
+					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions?.some(session => session.Checkbox_Checked_To_Delete) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
 					onClick={handle_delete} 
 				><Trashcan/></button>
 
@@ -266,20 +274,22 @@ export default function Session__Select() {
 							<input 
 								className='button-responsive'
 								type='checkbox' 
-								checked={session.Checkbox_Checked}
+								checked={session.Checkbox_Checked_To_Delete}
 								onChange={({ target }) => !mutate__delete.isPending && checkbox_click(index_session, target.checked)} 
 							/>
 
-							<Link to={`/session/${session.id}/${session.List_Players.length === 0 ? 'players' : 'preview'}`}>
+							{session.List_Players && <>
+								<Link to={`/session/${session.id}/${session.List_Players.length === 0 ? 'players' : 'preview'}`}>
 
-								<label className='names'>
-									{(user?.Show_Session_Names || session.List_Players.length === 0) && session.Name}
-									{!user?.Show_Session_Names && session.List_Players.length > 0 && session.List_Players.map(p => p.Name).join(' vs ')}
-								</label>
+									<label className='names'>
+										{(user?.Show_Session_Names || session.List_Players.length === 0) && session.Name}
+										{!user?.Show_Session_Names && session.List_Players.length > 0 && session.List_Players.map(p => p.Name).join(' vs ')}
+									</label>
 
-								{user?.Show_Session_Date && <label className='date'>{formatDate(session.LastPlayed)}</label>}
+									{user?.Show_Session_Date && <label className='date'>{formatDate(session?.LastPlayed || new Date())}</label>}
 
-							</Link>
+								</Link>
+							</>}
 
 						</dt>
 					))}
@@ -302,7 +312,7 @@ export default function Session__Select() {
 
 
 
-		<PopupDropdown
+		<Popup__Dropdown
 			target_ref={ref}
 			show_popup={show_settings}
 			setShow_popup={setShow_settings}
@@ -328,7 +338,7 @@ export default function Session__Select() {
 				return (
 					<button 
 						key={option?.Text}
-						onClick={() => change_order(option)}
+						onClick={() => change_order(option.Alias)}
 						className={`button button_reverse${cs ? ' session_select_popup_settings-currently_selected' : ''}${desc ? ' session_select_popup_settings-desc' : ''}`}
 					>
 						{option.Text}
@@ -338,7 +348,7 @@ export default function Session__Select() {
 				
 			})}
 
-		</PopupDropdown>
+		</Popup__Dropdown>
 
 	</>
 }

@@ -1,8 +1,8 @@
 
 
-import './scss/Popup_Edit_Preview.scss'
+import './scss/Popup__Edit_Preview.scss'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
 import { format } from 'date-fns'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -10,32 +10,31 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import LoaderBox from '../Loader/Loader_Box'
-import PopupDropdown from './Popup_Dropdown'
+import Popup__Dropdown from './Popup__Dropdown'
 
 import { patch__session } from '../../api/session/session'
 
+import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Enum__View } from '../../types/Type__Enum/Type__Enum__View'
+import type { Type__Enum__Month } from '../../types/Type__Enum/Type__Enum__Month'
+import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 
 
 
 
-/**
- * 
- * Popup_Edit_View Component
- *
- * This component provides a popup interface for editing and selecting different views.
- *
- * @param {Object} props - Component properties
- * @param {React.RefObject} props.target_ref - Reference to the target element
- * @param {Function} props.setShow_customDate - Function to show the custom date selection
- * @param {Function} props.setShow_popup - Function to toggle the popup visibility
- * @param {boolean} props.show_popup - Controls the visibility of the popup
- * @param {Function} props.refetch - Function to refetch final_scores
- * @param {Function} props.setSession - Function to set session data
- * @param {Object} props.session - Current session data
- * 
- */
 
-export default function Popup_Edit_View({
+interface Props__Popup__Edit_Preview {
+	target_ref:			RefObject<HTMLButtonElement | null>
+	setShow_customDate:	React.Dispatch<React.SetStateAction<boolean>>
+	setShow_popup:		React.Dispatch<React.SetStateAction<boolean>>
+	show_popup:			boolean
+
+	setSession:			React.Dispatch<React.SetStateAction<Type__Session>>
+	session:			Type__Session
+	refetch:			() => void
+}
+
+export default function Popup__Edit_Preview({
 	target_ref, 
 
 	setShow_customDate, 
@@ -46,25 +45,26 @@ export default function Popup_Edit_View({
 	setSession, 
 	session, 
 	refetch, 
-}) {
+}: Props__Popup__Edit_Preview) {
 
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const [ view, setView ] = useState()
-	const [ view_month, setView_month ] = useState()
-	const [ view_year, setView_year ] = useState()
+	const [ view,		setView			] = useState<Type__Enum__View>('show_all')
+	const [ view_month, setView_month	] = useState<Type__Enum__Month>(1)
+	const [ view_year, 	setView_year	] = useState<number>(0)
 
 	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
 
 	useEffect(() => {
-
-		if(!session) return 
-		setView(session.View)
-		setView_month(session.View_Month)
-		setView_year(session.View_Year)
-
+		function init() {
+			if(!session) return 
+			setView(session.View)
+			setView_month(session.View_Month)
+			setView_year(session.View_Year)
+		}
+		init()
 	}, [ session ])
 
 
@@ -72,13 +72,13 @@ export default function Popup_Edit_View({
 
 
 	const mutate__session = useMutation({
-		mutationFn: json => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
 		onSuccess: (_, json) => {
 			setSession(prev => {
 				const tmp = { ...prev }
-				tmp.View = json.View
-				tmp.View_Month = json.View_month
-				tmp.View_Year = json.View_year
+				tmp.View = json.View || 'show_all'
+				tmp.View_Month = json.View_Month || 1
+				tmp.View_Year = json.View_Year || 0
 				query_client.setQueryData([ 'session', session.id ], tmp)
 				return tmp
 			})
@@ -91,7 +91,11 @@ export default function Popup_Edit_View({
 		}
 	})
 
-	const update_view = async ( view, view_month, view_year ) => { 
+	function update_view(
+		view:		Type__Enum__View, 
+		view_month:	Type__Enum__Month, 
+		view_year:	number
+	): void {
 
 		mutate__session.mutate({
 			SessionID: session.id, 
@@ -107,7 +111,7 @@ export default function Popup_Edit_View({
 
 
 	return <>
-		<PopupDropdown
+		<Popup__Dropdown
 			target_ref={target_ref}
 			show_popup={show_popup}
 			setShow_popup={setShow_popup}
@@ -145,7 +149,7 @@ export default function Popup_Edit_View({
 
 						<select 
 							value={view_month}
-							onChange={({ target }) => update_view(view, +target.value, view_year)}
+							onChange={({ target }) => update_view(view, +target.value as Type__Enum__Month, view_year)}
 						>
 							{list_months.map((month, index_month) => 
 								<option key={index_month} value={index_month + 1}>{month}</option>
@@ -178,7 +182,7 @@ export default function Popup_Edit_View({
 				<div className='popup_edit_preview_select-container view'>
 					<select 
 						value={view}
-						onChange={({ target }) => update_view(target.value, view_month, view_year)}
+						onChange={({ target }) => update_view(target.value as Type__Enum__View, view_month, view_year)}
 					>
 						<option key={0} value='show_all'>Gesamtansicht</option>
 						<option key={1} value='show_year'>Jahresansicht</option>
@@ -188,6 +192,6 @@ export default function Popup_Edit_View({
 				</div>
 
 			</div>
-		</PopupDropdown>
+		</Popup__Dropdown>
 	</>
 }

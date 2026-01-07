@@ -23,6 +23,9 @@ import Person_Remove from '../../svg/Person_Remove.svg'
 import { get__user } from '../../api/user'
 import { get__session_players, patch__session_players, post__session_players } from '../../api/session/session_players'
 
+import type { Type__Player } from '../../types/Type__Player'
+import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
+
 
 
 
@@ -40,8 +43,8 @@ export default function Session__Players() {
 
 	// ____________________ Players ____________________
 
-	const [ isInit, 		setIsInit		] = useState(false)
-	const [ list_players, 	setList_players	] = useState([])
+	const [ isInit, 		setIsInit		] = useState<boolean>(false)
+	const [ list_players, 	setList_players	] = useState<Array<Type__Player>>([])
 
 
 
@@ -67,7 +70,7 @@ export default function Session__Players() {
 
 	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
 		queryKey: [ 'session', 'players', 'env' ], 
-		queryFn: () => get__session_players(axiosPrivate, session_id), 
+		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
 	})
 
 	if(error__env_variables) {
@@ -80,8 +83,8 @@ export default function Session__Players() {
 	// ____________________ List_Players ____________________
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryKey: [ 'session', +session_id, 'players' ], 
-		queryFn: () => get__session_players(axiosPrivate, session_id), 
+		queryKey: [ 'session', +(session_id || -1), 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
 	})
 
 	if(error__list_players) {
@@ -94,13 +97,6 @@ export default function Session__Players() {
 		})
 	}
 
-	useEffect(() => {
-		
-		setIsInit(tmp__list_players?.length === 0)
-		setList_players(tmp__list_players?.length > 0 ? structuredClone(tmp__list_players) : [ new_player([]) ])
-
-	}, [ tmp__list_players ]) // eslint-disable-line
-
 
 
 
@@ -108,9 +104,9 @@ export default function Session__Players() {
 	// __________________________________________________ Mutations __________________________________________________
 
 	const mutate__players_add = useMutation({
-		mutationFn: json => post__session_players(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => post__session_players(axiosPrivate, json), 
 		onSuccess: data => {
-			query_client.setQueryData([ 'session', +session_id, 'players' ], data)
+			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], data)
 			navigate(`/session/${session_id}/preview`, { replace: true })
 		}, 
 		onError: err => {
@@ -129,10 +125,10 @@ export default function Session__Players() {
 	})
 
 	const mutate__players_edit = useMutation({
-		mutationFn: json => patch__session_players(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => patch__session_players(axiosPrivate, json), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'session', +session_id, 'players' ], list_players)
-			navigate(-1, { replace: false })
+			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], list_players)
+			navigate(-1)
 		}, 
 		onError: err => {
 			handle_error({
@@ -150,11 +146,11 @@ export default function Session__Players() {
 
 
 
-	const new_player = ( list ) => { 
+	const new_player = ( list: Array<Type__Player> ): Type__Player => { 
 		return {
-			id: v4(), 
-			Name: `Spieler_${list.length + 1}`, 
-			Color: list.length % 2 === 0 ? '#ffffff' : '#ADD8E6'
+			id:		v4(), 
+			Name:	`Spieler_${list.length + 1}`, 
+			Color:	list.length % 2 === 0 ? '#ffffff' : '#ADD8E6'
 		}
 	}
 
@@ -186,9 +182,9 @@ export default function Session__Players() {
 
 		if(!list_players || list_players.some(p => p.Name.length > env_variables?.MAX_LENGTH_PLAYER_NAME)) return setError(`Die Spielernamen dürfen nicht länger als ${env_variables?.MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
 
-		const json = { 
-			SessionID: +session_id, 
-			List_Players: list_players, 
+		const json: Type__Client_To_Server__Session_Players__POST_And_PATCH = { 
+			SessionID:		+(session_id || -1), 
+			List_Players:	list_players, 
 		}
 
 		if(isInit) {
@@ -198,6 +194,14 @@ export default function Session__Players() {
 		}
 
 	}
+
+	useEffect(() => {
+		function init() {
+			setIsInit(tmp__list_players?.length === 0)
+			setList_players(tmp__list_players?.length > 0 ? structuredClone(tmp__list_players) : [ new_player([]) ])
+		}
+		init()
+	}, [ tmp__list_players ])
 
 
 
