@@ -11,7 +11,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
 import LoaderDots from '../components/Loader/Loader_Dots'
-import PopupOptions from '../components/Popup/Popup_Options'
+import PopupOptions from '../components/Popup/Popup__Options'
 import CustomButton from '../components/misc/Custom_Button'
 import Previous from '../components/NavigationElements/Previous'
 import RegistrationForm from '../components/misc/Form__Username_And_Password'

@@ -11,7 +11,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Input_Fancy from '../../components/misc/Input_Fancy'
 import CustomButton from '../../components/misc/Custom_Button'
-import OptionsDialog from '../../components/Popup/Popup_Options'
+import OptionsDialog from '../../components/Popup/Popup__Options'
 import Previous from '../../components/NavigationElements/Previous'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
 

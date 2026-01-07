@@ -11,7 +11,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 
 import LoaderBox from '../../components/Loader/Loader_Box'
 import LoaderDots from '../../components/Loader/Loader_Dots'
-import PopupOptions from '../../components/Popup/Popup_Options'
+import PopupOptions from '../../components/Popup/Popup__Options'
 import ChartGraph from '../../components/Statistics/Chart_Graph'
 import Previous from '../../components/NavigationElements/Previous'
 import ChartDoughnut from '../../components/Statistics/Chart_Doughnut'

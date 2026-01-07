@@ -1,6 +1,6 @@
 
 
-import './scss/Popup_Error.scss'
+import './scss/Popup__Error.scss'
 
 import { useEffect, useState } from 'react'
 
@@ -10,7 +10,7 @@ import type { Type__Context__Error } from '../../types/Type__Context/Type__Conte
 
 
 
-export default function Popup_Error({
+export default function Popup__Error({
 	setError, 
 	error, 
 }: Type__Context__Error) {
@@ -57,11 +57,11 @@ export default function Popup_Error({
 
 	return <>
 		<div 
-			className='popup_error'
+			className='popup__error'
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			<div className='popup_error-container'>
+			<div className='popup__error-container'>
 
 				<header>
 					<svg viewBox='0 -960 960 960'><path d='m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>
@@ -72,9 +72,9 @@ export default function Popup_Error({
 					<p>{error}</p>
 				</div>
 
-				<div className='popup_error_progress_bar'>
+				<div className='popup__error_progress_bar'>
 					<div 
-						className={`popup_error_progress${isHovered ? ' instant' : ''}`}
+						className={`popup__error_progress${isHovered ? ' instant' : ''}`}
 						style={{ height: `${progress}%` }}
 					/>
 				</div>

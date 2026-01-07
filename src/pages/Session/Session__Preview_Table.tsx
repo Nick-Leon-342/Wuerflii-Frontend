@@ -11,7 +11,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import Table from '../../components/Game/Game_Tables/Table'
-import OptionsDialog from '../../components/Popup/Popup_Options'
+import OptionsDialog from '../../components/Popup/Popup__Options'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
 
 import { get__user } from '../../api/user'

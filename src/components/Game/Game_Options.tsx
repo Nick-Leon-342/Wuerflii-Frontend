@@ -143,8 +143,8 @@ export default function Game_Options({
 	return <>
 		<Popup
 			title='Einstellungen'
-			showPopup={show_options}
-			setShowPopup={setShow_options}
+			show_popup={show_options}
+			setShow_popup={setShow_options}
 		>
 			<div className='game_options'>
 

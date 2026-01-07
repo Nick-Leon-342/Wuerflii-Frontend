@@ -1,6 +1,6 @@
 
 
-import './scss/Popup_Options.scss'
+import './scss/Popup__Options.scss'
 
 import { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -10,40 +10,28 @@ import useAuth from '../../hooks/useAuth'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import { ServerVersionContext } from '../../context/Provider__Server_Version'
+import Context__Server_Version from '../../Provider_And_Context/Provider_And_Context__Server_Version'
 
 import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
 import CustomButton from '../misc/Custom_Button'
 
-import { ReactComponent as Settings } from '../../svg/Settings.svg'
+import Settings from '../../svg/Settings.svg'
 
 import { patch__user } from '../../api/user'
 
+import type { Type__User } from '../../types/Type__User'
 
 
 
 
-/**
- * 
- * Popup_Options component that displays various user settings options, such as dark mode toggle,
- * profile navigation, statistics navigation, and logout functionality.
- *
- * @component
- * @example
- * // Example usage of Popup_Options component
- * <Popup_Options setUser={setUser} user={user} />
- *
- * @param {Object} props - The component props
- * @param {Object} props.user - The current user object containing user information like DarkMode
- *
- * @returns {JSX.Element} The rendered Popup_Options component
- * 
- */
+interface Props__Popup__Options {
+	user:	Type__User
+}
 
-export default function Popup_Options({
+export default function Popup__Options({
 	user, 
-}) {
+}: Props__Popup__Options) {
 
     const { setAuth } = useAuth()
 
@@ -52,7 +40,7 @@ export default function Popup_Options({
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const { server_version } = useContext(ServerVersionContext)
+	const { server_version } = useContext(Context__Server_Version)
 
 	const [ show_options, setShow_options ] = useState(false)
 
@@ -77,18 +65,21 @@ export default function Popup_Options({
 	}, [])
 
 	useEffect(() => {
-		
-		if(!user) return
-		setDarkmode(user.DarkMode)
-		
-		if(user.DarkMode) {
-			document.body.classList.add('dark')
-			localStorage.setItem(darkMode_string, 'true')
-		} else {
-			document.body.classList.remove('dark')
-			localStorage.setItem(darkMode_string, 'false')
-		}
+		function configure_darkmode() {
+			
+			if(!user) return
+			setDarkmode(user.DarkMode)
+			
+			if(user.DarkMode) {
+				document.body.classList.add('dark')
+				localStorage.setItem(darkMode_string, 'true')
+			} else {
+				document.body.classList.remove('dark')
+				localStorage.setItem(darkMode_string, 'false')
+			}
 
+		}
+		configure_darkmode()
 	}, [ user ])
 
 
@@ -135,8 +126,8 @@ export default function Popup_Options({
 
 
 		<Popup
-			showPopup={show_options}
-			setShowPopup={setShow_options}
+			show_popup={show_options}
+			setShow_popup={setShow_options}
 			title='Einstellungen'
 		>
 			<div className='popup_options'>

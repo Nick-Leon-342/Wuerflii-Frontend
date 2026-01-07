@@ -12,7 +12,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import LoaderBox from '../../components/Loader/Loader_Box'
-import OptionsDialog from '../../components/Popup/Popup_Options'
+import OptionsDialog from '../../components/Popup/Popup__Options'
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
 

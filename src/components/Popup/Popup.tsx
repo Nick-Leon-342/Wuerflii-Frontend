@@ -2,43 +2,34 @@
 
 import './scss/Popup.scss'
 
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 
 
 
 
 
-/**
- * 
- * Popup component that displays a modal with customizable content and a close button.
- * It accepts props to control visibility, content, and styling.
- *
- * @component
- * @example
- * // Example usage of Popup component
- * <Popup showPopup={showPopup} setShowPopup={setShowPopup} title="Popup Title">
- *   <p>Popup Content</p>
- * </Popup>
- *
- * @param {Object} props - The component props
- * @param {string} [props.className] - Optional custom class name for additional styling
- * @param {boolean} props.showPopup - Boolean value to control the visibility of the popup
- * @param {Function} props.setShowPopup - Function to set the visibility of the popup
- * @param {React.ReactNode} props.children - The content to be displayed inside the popup
- * @param {string} props.title - The title to be displayed at the top of the popup
- *
- * @returns {JSX.Element} The rendered Popup component
- * 
- */
+interface Props__Popup {
+	setShow_popup:	React.Dispatch<React.SetStateAction<boolean>>
+	show_popup:		boolean
+	className?:		string
+	children:		ReactNode
+	title:			string
+}
 
-export default function Popup({ className, showPopup, setShowPopup, children, title }) {
+export default function Popup({ 
+	setShow_popup, 
+	show_popup, 
+	className, 
+	children, 
+	title, 
+}: Props__Popup) {
 
-	useEffect(() => { document.body.style.overflow = showPopup ? 'hidden' : 'visible' }, [ showPopup ])
+	useEffect(() => { document.body.style.overflow = show_popup ? 'hidden' : 'visible' }, [ show_popup ])
 
 	return <>
 		<div 
-			className={`popup-background${showPopup ? ' popup-background_show' : ''}${className ? ` ${className}` : ''}`} 
-			onClick={() => setShowPopup(false)}
+			className={`popup-background${show_popup ? ' popup-background_show' : ''}${className ? ` ${className}` : ''}`} 
+			onClick={() => setShow_popup(false)}
 		>
 			<div className='popup' onClick={(e) => e.stopPropagation()}>
 

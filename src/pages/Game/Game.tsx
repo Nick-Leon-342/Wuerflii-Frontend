@@ -8,21 +8,22 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { UniversalLoaderContext } from '../../context/Provider/Provider__Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
 import Table from '../../components/Game/Game_Tables/Table'
 import GameOptions from '../../components/Game/Game_Options'
 import CustomButton from '../../components/misc/Custom_Button'
-import OptionsDialog from '../../components/Popup/Popup_Options'
+import OptionsDialog from '../../components/Popup/Popup__Options'
 import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
-import { ReactComponent as Settings } from '../../svg/Settings.svg'
+import Settings from '../../svg/Settings.svg'
 
 import { get__user } from '../../api/user'
 import { get__session } from '../../api/session/session'
 import { get__table_columns } from '../../api/table_columns'
 import { get__session_players } from '../../api/session/session_players'
+import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 
 
 
@@ -35,20 +36,20 @@ export default function Game() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const { setLoading__universal_loader } = useContext(UniversalLoaderContext)
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
 	
-	const [ list_players, setList_players ] = useState()
-	const [ list_table_columns, setList_table_columns ] = useState()
+	const [ list_players,			setList_players			] = useState<Array<Type__Server_Reponse__Player__Get>>()
+	const [ list_table_columns, 	setList_table_columns	] = useState()
 
-	const [ loading_finish_game, setLoading_finish_game ] = useState(false)
+	const [ loading_finish_game, 	setLoading_finish_game	] = useState<boolean>(false)
 
-	const [ surrender_winner, setSurrender_winner ] = useState()	// Player-Object of the 'winner'
+	const [ surrender_winner, 		setSurrender_winner		] = useState()	// Player-Object of the 'winner'
 
-	const [ show_options, setShow_options ] = useState(false)
-	const [ show_surrender, setShow_surrender ] = useState(false)
+	const [ show_options, 			setShow_options			] = useState(false)
+	const [ show_surrender, 		setShow_surrender		] = useState(false)
 
 
 
@@ -73,14 +74,14 @@ export default function Game() {
 	// ____________________ Session ____________________
 
 	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryKey: [ 'session', +session_id ], 
-		queryFn: () => get__session(axiosPrivate, session_id), 
+		queryKey: [ 'session', +(session_id || -1) ], 
+		queryFn: () => get__session(axiosPrivate, +(session_id || -1)), 
 	})
 
 	if(error__session) {
 		handle_error({
 			err: error__session, 
-			handle_404: err => {
+			handle_404: () => {
 				alert('Die Partie wurde nicht gefunden.')
 				navigate('/', { replace: true })
 			}
@@ -91,8 +92,8 @@ export default function Game() {
 	// ____________________ List_Players ____________________
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryKey: [ 'session', +session_id, 'players' ], 
-		queryFn: () => get__session_players(axiosPrivate, session_id), 
+		queryKey: [ 'session', +(session_id || -1), 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
 	})
 
 	if(error__list_players) {
@@ -105,14 +106,14 @@ export default function Game() {
 		})
 	}
 
-	useEffect(() => setList_players(tmp__list_players), [ tmp__list_players ])
+	useEffect(() => { setList_players(tmp__list_players) }, [ tmp__list_players ])
 	
 
 	// ____________________ List_Table_Columns ____________________
 
 	const { data: tmp__list_table_columns, isLoading: isLoading__list_table_columns, error: error__list_table_columns } = useQuery({
-		queryKey: [ 'session', +session_id, 'table_columns' ], 
-		queryFn: () => get__table_columns(axiosPrivate, session_id), 
+		queryKey: [ 'session', +(session_id || -1), 'table_columns' ], 
+		queryFn: () => get__table_columns(axiosPrivate, +(session_id || -1)), 
 	})
 
 	if(error__list_table_columns) {
@@ -233,8 +234,8 @@ export default function Game() {
 		{/* __________________________________________________ Popup Surrender __________________________________________________ */}
 
 		<Popup
-			showPopup={show_surrender}
-			setShowPopup={setShow_surrender}
+			show_popup={show_surrender}
+			setShow_popup={setShow_surrender}
 			title='Gewinner auswählen'
 		>
 			<div className='game_popup-surrender'>

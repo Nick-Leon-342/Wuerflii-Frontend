@@ -31,13 +31,18 @@ export default function PersistLogin() {
 			try {
 				await refresh()
 			} catch(err) {
+				console.error(err)
 				navigate(`/registration_and_login?next=${location.pathname}${location.search}`)
 			} finally {
 				setIsLoading(false)
 			}
 		} 
 	
-		!auth?.accessToken ? verifyRefreshToken() : setIsLoading(false)
+		if(!auth?.accessToken) {
+			verifyRefreshToken()
+		} else {
+			setIsLoading(false)
+		}
 
 		// eslint-disable-next-line
 	}, [])

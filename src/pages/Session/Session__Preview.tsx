@@ -16,7 +16,7 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 
 import Popup from '../../components/Popup/Popup'
 import Custom_Button from '../../components/misc/Custom_Button'
-import OptionsDialog from '../../components/Popup/Popup_Options'
+import OptionsDialog from '../../components/Popup/Popup__Options'
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Popup__Edit_Preview from '../../components/Popup/Popup__Edit_Preview'
@@ -465,8 +465,8 @@ export default function Session__Preview() {
 		{/* __________________________________________________ Popup Calendar __________________________________________________ */}
 
 		<Popup
-			showPopup={show_customDate}
-			setShowPopup={setShow_customDate}
+			show_popup={show_customDate}
+			setShow_popup={setShow_customDate}
 			title='Beginn auswählen'
 			className='session_preview_popup_calendar'
 		>

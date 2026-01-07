@@ -10,7 +10,7 @@ import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'rea
 
 interface Props__Popup__Dropdown {
 	children: 				ReactNode
-	target_ref: 			RefObject<HTMLButtonElement | null>
+	target_ref: 			RefObject<HTMLElement | null>
 	show_popup:				boolean
 	setShow_popup:			(show: boolean) => void
 	className?:				string
@@ -121,7 +121,7 @@ export default function Popup__Dropdown({
 	return <>
 		<div
 			ref={popup_ref}
-			className={`popup_dropdown${show_popup ? ' popup_dropdown_show' : ''}${className ? ` ${className}` : ''}`}
+			className={`popup__dropdown${show_popup ? ' popup__dropdown_show' : ''}${className ? ` ${className}` : ''}`}
 			style={{
 				display: `${removePopupFromDOM ? (show_popup ? 'flex' : 'none') : 'flex'}`,
 				top: `${popup_position.top}px`,
@@ -129,7 +129,7 @@ export default function Popup__Dropdown({
 				width: popup_width ? `${popup_width}px` : 'auto',
 			}}
 		>
-			<div className='popup_dropdown_container'>
+			<div className='popup__dropdown_container'>
 				{children}
 			</div>
 		</div>

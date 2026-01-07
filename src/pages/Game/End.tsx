@@ -10,7 +10,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Loader from '../../components/Loader/Loader'
-import OptionsDialog from '../../components/Popup/Popup_Options'
+import OptionsDialog from '../../components/Popup/Popup__Options'
 
 import { get__user } from '../../api/user'
 import { get__final_score } from '../../api/final_score'

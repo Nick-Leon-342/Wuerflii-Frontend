@@ -1,6 +1,6 @@
 
 
-.popup_error {
+.popup__error {
 	display: flex;
 	position: absolute;
 	top: 20px;
@@ -9,7 +9,7 @@
 	border-radius: 10px;
 	box-shadow: -1px 1px 3px 0px var(--text);
 
-	.popup_error-container {
+	.popup__error-container {
 		display: flex;
 		position: relative;
 		padding: 20px;
@@ -42,7 +42,7 @@
 	
 
 			
-		.popup_error_progress_bar {
+		.popup__error_progress_bar {
 			display: flex;
 			flex-direction: column-reverse;
 			position: absolute;
@@ -51,7 +51,7 @@
 			width: 5px;
 			height: 100%;
 	
-			.popup_error_progress {
+			.popup__error_progress {
 				height: 100%;
 				width: 100%;
 				background-color: var(--red);
