@@ -2,7 +2,7 @@
 
 import type { Axios } from 'axios'
 import type { Type__User } from '../types/Type__User'
-import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__USER__PATCH'
+import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 
 export function get__user(
 	axiosPrivate:	Axios, 

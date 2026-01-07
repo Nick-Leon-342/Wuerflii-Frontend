@@ -15,7 +15,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import Popup from '../../components/Popup/Popup'
-import CustomButton from '../../components/misc/Custom_Button'
+import Custom_Button from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup_Options'
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
@@ -30,6 +30,9 @@ import { get__session_players } from '../../api/session/session_players'
 import { get__session, patch__session_date } from '../../api/session/session'
 
 import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Client_To_Server__Session_Date__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
+import type { Type__Server_Response__Final_Score__GET } from '../../types/Type__Server_Response/Type__Server_Response__Final_Score__GET'
+import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 
 
 
@@ -43,8 +46,8 @@ export default function Session__Preview() {
 	const handle_error = useErrorHandling()
 
 	const { session_id } = useParams()
-	const ref_edit_list = useRef()
-	const ref_edit_session = useRef()
+	const ref_edit_list = useRef<HTMLButtonElement>(null)
+	const ref_edit_session = useRef<HTMLButtonElement>(null)
 	
 	const [ loading_preparing_game, setLoading_preparing_game	] = useState<boolean>(false)
 
@@ -93,7 +96,7 @@ export default function Session__Preview() {
 		})
 	}
 
-	useEffect(() => setSession(tmp__session), [ tmp__session ])
+	useEffect(() => { setSession(tmp__session) }, [ tmp__session ])
 
 
 	// ____________________ List_Players ____________________
@@ -116,7 +119,7 @@ export default function Session__Preview() {
 
 	// ____________________ List_FinalScores ____________________
 
-	const [ list_finalScores, setList_finalScores ] = useState([])
+	const [ list_finalScores, setList_finalScores ] = useState<Array<Type__Final_Score>>([])
 
 	const { ref, inView } = useInView()
 	const { 
@@ -127,7 +130,7 @@ export default function Session__Preview() {
 		isFetchingNextPage, 
 		isLoading: isLoading__list_finalscores, 
 	} = useInfiniteQuery({
-		queryFn: ({ pageParam }) => get__final_scores_page(axiosPrivate, session_id, pageParam), 
+		queryFn: ({ pageParam }) => get__final_scores_page(axiosPrivate, +(session_id || -1), pageParam), 
 		queryKey: [ 'session', +(session_id || -1), 'finalscores' ],  
 		getNextPageParam: prevData => prevData.nextPage, 
 		initialPageParam: 1, 
@@ -143,57 +146,6 @@ export default function Session__Preview() {
 
 	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_finalscores || isFetchingNextPage), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list_finalscores, isFetchingNextPage ])
-
-
-
-
-
-	// Filters list so that only relevant elements are displayed and date is added
-	const edit_list = ( list_toEdit, setList_toEdit ) => {
-
-		if(!list_toEdit || list_toEdit.length === 0) return setList_toEdit([])
-
-		const list_visibleFinalScores = []
-		const rowHeights = []
-
-		const first = new Date(list_toEdit[0].End)
-		list_visibleFinalScores.push({ 
-			Group_Date: first, 
-			Wins__After: list_toEdit[0].Wins__After, 
-			Wins__After_Month: list_toEdit[0].Wins__After_Month,
-			Wins__After_Year: list_toEdit[0].Wins__After_Year, 
-			Wins__After_SinceCustomDate: list_toEdit[0].Wins__After_SinceCustomDate,
-		})
-		let currentDate = first
-	
-		list_toEdit.forEach(e => {
-			const d = new Date(e.End)
-			if(d.toDateString() !== currentDate.toDateString()) {
-				rowHeights.push(height_dateElement)
-				list_visibleFinalScores.push({ 
-					Group_Date: d, 
-					Wins__After: e.Wins__After, 
-					Wins__After_Month: e.Wins__After_Month,
-					Wins__After_Year: e.Wins__After_Year, 
-					Wins__After_SinceCustomDate: e.Wins__After_SinceCustomDate,
-				})
-				currentDate = d
-			}
-			rowHeights.push(height_element)
-			list_visibleFinalScores.push(e)
-		})
-
-		setRowHeights(rowHeights)
-		setList_toEdit(list_visibleFinalScores)
-
-	}
-
-	useEffect(() => {
-	
-		if(isLoading__list_finalscores) return 
-		edit_list(data?.pages.flatMap(data => data.list_finalscores), setList_finalScores)
-	
-	}, [ data, isLoading__list_finalscores ])
 
 	const start_game = () => {
 
@@ -220,16 +172,17 @@ export default function Session__Preview() {
 
 	// __________________________________________________ Edit CustomDate __________________________________________________
 
-	const [ show_customDate, setShow_customDate ] = useState(false)
-	const [ view_customDate, setView_customDate ] = useState()
+	const [ show_customDate, setShow_customDate ] = useState<boolean>(false)
+	const [ view_customDate, setView_customDate ] = useState<Date>(new Date())
 
 	const mutate__custom_date = useMutation({
-		mutationFn: json => patch__session_date(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Date__PATCH) => patch__session_date(axiosPrivate, json), 
 		onSuccess: (_, json) => {
 			setSession(prev => {
+				if(!prev) return prev
 				const tmp = { ...prev }
 				tmp.View_CustomDate = json.View_CustomDate
-				query_client.setQueryData([ 'session', session.id ], tmp)
+				query_client.setQueryData([ 'session', session?.id ], tmp)
 				return tmp
 			})
 			setShow_customDate(false)
@@ -248,8 +201,8 @@ export default function Session__Preview() {
 	const save_customDate = () => {
 
 		mutate__custom_date.mutate({ 
-			View_CustomDate: view_customDate, 
-			SessionID: session.id, 
+			View_CustomDate: 	view_customDate, 
+			SessionID: 			session?.id || -1, 
 		})
 
 	}
@@ -260,12 +213,14 @@ export default function Session__Preview() {
 
 	// __________________________________________________ Scroll __________________________________________________
 
-	const [ rowHeights, setRowHeights ] = useState([])
-	const [ index_visible_row, setIndex_visible_row ] = useState(0)
+	const [ rowHeights,			setRowHeights			] = useState<Array<number>>([])
+	const [ index_visible_row,	setIndex_visible_row	] = useState<number>(0)
 
-	const handle_scroll = event => {
+	const handle_scroll = (event: React.UIEvent<HTMLUListElement>) => {
 
-		const scrollTop = event.target.scrollTop
+		const target = event.target as HTMLDivElement
+
+		const scrollTop = target.scrollTop
 		let totalHeight = 0
 		let index_newRow = 0
 
@@ -280,6 +235,73 @@ export default function Session__Preview() {
 		setIndex_visible_row(index_newRow)
 
 	}
+	
+
+	interface Type__Final_Score {
+		id:								Type__Server_Response__Final_Score__GET['id']
+		Group_Date:						Date
+		Wins__After:					Record<Type__Server_Reponse__Player__Get['id'], number>
+		Wins__After_Month:				Record<Type__Server_Reponse__Player__Get['id'], number>
+		Wins__After_Year:				Record<Type__Server_Reponse__Player__Get['id'], number>
+		Wins__After_SinceCustomDate:	Record<Type__Server_Reponse__Player__Get['id'], number>
+		PlayerScores:					Record<Type__Server_Reponse__Player__Get['id'], number>
+	}
+	
+	useEffect(() => {
+		
+		// Filters list so that only relevant elements are displayed and date is added
+		function edit_list( 
+			list_toEdit:	Array<Type__Server_Response__Final_Score__GET>, 
+			setList_toEdit:	React.Dispatch<React.SetStateAction<Array<Type__Final_Score>>>, 
+		) {
+	
+			if(!list_toEdit || list_toEdit.length === 0) return setList_toEdit([])
+	
+			const list_visibleFinalScores: Array<Type__Final_Score> = []
+			const rowHeights: Array<number> = []
+	
+			const first = new Date(list_toEdit[0].End)
+			list_visibleFinalScores.push({ 
+				id:								list_toEdit[0].id, 
+				Group_Date: 					first, 
+				Wins__After: 					list_toEdit[0].Wins__After, 
+				Wins__After_Month: 				list_toEdit[0].Wins__After_Month,
+				Wins__After_Year: 				list_toEdit[0].Wins__After_Year, 
+				Wins__After_SinceCustomDate:	list_toEdit[0].Wins__After_SinceCustomDate,
+				PlayerScores:					list_toEdit[0].PlayerScores, 
+			})
+			let currentDate = first
+		
+			list_toEdit.forEach(e => {
+				const date = new Date(e.End)
+				const final_score: Type__Final_Score = { 
+						id:								e.id, 
+						Group_Date: 					date, 
+						Wins__After:					e.Wins__After, 
+						Wins__After_Month:				e.Wins__After_Month,
+						Wins__After_Year:				e.Wins__After_Year, 
+						Wins__After_SinceCustomDate:	e.Wins__After_SinceCustomDate,
+						PlayerScores:					e.PlayerScores, 
+					}
+
+				if(date.toDateString() !== currentDate.toDateString()) {
+					rowHeights.push(height_dateElement)
+					list_visibleFinalScores.push(final_score)
+					currentDate = date
+				}
+				rowHeights.push(height_element)
+				list_visibleFinalScores.push(final_score)
+			})
+	
+			setRowHeights(rowHeights)
+			setList_toEdit(list_visibleFinalScores)
+	
+		}
+	
+		if(isLoading__list_finalscores || !data) return 
+		edit_list(data.pages.flatMap(data => data.list_finalscores), setList_finalScores)
+	
+	}, [ data, isLoading__list_finalscores ])
 
 
 
@@ -300,7 +322,7 @@ export default function Session__Preview() {
 					onClick={() => setShow_edit_list(true)}
 					className='button button_reverse button_scale_2'
 				>
-					<ListSort/>
+					<List_Sort/>
 					<span>Liste</span>
 				</button>
 
@@ -337,11 +359,12 @@ export default function Session__Preview() {
 
 										const id = player.id
 										const e = list_finalScores.at(index_visible_row)
+										if(!e) return
 
 										return (
 											<td key={id}>
 												<span>
-													{session?.View === 'show_month' && (e?.Wins__After_Month[id] || 0)}
+													{session?.View === 'show_month' && (e.Wins__After_Month[id] || 0)}
 													{session?.View === 'show_year' && (e?.Wins__After_Year[id] || 0)}
 													{session?.View === 'show_custom_date' && (e?.Wins__After_SinceCustomDate[id] || 0)}
 													{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
@@ -397,7 +420,7 @@ export default function Session__Preview() {
 										key={index_final_score} 
 										className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' no_border_top'}`}
 									>
-										<Link to={`/session/${session?.id}/preview/table/${final_score?.id}`}>
+										<Link to={`/session/${session?.id}/preview/table/${final_score.id}`}>
 											{list_players?.map((player, index_player) => 
 												<div key={`${index_final_score}.${index_player}`}>
 													<span>
@@ -422,7 +445,7 @@ export default function Session__Preview() {
 
 
 
-			<CustomButton
+			<Custom_Button
 				text={`Los geht's!`}
 				onClick={start_game}
 				loading={loading_preparing_game}
@@ -450,11 +473,11 @@ export default function Session__Preview() {
 			<div className='session_preview_popup'>
 				<Calendar
 					value={view_customDate}
-					onChange={(cd) => setView_customDate(cd)}
+					onChange={(cd) => setView_customDate(cd as Date)}
 				/>
 
-				<CustomButton
-					loading_request={mutate__custom_date.isPending}
+				<Custom_Button
+					loading={mutate__custom_date.isPending}
 					onClick={save_customDate}
 					text='Speichern'
 				/>
@@ -501,19 +524,21 @@ export default function Session__Preview() {
 
 		{/* __________________________________________________ Popup Edit Preview __________________________________________________ */}
 
-		<Popup__Edit_Preview
-			target_ref={ref_edit_list}
+		{session && <>
+			<Popup__Edit_Preview
+				target_ref={ref_edit_list}
 
-			setShow_customDate={setShow_customDate}
+				setShow_customDate={setShow_customDate}
 
-			setShow_popup={setShow_edit_list}
-			show_popup={show_edit_list}
-			
-			setSession={setSession}
-			session={session}
-			refetch={refetch}
+				setShow_popup={setShow_edit_list}
+				show_popup={show_edit_list}
+				
+				setSession={setSession}
+				session={session}
+				refetch={refetch}
 
-		/>
+			/>
+		</>}
 
 	</>
 }

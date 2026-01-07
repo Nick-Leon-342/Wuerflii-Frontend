@@ -23,7 +23,7 @@ import Person_Remove from '../../svg/Person_Remove.svg'
 import { get__user } from '../../api/user'
 import { get__session_players, patch__session_players, post__session_players } from '../../api/session/session_players'
 
-import type { Type__Player } from '../../types/Type__Player'
+import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
 import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
 
 
@@ -44,7 +44,7 @@ export default function Session__Players() {
 	// ____________________ Players ____________________
 
 	const [ isInit, 		setIsInit		] = useState<boolean>(false)
-	const [ list_players, 	setList_players	] = useState<Array<Type__Player>>([])
+	const [ list_players, 	setList_players	] = useState<Array<Type__Client_To_Server__Player__POST>>([])
 
 
 
@@ -146,7 +146,7 @@ export default function Session__Players() {
 
 
 
-	const new_player = ( list: Array<Type__Player> ): Type__Player => { 
+	const new_player = ( list: Array<Type__Client_To_Server__Player__POST> ): Type__Client_To_Server__Player__POST => { 
 		return {
 			id:		v4(), 
 			Name:	`Spieler_${list.length + 1}`, 

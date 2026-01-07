@@ -1,6 +1,6 @@
 
 
-import type { Type__Player } from './Type__Player'
+import type { Type__Client_To_Server__Player__POST } from './Type__Client_To_Server/Type__Client_To_Server__Player__POST'
 import type { Type__Enum__View } from './Type__Enum/Type__Enum__View'
 import type { Type__Enum__Month } from './Type__Enum/Type__Enum__Month'
 import type { Type__Enum__Input_Type } from './Type__Enum/Type__Enum__Input_Type'
@@ -31,5 +31,5 @@ export interface Type__Session {
 	Statistics_View_Month:			Type__Enum__Month
 	Statistics_View_Year: 			number
 
-	List_Players?:					Array<Type__Player>
+	List_Players?:					Array<Type__Client_To_Server__Player__POST>
 }

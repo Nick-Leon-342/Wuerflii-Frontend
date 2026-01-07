@@ -3,7 +3,6 @@
 import './scss/Custom_Button.scss'
 
 import Loader from '../Loader/Loader'
-import type { MouseEventHandler } from 'react';
 
 
 
@@ -11,7 +10,7 @@ import type { MouseEventHandler } from 'react';
 
 interface Props__Custom_Button {
 	text: 		string
-	onClick?:	MouseEventHandler<HTMLButtonElement>
+	onClick?:	() => void
 	loading?:	boolean
 	ok?:		boolean
 	className?:	string

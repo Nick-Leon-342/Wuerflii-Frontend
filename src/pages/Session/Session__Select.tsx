@@ -24,7 +24,7 @@ import { get__user, patch__user } from '../../api/user'
 import { delete__session, get__sessions_list } from '../../api/session/session'
 import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
 import type { Type__Session } from '../../types/Type__Session'
-import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__USER__PATCH'
+import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 import type { Type__Enum__View_Sessions } from '../../types/Type__Enum/Type__Enum__View_Sessions'
 
 

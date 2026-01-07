@@ -29,7 +29,7 @@ interface Props__Popup__Edit_Preview {
 	setShow_popup:		React.Dispatch<React.SetStateAction<boolean>>
 	show_popup:			boolean
 
-	setSession:			React.Dispatch<React.SetStateAction<Type__Session>>
+	setSession:			React.Dispatch<React.SetStateAction<Type__Session | undefined>>
 	session:			Type__Session
 	refetch:			() => void
 }
@@ -75,6 +75,7 @@ export default function Popup__Edit_Preview({
 		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
 		onSuccess: (_, json) => {
 			setSession(prev => {
+				if(!prev) return prev
 				const tmp = { ...prev }
 				tmp.View = json.View || 'show_all'
 				tmp.View_Month = json.View_Month || 1
