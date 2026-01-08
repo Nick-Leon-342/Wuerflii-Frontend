@@ -17,8 +17,8 @@ import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_C
 
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 
-import Person_Add from '../../svg/Person_Add.svg'
-import Person_Remove from '../../svg/Person_Remove.svg'
+import Person_Add from '../../svg/Person_Add.svg?react'
+import Person_Remove from '../../svg/Person_Remove.svg?react'
 
 import { get__user } from '../../api/user'
 import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '../../api/session/session_players'

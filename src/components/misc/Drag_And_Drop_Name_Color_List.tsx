@@ -4,7 +4,7 @@ import './scss/Drag_And_Drop_Name_Color_List.scss'
 
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
 
-import Drag_Handle from '../../svg/Drag_Handle.svg'
+import Drag_Handle from '../../svg/Drag_Handle.svg?react'
 import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
 import type { ChangeEvent } from 'react'
 

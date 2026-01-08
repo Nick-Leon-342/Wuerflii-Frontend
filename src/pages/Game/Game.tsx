@@ -17,7 +17,7 @@ import OptionsDialog from '../../components/Popup/Popup__Options'
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
-import Settings from '../../svg/Settings.svg'
+import Settings from '../../svg/Settings.svg?react'
 
 import { get__user } from '../../api/user'
 import { get__session } from '../../api/session/session'

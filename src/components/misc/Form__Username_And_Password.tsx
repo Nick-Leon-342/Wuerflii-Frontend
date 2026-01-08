@@ -8,8 +8,8 @@ import Context__Regex from '../../Provider_And_Context/Provider_And_Context__Reg
 
 import InputWithSVG from './Input_With_SVG'
 
-import Key from '../../svg/Key.svg'
-import Person from '../../svg/Person.svg'
+import Key from '../../svg/Key.svg?react'
+import Person from '../../svg/Person.svg?react'
 import Popup__Dropdown from '../Popup/Popup__Dropdown'
 
 

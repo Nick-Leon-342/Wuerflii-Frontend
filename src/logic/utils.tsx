@@ -1,12 +1,12 @@
 
 
-import DiceOne from '../svg/Dice_One.svg'
-import DiceTwo from '../svg/Dice_Two.svg'
-import DiceThree from '../svg/Dice_Three.svg'
-import DiceFour from '../svg/Dice_Four.svg'
-import DiceFive from '../svg/Dice_Five.svg'
-import DiceSix from '../svg/Dice_Six.svg'
-import ArrowLeft from '../svg/Arrow_Left.svg'
+import DiceOne from '../svg/Dice_One.svg?react'
+import DiceTwo from '../svg/Dice_Two.svg?react'
+import DiceThree from '../svg/Dice_Three.svg?react'
+import DiceFour from '../svg/Dice_Four.svg?react'
+import DiceFive from '../svg/Dice_Five.svg?react'
+import DiceSix from '../svg/Dice_Six.svg?react'
+import ArrowLeft from '../svg/Arrow_Left.svg?react'
 
 import type { Type__Row } from '../types/Type__Row'
 

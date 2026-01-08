@@ -16,9 +16,9 @@ import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Form__Username_And_Password from '../../components/misc/Form__Username_And_Password'
 import type { AxiosError } from 'axios'
 
-import Key from '../../svg/Key.svg'
-import Icon from '../../svg/default.svg'
-import Person from '../../svg/Person.svg'
+import Key from '../../svg/Key.svg?react'
+import Icon from '../../svg/default.svg?react'
+import Person from '../../svg/Person.svg?react'
 
 import Context__Regex from '../../Provider_And_Context/Provider_And_Context__Regex'
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'

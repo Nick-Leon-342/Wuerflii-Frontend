@@ -16,9 +16,9 @@ import OptionsDialog from '../../components/Popup/Popup__Options'
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
 
-import Trashcan from '../../svg/Trashcan.svg'
-import ListSort from '../../svg/List_Sort.svg'
-import ArrowDown from '../../svg/Arrow_Down.svg'
+import Trashcan from '../../svg/Trashcan.svg?react'
+import ListSort from '../../svg/List_Sort.svg?react'
+import ArrowDown from '../../svg/Arrow_Down.svg?react'
 
 import { get__user, patch__user } from '../../api/user'
 import { delete__session, get__sessions_list } from '../../api/session/session'

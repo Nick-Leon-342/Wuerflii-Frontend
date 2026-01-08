@@ -2,7 +2,7 @@
 
 import './scss/Previous.scss'
 
-import ArrowBack from '../../svg/Arrow_Back.svg'
+import ArrowBack from '../../svg/Arrow_Back.svg?react'
 
 import type { MouseEventHandler, ReactNode } from 'react'
 

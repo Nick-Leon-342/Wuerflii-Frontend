@@ -21,8 +21,8 @@ import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Popup__Edit_Preview from '../../components/Popup/Popup__Edit_Preview'
 
-import Settings from '../../svg/Settings.svg'
-import List_Sort from '../../svg/List_Sort.svg'
+import Settings from '../../svg/Settings.svg?react'
+import List_Sort from '../../svg/List_Sort.svg?react'
 
 import { get__user } from '../../api/user'
 import { get__final_scores_page } from '../../api/final_score'

@@ -16,7 +16,7 @@ import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
 import CustomButton from '../misc/Custom_Button'
 
-import Settings from '../../svg/Settings.svg'
+import Settings from '../../svg/Settings.svg?react'
 
 import { patch__user } from '../../api/user'
 
@@ -118,7 +118,7 @@ export default function Popup__Options({
 
 		<button
 			onClick={() => setShow_options(true)} 
-			className='button button_reverse button_scale_3 popup_options-icon'
+			className='button button_reverse button_scale_3 popup__options-icon'
 		><Settings/></button>
 	
 
@@ -130,7 +130,7 @@ export default function Popup__Options({
 			setShow_popup={setShow_options}
 			title='Einstellungen'
 		>
-			<div className='popup_options'>
+			<div className='popup__options'>
 
 				<div className='box'>
 
@@ -138,8 +138,8 @@ export default function Popup__Options({
 						
 						<div>
 							{change_dark_mode?.isPending && <>
-								<div className='popup_options_loading_darkmode-container'>
-									<LoaderBox className='popup_options_loading_darkmode' dark={true}/>
+								<div className='popup__options_loading_darkmode-container'>
+									<LoaderBox className='popup__options_loading_darkmode' dark={true}/>
 								</div>
 							</>}
 							

@@ -13,7 +13,7 @@ import Popup from '../Popup/Popup'
 import Loader from '../Loader/Loader'
 import LoaderBox from '../Loader/Loader_Box'
 
-import Person_Settings from '../../svg/Person_Settings.svg'
+import Person_Settings from '../../svg/Person_Settings.svg?react'
 
 import { patch__session } from '../../api/session/session'
 import type { Type__Session } from '../../types/Type__Session'
