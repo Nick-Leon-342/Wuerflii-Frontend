@@ -13,7 +13,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup__Options'
 import Previous from '../../components/NavigationElements/Previous'
-import DragAndDropNameColorList from '../../components/misc/DragAndDropNameColorList'
+import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
 
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 
@@ -21,7 +21,7 @@ import Person_Add from '../../svg/Person_Add.svg'
 import Person_Remove from '../../svg/Person_Remove.svg'
 
 import { get__user } from '../../api/user'
-import { get__session_players, patch__session_players, post__session_players } from '../../api/session/session_players'
+import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '../../api/session/session_players'
 
 import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
 import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
@@ -70,7 +70,7 @@ export default function Session__Players() {
 
 	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
 		queryKey: [ 'session', 'players', 'env' ], 
-		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__session_players_env(axiosPrivate), 
 	})
 
 	if(error__env_variables) {
@@ -146,7 +146,7 @@ export default function Session__Players() {
 
 
 
-	const new_player = ( list: Array<Type__Client_To_Server__Player__POST> ): Type__Client_To_Server__Player__POST => { 
+	function new_player( list: Array<Type__Client_To_Server__Player__POST> ): Type__Client_To_Server__Player__POST { 
 		return {
 			id:		v4(), 
 			Name:	`Spieler_${list.length + 1}`, 
@@ -154,7 +154,7 @@ export default function Session__Players() {
 		}
 	}
 
-	const add_player = () => {
+	function add_player() {
 		
 		if(list_players.length === env_variables?.MAX_PLAYERS) return setError(`Es dürfen maximal nur ${env_variables?.MAX_PLAYERS} Spieler sein.`)
 
@@ -166,7 +166,7 @@ export default function Session__Players() {
 		
 	}
 
-	const remove_player = () => {
+	function remove_player() {
 
 		if(list_players.length === 1) return setList_players(() => [ new_player([]) ])
 
@@ -178,9 +178,9 @@ export default function Session__Players() {
 
 	}
 
-	const save = async () => {
+	async function save() {
 
-		if(!list_players || list_players.some(p => p.Name.length > env_variables?.MAX_LENGTH_PLAYER_NAME)) return setError(`Die Spielernamen dürfen nicht länger als ${env_variables?.MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
+		if(!list_players || list_players.some(p => p.Name.length > (env_variables?.MAX_LENGTH_PLAYER_NAME || -1))) return setError(`Die Spielernamen dürfen nicht länger als ${env_variables?.MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
 
 		const json: Type__Client_To_Server__Session_Players__POST_And_PATCH = { 
 			SessionID:		+(session_id || -1), 
@@ -197,8 +197,9 @@ export default function Session__Players() {
 
 	useEffect(() => {
 		function init() {
-			setIsInit(tmp__list_players?.length === 0)
-			setList_players(tmp__list_players?.length > 0 ? structuredClone(tmp__list_players) : [ new_player([]) ])
+			if(!tmp__list_players) return
+			setIsInit(tmp__list_players.length === 0)
+			setList_players(tmp__list_players.length > 0 ? structuredClone(tmp__list_players) : [ new_player([]) ])
 		}
 		init()
 	}, [ tmp__list_players ])
@@ -232,13 +233,13 @@ export default function Session__Players() {
 
 
 
-			<div className='session_players_list'>
+			{env_variables && <div className='session_players_list'>
 				<DragAndDropNameColorList
 					list_edit_players={list_players}
 					setList_edit_players={setList_players}
 					MAX_LENGTH_PLAYER_NAME={env_variables?.MAX_LENGTH_PLAYER_NAME}
 				/>
-			</div>
+			</div>}
 
 
 

@@ -14,7 +14,7 @@ import Table from '../../components/Game/Game_Tables/Table'
 import GameOptions from '../../components/Game/Game_Options'
 import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup__Options'
-import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
+import Table_Player from '../../components/Game/Game_Tables/Table_Player'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import Settings from '../../svg/Settings.svg'
@@ -24,6 +24,7 @@ import { get__session } from '../../api/session/session'
 import { get__table_columns } from '../../api/table_columns'
 import { get__session_players } from '../../api/session/session_players'
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
 
 
 
@@ -41,12 +42,12 @@ export default function Game() {
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
 	
-	const [ list_players,			setList_players			] = useState<Array<Type__Server_Reponse__Player__Get>>()
-	const [ list_table_columns, 	setList_table_columns	] = useState()
+	const [ list_players,			setList_players			] = useState<Array<Type__Server_Reponse__Player__Get>>([])
+	const [ list_table_columns, 	setList_table_columns	] = useState<Array<Type__Server_Response__Table_Columns__Get>>([])
 
 	const [ loading_finish_game, 	setLoading_finish_game	] = useState<boolean>(false)
 
-	const [ surrender_winner, 		setSurrender_winner		] = useState()	// Player-Object of the 'winner'
+	const [ surrender_winner, 		setSurrender_winner		] = useState<Type__Server_Reponse__Player__Get>()	// Player-Object of the 'winner'
 
 	const [ show_options, 			setShow_options			] = useState(false)
 	const [ show_surrender, 		setShow_surrender		] = useState(false)
@@ -106,7 +107,12 @@ export default function Game() {
 		})
 	}
 
-	useEffect(() => { setList_players(tmp__list_players) }, [ tmp__list_players ])
+	useEffect(() => { 
+		function init() {
+			if(tmp__list_players) setList_players(tmp__list_players)
+		}
+		init()
+	}, [ tmp__list_players ])
 	
 
 	// ____________________ List_Table_Columns ____________________
@@ -126,7 +132,12 @@ export default function Game() {
 		})
 	}
 
-	useEffect(() => setList_table_columns(tmp__list_table_columns), [ tmp__list_table_columns ])
+	useEffect(() => {
+		function init() {
+			if(tmp__list_table_columns) setList_table_columns(tmp__list_table_columns)
+		}
+		init()
+	}, [ tmp__list_table_columns ])
 
 
 
@@ -136,16 +147,17 @@ export default function Game() {
 
 	useEffect(() => {
 
-		if(!session_id) return navigate('/', { replace: true })
+		if(!session_id) navigate('/', { replace: true })
 		
 		setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
 
-		// eslint-disable-next-line
-	}, [ session ])
+	}, [ session ]) // eslint-disable-line
 
 	const finish_game = () => {
 	
-		if(!surrender_winner && list_table_columns.some(table_column => table_column.List_Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
+		if(!session || !list_players || !list_table_columns) return
+
+		if(!surrender_winner && list_table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
 		if(list_players.length === 1) return navigate('/', { replace: true })
 
 		setLoading_finish_game(true)
@@ -155,7 +167,9 @@ export default function Game() {
 			Surrendered_PlayerID: surrender_winner?.id
 		}).then(({ data }) => {
 
-			query_client.removeQueries([ 'session', session.id, 'table_columns' ])
+			query_client.removeQueries({
+				queryKey: [ 'session', session.id, 'table_columns' ]
+			})
 			navigate(`/game/end?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
 
 		}).catch((err) => {
@@ -184,7 +198,8 @@ export default function Game() {
 		<div className='game-container'>
 			<div className='game'>
 
-				<TablePlayer 
+				<Table_Player 
+					disabled={false}
 					session={session}
 					list_players={list_players}
 					setList_players={setList_players}
@@ -192,6 +207,7 @@ export default function Game() {
 				/>
 
 				<Table 
+					disabled={false}
 					session={session}
 					list_players={list_players}
 					list_table_columns={list_table_columns}
@@ -254,7 +270,7 @@ export default function Game() {
 
 						<button 
 							className='button button_reverse_red' 
-							onClick={() => setSurrender_winner()}
+							onClick={() => setSurrender_winner(undefined)}
 						>Abbrechen</button>
 					</div>
 

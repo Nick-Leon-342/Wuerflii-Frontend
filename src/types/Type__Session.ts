@@ -19,7 +19,7 @@ export interface Type__Session {
 	LastPlayed:						Date | null
 
 	InputType:						Type__Enum__Input_Type
-	ShowScores:						boolean
+	Scores_Visible:						boolean
 
 	View: 							Type__Enum__View
 	View_Month: 					Type__Enum__Month

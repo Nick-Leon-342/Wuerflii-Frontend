@@ -1,10 +1,10 @@
 
 
-.dnd-list {
+.drag_and_drop_name_color_list {
 	list-style-type: none;
 	width: 100%;
 
-	.element {
+	.drag_and_drop_name_color_list--element {
 		display: flex;
 		flex-direction: row;
 		align-items: center;

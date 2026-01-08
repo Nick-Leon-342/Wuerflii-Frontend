@@ -1,45 +1,30 @@
 
 
-import './scss/DragAndDropNameColorList.scss'
+import './scss/Drag_And_Drop_Name_Color_List.scss'
 
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
+import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
 
-import { ReactComponent as DragHandle } from '../../svg/Drag_Handle.svg'
+import Drag_Handle from '../../svg/Drag_Handle.svg'
+import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
+import type { ChangeEvent } from 'react'
 
 
 
 
 
-/**
- * 
- * DragAndDropNameColorList component allows users to drag and drop players to reorder them,
- * and change their names and colors.
- *
- * @component
- * @example
- * // Example usage of DragAndDropNameColorList component
- * <DragAndDropNameColorList 
- *   MAX_LENGTH_PLAYER_NAME={20} 
- *   setList_edit_players={setList} 
- *   list_edit_players={players} 
- * />
- *
- * @param {Object} props - The component props
- * @param {number} props.MAX_LENGTH_PLAYER_NAME - The maximum allowed length for player names
- * @param {Function} props.setList_edit_players - Function to update the list of edited players
- * @param {Array} props.list_edit_players - List of players with names and colors that can be dragged and edited
- *
- * @returns {JSX.Element} The rendered DragAndDropNameColorList component with draggable player items
- * 
- */
+interface Props__Drag_And_Drop_Name_Color_List {
+	MAX_LENGTH_PLAYER_NAME:	number
+	setList_edit_players:	React.Dispatch<React.SetStateAction<Array<Type__Client_To_Server__Player__POST>>>
+	list_edit_players:		Array<Type__Client_To_Server__Player__POST>
+}
 
-export default function DragAndDropNameColorList({ 
+export default function Drag_And_Drop_Name_Color_List({ 
 	MAX_LENGTH_PLAYER_NAME, 
 	setList_edit_players,  
 	list_edit_players, 
-}) {
+}: Props__Drag_And_Drop_Name_Color_List) {
 
-	const handleOnDragEnd = ( result ) => {
+	function handleOnDragEnd(result: DropResult): void {
 
 		if(!result.destination) return
 
@@ -51,18 +36,24 @@ export default function DragAndDropNameColorList({
 
 	}
 
-	const change_name = (e, index) => {
+	function change_name(
+		event:	ChangeEvent<HTMLInputElement>, 
+		index:	number,
+	): void {
 
-		const value = e.target.value
+		const value = event.target.value
 		const tmp = [ ...list_edit_players ]
 		tmp[index].Name = value
 		setList_edit_players(tmp)
 
 	}
 
-	const change_color = (e, index) => {
+	function change_color(
+		event:	ChangeEvent<HTMLInputElement>, 
+		index:	number, 
+	): void {
 
-		const value = e.target.value
+		const value = event.target.value
 		const tmp = [ ...list_edit_players ]
 		tmp[index].Color = value
 		setList_edit_players(tmp)
@@ -75,12 +66,12 @@ export default function DragAndDropNameColorList({
 	
 	return <>
 		<DragDropContext onDragEnd={handleOnDragEnd}>
-			<Droppable droppableId='editplayers'>
+			<Droppable droppableId='drag_and_drop_name_color_list--droppableid'>
 				{(provided) => (
 					<div 
 						{...provided.droppableProps} 
 						ref={provided.innerRef} 
-						className='dnd-list'
+						className='drag_and_drop_name_color_list'
 					>
 						{list_edit_players?.map((p, index) => (
 							<Draggable 
@@ -93,14 +84,14 @@ export default function DragAndDropNameColorList({
 										{...provided.draggableProps}
 										{...provided.dragHandleProps}
 										ref={provided.innerRef}
-										className='element'
+										className='drag_and_drop_name_color_list--element'
 										style={{
 											...provided.draggableProps.style,
 											opacity: snapshot.isDragging ? '0.7' : '1'
 										}}
 									>
 
-										<DragHandle/>
+										<Drag_Handle/>
 
 										<input
 											type='text'

@@ -13,38 +13,25 @@ import Popup from '../Popup/Popup'
 import Loader from '../Loader/Loader'
 import LoaderBox from '../Loader/Loader_Box'
 
-import { ReactComponent as PersonSettings } from '../../svg/Person_Settings.svg'
+import Person_Settings from '../../svg/Person_Settings.svg'
 
 import { patch__session } from '../../api/session/session'
+import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
+import type { Type__Enum__Input_Type } from '../../types/Type__Enum/Type__Enum__Input_Type'
 
 
 
 
 
-/**
- * 
- * Game_Options component that provides game settings, such as input type selection, score visibility toggle,
- * player management, and options for starting a new game or surrendering.
- *
- * @component
- * @example
- * // Example usage of Game_Options component
- * <Game_Options 
- *   setShow_surrender={setShowSurrender} 
- *   setShow_options={setShowOptions} 
- *   show_options={showOptions} 
- *   session={session} 
- * />
- *
- * @param {Object} props - The component props
- * @param {Function} props.setShow_surrender - Function to show/hide surrender option
- * @param {Function} props.setShow_options - Function to show/hide options popup
- * @param {boolean} props.show_options - Boolean value to control visibility of the options popup
- * @param {Object} props.session - The current game session object, containing details like input type and show scores option
- *
- * @returns {JSX.Element} The rendered Game_Options component
- * 
- */
+interface Props__Game_Options {
+	setShow_surrender:	React.Dispatch<React.SetStateAction<boolean>>
+
+	setShow_options:	React.Dispatch<React.SetStateAction<boolean>>
+	show_options:		boolean
+
+	session:			Type__Session
+}
 
 export default function Game_Options({
 	setShow_surrender, 
@@ -53,7 +40,7 @@ export default function Game_Options({
 	show_options, 
 
 	session, 
-}) {
+}: Props__Game_Options) {
 
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
@@ -69,45 +56,47 @@ export default function Game_Options({
 	// __________________________________________________ Input Type __________________________________________________
 
 	const mutate__input_type = useMutation({
-		mutationFn: json => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
 		onSuccess: (_, json) => {
-			query_client.setQueryData([ 'session', session.id ], prev => {
+			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
+				if(!prev) return prev
 				const tmp = { ...prev }
-				tmp.InputType = json.InputType
+				tmp.InputType = json.InputType || 'select'
 				return tmp
 			})
 		}
 	})
 
-	const change_inputType = event => {
+	function change_inputType(event: React.ChangeEvent<HTMLSelectElement>) {
 
 		const json = {
 			SessionID: session.id, 
-			InputType: event.target.value
+			InputType: event.target.value as Type__Enum__Input_Type
 		}
 		mutate__input_type.mutate(json)
 
 	}
 
 
-	// __________________________________________________ Show Scores __________________________________________________
+	// __________________________________________________ Scores Visible __________________________________________________
 
 	const mutate__show_scores = useMutation({
-		mutationFn: json => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
 		onSuccess: (_, json) => {
-			query_client.setQueryData([ 'session', session.id ], prev => {
+			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
+				if(!prev) return prev
 				const tmp = { ...prev }
-				tmp.ShowScores = json.ShowScores
+				tmp.Scores_Visible = Boolean(json.Scores_Visible)
 				return tmp
 			})
 		}
 	})
 
-	const change_showScores = event => {
+	function change__scores_visible(event: React.ChangeEvent<HTMLInputElement>): void {
 
 		const json = {
 			SessionID: session.id, 
-			ShowScores: event.target.checked
+			Scores_Visible: event.target.checked
 		}
 		mutate__show_scores.mutate(json)
 
@@ -116,14 +105,14 @@ export default function Game_Options({
 
 	// __________________________________________________ New Game __________________________________________________
 
-	const new_game = () => {
+	function new_game(): void {
 
 		if(!window.confirm('Sicher, dass dieses Spiel gelöscht werden soll?')) return 
 		setLoading_newGame(true)
 	
 		axiosPrivate.delete(`/game?session_id=${session.id}`).then(() => {
 
-			query_client.removeQueries([ 'session', session.id, 'table_columns' ])
+			query_client.removeQueries({ queryKey: [ 'session', session.id, 'table_columns' ] })
 			navigate('/', { replace: true })
 
 		}).catch((err) => {
@@ -169,7 +158,7 @@ export default function Game_Options({
 
 
 
-				{/* __________________________________________________ ShowScores __________________________________________________ */}
+				{/* __________________________________________________ Scores_Visible __________________________________________________ */}
 
 				<section>
 					<label>Summe anzeigen</label>
@@ -179,8 +168,8 @@ export default function Game_Options({
 					{!mutate__show_scores.isPending && <>
 						<input
 							type='checkbox'
-							checked={session?.ShowScores}
-							onChange={change_showScores}
+							checked={session?.Scores_Visible}
+							onChange={change__scores_visible}
 						/>
 					</>}
 				</section>
@@ -195,7 +184,7 @@ export default function Game_Options({
 					<Link
 						to={`/session/${session?.id}/players`}
 						className='button button_reverse button_scale_3 edit'
-					><PersonSettings/></Link>
+					><Person_Settings/></Link>
 				</section>
 
 

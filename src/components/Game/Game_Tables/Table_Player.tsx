@@ -10,35 +10,22 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import LoaderBox from '../../Loader/Loader_Box'
 
 import { patch__player } from '../../../api/player'
+import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
+import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Session } from '../../../types/Type__Session'
+import type { Type__Client_To_Server__Player__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Player__PATCH'
 
 
 
 
 
-/**
- * 
- * Table_Player component that displays the list of players, their scores, and allows toggling of the "Gnadenwurf" (grace throw) option.
- * 
- * @component
- * @example
- * // Example usage of Table_Player component
- * <Table_Player 
- *   list_table_columns={listTableColumns} 
- *   list_players={listPlayers} 
- *   disabled={false} 
- *   session={session} 
- * />
- *
- * @param {Object} props - The component props
- * @param {Array} props.list_table_columns - List of columns for each players to calculate current score
- * @param {Array} props.setList_players - Function to edit list of players
- * @param {Array} props.list_players - List of players to display
- * @param {boolean} props.disabled - Boolean to control whether the grace throw option is disabled
- * @param {Object} props.session - The current session object containing session details like "ShowScores"
- *
- * @returns {JSX.Element} The rendered Table_Player component
- * 
- */
+interface Props__Table_Player {
+	list_table_columns:	Array<Type__Server_Response__Table_Columns__Get>
+	setList_players:	React.Dispatch<React.SetStateAction<Array<Type__Server_Reponse__Player__Get>>>
+	list_players:		Array<Type__Server_Reponse__Player__Get>
+	disabled:			boolean
+	session:			Type__Session | undefined
+}
 
 export default function Table_Player({ 
 	list_table_columns, 
@@ -46,14 +33,14 @@ export default function Table_Player({
 	list_players, 
 	disabled, 
 	session, 
-}) {
+}: Props__Table_Player) {
 
-	const calculateScore = index_player => {
+	function calculateScore(index_player: number): number {
 
-		if(!list_table_columns) return 
+		if(!list_table_columns) return 0
 
 		let sum = 0
-		for(const tc of list_table_columns[index_player].List_Table_Columns) { sum += tc.TotalScore }
+		for(const tc of list_table_columns[index_player].List__Table_Columns) { sum += tc.TotalScore }
 		return sum
 
 	}
@@ -84,7 +71,7 @@ export default function Table_Player({
 
 			{/* __________________________________________________ Scores __________________________________________________ */}
 
-			{session?.ShowScores && <>
+			{session?.Scores_Visible && <>
 				<div className='table_player_row'>
 
 					<div className='table_player_column'><span>Spieler gesamt</span></div>
@@ -102,7 +89,7 @@ export default function Table_Player({
 
 			{/* __________________________________________________ Gnadenwurf __________________________________________________ */}
 
-			{!disabled && <>
+			{session && !disabled && <>
 				<div className='table_player_row'>
 
 					<div className='table_player_column'><span>Gnadenwurf</span></div>
@@ -132,12 +119,19 @@ export default function Table_Player({
 
 
 
+interface Props__Gnadenwurf {
+	setList_players:	React.Dispatch<React.SetStateAction<Array<Type__Server_Reponse__Player__Get>>>
+	list_players:		Array<Type__Server_Reponse__Player__Get>
+	index_player:		number
+	session:			Type__Session
+}
+
 const Gnadenwurf = ({
 	setList_players, 
 	list_players, 
 	index_player, 
 	session, 
-}) => {
+}: Props__Gnadenwurf) => {
 
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
@@ -145,7 +139,7 @@ const Gnadenwurf = ({
 	const handle_error = useErrorHandling()
 
 	const mutate__gnadenwurf = useMutation({
-		mutationFn: json => patch__player(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Player__PATCH) => patch__player(axiosPrivate, json), 
 		onSuccess: (_, json) => {
 			setList_players(prev => {
 				const tmp = [ ...prev ]

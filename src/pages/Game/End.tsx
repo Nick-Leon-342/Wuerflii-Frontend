@@ -30,8 +30,8 @@ export default function EndScreen() {
 
 	const location = useLocation()
 	const urlParams = new URLSearchParams(location.search)
-	const session_id = +urlParams.get('session_id')
-	const finalscore_id = +urlParams.get('finalscore_id')
+	const session_id = +(urlParams.get('session_id') || -1)
+	const finalscore_id = +(urlParams.get('finalscore_id') || -1)
 
 
 
@@ -56,7 +56,6 @@ export default function EndScreen() {
 	// ____________________ List_Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		enable: Boolean(session_id), 
 		queryKey: [ 'session', session_id, 'players' ], 
 		queryFn: () => get__session_players(axiosPrivate, session_id), 
 	})
@@ -75,7 +74,6 @@ export default function EndScreen() {
 	// ____________________ FinalScore ____________________
 
 	const { data: final_score, isLoading: isLoading__final_score, error: error__final_score } = useQuery({
-		enable: Boolean(session_id), 
 		queryKey: [ 'session', session_id, 'finalscore', finalscore_id ], 
 		queryFn: () => get__final_score(axiosPrivate, session_id, finalscore_id), 
 	})
@@ -95,37 +93,37 @@ export default function EndScreen() {
 
 
 	useEffect(() => {
-
-		if(!final_score || !list_players) return
-
-		// Init list_winner
-		const list_winner = []
-		for(const winner_id of final_score.List_Winner) {
-			for(const p of list_players) {
-				if(+winner_id === p.id) {
-					list_winner.push(p.Name)
+		function init() {
+			if(!final_score || !list_players) return
+	
+			// Init list_winner
+			const list_winner = []
+			for(const winner_id of final_score.List_Winner) {
+				for(const p of list_players) {
+					if(+winner_id === p.id) {
+						list_winner.push(p.Name)
+					}
 				}
 			}
-		}
-
-
-		// Init header
-		if(list_winner.length === 1) {
-			setHeader(`'${list_winner[0]}' hat gewonnen!`)
-		} else {
-			let string = `'${list_winner[0]}' `
-			for(let i = 1; list_winner.length > i; i++) {
-				const p = `'${list_winner[i]}'`
-				if((i + 1) === list_winner.length) {
-					string += ` und ${p} haben gewonnen!`
-				} else {
-					string += `, ${p}`
+	
+	
+			// Init header
+			if(list_winner.length === 1) {
+				setHeader(`'${list_winner[0]}' hat gewonnen!`)
+			} else {
+				let string = `'${list_winner[0]}' `
+				for(let i = 1; list_winner.length > i; i++) {
+					const p = `'${list_winner[i]}'`
+					if((i + 1) === list_winner.length) {
+						string += ` und ${p} haben gewonnen!`
+					} else {
+						string += `, ${p}`
+					}
 				}
+				setHeader(string)
 			}
-			setHeader(string)
 		}
-
-		// eslint-disable-next-line
+		init()
 	}, [ list_players, final_score ])
 
 

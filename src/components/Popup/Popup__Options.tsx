@@ -26,7 +26,7 @@ import type { Type__User } from '../../types/Type__User'
 
 
 interface Props__Popup__Options {
-	user:	Type__User
+	user:	Type__User | undefined
 }
 
 export default function Popup__Options({

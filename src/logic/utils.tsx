@@ -10,6 +10,21 @@ import ArrowLeft from '../svg/Arrow_Left.svg'
 
 import type { Type__Row } from '../types/Type__Row'
 
+import { Possible_Entries__Upper_Table_1 } from './Possible_Entries/Possible_Entries__Upper_Table_1'
+import { Possible_Entries__Upper_Table_2 } from './Possible_Entries/Possible_Entries__Upper_Table_2'
+import { Possible_Entries__Upper_Table_3 } from './Possible_Entries/Possible_Entries__Upper_Table_3'
+import { Possible_Entries__Upper_Table_4 } from './Possible_Entries/Possible_Entries__Upper_Table_4'
+import { Possible_Entries__Upper_Table_5 } from './Possible_Entries/Possible_Entries__Upper_Table_5'
+import { Possible_Entries__Upper_Table_6 } from './Possible_Entries/Possible_Entries__Upper_Table_6'
+
+import { Possible_Entries__Bottom_Table_1 } from './Possible_Entries/Possible_Entries__Bottom_Table_1'
+import { Possible_Entries__Bottom_Table_2 } from './Possible_Entries/Possible_Entries__Bottom_Table_2'
+import { Possible_Entries__Bottom_Table_3 } from './Possible_Entries/Possible_Entries__Bottom_Table_3'
+import { Possible_Entries__Bottom_Table_4 } from './Possible_Entries/Possible_Entries__Bottom_Table_4'
+import { Possible_Entries__Bottom_Table_5 } from './Possible_Entries/Possible_Entries__Bottom_Table_5'
+import { Possible_Entries__Bottom_Table_6 } from './Possible_Entries/Possible_Entries__Bottom_Table_6'
+import { Possible_Entries__Bottom_Table_7 } from './Possible_Entries/Possible_Entries__Bottom_Table_7'
+
 export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
 
 
@@ -37,7 +52,7 @@ export const list_rows: Array<Type__Row> = [
 
 	{
 		Name: 				'Upper_Table_1', 
-		Possible_Entries: 	[ 0, 1, 2, 3, 4, 50 ],
+		Possible_Entries: 	Possible_Entries__Upper_Table_1,
 		Border_Top: 		true, 
 		td: 
 		<>
@@ -50,7 +65,7 @@ export const list_rows: Array<Type__Row> = [
 		</>, 
 	}, {
 		Name: 				'Upper_Table_2', 
-		Possible_Entries: 	[ 0, 2, 4, 6, 8, 50 ],
+		Possible_Entries: 	Possible_Entries__Upper_Table_2,
 		td: 
 		<>
 			<td>
@@ -61,8 +76,8 @@ export const list_rows: Array<Type__Row> = [
 			<td><label>Nur Zweier<br/>zählen</label></td>
 		</>, 
 	}, {
-		Name: 'Upper_Table_3', 
-		Possible_Entries: [ 0, 3, 6, 9, 12, 50 ],
+		Name: 				'Upper_Table_3', 
+		Possible_Entries: 	Possible_Entries__Upper_Table_3,
 		td: 
 		<>
 			<td>
@@ -73,8 +88,8 @@ export const list_rows: Array<Type__Row> = [
 			<td><label>Nur Dreier<br/>zählen</label></td>
 		</>, 
 	}, {
-		Name: 'Upper_Table_4', 
-		Possible_Entries: [ 0, 4, 8, 12, 16, 50 ],
+		Name: 				'Upper_Table_4', 
+		Possible_Entries: 	Possible_Entries__Upper_Table_4,
 		td: 
 		<>
 			<td>
@@ -85,8 +100,8 @@ export const list_rows: Array<Type__Row> = [
 			<td><label>Nur Vierer<br/>zählen</label></td>
 		</>, 
 	}, {
-		Name: 'Upper_Table_5', 
-		Possible_Entries: [ 0, 5, 10, 15, 20, 50 ],
+		Name: 				'Upper_Table_5', 
+		Possible_Entries: 	Possible_Entries__Upper_Table_5,
 		td: 
 		<>
 			<td>
@@ -97,8 +112,8 @@ export const list_rows: Array<Type__Row> = [
 			<td><label>Nur Fünfer<br/>zählen</label></td>
 		</>, 
 	}, {
-		Name: 'Upper_Table_6', 
-		Possible_Entries: [ 0, 6, 12, 18, 24, 50 ],
+		Name: 				'Upper_Table_6', 
+		Possible_Entries: 	Possible_Entries__Upper_Table_6,
 		td: 
 		<>
 			<td>
@@ -146,61 +161,58 @@ export const list_rows: Array<Type__Row> = [
 
 
 	{
-		Name: 'Bottom_Table_1', 
-		Border_Top: true, 
-		// Possible_Entries: [ 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 50 ],
-		Possible_Entries: [ 50, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 0 ], // Feedback from my parents: You often get higher values than lower values
+		Name: 				'Bottom_Table_1', 
+		Border_Top: 		true, 
+		Possible_Entries: 	Possible_Entries__Bottom_Table_1,
 		td: 
 		<>
 			<td><label>Dreierpasch</label></td>
 			<td><label>alle Augen<br/>zählen</label></td>
 		</>,
 	}, {
-		Name: 'Bottom_Table_2', 
-		// Possible_Entries: [ 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 50 ], 
-		Possible_Entries: [ 50, 29, 28, 27, 26, 25, 24, 23, 22, 21, 19, 18, 17, 16, 14, 13, 12, 11, 10, 9, 8, 7, 6, 0 ],  // Feedback from my parents: You often get higher values than lower values
+		Name: 				'Bottom_Table_2', 
+		Possible_Entries: 	Possible_Entries__Bottom_Table_2,
 		td:
 		<>
 			<td><label>Viererpasch</label></td>
 			<td><label>alle Augen<br/>zählen</label></td>
 		</>, 
 	}, {
-		Name: 'Bottom_Table_3', 
-		Possible_Entries: [ 0, 25, 50 ], 
+		Name: 				'Bottom_Table_3', 
+		Possible_Entries: 	Possible_Entries__Bottom_Table_3, 
 		td: 
 		<>
 			<td><label>Full-House</label></td>
 			<td><label>25<br/>Punkte</label></td>
 		</>,
 	}, {
-		Name: 'Bottom_Table_4', 
-		Possible_Entries: [ 0, 30, 40, 50 ], 
+		Name: 				'Bottom_Table_4', 
+		Possible_Entries: 	Possible_Entries__Bottom_Table_4, 
 		td:
 		<>
 			<td><label>Kleine Straße</label></td>
 			<td><label>30<br/>Punkte</label></td>
 		</>, 
 	}, {
-		Name: 'Bottom_Table_5', 
-		Possible_Entries: [ 0, 40, 50 ], 
+		Name: 				'Bottom_Table_5', 
+		Possible_Entries: 	Possible_Entries__Bottom_Table_5, 
 		td: 
 		<>
 			<td><label>Große Straße</label></td>
 			<td><label>40<br/>Punkte</label></td>
 		</>, 
 	}, {
-		Name: 'Bottom_Table_6', 
-		Possible_Entries: [ 0, 50 ], 
+		Name: 				'Bottom_Table_6', 
+		Possible_Entries: 	Possible_Entries__Bottom_Table_6, 
 		td:
 		<>
 			<td><label>Wuerflii</label></td>
 			<td><label>50<br/>Punkte</label></td>
 		</>, 
 	}, {
-		Name: 'Bottom_Table_7', 
-		// Possible_Entries: [ 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 50 ], 
-		Possible_Entries: [ 50, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6 ], // Feedback from my parents: You often get higher values than lower values
-		Border_Bottom: true, 
+		Name: 				'Bottom_Table_7', 
+		Possible_Entries: 	Possible_Entries__Bottom_Table_7, 
+		Border_Bottom: 		true, 
 		td: 
 		<>
 			<td><label>Chance</label></td>

@@ -74,8 +74,8 @@ export async function get__session_env_variables(
 
 // __________________________________________________ List of sessions __________________________________________________
 
-export function get__sessions_list(
+export async function get__sessions_list(
 	axiosPrivate: 	Axios, 
-) {
+): Promise<Array<Type__Session>> {
 	return axiosPrivate.get('/session/all').then(({ data }) => data)
 }

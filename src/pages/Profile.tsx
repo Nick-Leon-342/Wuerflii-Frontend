@@ -6,18 +6,21 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { ErrorContext } from '../context/Provider__Error'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
 import LoaderDots from '../components/Loader/Loader_Dots'
-import PopupOptions from '../components/Popup/Popup__Options'
 import CustomButton from '../components/misc/Custom_Button'
+import Popup__Options from '../components/Popup/Popup__Options'
 import Previous from '../components/NavigationElements/Previous'
-import RegistrationForm from '../components/misc/Form__Username_And_Password'
+import Form__Username_And_Password from '../components/misc/Form__Username_And_Password'
 
 import { get__user, patch__user } from '../api/user'
-import { RegexContext } from '../context/Provider__Regex'
+
+import Context__Error from '../Provider_And_Context/Provider_And_Context__Error'
+import Context__Regex from '../Provider_And_Context/Provider_And_Context__Regex'
+
+import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 
 
 
@@ -30,13 +33,13 @@ export default function Profile() {
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const { setError } = useContext(ErrorContext)
+	const { setError } = useContext(Context__Error)
 
-	const [ Name, setName ] = useState('')
-	const [ Password, setPassword ] = useState('')
-	const { NAME_REGEX, PASSWORD_REGEX } = useContext(RegexContext)
+	const [ Name, 					setName						] = useState<string>('')
+	const [ Password, 				setPassword					] = useState<string>('')
+	const { NAME_REGEX,				PASSWORD_REGEX				} = useContext(Context__Regex)
 
-	const [ loading_delete_account, setLoading_delete_account ] = useState(false)
+	const [ loading_delete_account, setLoading_delete_account	] = useState<boolean>(false)
 
 
 
@@ -54,7 +57,7 @@ export default function Profile() {
 	}
 
 	const mutate__user = useMutation({
-		mutationFn: json => patch__user(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(axiosPrivate, json), 
 		onSuccess: () => {
 			navigate(-1)
 		}, 
@@ -70,7 +73,7 @@ export default function Profile() {
 
 
 
-	const handleSubmit = event => {
+	function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
 
 		event.preventDefault()
 		setError('')
@@ -78,7 +81,7 @@ export default function Profile() {
 		if((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) return
 
 
-		let json = {}
+		const json: Type__Client_To_Server__User__PATCH = {}
 		if(NAME_REGEX.test(Name) && PASSWORD_REGEX.test(Password)) {
 			//Name and Password are valid
 			json.Name = Name
@@ -95,7 +98,7 @@ export default function Profile() {
 
 	}
 
-	const delete_account = () => {
+	function delete_account() {
 
 		if(!window.confirm('Sicher, dass du deinen Account löschen willst?\nDas kann man nicht rückgängig machen!')) return
 		if(!window.confirm('Wirklich, ganz sicher?')) return
@@ -122,7 +125,7 @@ export default function Profile() {
 
 	return <>
 	
-		<PopupOptions user={user}/>
+		<Popup__Options user={user}/>
 	
 	
 
@@ -130,7 +133,7 @@ export default function Profile() {
 
 		<div className='profile'>
 
-			<Previous onClick={() => navigate(-1, { replace: true })}>
+			<Previous onClick={() => navigate(-1)}>
 				<h1>Anmeldedaten ändern</h1>
 			</Previous>
 
@@ -145,11 +148,11 @@ export default function Profile() {
 
 					{mutate__user.isSuccess && <h2>Erfolgreich gespeichert!</h2>}
 
-					<RegistrationForm 
-						Name={Name} 
+					<Form__Username_And_Password 
+						name={Name} 
 						setName={setName} 
 
-						Password={Password} 
+						password={Password} 
 						setPassword={setPassword} 
 						
 						isRequired={false}

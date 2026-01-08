@@ -3,7 +3,7 @@
 import './scss/Table.scss'
 
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState, type ChangeEvent, type FocusEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { list_rows } from '../../../logic/utils'
@@ -14,34 +14,23 @@ import LoaderBox from '../../Loader/Loader_Box'
 
 import { patch__table_columns } from '../../../api/table_columns'
 
+import type { Type__Session } from '../../../types/Type__Session'
+import type { Type__Table_Columns } from '../../../types/Type__Table_Column'
+import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
+import type { Type__Client_To_Server__Table_Columns__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Table_Columns__PATCH'
 
 
 
 
-/**
- * 
- * Table component that renders a table with player data and allows input for scores or other data.
- * It handles loading states, possible entries for input, and syncs with the server.
- *
- * @component
- * @example
- * // Example usage of Table component
- * <Table 
- *   list_players={listPlayers} 
- *   disabled={false} 
- *   session={session} 
- * />
- *
- * @param {Object} props - The component props
- * @param {Array} props.setList_table_columns - Function to edit list of table_columns
- * @param {Array} props.list_table_columns - List of all columns for each player
- * @param {Array} props.list_players - List of players to display in the table
- * @param {boolean} props.disabled - Boolean to control whether the input fields are disabled
- * @param {Object} props.session - The session object containing the session settings (e.g., number of columns, input type, etc.)
- *
- * @returns {JSX.Element} The rendered Table component
- * 
- */
+
+interface Props__Table {
+	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
+	list_table_columns:		Array<Type__Server_Response__Table_Columns__Get>
+	list_players:			Array<Type__Server_Reponse__Player__Get>
+	disabled:				boolean
+	session:				Type__Session | undefined
+}
 
 export default function Table({ 
 	setList_table_columns, 
@@ -49,27 +38,27 @@ export default function Table({
 	list_players, 
 	disabled, 
 	session, 
-}) {
+}: Props__Table) {
 
-	const [ list_columns, setList_columns ] = useState([])
+	const [ list_columns, setList_columns ] = useState<Array<number>>([])
 
 
 
 
 
 	useEffect(() => {
-
-		if(!session) return
-		setList_columns(Array.from({ length: session.Columns }, (_, index) => index))		
-
-		// eslint-disable-next-line
+		function init() {
+			if(!session) return
+			setList_columns(Array.from({ length: session.Columns }, (_, index) => index))		
+		}
+		init()
 	}, [ session ])
 
 
 
 
 
-	if(!list_table_columns) return 
+	if(!session || !list_table_columns) return 
 
 	return <>
 		<table className='table table_game'>
@@ -93,12 +82,12 @@ export default function Table({
 								return <>
 									{list_columns.map(column => {
 
-										const className = `${column === session?.Columns - 1 ? 'border-right' : ''}`
+										const className = `${column === session.Columns - 1 ? 'border-right' : ''}`
 										const key = `${index_player}_${column}`
 
 										if(!row.Possible_Entries || disabled) {
-											if(!list_table_columns[index_player].List_Table_Columns[column]) return <div key={key}></div>
-											const value = list_table_columns[index_player].List_Table_Columns[column][row.Name]
+											if(!list_table_columns[index_player].List__Table_Columns[column]) return <div key={key}></div>
+											const value = list_table_columns[index_player].List__Table_Columns[column][row.Name as keyof Type__Table_Columns]
 											return <>
 												<td 
 													key={key}
@@ -116,7 +105,7 @@ export default function Table({
 												className={className} 
 												style={{ backgroundColor: player.Color }} 
 											>
-												<InputElement
+												<Input_Element
 													setList_table_columns={setList_table_columns}
 													list_table_columns={list_table_columns}
 													list_players={list_players}
@@ -143,7 +132,18 @@ export default function Table({
 
 
 
-const InputElement = ({
+
+interface Props__Input_Element {
+	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
+	list_table_columns:		Array<Type__Server_Response__Table_Columns__Get>
+	list_players:			Array<Type__Server_Reponse__Player__Get>
+	index_player:			number
+	index_row:				number
+	session:				Type__Session
+	column:					number
+}
+
+const Input_Element = ({
 	setList_table_columns, 
 	list_table_columns, 
 	list_players, 
@@ -151,24 +151,32 @@ const InputElement = ({
 	index_row, 
 	session, 
 	column, 
-}) => {
+}: Props__Input_Element) => {
 
-	const ref = useRef()
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const [ id, setId ] = useState('')
-	const [ input_value, setInput_value ] = useState('')
+	const [ id,				setId			] = useState<string>('')
+	const [ input_value,	setInput_value	] = useState<number | undefined>(undefined)
+
+	function init_value() {
+
+		const tmp = list_table_columns[index_player].List__Table_Columns[column][list_rows[index_row].Name as keyof Type__Table_Columns]
+		const value = typeof tmp === 'number' ? tmp : undefined
+		setInput_value(value)
+
+	}
 
 	const mutate__table_columns = useMutation({
-		mutationFn: json => patch__table_columns(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Table_Columns__PATCH) => patch__table_columns(axiosPrivate, json), 
 		onSuccess: data => {
 			setList_table_columns(prev => {
+				if(!prev) return prev
 				const tmp = [ ...prev ]
-				tmp[index_player].List_Table_Columns[column] = data
-				query_client.setQueryData([ 'session', session.id, 'table_columns' ], tmp)
+				tmp[index_player].List__Table_Columns[column] = data
+				query_client.setQueryData([ 'session', session?.id, 'table_columns' ], tmp)
 				return tmp 
 			})
 		}, 
@@ -205,9 +213,9 @@ const InputElement = ({
 
 
 
-	const onBlur = async ( e ) => {
+	function onBlur(event: FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
 
-		const value = e.target.value
+		const value = event.target.value
 
 		mutate__table_columns.mutate({
 			SessionID: session.id, 
@@ -219,30 +227,23 @@ const InputElement = ({
 
 	}
 
-	const isIOS = () => {
+	function isIOS() {
 
-		let userAgent = navigator.userAgent || window.opera
-		if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return true
-		return false
+		return (
+            ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform) ||
+            (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+        )
 	
 	}
 
-	useEffect(() => setId(index_player + '.' + index_row + '.' + column), [ index_player, index_row, column ])
+	useEffect(() => { setId(index_player + '.' + index_row + '.' + column) }, [ index_player, index_row, column ])
 
 	useEffect(() => {
 		
-		if(!session || !list_table_columns || !list_table_columns[index_player].List_Table_Columns[column]) return
+		if(!session || !list_table_columns || !list_table_columns[index_player].List__Table_Columns[column]) return
 		init_value()
 		// eslint-disable-next-line
 	}, [])
-
-	const init_value = () => {
-
-		const tmp = list_table_columns[index_player].List_Table_Columns[column][list_rows[index_row].Name]
-		const value = typeof tmp === 'number' ? tmp : ''
-		setInput_value(value)
-
-	}
 
 
 
@@ -258,24 +259,25 @@ const InputElement = ({
 
 		{!mutate__table_columns.isPending && session?.InputType === 'type' && <>
 			<input 
-				ref={ref}
 				tabIndex={0}
-				value={input_value}
-				onChange={({ target }) => setInput_value(target.value)}
 				onBlur={onBlur}
+				value={input_value}
+				onChange={(event: ChangeEvent<HTMLInputElement>) => setInput_value(+event.target.value)}
 			/>
 		</>}
 
 		{!mutate__table_columns.isPending && session?.InputType === 'select' && <>
 			<select 
-				ref={ref}
 				tabIndex={0}
 				value={input_value}
 				className={`${isIOS() ? 'isios' : ''}`}
-				onChange={e => { onBlur(e); setInput_value(e.target.value) }}
+				onChange={(event: FocusEvent<HTMLSelectElement>) => { 
+					onBlur(event)
+					setInput_value(+event.target.value)
+				}}
 			>
 				<option></option>
-				{list_rows[index_row].Possible_Entries.map((v) => (
+				{list_rows[index_row].Possible_Entries?.map((v) => (
 					<option key={v} value={v}>{v}</option>
 				))}
 			</select>
@@ -284,15 +286,14 @@ const InputElement = ({
 		{!mutate__table_columns.isPending && session?.InputType === 'select_and_type' && <>
 			<input 
 				list={id} 
-				ref={ref}
 				tabIndex={0}
 				onBlur={onBlur}
 				value={input_value}
 				className={`${isIOS() ? 'isios' : ''}`}
-				onChange={({ target }) => setInput_value(target.value)}
+				onChange={(event: ChangeEvent<HTMLInputElement>) => setInput_value(+event.target.value)}
 			/>
 			<datalist id={id}>
-				{list_rows[index_row].Possible_Entries.map((v) => {
+				{list_rows[index_row].Possible_Entries?.map((v) => {
 					return <option key={v} value={v}/>
 				})}
 			</datalist>
