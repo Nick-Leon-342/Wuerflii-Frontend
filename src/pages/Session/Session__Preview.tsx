@@ -239,7 +239,7 @@ export default function Session__Preview() {
 
 	interface Type__Final_Score {
 		id:								Type__Server_Response__Final_Score__GET['id']
-		Group_Date:						Date
+		Group_Date:						Date | null
 		Wins__After:					Record<Type__Server_Reponse__Player__Get['id'], number>
 		Wins__After_Month:				Record<Type__Server_Reponse__Player__Get['id'], number>
 		Wins__After_Year:				Record<Type__Server_Reponse__Player__Get['id'], number>
@@ -256,7 +256,7 @@ export default function Session__Preview() {
 		) {
 	
 			if(!list_toEdit || list_toEdit.length === 0) return setList_toEdit([])
-	
+				
 			const list_visibleFinalScores: Array<Type__Final_Score> = []
 			const rowHeights: Array<number> = []
 	
@@ -276,7 +276,7 @@ export default function Session__Preview() {
 				const date = new Date(e.End)
 				const final_score: Type__Final_Score = { 
 						id:								e.id, 
-						Group_Date: 					date, 
+						Group_Date: 					null, 
 						Wins__After:					e.Wins__After, 
 						Wins__After_Month:				e.Wins__After_Month,
 						Wins__After_Year:				e.Wins__After_Year, 
@@ -287,6 +287,7 @@ export default function Session__Preview() {
 				if(date.toDateString() !== currentDate.toDateString()) {
 					rowHeights.push(height_dateElement)
 					list_visibleFinalScores.push(final_score)
+					final_score.Group_Date = date
 					currentDate = date
 				}
 				rowHeights.push(height_element)
@@ -306,7 +307,7 @@ export default function Session__Preview() {
 
 
 
-
+	
 	return <>
 
 		<OptionsDialog user={user}/>

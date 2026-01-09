@@ -31,6 +31,6 @@ export async function get__table_columns_archive(
 	axiosPrivate:	Axios, 
 	session_id: 	number, 
 	finalscore_id:	number, 
-): Promise<JSON> {
+): Promise<Array<Type__Server_Response__Table_Columns__Get>> {
 	return axiosPrivate.get(`/game/table_columns/archive?session_id=${session_id}&finalscore_id=${finalscore_id}`).then(({ data }) => data)
 }

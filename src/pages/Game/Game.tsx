@@ -11,7 +11,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Popup from '../../components/Popup/Popup'
 import Table from '../../components/Game/Game_Tables/Table'
-import GameOptions from '../../components/Game/Game_Options'
+import Game_Options from '../../components/Game/Game_Options'
 import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup__Options'
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
@@ -43,7 +43,7 @@ export default function Game() {
 	const session_id = new URLSearchParams(location.search).get('session_id')
 	
 	const [ list_players,			setList_players			] = useState<Array<Type__Server_Reponse__Player__Get>>([])
-	const [ list_table_columns, 	setList_table_columns	] = useState<Array<Type__Server_Response__Table_Columns__Get>>([])
+	const [ list__table_columns, 	setList_table_columns	] = useState<Array<Type__Server_Response__Table_Columns__Get>>([])
 
 	const [ loading_finish_game, 	setLoading_finish_game	] = useState<boolean>(false)
 
@@ -115,16 +115,16 @@ export default function Game() {
 	}, [ tmp__list_players ])
 	
 
-	// ____________________ List_Table_Columns ____________________
+	// ____________________ List__Table_Columns ____________________
 
-	const { data: tmp__list_table_columns, isLoading: isLoading__list_table_columns, error: error__list_table_columns } = useQuery({
+	const { data: tmp__list__table_columns, isLoading: isLoading__list__table_columns, error: error__list__table_columns } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'table_columns' ], 
 		queryFn: () => get__table_columns(axiosPrivate, +(session_id || -1)), 
 	})
 
-	if(error__list_table_columns) {
+	if(error__list__table_columns) {
 		handle_error({
-			err: error__list_table_columns, 
+			err: error__list__table_columns, 
 			handle_404: () => {
 				alert('Eine Ressource wurde nicht gefunden.')
 				navigate('/', { replace: true })
@@ -134,16 +134,16 @@ export default function Game() {
 
 	useEffect(() => {
 		function init() {
-			if(tmp__list_table_columns) setList_table_columns(tmp__list_table_columns)
+			if(tmp__list__table_columns) setList_table_columns(tmp__list__table_columns)
 		}
 		init()
-	}, [ tmp__list_table_columns ])
+	}, [ tmp__list__table_columns ])
 
 
 
 
 
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list_table_columns ])
+	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list__table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list__table_columns ])
 
 	useEffect(() => {
 
@@ -155,9 +155,9 @@ export default function Game() {
 
 	const finish_game = () => {
 	
-		if(!session || !list_players || !list_table_columns) return
+		if(!session || !list_players || !list__table_columns) return
 
-		if(!surrender_winner && list_table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
+		if(!surrender_winner && list__table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
 		if(list_players.length === 1) return navigate('/', { replace: true })
 
 		setLoading_finish_game(true)
@@ -198,19 +198,21 @@ export default function Game() {
 		<div className='game-container'>
 			<div className='game'>
 
-				<Table_Player 
-					disabled={false}
-					session={session}
-					list_players={list_players}
-					setList_players={setList_players}
-					list_table_columns={list_table_columns}
-				/>
+				{session && <>
+					<Table_Player 
+						disabled={false}
+						session={session}
+						list_players={list_players}
+						setList_players={setList_players}
+						list__table_columns={list__table_columns}
+					/>
+				</>}
 
 				<Table 
 					disabled={false}
 					session={session}
 					list_players={list_players}
-					list_table_columns={list_table_columns}
+					list__table_columns={list__table_columns}
 					setList_table_columns={setList_table_columns}
 				/>
 
@@ -236,14 +238,16 @@ export default function Game() {
 
 		{/* __________________________________________________ Options __________________________________________________ */}
 
-		<GameOptions
-			setShow_surrender={setShow_surrender}
-
-			setShow_options={setShow_options}
-			show_options={show_options}
-
-			session={session}
-		/>
+		{session && <>
+			<Game_Options
+				setShow_surrender={setShow_surrender}
+	
+				setShow_options={setShow_options}
+				show_options={show_options}
+	
+				session={session}
+			/>
+		</>}
 
 
 

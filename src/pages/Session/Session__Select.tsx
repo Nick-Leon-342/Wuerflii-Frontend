@@ -240,7 +240,7 @@ export default function Session__Select() {
 				><ListSort/></button>
 
 				<button
-					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions?.some(session => session.Checkbox_Checked_To_Delete) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
+					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions.some?.(session => session.Checkbox_Checked_To_Delete) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
 					onClick={handle_delete} 
 				><Trashcan/></button>
 
@@ -261,7 +261,7 @@ export default function Session__Select() {
 			{!isLoading__list_sessions && list_sessions?.length !== 0 && <>
 
 				<dl>
-					{list_sessions?.map((session, index_session) => (
+					{list_sessions.map?.((session, index_session) => (
 						<dt 
 							key={index_session}
 							style={{ 

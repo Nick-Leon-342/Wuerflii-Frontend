@@ -20,15 +20,15 @@ import type { Type__Client_To_Server__Player__PATCH } from '../../../types/Type_
 
 
 interface Props__Table_Player {
-	list_table_columns:	Array<Type__Server_Response__Table_Columns__Get>
-	setList_players:	React.Dispatch<React.SetStateAction<Array<Type__Server_Reponse__Player__Get>>>
-	list_players:		Array<Type__Server_Reponse__Player__Get>
-	disabled:			boolean
-	session:			Type__Session | undefined
+	list__table_columns:	Array<Type__Server_Response__Table_Columns__Get>
+	setList_players:		React.Dispatch<React.SetStateAction<Array<Type__Server_Reponse__Player__Get>>>
+	list_players:			Array<Type__Server_Reponse__Player__Get>
+	disabled:				boolean
+	session:				Type__Session
 }
 
 export default function Table_Player({ 
-	list_table_columns, 
+	list__table_columns, 
 	setList_players, 
 	list_players, 
 	disabled, 
@@ -37,10 +37,10 @@ export default function Table_Player({
 
 	function calculateScore(index_player: number): number {
 
-		if(!list_table_columns) return 0
+		if(list__table_columns.length === 0) return 0
 
 		let sum = 0
-		for(const tc of list_table_columns[index_player].List__Table_Columns) { sum += tc.TotalScore }
+		for(const tc of list__table_columns[index_player].List__Table_Columns) { sum += tc.TotalScore }
 		return sum
 
 	}
@@ -71,7 +71,7 @@ export default function Table_Player({
 
 			{/* __________________________________________________ Scores __________________________________________________ */}
 
-			{session?.Scores_Visible && <>
+			{session.Scores_Visible && <>
 				<div className='table_player_row'>
 
 					<div className='table_player_column'><span>Spieler gesamt</span></div>
@@ -89,7 +89,7 @@ export default function Table_Player({
 
 			{/* __________________________________________________ Gnadenwurf __________________________________________________ */}
 
-			{session && !disabled && <>
+			{!disabled && <>
 				<div className='table_player_row'>
 
 					<div className='table_player_column'><span>Gnadenwurf</span></div>

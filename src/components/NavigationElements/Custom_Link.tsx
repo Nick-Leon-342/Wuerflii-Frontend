@@ -21,7 +21,7 @@ export default function Custom_Link({
 }: Props__Custom_Link) {
 
 	return <>
-		<div className={`custom_link${textBefore && ' right'}`}>
+		<div className={`custom_link${textBefore ? ' right' : ''}`}>
 			
 			<label>{textBefore}</label>
 

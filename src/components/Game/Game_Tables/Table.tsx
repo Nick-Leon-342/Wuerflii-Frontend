@@ -3,7 +3,7 @@
 import './scss/Table.scss'
 
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState, type ChangeEvent, type FocusEvent } from 'react'
+import React, { useEffect, useState, type ChangeEvent, type FocusEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { list_rows } from '../../../logic/utils'
@@ -26,7 +26,7 @@ import type { Type__Client_To_Server__Table_Columns__PATCH } from '../../../type
 
 interface Props__Table {
 	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
-	list_table_columns:		Array<Type__Server_Response__Table_Columns__Get>
+	list__table_columns:		Array<Type__Server_Response__Table_Columns__Get>
 	list_players:			Array<Type__Server_Reponse__Player__Get>
 	disabled:				boolean
 	session:				Type__Session | undefined
@@ -34,7 +34,7 @@ interface Props__Table {
 
 export default function Table({ 
 	setList_table_columns, 
-	list_table_columns, 
+	list__table_columns, 
 	list_players, 
 	disabled, 
 	session, 
@@ -58,7 +58,7 @@ export default function Table({
 
 
 
-	if(!session || !list_table_columns) return 
+	if(!session || list__table_columns.length === 0) return 
 
 	return <>
 		<table className='table table_game'>
@@ -67,7 +67,7 @@ export default function Table({
 					
 					if(row.Name === 'Blank') return <tr key={index_row} className='blank'/>
 
-					return <>
+					return (
 						<tr 
 							key={index_row} 
 							className={`${row.Border_Bottom ? 'border_bottom' : ''}${row.Border_Top ? 'border_top' : ''}`}
@@ -79,16 +79,16 @@ export default function Table({
 
 
 							{list_players?.map((player, index_player) => {
-								return <>
+								return <React.Fragment key={`${player.id}_${index_row}`}>
 									{list_columns.map(column => {
 
 										const className = `${column === session.Columns - 1 ? 'border-right' : ''}`
 										const key = `${index_player}_${column}`
 
 										if(!row.Possible_Entries || disabled) {
-											if(!list_table_columns[index_player].List__Table_Columns[column]) return <div key={key}></div>
-											const value = list_table_columns[index_player].List__Table_Columns[column][row.Name as keyof Type__Table_Columns]
-											return <>
+											if(!list__table_columns[index_player].List__Table_Columns[column]) return <div key={key}></div>
+											const value = list__table_columns[index_player].List__Table_Columns[column][row.Name as keyof Type__Table_Columns]
+											return (
 												<td 
 													key={key}
 													className={className} 
@@ -96,10 +96,10 @@ export default function Table({
 												>
 													<span>{disabled ? value || 0 : value}</span>
 												</td>
-											</>
+											)
 										}
 
-										return <>
+										return (
 											<td 
 												key={key}	
 												className={className} 
@@ -107,7 +107,7 @@ export default function Table({
 											>
 												<Input_Element
 													setList_table_columns={setList_table_columns}
-													list_table_columns={list_table_columns}
+													list__table_columns={list__table_columns}
 													list_players={list_players}
 													index_player={index_player}
 													index_row={index_row}
@@ -115,13 +115,13 @@ export default function Table({
 													column={column}
 												/>
 											</td>
-										</>
+										)
 									})}
-								</>
+								</React.Fragment>
 							})}
 
 						</tr>
-					</>
+					)
 				})}
 			</tbody>
 		</table>
@@ -135,7 +135,7 @@ export default function Table({
 
 interface Props__Input_Element {
 	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
-	list_table_columns:		Array<Type__Server_Response__Table_Columns__Get>
+	list__table_columns:		Array<Type__Server_Response__Table_Columns__Get>
 	list_players:			Array<Type__Server_Reponse__Player__Get>
 	index_player:			number
 	index_row:				number
@@ -145,7 +145,7 @@ interface Props__Input_Element {
 
 const Input_Element = ({
 	setList_table_columns, 
-	list_table_columns, 
+	list__table_columns, 
 	list_players, 
 	index_player, 
 	index_row, 
@@ -159,13 +159,13 @@ const Input_Element = ({
 	const handle_error = useErrorHandling()
 
 	const [ id,				setId			] = useState<string>('')
-	const [ input_value,	setInput_value	] = useState<number | undefined>(undefined)
+	const [ input_value,	setInput_value	] = useState<number | null>(null)
 
 	function init_value() {
 
-		const tmp = list_table_columns[index_player].List__Table_Columns[column][list_rows[index_row].Name as keyof Type__Table_Columns]
+		const tmp = list__table_columns[index_player].List__Table_Columns[column][list_rows[index_row].Name as keyof Type__Table_Columns]
 		const value = typeof tmp === 'number' ? tmp : undefined
-		setInput_value(value)
+		setInput_value(value || null)
 
 	}
 
@@ -239,11 +239,9 @@ const Input_Element = ({
 	useEffect(() => { setId(index_player + '.' + index_row + '.' + column) }, [ index_player, index_row, column ])
 
 	useEffect(() => {
-		
-		if(!session || !list_table_columns || !list_table_columns[index_player].List__Table_Columns[column]) return
+		if(!session || !list__table_columns || !list__table_columns[index_player].List__Table_Columns[column]) return
 		init_value()
-		// eslint-disable-next-line
-	}, [])
+	}, []) // eslint-disable-line
 
 
 
@@ -261,7 +259,7 @@ const Input_Element = ({
 			<input 
 				tabIndex={0}
 				onBlur={onBlur}
-				value={input_value}
+				value={input_value || ''}
 				onChange={(event: ChangeEvent<HTMLInputElement>) => setInput_value(+event.target.value)}
 			/>
 		</>}
@@ -269,7 +267,7 @@ const Input_Element = ({
 		{!mutate__table_columns.isPending && session?.InputType === 'select' && <>
 			<select 
 				tabIndex={0}
-				value={input_value}
+				value={input_value || ''}
 				className={`${isIOS() ? 'isios' : ''}`}
 				onChange={(event: FocusEvent<HTMLSelectElement>) => { 
 					onBlur(event)
@@ -288,7 +286,7 @@ const Input_Element = ({
 				list={id} 
 				tabIndex={0}
 				onBlur={onBlur}
-				value={input_value}
+				value={input_value || ''}
 				className={`${isIOS() ? 'isios' : ''}`}
 				onChange={(event: ChangeEvent<HTMLInputElement>) => setInput_value(+event.target.value)}
 			/>

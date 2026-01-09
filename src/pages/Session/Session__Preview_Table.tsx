@@ -12,7 +12,7 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 
 import Table from '../../components/Game/Game_Tables/Table'
 import OptionsDialog from '../../components/Popup/Popup__Options'
-import TablePlayer from '../../components/Game/Game_Tables/Table_Player'
+import Table_Player from '../../components/Game/Game_Tables/Table_Player'
 
 import { get__user } from '../../api/user'
 import { get__session } from '../../api/session/session'
@@ -52,9 +52,9 @@ export default function Session__Preview_Table() {
 
 	// ____________________ Session ____________________
 
-	const { data: session, isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(axiosPrivate, session_id), 
-		queryKey: [ 'session', +session_id ]
+	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
+		queryFn: () => get__session(axiosPrivate, +(session_id || -1)), 
+		queryKey: [ 'session', +(session_id || -1) ]
 	})
 
 	if(error__session) {
@@ -71,8 +71,8 @@ export default function Session__Preview_Table() {
 	// ____________________ List_Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryFn: () => get__session_players(axiosPrivate, session_id), 
-		queryKey: [ 'session', +session_id, 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
+		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 	})
 
 	if(error__list_players) {
@@ -86,16 +86,16 @@ export default function Session__Preview_Table() {
 	}
 		
 	
-	// ____________________ List_Table_Columns ____________________
+	// ____________________ List__Table_Columns ____________________
 
-	const { data: list_table_columns, isLoading: isLoading__list_table_columns, error: error__list_table_columns } = useQuery({
-		queryFn: () => get__table_columns_archive(axiosPrivate, session_id, finalscore_id), 
-		queryKey: [ 'session', +session_id, +finalscore_id, 'table_columns' ], 
+	const { data: list__table_columns, isLoading: isLoading__list__table_columns, error: error__list__table_columns } = useQuery({
+		queryFn: () => get__table_columns_archive(axiosPrivate, +(session_id || -1), +(finalscore_id || -1)), 
+		queryKey: [ 'session', +(session_id || -1), +(finalscore_id || -1), 'table_columns' ], 
 	})
 
-	if(error__list_table_columns) {
+	if(error__list__table_columns) {
 		handle_error({
-			err: error__list_table_columns, 
+			err: error__list__table_columns, 
 			handle_404: () => {
 				alert('Eine Ressource wurde nicht gefunden.')
 				navigate(`/session/${session_id}/preview`, { replace: true })
@@ -109,15 +109,14 @@ export default function Session__Preview_Table() {
 
 	useEffect(() => {
 
-		if(!session_id) return navigate('/', { replace: true })
+		if(!session_id) navigate('/', { replace: true })
 		
 		setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
 
-		// eslint-disable-next-line
-	}, [ session ])
+	}, [ session ]) // eslint-disable-line
 
 	// Loading animation
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list_table_columns ])
+	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list__table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list__table_columns ])
 
 
 
@@ -132,20 +131,22 @@ export default function Session__Preview_Table() {
 		<div className='game-container'>
 			<div className='game'>
 
-				{!(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list_table_columns) && <>
+				{!(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list__table_columns) && session && list_players && list__table_columns && list__table_columns?.length !== 0 && <>
 
-					<TablePlayer 
+					<Table_Player 
 						disabled={true}
 						session={session}
 						list_players={list_players}
-						list_table_columns={list_table_columns}
+						setList_players={() => {}}
+						list__table_columns={list__table_columns}
 					/>
 
 					<Table 
 						disabled={true}
 						session={session}
 						list_players={list_players}
-						list_table_columns={list_table_columns}
+						setList_table_columns={() => {}}
+						list__table_columns={list__table_columns}
 					/>
 
 				</>}

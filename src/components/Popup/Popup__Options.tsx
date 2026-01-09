@@ -46,11 +46,10 @@ export default function Popup__Options({
 
 	const darkMode_string = 'Wuerflii_DarkMode'
 
-	const [ darkmode, setDarkmode ] = useState(false)
 	const change_dark_mode = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { DarkMode: !darkmode }), 
+		mutationFn: () => patch__user(axiosPrivate, { DarkMode: !user?.DarkMode }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !darkmode })
+			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user?.DarkMode })
 		}
 	})
 
@@ -68,7 +67,6 @@ export default function Popup__Options({
 		function configure_darkmode() {
 			
 			if(!user) return
-			setDarkmode(user.DarkMode)
 			
 			if(user.DarkMode) {
 				document.body.classList.add('dark')
@@ -146,7 +144,7 @@ export default function Popup__Options({
 							{!change_dark_mode?.isPending &&
 								<input
 									type='checkbox'
-									checked={darkmode}
+									checked={Boolean(user?.DarkMode)}
 									onChange={() => change_dark_mode.mutate()}
 								/>
 							}
