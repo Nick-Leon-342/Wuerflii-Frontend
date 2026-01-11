@@ -164,8 +164,8 @@ const Input_Element = ({
 	function init_value() {
 
 		const tmp = list__table_columns[index_player].List__Table_Columns[column][list_rows[index_row].Name as keyof Type__Table_Columns]
-		const value = typeof tmp === 'number' ? tmp : undefined
-		setInput_value(value || null)
+		const value = tmp === null ? null : tmp
+		setInput_value(value)
 
 	}
 
@@ -227,6 +227,12 @@ const Input_Element = ({
 
 	}
 
+	function onChange(input: string): void { 
+
+		const input__number = parseInt(input)
+		setInput_value(Number.isNaN(input__number) ? null : input__number) 
+	}
+
 	function isIOS() {
 
 		return (
@@ -259,19 +265,19 @@ const Input_Element = ({
 			<input 
 				tabIndex={0}
 				onBlur={onBlur}
-				value={input_value || ''}
-				onChange={(event: ChangeEvent<HTMLInputElement>) => setInput_value(+event.target.value)}
+				value={input_value === null ? '' : input_value}
+				onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
 			/>
 		</>}
 
 		{!mutate__table_columns.isPending && session?.InputType === 'select' && <>
 			<select 
 				tabIndex={0}
-				value={input_value || ''}
 				className={`${isIOS() ? 'isios' : ''}`}
+				value={input_value === null ? '' : input_value}
 				onChange={(event: FocusEvent<HTMLSelectElement>) => { 
 					onBlur(event)
-					setInput_value(+event.target.value)
+					onChange(event.target.value)
 				}}
 			>
 				<option></option>
@@ -286,9 +292,9 @@ const Input_Element = ({
 				list={id} 
 				tabIndex={0}
 				onBlur={onBlur}
-				value={input_value || ''}
 				className={`${isIOS() ? 'isios' : ''}`}
-				onChange={(event: ChangeEvent<HTMLInputElement>) => setInput_value(+event.target.value)}
+				value={input_value === null ? '' : input_value}
+				onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
 			/>
 			<datalist id={id}>
 				{list_rows[index_row].Possible_Entries?.map((v) => {
