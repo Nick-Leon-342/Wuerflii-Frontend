@@ -275,19 +275,20 @@ export default function Session__Preview() {
 			list_toEdit.forEach(e => {
 				const date = new Date(e.End)
 				const final_score: Type__Final_Score = { 
-						id:								e.id, 
-						Group_Date: 					null, 
-						Wins__After:					e.Wins__After, 
-						Wins__After_Month:				e.Wins__After_Month,
-						Wins__After_Year:				e.Wins__After_Year, 
-						Wins__After_SinceCustomDate:	e.Wins__After_SinceCustomDate,
-						PlayerScores:					e.PlayerScores, 
-					}
-
+					id:								e.id, 
+					Group_Date: 					null, 
+					Wins__After:					e.Wins__After, 
+					Wins__After_Month:				e.Wins__After_Month,
+					Wins__After_Year:				e.Wins__After_Year, 
+					Wins__After_SinceCustomDate:	e.Wins__After_SinceCustomDate,
+					PlayerScores:					e.PlayerScores, 
+				}
+				
 				if(date.toDateString() !== currentDate.toDateString()) {
 					rowHeights.push(height_dateElement)
-					list_visibleFinalScores.push(final_score)
-					final_score.Group_Date = date
+					const element__date_title = { ...final_score }
+					element__date_title.Group_Date = date
+					list_visibleFinalScores.push(element__date_title)
 					currentDate = date
 				}
 				rowHeights.push(height_element)
