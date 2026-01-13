@@ -1,6 +1,6 @@
 
 
-import './scss/Session_Select.scss'
+import './scss/Session__Select.scss'
 
 import { formatDate } from '../../logic/utils'
 import { Link, useNavigate } from 'react-router-dom'
@@ -229,7 +229,7 @@ export default function Session__Select() {
 
 		{/* __________________________________________________ Page __________________________________________________ */}
 
-		<div className='session_select'>
+		<div className='session__select'>
 			
 			<header>
 
@@ -316,17 +316,17 @@ export default function Session__Select() {
 			target_ref={ref}
 			show_popup={show_settings}
 			setShow_popup={setShow_settings}
-			className='session_select_popup_settings'
+			className='session__select--popup--settings'
 			alignLeft={true}
 		>
 			
-			<div className='session_select_popup_settings-show'>
-				{mutate__show_session_names.isPending && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
+			<div className='session__select--popup--settings--show'>
+				{mutate__show_session_names.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
 				{!mutate__show_session_names.isPending && <input type='checkbox' checked={user?.Show_Session_Names} onChange={() => mutate__show_session_names.mutate()}/>}
 				<span>Partienamen anzeigen</span>
 			</div>
-			<div className='session_select_popup_settings-show'>
-				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session_select_popup_settings-show-loader'/>}
+			<div className='session__select--popup--settings--show'>
+				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
 				{!mutate__show_session_date.isPending && <input type='checkbox' checked={user?.Show_Session_Date} onChange={() => mutate__show_session_date.mutate()}/>}
 				<span>Datum anzeigen</span>
 			</div>
@@ -339,7 +339,7 @@ export default function Session__Select() {
 					<button 
 						key={option?.Text}
 						onClick={() => change_order(option.Alias)}
-						className={`button button_reverse${cs ? ' session_select_popup_settings-currently_selected' : ''}${desc ? ' session_select_popup_settings-desc' : ''}`}
+						className={`button button_reverse${cs ? ' session__select--popup--settings--currently_selected' : ''}${desc ? ' session__select--popup--settings--desc' : ''}`}
 					>
 						{option.Text}
 						<ArrowDown/>

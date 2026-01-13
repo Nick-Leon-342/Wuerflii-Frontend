@@ -1,6 +1,6 @@
 
 
-.session_select {
+.session__select {
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
@@ -19,8 +19,8 @@
 		padding: 0 10px;
 	
 		button {
-			height: 40px;
-			width: 40px;
+			height: 30px;
+			width: 30px;
 
 			svg { height: fit-content; }
 	
@@ -45,7 +45,7 @@
 
 
 	
-	.session_select-loader {
+	.session__select--popup--settings--show--loader {
 		border-radius: 5px;
 		height: 60px;
 	}
@@ -107,9 +107,9 @@
 
 
 
-.session_select_popup_settings {
+.session__select--popup--settings {
 
-	.session_select_popup_settings-show {
+	.session__select--popup--settings--show {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
@@ -121,7 +121,7 @@
 			border-bottom: 1px solid; 
 		}
 
-		.session_select_popup_settings-show-loader {
+		.session__select--popup--settings--show--loader {
 			width: 20px;
 			height: 20px;
 			border-radius: 3px;
@@ -143,13 +143,13 @@
 		height: 30px;
 		svg { transform: rotate(180deg); }
 
-		&.session_select_popup_settings-currently_selected { 
+		&.session__select--popup--settings--currently_selected { 
 			color: var(--green-button);
 			path { fill: var(--green-button); }
 			svg { opacity: 1; }
 		}
 
-		&.session_select_popup_settings-desc svg {
+		&.session__select--popup--settings--desc svg {
 			transform: rotate(0deg);
 		}
 
@@ -158,28 +158,5 @@
 			width: 30px; 
 			transition: transform ease .3s;
 		}
-	}
-}
-
-
-
-
-
-@media ( max-width: 425px ) {
-	.session_select_container dl dt {
-
-		input[type='checkbox'] {
-			width: 20px;
-			height: 20px;
-		}
-
-		.names {
-			font-size: 20px;
-		}
-
-		.date {
-			display: none;
-		}
-
 	}
 }
