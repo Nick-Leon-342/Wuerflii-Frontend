@@ -1,6 +1,6 @@
 
 
-.session_preview {
+.session__preview {
 	display: flex;
 	flex-direction: column;
 	gap: var(--padding);
@@ -23,24 +23,25 @@
 			width: fit-content;
 			padding: 0 15px;
 			gap: 5px;
-			width: 210px;
+			width: 160px;
+			height: auto;
 
 			&:first-of-type { justify-content: flex-start; }
 			&:last-of-type { justify-content: flex-end; }
 
-			span { font-size: 22px; }
-			svg { width: 30px; }
+			span { font-size: 16px; }
+			svg { width: 20px; }
 		}
 	}
 
 
 
-	.session_preview_body {
+	.session__preview--body {
 		overflow-x: auto;
 		overflow-y: hidden;
 
 
-		.session_preview_body-container{
+		.session__preview--body_container{
 			display: flex;
 			flex-direction: column;
 			gap: 10px;
@@ -50,13 +51,13 @@
 	
 	
 	
-			.session_preview_table-container {
+			.session__preview--table_container {
 				overflow: hidden;
 				scrollbar-gutter: stable both-edges;
 
 
 
-				.session_preview_table { 
+				.session__preview--table { 
 					min-width: 100%;
 					overflow: visible;
 			
@@ -84,7 +85,8 @@
 							background-color: rgb(0, 255, 0, .35);
 			
 							span {
-								font-size: 20px;
+								font-size: 18px;
+								font-weight: 600;
 								overflow: hidden;
 								white-space: nowrap;
 								text-overflow: ellipsis;
@@ -98,7 +100,7 @@
 
 
 
-			.session_preview_list {
+			.session__preview--list {
 				min-width: 100%;
 				list-style-type: none;
 				max-height: 400px;
@@ -106,19 +108,20 @@
 				scrollbar-gutter: stable both-edges;
 			
 			
-				.session_preview_list_element-date {
+				.session__preview--list_element-date {
 					display: flex;
 					flex-direction: row;
-					align-items: center;
+					align-items: flex-end;
+					padding-bottom: 10px;
 					height: 70px;
 			
 					span {
-						font-size: 22px;
+						font-size: 18px;
 						font-weight: 600;
 					}
 				}
 			
-				.session_preview_list_element-scores {
+				.session__preview--list_element-scores {
 			
 					&.no_border_bottom a { 
 						border-bottom: none; 
@@ -158,10 +161,10 @@
 
 
 
-.session_preview_popup_calendar {
+.session__preview--popup--calendar {
 	z-index: 10001;
 
-	.session_preview_popup {
+	.session__preview--popup {
 		display: flex;
 		flex-direction: column;
 		gap: var(--padding);
@@ -214,12 +217,12 @@
 
 
 
-.session_preview_popup_settings {
+.session__preview--popup--settings {
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
 
-	.session_preview_popup_settings-edit {
+	.session__preview--popup--settings--edit {
 		display: flex;
 		flex-direction: column;
 		font-size: 25px;

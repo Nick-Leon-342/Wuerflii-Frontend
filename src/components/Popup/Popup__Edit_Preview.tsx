@@ -119,14 +119,14 @@ export default function Popup__Edit_Preview({
 			alignLeft={true}
 			className='popup__edit_preview'
 		>		
-			{mutate__session.isPending && <LoaderBox className='popup__edit_preview_select-loader' dark={true}/>}
+			{mutate__session.isPending && <LoaderBox className='popup__edit_preview--select_loader' dark={true}/>}
 
-			<div className='popup__edit_preview_select'>
+			<div className='popup__edit_preview--select'>
 
 				{/* __________________________________________________ Year __________________________________________________ */}
 
 				{(view === 'show_month' || view === 'show_year') && <>
-					<div className='popup_edit_preview_select-container year'>
+					<div className='popup__edit_preview--select_container year'>
 						<span>Jahr:</span>
 
 						<select 
@@ -145,7 +145,7 @@ export default function Popup__Edit_Preview({
 				{/* __________________________________________________ Month __________________________________________________ */}
 
 				{view === 'show_month' && <>
-					<div className='popup__edit_preview_select-container month'>
+					<div className='popup__edit_preview--select_container month'>
 						<span>Monat:</span>
 
 						<select 
@@ -164,7 +164,7 @@ export default function Popup__Edit_Preview({
 				{/* __________________________________________________ Custom_Date __________________________________________________ */}
 
 				{view === 'show_custom_date' && <>
-					<div className='popup__edit_preview_select-container custom_date'>
+					<div className='popup__edit_preview--select_container custom_date'>
 						<span>Ansicht ab:</span>
 
 						<button 
@@ -180,7 +180,7 @@ export default function Popup__Edit_Preview({
 
 				{/* __________________________________________________ View __________________________________________________ */}
 
-				<div className='popup__edit_preview_select-container view'>
+				<div className='popup__edit_preview--select_container view'>
 					<select 
 						value={view}
 						onChange={({ target }) => update_view(target.value as Type__Enum__View, view_month, view_year)}

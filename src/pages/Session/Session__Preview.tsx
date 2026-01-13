@@ -1,7 +1,7 @@
 
 
 
-import './scss/Session_Preview.scss'
+import './scss/Session__Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
 import Calendar from 'react-calendar'
@@ -315,7 +315,7 @@ export default function Session__Preview() {
 
 
 
-		<div className='session_preview'>
+		<div className='session__preview'>
 
 			<header>
 
@@ -341,13 +341,13 @@ export default function Session__Preview() {
 
 
 
-			<div className='session_preview_body'>
-				<div className='session_preview_body-container'>
+			<div className='session__preview--body'>
+				<div className='session__preview--body_container'>
 					
 					{/* __________________________________________________ Table __________________________________________________ */}
 
-					<div className='session_preview_table-container'>
-						<table className='table session_preview_table'>
+					<div className='session__preview--table_container'>
+						<table className='table session__preview--table'>
 							<tbody>
 								<tr>
 									{list_players?.map(player => (
@@ -387,7 +387,7 @@ export default function Session__Preview() {
 					{/* __________________________________________________ List __________________________________________________ */}
 
 					<ul 
-						className='session_preview_list'
+						className='session__preview--list'
 						onScroll={handle_scroll}
 					>
 						{list_finalScores?.map((final_score, index_final_score) => {
@@ -404,7 +404,7 @@ export default function Session__Preview() {
 									<li 
 										ref={tmp_ref}
 										key={index_final_score}
-										className='session_preview_list_element-date'
+										className='session__preview--list_element-date'
 									>
 										<span>
 											{session?.View === 'show_month' && `${day}.`}
@@ -420,7 +420,7 @@ export default function Session__Preview() {
 									<li 
 										ref={tmp_ref}
 										key={index_final_score} 
-										className={`session_preview_list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' no_border_top'}`}
+										className={`session__preview--list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' no_border_top'}`}
 									>
 										<Link to={`/session/${session?.id}/preview/table/${final_score.id}`}>
 											{list_players?.map((player, index_player) => 
@@ -470,9 +470,9 @@ export default function Session__Preview() {
 			show_popup={show_customDate}
 			setShow_popup={setShow_customDate}
 			title='Beginn auswählen'
-			className='session_preview_popup_calendar'
+			className='session__preview--popup--calendar'
 		>
-			<div className='session_preview_popup'>
+			<div className='session__preview--popup'>
 				<Calendar
 					value={view_customDate}
 					onChange={(cd) => setView_customDate(cd as Date)}
@@ -497,13 +497,13 @@ export default function Session__Preview() {
 			show_popup={show_edit_session}
 			setShow_popup={setShow_edit_session}
 		>
-			<div className='session_preview_popup_settings'>
+			<div className='session__preview--popup--settings'>
 				<Link
 					className='button button_scale_1'
 					to={`/session/${session?.id}/analytics`}
 				>Statistiken</Link>
 
-				<div className='session_preview_popup_settings-edit'>
+				<div className='session__preview--popup--settings--edit'>
 					<span>Bearbeiten</span>
 
 					<div>
