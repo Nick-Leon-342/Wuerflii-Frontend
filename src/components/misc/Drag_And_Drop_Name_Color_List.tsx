@@ -95,6 +95,9 @@ export default function Drag_And_Drop_Name_Color_List({
 
 										<input
 											type='text'
+											style={{
+												backgroundColor: p.Color
+											}}
 											value={p.Name}
 											onChange={(e) => change_name(e, index)}
 											className={`${p.Name.length > MAX_LENGTH_PLAYER_NAME ? 'invalid' : ''}`}

@@ -42,7 +42,7 @@ export default function Session__Add_And_Edit() {
 
 	const [ name,				setName				] = useState<string>('Partie')
 	const [ color,				setColor			] = useState<string>('#00FF00')
-	const [ columns,			setColumns			] = useState<number>(0)
+	const [ columns,			setColumns			] = useState<number>(1)
 
 	const [ options_columns,	setOptions_columns	] = useState<Array<number>>([])
 
@@ -236,7 +236,7 @@ export default function Session__Add_And_Edit() {
 			<CustomButton 
 				loading={isLoading__user || isLoading__session || isLoading__env_variables}
 				className='button' 
-				text={session_id ? 'Speichern' : 'Weiter'}
+				text={session_id ? 'Speichern' : 'Match erstellen'}
 				onClick={ok}
 			/>
 

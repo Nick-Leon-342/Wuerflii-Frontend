@@ -1,6 +1,6 @@
 
 
-import './scss/Session_Players.scss'
+import './scss/Session__Players.scss'
 
 import { v4 } from 'uuid'
 import { useContext, useEffect, useState } from 'react'
@@ -214,17 +214,17 @@ export default function Session__Players() {
 
 
 
-		<div className='session_players'>
+		<div className='session__players'>
 
 			<Previous onClick={() => navigate(-1)}>
 				{isInit && <>
-					<div className='session_players_previous-container'>
+					<div className='session__players--previous_container'>
 						<button 
-							className='button button_reverse_red button_scale_3 session_players_previous'
+							className='button button_reverse_red button_scale_3 session__players--previous'
 							onClick={remove_player}
 						><Person_Remove/></button>
 						<button 
-							className='button button_reverse button_scale_3 session_players_previous'
+							className='button button_reverse button_scale_3 session__players--previous'
 							onClick={add_player}
 						><Person_Add/></button>
 					</div>
@@ -233,7 +233,7 @@ export default function Session__Players() {
 
 
 
-			{env_variables && <div className='session_players_list'>
+			{env_variables && <div className='session__players--list'>
 				<DragAndDropNameColorList
 					list_edit_players={list_players}
 					setList_edit_players={setList_players}

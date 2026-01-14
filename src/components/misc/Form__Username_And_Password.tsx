@@ -22,8 +22,8 @@ interface Props__Form__Username_And_Password {
 	name:					string
 	setPassword:			React.Dispatch<React.SetStateAction<string>>
 	password:				string
-	setPassword_confirm?:	React.Dispatch<React.SetStateAction<string>>
-	password_confirm?:		string
+	setPassword_confirm:	React.Dispatch<React.SetStateAction<string>>
+	password_confirm:		string
 }
 
 export default function Form__Username_And_Password({ 
@@ -173,20 +173,18 @@ export default function Form__Username_And_Password({
 
 		{/* __________________________________________________ confirm password __________________________________________________ */}
 
-		{password_confirm && setPassword_confirm &&  <>
-			<InputWithSVG
-				SVG={<Key/>}
-				type='password'
-				isRequired={isRequired}
-				value={password_confirm}
-				name='Passwort bestätigen'
-				ref={ref__password_confirm}
-				onValueChange={({ target }) => setPassword_confirm(target.value)}
+		<InputWithSVG
+			SVG={<Key/>}
+			type='password'
+			isRequired={isRequired}
+			value={password_confirm}
+			name='Passwort bestätigen'
+			ref={ref__password_confirm}
+			onValueChange={({ target }) => setPassword_confirm(target.value)}
 
-				isValid={Boolean(password && password === password_confirm)}
-				isInvalid={Boolean(password && password_confirm && password !== password_confirm)}
-			/>
-		</>}
+			isValid={Boolean(password && password === password_confirm)}
+			isInvalid={Boolean(password && password_confirm && password !== password_confirm)}
+		/>
 
 	</>
 }

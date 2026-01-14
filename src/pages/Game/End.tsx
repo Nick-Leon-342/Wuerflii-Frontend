@@ -2,19 +2,19 @@
 
 import './scss/End.scss'
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Loader from '../../components/Loader/Loader'
 import OptionsDialog from '../../components/Popup/Popup__Options'
 
 import { get__user } from '../../api/user'
 import { get__final_score } from '../../api/final_score'
 import { get__session_players } from '../../api/session/session_players'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 
 
@@ -25,6 +25,8 @@ export default function EndScreen() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
+
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const [ header, setHeader ] = useState('')
 
@@ -126,6 +128,16 @@ export default function EndScreen() {
 		init()
 	}, [ list_players, final_score ])
 
+	useEffect(() => {
+
+		if(isLoading__user || isLoading__list_players || isLoading__final_score) {
+			setLoading__universal_loader(true)
+		} else {
+			setLoading__universal_loader(false)
+		}
+
+	}, [ isLoading__user, isLoading__list_players, isLoading__final_score, setLoading__universal_loader ])
+
 
 
 
@@ -172,10 +184,6 @@ export default function EndScreen() {
 					</tbody>
 				</table>
 			</div>
-
-
-
-			<Loader loading={isLoading__user || isLoading__list_players || isLoading__final_score}/>
 
 
 

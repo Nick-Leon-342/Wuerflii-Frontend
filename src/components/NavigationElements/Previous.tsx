@@ -27,7 +27,7 @@ export default function Previous({
 
 			<button
 				onClick={onClick} 
-				className='button button_reverse button_scale_3 previous-button' 
+				className='button button_reverse button_scale_3 previous--button' 
 			><ArrowBack/></button>
 
 			{children}

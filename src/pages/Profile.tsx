@@ -35,8 +35,9 @@ export default function Profile() {
 
 	const { setError } = useContext(Context__Error)
 
-	const [ Name, 					setName						] = useState<string>('')
-	const [ Password, 				setPassword					] = useState<string>('')
+	const [ name, 					setName						] = useState<string>('')
+	const [ password, 				setPassword					] = useState<string>('')
+	const [ password__confirm,		setPassword__confirm		] = useState<string>('')
 	const { NAME_REGEX,				PASSWORD_REGEX				} = useContext(Context__Regex)
 
 	const [ loading_delete_account, setLoading_delete_account	] = useState<boolean>(false)
@@ -78,20 +79,21 @@ export default function Profile() {
 		event.preventDefault()
 		setError('')
 
-		if((Name && !NAME_REGEX.test(Name)) || (Password && !PASSWORD_REGEX.test(Password)) || (!Name && !Password)) return
+		if((name && !NAME_REGEX.test(name)) || (password && !PASSWORD_REGEX.test(password)) || (!name && !password)) return
+		if(password !== password__confirm) return setError('Passwörter stimmen nicht überein.')
 
 
 		const json: Type__Client_To_Server__User__PATCH = {}
-		if(NAME_REGEX.test(Name) && PASSWORD_REGEX.test(Password)) {
-			//Name and Password are valid
-			json.Name = Name
-			json.Password = Password
-		} else if(NAME_REGEX.test(Name)) {
-			//Name is valid, password not entered
-			json.Name = Name
+		if(NAME_REGEX.test(name) && PASSWORD_REGEX.test(password)) {
+			// Name and Password are valid
+			json.Name = name
+			json.Password = password
+		} else if(NAME_REGEX.test(name)) {
+			// Name is valid, password not entered
+			json.Name = name
 		} else {
-			//Password is valid, name not entered
-			json.Password = Password
+			// Password is valid, name not entered
+			json.Password = password
 		}
 
 		mutate__user.mutate(json)
@@ -149,11 +151,14 @@ export default function Profile() {
 					{mutate__user.isSuccess && <h2>Erfolgreich gespeichert!</h2>}
 
 					<Form__Username_And_Password 
-						name={Name} 
+						name={name} 
 						setName={setName} 
 
-						password={Password} 
+						password={password} 
 						setPassword={setPassword} 
+
+						password_confirm={password__confirm} 
+						setPassword_confirm={setPassword__confirm} 
 						
 						isRequired={false}
 					/>

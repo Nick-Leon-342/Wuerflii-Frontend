@@ -14,7 +14,6 @@ import Custom_Button from '../../components/misc/Custom_Button'
 import Input_With_SVG from '../../components/misc/Input_With_SVG'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Form__Username_And_Password from '../../components/misc/Form__Username_And_Password'
-import type { AxiosError } from 'axios'
 
 import Key from '../../svg/Key.svg?react'
 import Icon from '../../svg/default.svg?react'
@@ -23,6 +22,8 @@ import Person from '../../svg/Person.svg?react'
 import Context__Regex from '../../Provider_And_Context/Provider_And_Context__Regex'
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+
+import type { AxiosError } from 'axios'
 
 
 
@@ -244,8 +245,8 @@ export default function Registration_And_Login() {
 
 				<Custom_Link 
 					text={show_login ? 'Erstellen' : 'Anmelden'}
-					textBefore={show_login ? 'Noch keinen Account?' : 'Bereits einen Account?'}
 					onClick={() => setShow_login(prev => !prev)}
+					textBefore={show_login ? 'Noch keinen Account?' : 'Bereits einen Account?'}
 				/>
 				
 			</div>
