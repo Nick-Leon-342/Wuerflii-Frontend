@@ -1,6 +1,6 @@
 
 
-import './scss/Session_AddAndEdit.scss'
+import './scss/Session__Add_And_Edit.scss'
 
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -186,7 +186,7 @@ export default function Session__Add_And_Edit() {
 
 		{/* __________________________________________________ Page __________________________________________________ */}
 		
-		<div className='session_add_and_edit'>
+		<div className='session__add_and_edit'>
 
 			{session_id && <Previous onClick={() => navigate(-1)}/>}
 
@@ -209,7 +209,7 @@ export default function Session__Add_And_Edit() {
 
 			{/* ____________________ Columns and Color ____________________ */}
 
-			<div className='session_add_and_edit__columns_and_color'>
+			<div className='session__add_and_edit__columns_and_color'>
 				<div className='session__add_and_edit__columns'>
 					<span>Spalten:</span>
 					<select 

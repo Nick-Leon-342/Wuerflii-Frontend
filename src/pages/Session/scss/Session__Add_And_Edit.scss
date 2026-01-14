@@ -1,6 +1,6 @@
 
 
-.session_add_and_edit {
+.session__add_and_edit {
 	display: flex;
 	flex-direction: column;
 	gap: var(--padding);
@@ -8,7 +8,7 @@
 	max-width: 600px;
 	min-width: 300px;
 
-	.session_add_and_edit__columns_and_color {
+	.session__add_and_edit__columns_and_color {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
@@ -58,7 +58,7 @@
 
 @media ( max-width: 425px ) {
 
-	.session_add_and_edit {
+	.session__add_and_edit {
 		width: 90vw;
 	}
 
