@@ -152,7 +152,6 @@ a {
 input, 
 select, 
 textarea {
-	outline: none;
 	border: 1px solid;
 	padding: 10px 15px;
 	background-color: var(--bg);
@@ -165,8 +164,6 @@ textarea {
 	width: 100%;
 	
 	transition: border-radius 1s ease;
-
-	&:focus { border-color: var(--bg--dark) !important; }
 }
 
 input:focus { border-bottom: 1px solid var(--text) !important; }

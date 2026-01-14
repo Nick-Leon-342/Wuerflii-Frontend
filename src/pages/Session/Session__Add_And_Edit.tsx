@@ -9,7 +9,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import Input_Fancy from '../../components/misc/Input_Fancy'
 import CustomButton from '../../components/misc/Custom_Button'
 import OptionsDialog from '../../components/Popup/Popup__Options'
 import Previous from '../../components/NavigationElements/Previous'
@@ -109,7 +108,7 @@ export default function Session__Add_And_Edit() {
 		})
 	}
 
-	useEffect(() => setOptions_columns(Array.from({ length: env_variables?.MAX_COLUMNS }, (_, index) => index + 1)), [ env_variables ]) // eslint-disable-line
+	useEffect(() => setOptions_columns(Array.from({ length: (env_variables?.MAX_COLUMNS || 0) }, (_, index) => index + 1)), [ env_variables ]) // eslint-disable-line
 
 
 
@@ -148,6 +147,8 @@ export default function Session__Add_And_Edit() {
 	})
 
 	const ok = async () => {
+
+		if(!env_variables) return setError('Beim Laden der Seit ist etwas schiefgelaufen. Bitte erneut versuchen.')
 		
 		if(!name)													return setError('Bitte einen Namen für die Parte eingeben.')
 		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) 	return setError(`Der Name der Partie darf nicht länger als ${env_variables?.MAX_LENGTH_SESSION_NAME} Zeichen sein.`)
@@ -185,7 +186,7 @@ export default function Session__Add_And_Edit() {
 
 		{/* __________________________________________________ Page __________________________________________________ */}
 		
-		<div className='session_addandedit'>
+		<div className='session_add_and_edit'>
 
 			{session_id && <Previous onClick={() => navigate(-1)}/>}
 
@@ -193,58 +194,40 @@ export default function Session__Add_And_Edit() {
 
 			{/* ____________________ Name ____________________ */}
 
-			<Input_Fancy 
-				id='Name'
-				type='text'
+			<input 
 				value={name}
-				isRequired={true}
-				text='Name für die Partie'
-				onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-				isRed={env_variables?.MAX_LENGTH_SESSION_NAME !== 0 && name?.length > env_variables?.MAX_LENGTH_SESSION_NAME}
+				onChange={(event) => setName(event.target.value)}
+				placeholder='Name of match'
+				style={{ 
+					backgroundColor: color + '70', 
+					border: '2px solid', 
+					borderColor: color + '90', 
+				}}
 			/>
 			
 
 
-			{/* ____________________ Columns ____________________ */}
+			{/* ____________________ Columns and Color ____________________ */}
 
-			<div className='session_addandedit_element'>
-				<label>Spaltenanzahl</label>
-				<select 
-					value={columns} 
-					onChange={({ target }) => setColumns(+target.value)}
-				>
-					<option value='' disabled>Auswählen</option>
-					{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
-				</select>
-			</div>
+			<div className='session_add_and_edit__columns_and_color'>
+				<div className='session__add_and_edit__columns'>
+					<span>Spalten:</span>
+					<select 
+						value={columns} 
+						onChange={({ target }) => setColumns(+target.value)}
+					>
+						<option value='' disabled>Auswählen</option>
+						{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
+					</select>
+				</div>
 
-
-
-			{/* ____________________ Color ____________________ */}
-
-			<div className='session_addandedit_element'>
-				<label>Farbe</label>
-				<input 
-					type='color' 
-					value={color}
-					onChange={({ target }) => setColor(target.value)}
-				/>
-			</div>
-
-
-
-			{/* ____________________ Preview ____________________ */}
-
-			<div className='session_addandedit_element session_addandedit_preview'>
-				<label>Vorschau</label>
-				<div 
-					style={{ 
-						backgroundColor: color + '70', 
-						border: '2px solid', 
-						borderColor: color + '90', 
-					}}
-				>
-					<span>{name}</span>
+				<div className='session__add_and_edit__color'>
+					<span>Farbe:</span>
+					<input 
+						type='color' 
+						value={color}
+						onChange={({ target }) => setColor(target.value)}
+					/>
 				</div>
 			</div>
 
