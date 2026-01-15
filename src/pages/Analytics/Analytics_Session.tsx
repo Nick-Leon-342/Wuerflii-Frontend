@@ -2,26 +2,29 @@
 
 import './scss/Analytics_Session.scss'
 
-import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useContext, useEffect, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import LoaderBox from '../../components/Loader/Loader_Box'
-import LoaderDots from '../../components/Loader/Loader_Dots'
-import PopupOptions from '../../components/Popup/Popup__Options'
 import ChartGraph from '../../components/Statistics/Chart_Graph'
+import Popup__Options from '../../components/Popup/Popup__Options'
 import Previous from '../../components/NavigationElements/Previous'
 import ChartDoughnut from '../../components/Statistics/Chart_Doughnut'
 import ChartBarSession from '../../components/Statistics/Chart_Bar_Session'
-import StatisticsSelectView from '../../components/Statistics/Statistics_Select_View'
+import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 import { get__user } from '../../api/user'
-import { get__session } from '../../api/session/session'
-import { get__session_players } from '../../api/session/session_players'
+import { get__session, patch__session } from '../../api/session/session'
 import { get__analytics_session } from '../../api/analytics'
+import { get__session_players } from '../../api/session/session_players'
+
+import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 
 
 
@@ -30,31 +33,19 @@ import { get__analytics_session } from '../../api/analytics'
 export default function Analytics_Session() {
 
 	const navigate = useNavigate()
+	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const { session_id } = useParams()
 
-	const [ loading_show_border, setLoading_show_border ] = useState(false)
-
-	const [ total, setTotal ] = useState()
-	const [ session, setSession ] = useState()
+	const [ total,		setTotal	] = useState()
+	const [ session,	setSession	] = useState<Type__Session>()
 
 	const [ list_years, setList_years ] = useState([])
-	const list_months = [
-		'Januar', 
-		'Februar', 
-		'März', 
-		'April', 
-		'Mai', 
-		'Juni', 
-		'Juli', 
-		'August', 
-		'September', 
-		'Oktober', 
-		'November', 
-		'Dezember', 
-	]
+
+
 
 	// __________________________________________________ Queries __________________________________________________
 
@@ -75,8 +66,8 @@ export default function Analytics_Session() {
 	// ____________________ Session ____________________
 
 	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(axiosPrivate, session_id), 
-		queryKey: [ 'session', +session_id ], 
+		queryFn: () => get__session(axiosPrivate, +(session_id || -1)), 
+		queryKey: [ 'session', +(session_id || -1) ], 
 	})
 
 	if(error__session) {
@@ -89,14 +80,17 @@ export default function Analytics_Session() {
 		})
 	}
 
-	useEffect(() => { if(tmp__session) setSession(tmp__session) }, [ tmp__session ])
+	useEffect(() => { 
+		function init () { if(tmp__session) setSession(tmp__session) }
+		init()
+	}, [ tmp__session ])
 	
 
 	// ____________________ List_Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryFn: () => get__session_players(axiosPrivate, session_id), 
-		queryKey: [ 'session', +session_id, 'players' ], 
+		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
+		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 	})
 
 	if(error__list_players) {
@@ -113,8 +107,8 @@ export default function Analytics_Session() {
 	// ____________________ Analytics ____________________
 
 	const { data: analytics, isLoading: isLoading__analytics, error: error__analytics, refetch } = useQuery({
-		queryFn: () => get__analytics_session(axiosPrivate, session_id), 
-		queryKey: [ 'session', +session_id, 'analytics' ], 
+		queryFn: () => get__analytics_session(axiosPrivate, +(session_id || -1)), 
+		queryKey: [ 'session', +(session_id || -1), 'analytics' ], 
 	})
 
 	if(error__analytics) {
@@ -124,9 +118,12 @@ export default function Analytics_Session() {
 	}
 
 	useEffect(() => {
-		if(!analytics) return 
-		setTotal(analytics.Total)
-		setList_years(analytics.List_Years)
+		function init() {
+			if(!analytics) return 
+			setTotal(analytics.Total)
+			setList_years(analytics.List_Years)
+		}
+		init()
 	}, [ analytics ])
 
 
@@ -135,43 +132,62 @@ export default function Analytics_Session() {
 
 	useEffect(() => {
 
-		if(!session_id) return navigate(-1, { replace: true })
+		if(!session_id) navigate(-1)
 
 		refetch()
 
-		// eslint-disable-next-line
-	}, [
+	}, [ // eslint-disable-line
 		session?.Statistics_View, 
 		session?.Statistics_View_Month, 
 		session?.Statistics_View_Year, 
 	])
 
-	const sync_show_border = () => {
-
-		setLoading_show_border(true)
-
-		axiosPrivate.patch('/session', {
-			SessionID: +session_id, 
-			Statistics_Show_Border: !session.Statistics_Show_Border, 
-		}).then(() => {
-
-
+	const mutate__show_border = useMutation({
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
+		onSuccess: (_, json) => {
 			setSession(prev => {
-				const tmp = { ...prev }
-				tmp.Statistics_Show_Border = !tmp.Statistics_Show_Border
+				if(!prev) return prev
+				const tmp 					= { ...prev }
+				tmp.Statistics_Show_Border 	= !json.Statistics_Show_Border
+				query_client.setQueryData([ 'session', prev.id ], tmp)
 				return tmp
 			})
-
-
-		}).catch(err => {
-
+			refetch()
+		}, 
+		onError: err => {
 			handle_error({
 				err, 
 			})
+		}
+	})
 
-		}).finally(() => setLoading_show_border(false))
+	const sync__show_border = () => {
+
+		if(!session) return
+		
+		mutate__show_border.mutate({
+			SessionID: 				session.id, 
+			Statistics_Show_Border: !session.Statistics_Show_Border, 
+		})
 
 	}
+
+	useEffect(() => { 
+		setLoading__universal_loader(
+			mutate__show_border.isPending ||
+			isLoading__user || 
+			isLoading__session || 
+			isLoading__analytics || 
+			isLoading__list_players
+		)
+	}, [ 
+		setLoading__universal_loader, 
+		mutate__show_border, 
+		isLoading__user, 
+		isLoading__session, 
+		isLoading__analytics, 
+		isLoading__list_players
+	])
 
 
 
@@ -179,16 +195,13 @@ export default function Analytics_Session() {
 
 	return <>
 
-		<PopupOptions user={user}/>
+		<Popup__Options user={user}/>
 
 
 
 		<div className='analytics_session'>
 
 			<Previous onClick={() => navigate(-1)}/>
-
-			{/* __________ Loading animation __________ */}
-			{(isLoading__user || isLoading__session || isLoading__analytics || isLoading__list_players) && <div className='analytics_session-loader'><LoaderDots/></div>}
 
 
 
@@ -201,13 +214,10 @@ export default function Analytics_Session() {
 
 				{/* ____________________ Select ____________________ */}
 
-				<StatisticsSelectView
-					list_months={list_months}
+				<Statistics__Select_View
 					list_years={list_years}
-
-					setSession={setSession}
+					user={user}
 					session={session}
-
 					isSession={true}
 				/>
 
@@ -226,17 +236,17 @@ export default function Analytics_Session() {
 				{/* ____________________ Show border ____________________ */}
 
 				<div className='analytics_session_show_border'>
-					{loading_show_border && <>
+					{mutate__show_border.isPending && <>
 						<LoaderBox
 							dark={true}
 							className='analytics_session_show_border-loader'
 						/>
 					</>}
-					{!loading_show_border && <>
+					{!mutate__show_border.isPending && <>
 						<input 
 							type='checkbox' 
 							checked={session?.Statistics_Show_Border || false} 
-							onChange={sync_show_border}
+							onChange={sync__show_border}
 						/>
 					</>}
 					<span>Umrandung anzeigen</span>

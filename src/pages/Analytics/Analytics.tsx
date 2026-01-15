@@ -2,21 +2,23 @@
 
 import './scss/Analytics.scss'
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import LoaderDots from '../../components/Loader/Loader_Dots'
 import ChartBar from '../../components/Statistics/Chart_Bar'
 import PopupOptions from '../../components/Popup/Popup__Options'
 import Previous from '../../components/NavigationElements/Previous'
-import StatisticsSelectView from '../../components/Statistics/Statistics_Select_View'
+import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 
 import { get__user } from '../../api/user'
 import { get__analytics } from '../../api/analytics'
+import { Type__List_Months } from '../../types/Type__List_Months'
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import type { Type__Server_Response__Analytics__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
 
 
 
@@ -27,23 +29,11 @@ export default function Analytics() {
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
+
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 	
-	const [ total, setTotal ] = useState()
-	const [ list_years, setList_years ] = useState([])
-	const list_months = [
-		'Januar', 
-		'Februar', 
-		'März', 
-		'April', 
-		'Mai', 
-		'Juni', 
-		'Juli', 
-		'August', 
-		'September', 
-		'Oktober', 
-		'November', 
-		'Dezember', 
-	]
+	const [ total, 		setTotal		] = useState<Type__Server_Response__Analytics__GET__Total>()
+	const [ list_years, setList_years	] = useState<Array<number>>([])
 
 
 	// __________________________________________________ Queries __________________________________________________
@@ -76,9 +66,12 @@ export default function Analytics() {
 	}
 
 	useEffect(() => {
-		if(!analytics) return
-		setTotal(analytics.Total)
-		setList_years(analytics.List_Years)
+		function init() {
+			if(!analytics) return
+			setTotal(analytics.Total)
+			setList_years(analytics.List__Years)
+		}
+		init()
 	}, [ analytics ])
 
 
@@ -95,6 +88,8 @@ export default function Analytics() {
 		user?.Statistics_View_Month, 
 		user?.Statistics_View_Year, 
 	])
+
+	useEffect(() => { setLoading__universal_loader(isLoading__user || isLoading__analytics) }, [ isLoading__user, isLoading__analytics ])
 
 
 
@@ -114,41 +109,35 @@ export default function Analytics() {
 
 
 
-			{/* __________ Loading animation __________ */}
-			{(isLoading__user || isLoading__analytics) && <div className='analytics_loader'><LoaderDots/></div>}
-
-
-
-			<StatisticsSelectView
-				list_years={list_years}
-				list_months={list_months}
-
-				user={user}
-
-				isSession={false}
-			/>
+			{user && <>
+				<Statistics__Select_View
+					list_years={list_years}
+					isSession={false}
+					user={user}
+				/>
+			</>}
 
 
 
 			<ChartBar
-				labels={user?.Statistics_View === 'statistics_year' ? list_months : total?.Data ? Object.keys(total?.Data) : []}
+				labels={user?.Statistics_View === 'statistics_year' ? Type__List_Months : total?.Data ? Object.keys(total?.Data) : []}
 				JSON={total?.Data}
 			/>
 
 
 
-			<div className='analytics_more-statistics box'>
+			<div className='analytics--more_statistics box'>
 				
 				{user?.Statistics_View === 'statistics_overall' && <>
 					<div>
 						<span>Anzahl unterschiedlicher Partien:</span>
-						<span>{total?.Total_Sessions}</span>
+						<span>{total?.Total__Sessions}</span>
 					</div>
 				</>}
 				
 				<div>
 					<span>Anzahl von Spielen:</span>
-					<span>{total?.Total_Games_Played}</span>
+					<span>{total?.Total__Games_Played}</span>
 				</div>
 
 			</div>

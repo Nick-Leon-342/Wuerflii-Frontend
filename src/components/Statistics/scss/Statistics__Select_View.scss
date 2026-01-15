@@ -1,12 +1,12 @@
 
 
-.statistics_select_view {
+.statistics__select_view {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 	gap: 10px;
 
-	.statistics_select_view-loader {
+	.statistics__select_view--loader {
 		border-radius: 5px;
 		height: 60px;
 	}
@@ -20,7 +20,7 @@
 
 
 @media ( max-width: 600px ) {
-	.statistics_select_view {
+	.statistics__select_view {
 		flex-direction: column;
 
 		select {

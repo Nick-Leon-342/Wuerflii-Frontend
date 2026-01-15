@@ -2,14 +2,14 @@
 
 import './scss/Profile.scss'
 
-import { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
+import useAuth from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
 
-import LoaderDots from '../components/Loader/Loader_Dots'
 import CustomButton from '../components/misc/Custom_Button'
 import Popup__Options from '../components/Popup/Popup__Options'
 import Previous from '../components/NavigationElements/Previous'
@@ -21,12 +21,15 @@ import Context__Error from '../Provider_And_Context/Provider_And_Context__Error'
 import Context__Regex from '../Provider_And_Context/Provider_And_Context__Regex'
 
 import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
+import Context__Universal_Loader from '../Provider_And_Context/Provider_And_Context__Universal_Loader'
 
 
 
 
 
 export default function Profile() {
+
+    const { setAuth } = useAuth()
 	
 	const navigate = useNavigate()
 	const query_client = useQueryClient()
@@ -34,6 +37,7 @@ export default function Profile() {
 	const handle_error = useErrorHandling()
 
 	const { setError } = useContext(Context__Error)
+	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const [ name, 					setName						] = useState<string>('')
 	const [ password, 				setPassword					] = useState<string>('')
@@ -69,6 +73,10 @@ export default function Profile() {
 			})
 		}
 	})
+
+	useEffect(() => {
+		setLoading__universal_loader(isLoading__user)
+	}, [ isLoading__user, setLoading__universal_loader ])
 
 
 
@@ -125,6 +133,34 @@ export default function Profile() {
 
 
 
+	// __________________________________________________ Logout __________________________________________________
+
+	const [ loading_logout, setLoading_logout ] = useState(false)
+
+	const logout = () => {
+
+		setLoading_logout(true)
+
+		axiosPrivate.delete('/logout').then(() => {
+			
+			query_client.clear()
+			setAuth({ accessToken: '' })
+			navigate('/registration_and_login', { replace: true })
+				
+		}).catch(err => {
+
+			handle_error({
+				err
+			})
+			
+		}).finally(() => setLoading_logout(false))
+
+	}
+
+
+
+
+
 	return <>
 	
 		<Popup__Options user={user}/>
@@ -135,42 +171,60 @@ export default function Profile() {
 
 		<div className='profile'>
 
-			<Previous onClick={() => navigate(-1)}>
-				<h1>Anmeldedaten ändern</h1>
-			</Previous>
-
-			{/* ____________________ Loading animation ____________________ */}
-			{isLoading__user && <div className='profile_loader'><LoaderDots/></div>}
+			<Previous onClick={() => navigate(-1)}/>
 
 
 			
-			{!isLoading__user && <>
-
-				<form onSubmit={handleSubmit}>
-
-					{mutate__user.isSuccess && <h2>Erfolgreich gespeichert!</h2>}
-
-					<Form__Username_And_Password 
-						name={name} 
-						setName={setName} 
-
-						password={password} 
-						setPassword={setPassword} 
-
-						password_confirm={password__confirm} 
-						setPassword_confirm={setPassword__confirm} 
-						
-						isRequired={false}
-					/>
-
-					<CustomButton
-						text='Ändern'
-						loading={mutate__user.isPending}
-					/>
-
-				</form>
+			<Link 
+				to='/analytics'
+				className='button button_reverse_green button_scale_2'
+			>Statistiken</Link>
 
 
+			{/* __________________________________________________ Change credentials __________________________________________________ */}
+			<form onSubmit={handleSubmit}>
+
+				<hr/>
+
+				<h1>Anmeldedaten ändern</h1>
+
+				{mutate__user.isSuccess && <h2>Erfolgreich gespeichert!</h2>}
+
+				<Form__Username_And_Password 
+					name={name} 
+					setName={setName} 
+
+					password={password} 
+					setPassword={setPassword} 
+
+					password_confirm={password__confirm} 
+					setPassword_confirm={setPassword__confirm} 
+					
+					isRequired={false}
+				/>
+
+				<CustomButton
+					text='Ändern'
+					loading={mutate__user.isPending}
+				/>
+
+			</form>
+
+
+
+			{/* __________________________________________________ Danger Zone __________________________________________________ */}
+			<>
+			
+				<hr/>
+
+				<h1>Danger Zone</h1>
+			
+				<CustomButton
+					text='Ausloggen'
+					onClick={logout}
+					loading={loading_logout}
+					className='button_reverse_red'
+				/>
 
 				<CustomButton
 					text='Account löschen'
@@ -178,10 +232,8 @@ export default function Profile() {
 					className='button_reverse_red'
 					loading={loading_delete_account}
 				/>
-
-			</>}
+			</>
 
 		</div>
-		
 	</>
 }

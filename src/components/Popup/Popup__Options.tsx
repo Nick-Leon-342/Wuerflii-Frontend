@@ -2,19 +2,16 @@
 
 import './scss/Popup__Options.scss'
 
+import { Link } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import useAuth from '../../hooks/useAuth'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../hooks/useErrorHandling'
 
 import Context__Server_Version from '../../Provider_And_Context/Provider_And_Context__Server_Version'
 
 import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
-import CustomButton from '../misc/Custom_Button'
 
 import Settings from '../../svg/Settings.svg?react'
 
@@ -33,12 +30,8 @@ export default function Popup__Options({
 	user, 
 }: Props__Popup__Options) {
 
-    const { setAuth } = useAuth()
-
-	const navigate = useNavigate()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
 
 	const { server_version } = useContext(Context__Server_Version)
 
@@ -79,34 +72,6 @@ export default function Popup__Options({
 		}
 		configure_darkmode()
 	}, [ user ])
-
-
-
-
-
-	// __________________________________________________ Logout __________________________________________________
-
-	const [ loading_logout, setLoading_logout ] = useState(false)
-
-	const logout = () => {
-
-		setLoading_logout(true)
-
-		axiosPrivate.delete('/logout').then(() => {
-			
-			query_client.clear()
-			setAuth({ accessToken: '' })
-			navigate('/registration_and_login', { replace: true })
-				
-		}).catch(err => {
-
-			handle_error({
-				err
-			})
-			
-		}).finally(() => setLoading_logout(false))
-
-	}
 
 
 
@@ -160,24 +125,7 @@ export default function Popup__Options({
 						<Link 
 							to='/profile'
 							className='button button_reverse_green button_scale_2'
-						>Anmeldedaten ändern</Link>
-					</section>
-
-					<section>
-						<Link 
-							to='/analytics'
-							className='button button_reverse_green button_scale_2'
-						>Statistiken</Link>
-					</section>
-
-
-					<section>
-						<CustomButton
-							text='Ausloggen'
-							onClick={logout}
-							loading={loading_logout}
-							className='button_reverse_red'
-						/>
+						>Account</Link>
 					</section>
 
 				</div>

@@ -128,15 +128,7 @@ export default function EndScreen() {
 		init()
 	}, [ list_players, final_score ])
 
-	useEffect(() => {
-
-		if(isLoading__user || isLoading__list_players || isLoading__final_score) {
-			setLoading__universal_loader(true)
-		} else {
-			setLoading__universal_loader(false)
-		}
-
-	}, [ isLoading__user, isLoading__list_players, isLoading__final_score, setLoading__universal_loader ])
+	useEffect(() => { setLoading__universal_loader(isLoading__user || isLoading__list_players || isLoading__final_score) }, [ isLoading__user, isLoading__list_players, isLoading__final_score, setLoading__universal_loader ])
 
 
 

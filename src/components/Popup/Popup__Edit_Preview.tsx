@@ -76,10 +76,10 @@ export default function Popup__Edit_Preview({
 		onSuccess: (_, json) => {
 			setSession(prev => {
 				if(!prev) return prev
-				const tmp = { ...prev }
-				tmp.View = json.View || 'show_all'
-				tmp.View_Month = json.View_Month || 1
-				tmp.View_Year = json.View_Year || 0
+				const tmp 		= { ...prev }
+				tmp.View 		= json.View || 'show_all'
+				tmp.View_Month 	= json.View_Month || 1
+				tmp.View_Year 	= json.View_Year || 0
 				query_client.setQueryData([ 'session', session.id ], tmp)
 				return tmp
 			})
@@ -99,10 +99,10 @@ export default function Popup__Edit_Preview({
 	): void {
 
 		mutate__session.mutate({
-			SessionID: session.id, 
-			View: view, 
+			SessionID:	session.id, 
+			View:		view, 
 			View_Month: view_month, 
-			View_Year: view_year, 
+			View_Year: 	view_year, 
 		})
 
 	}

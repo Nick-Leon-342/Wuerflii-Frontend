@@ -3,16 +3,16 @@
 .profile {
 	display: flex;
 	flex-direction: column;
+	padding: var(--padding) 0;
 	gap: var(--padding);
 	width: 90vw;
 	min-width: 270px;
 	max-width: 600px;
 
+	hr { margin: var(--padding) 0; }
 
-
-	.profile_loader {
-		display: grid;
-		place-content: center;
+	button {
+		justify-content: flex-start;
 	}
 
 
