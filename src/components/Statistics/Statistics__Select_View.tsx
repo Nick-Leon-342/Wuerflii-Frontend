@@ -27,14 +27,14 @@ import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__C
 
 
 interface Props__Statistics__Select_View {
-	list_years:		Array<number>
+	list__years:		Array<number>
 	session?:		Type__Session
 	user?:			Type__User
 	isSession:		boolean
 }
 
 export default function Statistics__Select_View({
-	list_years, 
+	list__years, 
 	session, 
 	user, 
 	isSession, 
@@ -170,7 +170,7 @@ export default function Statistics__Select_View({
 						value={view_year}
 						onChange={({ target }) => sync_view(view, view_month, +target.value)}
 					>
-						{list_years.map(year => <option key={year} value={year}>{year}</option>)}
+						{list__years.map(year => <option key={year} value={year}>{year}</option>)}
 					</select>
 				</>}
 			

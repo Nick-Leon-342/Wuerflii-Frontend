@@ -111,7 +111,7 @@ export default function Analytics() {
 
 			{user && <>
 				<Statistics__Select_View
-					list_years={list_years}
+					list__years={list_years}
 					isSession={false}
 					user={user}
 				/>

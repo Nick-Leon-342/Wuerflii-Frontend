@@ -25,6 +25,8 @@ import { get__session_players } from '../../api/session/session_players'
 
 import type { Type__Session } from '../../types/Type__Session'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
+import type { Type__Server_Response__Analytics_Session__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
+import { Type__List_Months } from '../../types/Type__List_Months'
 
 
 
@@ -40,10 +42,10 @@ export default function Analytics_Session() {
 
 	const { session_id } = useParams()
 
-	const [ total,		setTotal	] = useState()
-	const [ session,	setSession	] = useState<Type__Session>()
+	const [ total,			setTotal		] = useState<Type__Server_Response__Analytics_Session__GET__Total>()
+	const [ session,		setSession		] = useState<Type__Session>()
 
-	const [ list_years, setList_years ] = useState([])
+	const [ list__years, 	setList__years	] = useState<Array<number>>([])
 
 
 
@@ -121,7 +123,7 @@ export default function Analytics_Session() {
 		function init() {
 			if(!analytics) return 
 			setTotal(analytics.Total)
-			setList_years(analytics.List_Years)
+			setList__years(analytics.List__Years)
 		}
 		init()
 	}, [ analytics ])
@@ -148,7 +150,7 @@ export default function Analytics_Session() {
 			setSession(prev => {
 				if(!prev) return prev
 				const tmp 					= { ...prev }
-				tmp.Statistics_Show_Border 	= !json.Statistics_Show_Border
+				tmp.Statistics_Show_Border 	= Boolean(json.Statistics_Show_Border)
 				query_client.setQueryData([ 'session', prev.id ], tmp)
 				return tmp
 			})
@@ -215,7 +217,7 @@ export default function Analytics_Session() {
 				{/* ____________________ Select ____________________ */}
 
 				<Statistics__Select_View
-					list_years={list_years}
+					list__years={list__years}
 					user={user}
 					session={session}
 					isSession={true}
@@ -227,7 +229,7 @@ export default function Analytics_Session() {
 
 				<ChartDoughnut
 					List_Players={list_players}
-					Total_Wins={total?.Total_Wins} 
+					Total_Wins={total?.Total__Wins} 
 					IsBorderVisible={session?.Statistics_Show_Border}
 				/>
 
@@ -259,7 +261,7 @@ export default function Analytics_Session() {
 				<h2>Verlauf</h2>
 
 				<ChartGraph
-					labels={session?.Statistics_View === 'statistics_year' ? [ 0, ...list_months ] : total?.Data ? Object.keys(total?.Data) : []}
+					labels={session?.Statistics_View === 'statistics_year' ? [ 0, ...Type__List_Months ] : total?.Data ? Object.keys(total?.Data) : []}
 					IsBorderVisible={session?.Statistics_Show_Border}
 					List_Players={list_players}
 					Data={total?.Data}
@@ -280,12 +282,12 @@ export default function Analytics_Session() {
 
 					<div className='statistic'>
 						<span>Spiele gespielt</span>
-						<span>{total.Total_Games_Played}</span>
+						<span>{total.Total__Games_Played}</span>
 					</div>
 
 					<div className='statistic'>
 						<span>Davon unentschieden</span>
-						<span>{total.Total_Draws}</span>
+						<span>{total.Total__Draws}</span>
 					</div>
 
 
@@ -297,7 +299,7 @@ export default function Analytics_Session() {
 						<ChartBarSession
 							IsBorderVisible={session?.Statistics_Show_Border}
 							List_Players={list_players}
-							JSON={total.Scores_Lowest}
+							JSON={total.Scores__Lowest}
 						/>
 
 					</div>
@@ -311,7 +313,7 @@ export default function Analytics_Session() {
 						<ChartBarSession
 							IsBorderVisible={session?.Statistics_Show_Border}
 							List_Players={list_players}
-							JSON={total.Scores_Highest}
+							JSON={total.Scores__Highest}
 						/>
 						
 					</div>
@@ -325,7 +327,7 @@ export default function Analytics_Session() {
 						<ChartBarSession
 							IsBorderVisible={session?.Statistics_Show_Border}
 							List_Players={list_players}
-							JSON={total.Scores_Average}
+							JSON={total.Scores__Average}
 						/>
 
 					</div>
