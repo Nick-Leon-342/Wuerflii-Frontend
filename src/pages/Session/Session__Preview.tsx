@@ -356,26 +356,28 @@ export default function Session__Preview() {
 										</td>
 									))}
 								</tr>
-								<tr>
-									{list_players?.map(player => {
+								{list_finalScores.length > 0 && <>
+									<tr>
+										{list_players?.map(player => {
 
-										const id = player.id
-										const e = list_finalScores.at(index_visible_row)
-										if(!e) return
+											const id = player.id
+											const e = list_finalScores.at(index_visible_row)
+											if(!e) return
 
-										return (
-											<td key={id}>
-												<span>
-													{session?.View === 'show_month' && (e.Wins__After_Month[id] || 0)}
-													{session?.View === 'show_year' && (e?.Wins__After_Year[id] || 0)}
-													{session?.View === 'show_custom_date' && (e?.Wins__After_SinceCustomDate[id] || 0)}
-													{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
-												</span>
-											</td>
-										)
-										
-									})}
-								</tr>
+											return (
+												<td key={id}>
+													<span>
+														{session?.View === 'show_month' && (e.Wins__After_Month[id] || 0)}
+														{session?.View === 'show_year' && (e?.Wins__After_Year[id] || 0)}
+														{session?.View === 'show_custom_date' && (e?.Wins__After_SinceCustomDate[id] || 0)}
+														{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
+													</span>
+												</td>
+											)
+											
+										})}
+									</tr>
+								</>}
 							</tbody>
 						</table>
 					</div>

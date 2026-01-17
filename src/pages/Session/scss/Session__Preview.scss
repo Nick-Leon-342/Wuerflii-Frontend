@@ -71,7 +71,7 @@
 						&:first-child td:last-child { border-top-right-radius: var(--radius); }
 						&:last-child td:first-child { border-bottom-left-radius: var(--radius); }
 						&:last-child td:last-child { border-bottom-right-radius: var(--radius); }
-						&:not(:last-child) td { border-bottom: none; }
+						&:last-child:not(:first-child) td { border-top: none; }
 			
 
 
