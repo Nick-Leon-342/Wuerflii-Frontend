@@ -11,8 +11,13 @@
 
 	hr { margin: var(--padding) 0; }
 
-	button {
+	button, a {
 		justify-content: flex-start;
+
+		&.profile--change_credentials, 
+		&.profile--analytics {
+			padding: 0 20px;
+		}
 	}
 
 

@@ -177,7 +177,7 @@ export default function Profile() {
 			
 			<Link 
 				to='/analytics'
-				className='button button_reverse_green button_scale_2'
+				className='button button_scale_2 profile--analytics'
 			>Statistiken</Link>
 
 
@@ -205,6 +205,7 @@ export default function Profile() {
 
 				<CustomButton
 					text='Ändern'
+					className='profile--change_credentials'
 					loading={mutate__user.isPending}
 				/>
 
