@@ -18,17 +18,10 @@
 	flex-direction: column;
 
 	.box { gap: var(--padding); }
-
-
-	hr { 
-		border: 1px dashed;
-	}
-
-
+	hr { border: 1px dashed;}
 	
 	section {
 		display: flex;
-		padding: 0 10px;
 		height: 70px;
 		align-items: center;
 		font-size: 20px;
