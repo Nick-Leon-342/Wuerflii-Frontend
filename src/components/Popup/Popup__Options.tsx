@@ -81,7 +81,7 @@ export default function Popup__Options({
 
 		<button
 			onClick={() => setShow_options(true)} 
-			className='button button_reverse button_scale_3 popup__options-icon'
+			className='button button_reverse button_scale_3 popup__options--icon'
 		><Settings/></button>
 	
 
@@ -89,9 +89,9 @@ export default function Popup__Options({
 
 
 		<Popup
+			title='Einstellungen'
 			show_popup={show_options}
 			setShow_popup={setShow_options}
-			title='Einstellungen'
 		>
 			<div className='popup__options'>
 
@@ -121,12 +121,12 @@ export default function Popup__Options({
 						
 					</section>
 
-					<section>
-						<Link 
-							to='/profile'
-							className='button button_reverse_green button_scale_2'
-						>Account</Link>
-					</section>
+					<hr/>
+
+					<Link 
+						to='/profile'
+						className='button button_scale_2 popup__options--profile'
+					>Account</Link>
 
 				</div>
 				
