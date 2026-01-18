@@ -1,0 +1,63 @@
+
+
+.popup__error {
+	display: flex;
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	overflow: hidden;
+	border-radius: 10px;
+	box-shadow: -1px 1px 3px 0px var(--text);
+
+	.popup__error-container {
+		display: flex;
+		position: relative;
+		padding: 20px;
+		padding-left: 25px;
+		flex-direction: column;
+		background-color: rgba(255, 0, 0, .07);
+	
+		
+	
+		header {
+			display: flex; 
+			gap: 5px;
+			align-items: center;
+			margin-bottom: 10px;
+	
+			svg {
+				height: 30px;
+				path { 
+					stroke-width: 4;
+					fill: var(--red); 
+				}
+			}
+	
+			span {
+				font-size: 25px;
+				font-weight: 600;
+				color: var(--red);
+			}
+		}
+	
+
+			
+		.popup__error_progress_bar {
+			display: flex;
+			flex-direction: column-reverse;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 5px;
+			height: 100%;
+	
+			.popup__error_progress {
+				height: 100%;
+				width: 100%;
+				background-color: var(--red);
+				transition: height 5s linear;
+				&.instant { transition: none; }
+			}
+		}
+	}
+}

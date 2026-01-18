@@ -1,6 +1,6 @@
 
 
-FROM node:23.11.0-slim AS build
+FROM node:25.2.1 AS build
 
 WORKDIR /wuerflii-frontend
 
@@ -12,7 +12,7 @@ RUN npm run build
 
 # NGINX
 FROM nginx:alpine
-COPY --from=build /wuerflii-frontend/build /usr/share/nginx/html
+COPY --from=build /wuerflii-frontend/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 

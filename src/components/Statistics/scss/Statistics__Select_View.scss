@@ -1,0 +1,30 @@
+
+
+.statistics__select_view {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	gap: 10px;
+
+	.statistics__select_view--loader {
+		border-radius: 5px;
+		height: 60px;
+	}
+
+	select { 
+		width: 150px;
+		text-align: center;
+	}
+}
+
+
+
+@media ( max-width: 600px ) {
+	.statistics__select_view {
+		flex-direction: column;
+
+		select {
+			width: 100%;
+		}
+	}
+}

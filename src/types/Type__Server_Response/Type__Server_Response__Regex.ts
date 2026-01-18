@@ -1,0 +1,19 @@
+
+
+export interface Type__Server_Response__Regex {
+	NAME_MIN_CHARACTER: 			number
+	NAME_MAX_CHARACTER: 			number
+
+	NAME_REGEX: 					string
+	NAME_REGEX_MINMAX:				string
+	NAME_REGEX_LETTERFIRST: 		string
+	NAME_REGEX_ALLOWEDCHARS:		string
+
+	PASSWORD_MIN_CHARACTER: 		number
+	PASSWORD_MAX_CHARACTER: 		number
+
+	PASSWORD_REGEX:					string
+	PASSWORD_REGEX_MINMAX:			string
+	PASSWORD_REGEX_ALLOWEDCHARS: 	string
+	PASSWORD_REGEX_ALLOWEDSYMBOLS: 	string
+}

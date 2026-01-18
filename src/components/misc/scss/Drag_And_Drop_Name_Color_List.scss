@@ -1,0 +1,41 @@
+
+
+.drag_and_drop_name_color_list {
+	list-style-type: none;
+	width: 100%;
+
+	.drag_and_drop_name_color_list--element {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 5px;
+		&:not(:last-of-type) { margin-bottom: var(--padding); }
+
+		svg { height: 30px; }
+
+		input[type='text'] {
+			width: 100%;
+			border: none;
+			padding: 10px;
+			min-height: auto;
+			border-bottom: 1px solid var(--text--muted);
+			border-radius: 5px;
+		}
+
+		input[type='color'] {
+			padding: 0;
+			border: none;
+			min-width: 40px;
+			width: min-content;
+			min-height: 45px;
+			padding: 0;
+		
+			&:focus { outline: auto; }
+
+			&::-webkit-color-swatch {
+				border: 1px solid var(--text--muted);
+				border-radius: 5px;
+			}
+		}
+	}
+}
