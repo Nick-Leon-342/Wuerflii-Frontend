@@ -1,8 +1,12 @@
 
 
 import { Line } from 'react-chartjs-2'
+
 import { useEffect, useState } from 'react'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+
+import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Server_Response__Analytics_Session__GET__Data } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -10,46 +14,28 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 
 
-/**
- * 
- * Chart_Graph component renders a line chart that visualizes player data over time.
- * It uses the react-chartjs-2 library and the Chart.js library to generate the graph.
- *
- * @component
- * @example
- * // Example usage of Chart_Graph component
- * <Chart_Graph
- *   IsBorderVisible={true}
- *   List_Players={playersList}
- *   labels={timeLabels}
- *   Data={playerData}
- * />
- *
- * @param {Object} props - The component props
- * @param {boolean} props.IsBorderVisible - Flag to determine whether to display borders with adjusted colors
- * @param {Array} props.List_Players - Array of player objects containing details like `id`, `Name`, and `Color`
- * @param {Array} props.labels - Array of labels for the x-axis representing time or data points
- * @param {Object} props.Data - Object mapping time intervals to player data, specifically wins for each player
- *
- * @returns {JSX.Element} The rendered line chart component
- * 
- */
+interface Props__Chart_Graph {
+	IsBorderVisible:	boolean
+	List_Players:		Array<Type__Server_Reponse__Player__Get>
+	labels:				Array<string>
+	Data:				Record<string, Type__Server_Response__Analytics_Session__GET__Data>
+}
 
 export default function Chart_Graph({
 	IsBorderVisible, 
 	List_Players, 
 	labels, 
 	Data, 
-}) {
+}: Props__Chart_Graph) {
 
-	const [ values, setValues ] = useState()
+	const [ values, setValues ] = useState<Array<Record<Type__Server_Reponse__Player__Get['id'], number>>>([])
 
 
 
 
 
 	// Makes extremely light colors black
-	const adjustColor = (hex) => {
+	const adjustColor = ( hex: string ) => {
 	
 		if (!hex.startsWith("#") || (hex.length !== 4 && hex.length !== 7)) return hex
 	
@@ -71,23 +57,25 @@ export default function Chart_Graph({
 	}
 
 	useEffect(() => {
-
-		if(!List_Players || !Data) return
-
-		const tmp_values = []
-		let incremental_values = {}
-		for(const player of List_Players) incremental_values[player.id] = 0
-
-		for(const key of Object.keys(Data)) {
-			for(const player of List_Players) {
-				const id = player.id
-				incremental_values[id] = incremental_values[id] + (Data[key].Wins[id] || 0)
+		function init() {
+			console.log(Data)
+			if(!List_Players || !Data) return
+	
+			const tmp_values = []
+			const incremental_values: Record<Type__Server_Reponse__Player__Get['id'], number> = {}
+			for(const player of List_Players) incremental_values[player.id] = 0
+	
+			for(const key of Object.keys(Data)) {
+				for(const player of List_Players) {
+					const id = player.id
+					incremental_values[id] = incremental_values[id] + (Data[key].Wins[id] || 0)
+				}
+				tmp_values.push(structuredClone(incremental_values))
 			}
-			tmp_values.push(structuredClone(incremental_values))
+	
+			setValues(tmp_values)
 		}
-
-		setValues(tmp_values)
-
+		init()
 	}, [ List_Players, Data ])
 
 

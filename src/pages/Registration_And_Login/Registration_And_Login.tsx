@@ -107,7 +107,10 @@ export default function Registration_And_Login() {
 		).then(({ data }) => {
 
 
-			setAuth({ accessToken: data.accessToken })
+			setAuth({ 
+				user: null, 
+				accessToken: data.accessToken 
+			})
 			setName('')
 			setPassword('')
 
@@ -144,7 +147,10 @@ export default function Registration_And_Login() {
 		).then(({ data }) => {
 
 
-			setAuth({ accessToken: data.accessToken })
+			setAuth({ 
+				user: null, 
+				accessToken: data.accessToken 
+			})
 			setName('')
 			setPassword('')
 

@@ -3,6 +3,8 @@
 import { Doughnut } from 'react-chartjs-2'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 
+import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+
 ChartJS.register(
 	ArcElement, 
 	Tooltip, 
@@ -13,34 +15,17 @@ ChartJS.register(
 
 
 
-/**
- * 
- * Chart_Doughnut component renders a doughnut chart displaying the total wins for each player.
- * It uses the react-chartjs-2 library to visualize the data.
- *
- * @component
- * @example
- * // Example usage of Chart_Doughnut component
- * <Chart_Doughnut
- *   IsBorderVisible={true}
- *   List_Players={playersList}
- *   Total_Wins={totalWinsData}
- * />
- *
- * @param {Object} props - The component props
- * @param {boolean} props.IsBorderVisible - Flag to determine whether to show a border around the chart segments
- * @param {Array} props.List_Players - Array of player objects containing player details like `Name` and `Color`
- * @param {Object} props.Total_Wins - An object mapping player IDs to the total wins, where the key is the player ID and the value is the number of wins
- *
- * @returns {JSX.Element} The rendered doughnut chart component
- * 
- */
+interface Props__Chart_Doughnut {
+	IsBorderVisible:	boolean
+	List_Players:		Array<Type__Server_Reponse__Player__Get>
+	Total_Wins:			Record<Type__Server_Reponse__Player__Get['id'], number>
+}
 
 export default function Chart_Doughnut({ 
 	IsBorderVisible, 
 	List_Players, 
 	Total_Wins, 
-}) {
+}: Props__Chart_Doughnut) {
 
 	return <>
 		<Doughnut 

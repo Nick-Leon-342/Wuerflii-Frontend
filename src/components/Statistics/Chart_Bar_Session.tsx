@@ -1,6 +1,5 @@
 
 
-import React from 'react'
 import { Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -11,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
+import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 
 ChartJS.register(
 	CategoryScale,
@@ -25,41 +25,23 @@ ChartJS.register(
 
 
 
-/**
- * 
- * Chart_Bar component renders a bar chart using the react-chartjs-2 library.
- * It accepts player data and displays their scores or values as bars in the chart.
- *
- * @component
- * @example
- * // Example usage of Chart_Bar component
- * <Chart_Bar
- *   IsBorderVisible={true}
- *   List_Players={players}
- *   JSON={playerScores}
- * />
- *
- * @param {Object} props - The component props
- * @param {boolean} props.IsBorderVisible - Determines whether borders should be visible around the bars
- * @param {Array} props.List_Players - Array of player objects, each containing `Name`, `id`, and `Color` properties
- * @param {Object} props.JSON - An object where each key is a player's `id` and the value is their score or data point
- *
- * @returns {JSX.Element} The rendered bar chart component
- * 
- */
+interface Props__Chart_Bar {
+	IsBorderVisible:	boolean
+	List_Players:		Array<Type__Server_Reponse__Player__Get>
+	JSON:				Record<Type__Server_Reponse__Player__Get['id'], number>
+}
 
 export default function Chart_Bar({
 	IsBorderVisible, 
 	List_Players, 
 	JSON, 
-}) {
+}: Props__Chart_Bar) {
 
 	if(!List_Players) return <></>
 
 	return <>
 		<Bar 
 			data={{
-				labels: ' ', 
 				datasets: List_Players.map(player => ({
 					label: player.Name, 
 					data: [JSON[player.id]], 

@@ -2,7 +2,7 @@
 
 import type { Type__Server_Reponse__Player__Get } from './Type__Server_Response__Player__GET'
 
-interface Type__Data {
+export interface Type__Server_Response__Analytics_Session__GET__Data {
 	Games_Played:	number
 	Draws:			number
 	Wins:			Record<Type__Server_Reponse__Player__Get['id'], number>
@@ -18,7 +18,7 @@ export interface Type__Server_Response__Analytics_Session__GET__Total {
 	Scores__Highest: 		Record<Type__Server_Reponse__Player__Get['id'], number>
 	Scores__Total: 			Record<Type__Server_Reponse__Player__Get['id'], number>
 	
-	Data: 					Type__Data
+	Data: 					Record<string, Type__Server_Response__Analytics_Session__GET__Data>
 }
 
 export interface Type__Server_Response__Analytics_Session__GET {

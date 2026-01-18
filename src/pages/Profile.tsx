@@ -144,7 +144,10 @@ export default function Profile() {
 		axiosPrivate.delete('/logout').then(() => {
 			
 			query_client.clear()
-			setAuth({ accessToken: '' })
+			setAuth({ 
+				user: 			null, 
+				accessToken: 	'', 
+			})
 			navigate('/registration_and_login', { replace: true })
 				
 		}).catch(err => {

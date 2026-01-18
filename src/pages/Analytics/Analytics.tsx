@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import ChartBar from '../../components/Statistics/Chart_Bar'
+import Chart_Bar from '../../components/Statistics/Chart_Bar'
 import PopupOptions from '../../components/Popup/Popup__Options'
 import Previous from '../../components/NavigationElements/Previous'
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
@@ -119,10 +119,12 @@ export default function Analytics() {
 
 
 
-			<ChartBar
-				labels={user?.Statistics_View === 'statistics_year' ? Type__List_Months : total?.Data ? Object.keys(total?.Data) : []}
-				JSON={total?.Data}
-			/>
+			{total && <>
+				<Chart_Bar
+					labels={user?.Statistics_View === 'statistics_year' ? Type__List_Months : total?.Data ? Object.keys(total?.Data) : []}
+					data={total.Data}
+				/>
+			</>}
 
 
 
