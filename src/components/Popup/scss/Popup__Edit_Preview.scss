@@ -1,0 +1,47 @@
+
+
+.popup__edit_preview {
+	display: flex;
+	flex-direction: column;
+	gap: var(--padding);
+
+
+
+	.popup__edit_preview--select {
+		display: flex;
+		flex-direction: column;
+
+		.popup__edit_preview--select_container {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+
+			span {
+				font-size: 20px;
+			}
+			&.view { width: 300px; }
+		}
+
+		.custom_date {
+			button {
+				width: min-content;
+				color: var(--text);
+			}
+		}
+
+		.view select { width: 100%; }
+		.year select, .month select { 
+			border: none; 
+			text-align: end;
+			min-height: 50px;
+			margin-bottom: 10px;
+		}
+	}
+
+
+
+	.popup__edit_preview--select_loader {
+		height: 60px;
+	}
+}

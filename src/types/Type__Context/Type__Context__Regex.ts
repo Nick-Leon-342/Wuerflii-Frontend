@@ -1,0 +1,21 @@
+
+
+export interface Type__Context__Regex {
+	requesting_regex:				boolean
+	
+	NAME_MIN_CHARACTER: 			number
+	NAME_MAX_CHARACTER: 			number
+
+	NAME_REGEX: 					RegExp
+	NAME_REGEX_MINMAX:				RegExp
+	NAME_REGEX_LETTERFIRST: 		RegExp
+	NAME_REGEX_ALLOWEDCHARS:		RegExp
+
+	PASSWORD_MIN_CHARACTER: 		number
+	PASSWORD_MAX_CHARACTER: 		number
+
+	PASSWORD_REGEX:					RegExp
+	PASSWORD_REGEX_MINMAX:			RegExp
+	PASSWORD_REGEX_ALLOWEDCHARS: 	RegExp
+	PASSWORD_REGEX_ALLOWEDSYMBOLS: 	RegExp
+}

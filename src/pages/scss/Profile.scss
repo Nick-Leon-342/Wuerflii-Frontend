@@ -3,16 +3,21 @@
 .profile {
 	display: flex;
 	flex-direction: column;
+	padding: var(--padding) 0;
 	gap: var(--padding);
 	width: 90vw;
 	min-width: 270px;
 	max-width: 600px;
 
+	hr { margin: var(--padding) 0; }
 
+	button, a {
+		justify-content: flex-start;
 
-	.profile_loader {
-		display: grid;
-		place-content: center;
+		&.profile--change_credentials, 
+		&.profile--analytics {
+			padding: 0 20px;
+		}
 	}
 
 

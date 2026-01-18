@@ -1,0 +1,162 @@
+
+
+.session__select {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	width: 90vw;
+	max-width: 800px;
+	min-width: 300px;
+
+
+
+
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		opacity: 1;
+		padding: 0 10px;
+	
+		button {
+			height: 30px;
+			width: 30px;
+
+			svg { height: fit-content; }
+	
+			&:not(.disabled):hover { height: 30px; }
+	
+			&.disabled {
+				opacity: 0.2;
+				pointer-events: none;
+			}
+	
+			&.trashcan {
+				&.notvisible { opacity: 0; }
+			}
+	
+			&.edit {	
+				&.notvisible { opacity: 0; }
+			}
+		}
+	}
+
+
+
+
+	
+	.session__select--popup--settings--show--loader {
+		border-radius: 5px;
+		height: 60px;
+	}
+
+	.no-game {
+		padding: 15px;
+		margin-bottom: 20px;
+		width: 100%;
+		text-align: center;
+	}
+
+	dl {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		width: 100%;
+	
+		dt {
+			display: flex;
+			justify-content: space-between;
+			border-radius: 5px;
+			width: 100%;
+			transition: transform .2s;
+	
+			&:hover { transform: scale(1.01); }
+			&:active { transform: scale(.99); }
+	
+			input[type='checkbox'] {
+				width: 30px;
+				margin-left: 10px;
+				flex-shrink: 0;
+			}
+	
+			a {
+				display: flex;
+				justify-content: space-between;
+				margin: 0 10px;
+				flex-grow: 1;
+				flex-shrink: 1;
+				min-width: 0;
+				align-items: center;
+				gap: 10px;
+	
+				label {
+					font-size: 23px;
+					width: max-content;
+				}
+	
+				.names {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+			}
+		}
+	}
+
+}
+
+
+
+.session__select--popup--settings {
+
+	.session__select--popup--settings--show {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 10px;
+		font-size: 20px;
+
+		&:last-of-type { 
+			padding-bottom: 15px;
+			border-bottom: 1px solid; 
+		}
+
+		.session__select--popup--settings--show--loader {
+			width: 20px;
+			height: 20px;
+			border-radius: 3px;
+		}
+
+		input {
+			width: 20px;
+			min-height: 20px;
+		}
+	}
+
+
+
+	button {
+		justify-content: space-between;
+		padding: 0 10px;
+		gap: 5px;
+		width: 100%;
+		height: 30px;
+		svg { transform: rotate(180deg); }
+
+		&.session__select--popup--settings--currently_selected { 
+			color: var(--green-button);
+			path { fill: var(--green-button); }
+			svg { opacity: 1; }
+		}
+
+		&.session__select--popup--settings--desc svg {
+			transform: rotate(0deg);
+		}
+
+		svg { 
+			opacity: 0;
+			width: 30px; 
+			transition: transform ease .3s;
+		}
+	}
+}
