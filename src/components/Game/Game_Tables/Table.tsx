@@ -261,7 +261,7 @@ const Input_Element = ({
 			</div>
 		</>}
 
-		{!mutate__table_columns.isPending && session?.InputType === 'type' && <>
+		{!mutate__table_columns.isPending && session?.Input_Type === 'TYPE' && <>
 			<input 
 				tabIndex={0}
 				onBlur={onBlur}
@@ -270,7 +270,7 @@ const Input_Element = ({
 			/>
 		</>}
 
-		{!mutate__table_columns.isPending && session?.InputType === 'select' && <>
+		{!mutate__table_columns.isPending && session?.Input_Type === 'SELECT' && <>
 			<select 
 				tabIndex={0}
 				className={`${isIOS() ? 'isios' : ''}`}
@@ -287,7 +287,7 @@ const Input_Element = ({
 			</select>
 		</>}
 
-		{!mutate__table_columns.isPending && session?.InputType === 'select_and_type' && <>
+		{!mutate__table_columns.isPending && session?.Input_Type === 'SELECT_AND_TYPE' && <>
 			<input 
 				list={id} 
 				tabIndex={0}

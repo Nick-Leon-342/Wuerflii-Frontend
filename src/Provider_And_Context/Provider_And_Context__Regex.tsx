@@ -14,21 +14,21 @@ import type { Type__Server_Response__Regex } from '../types/Type__Server_Respons
 const Context__Regex = createContext<Type__Context__Regex>({
 		requesting_regex:				false, 
 
-		NAME_MIN_CHARACTER: 			0, 
-		NAME_MAX_CHARACTER:				0, 
+		NAME__MIN_CHARACTER: 			0, 
+		NAME__MAX_CHARACTER:				0, 
 
-		NAME_REGEX:						new RegExp('$.^'), 
-		NAME_REGEX_MINMAX:				new RegExp('$.^'), 
-		NAME_REGEX_LETTERFIRST:			new RegExp('$.^'), 
-		NAME_REGEX_ALLOWEDCHARS: 		new RegExp('$.^'),
+		NAME__REGEX:						new RegExp('$.^'), 
+		NAME__REGEX_MINMAX:				new RegExp('$.^'), 
+		NAME__REGEX_LETTERFIRST:			new RegExp('$.^'), 
+		NAME__REGEX_ALLOWEDCHARS: 		new RegExp('$.^'),
 		
-		PASSWORD_MIN_CHARACTER:			0, 
-		PASSWORD_MAX_CHARACTER: 		0, 
+		PASSWORD__MIN_CHARACTER:			0, 
+		PASSWORD__MAX_CHARACTER: 		0, 
 
-		PASSWORD_REGEX:					new RegExp('$.^'), 
-		PASSWORD_REGEX_MINMAX:			new RegExp('$.^'), 
-		PASSWORD_REGEX_ALLOWEDCHARS:	new RegExp('$.^'), 
-		PASSWORD_REGEX_ALLOWEDSYMBOLS:	new RegExp('$.^'), 
+		PASSWORD__REGEX:					new RegExp('$.^'), 
+		PASSWORD__REGEX_MINMAX:			new RegExp('$.^'), 
+		PASSWORD__REGEX_ALLOWEDCHARS:	new RegExp('$.^'), 
+		PASSWORD__REGEX_ALLOWEDSYMBOLS:	new RegExp('$.^'), 
 })
 export default Context__Regex
 
@@ -45,21 +45,21 @@ export const Provider_And_Context__Regex = ({ children }: Props__Provider__Regex
 	const [ json__response,		setJson__response	] = useState<Type__Context__Regex>({
 		requesting_regex:				false, 
 
-		NAME_MIN_CHARACTER: 			0, 
-		NAME_MAX_CHARACTER:				0, 
+		NAME__MIN_CHARACTER: 			0, 
+		NAME__MAX_CHARACTER:				0, 
 
-		NAME_REGEX:						new RegExp('$.^'), 
-		NAME_REGEX_MINMAX:				new RegExp('$.^'), 
-		NAME_REGEX_LETTERFIRST:			new RegExp('$.^'), 
-		NAME_REGEX_ALLOWEDCHARS: 		new RegExp('$.^'), 
+		NAME__REGEX:						new RegExp('$.^'), 
+		NAME__REGEX_MINMAX:				new RegExp('$.^'), 
+		NAME__REGEX_LETTERFIRST:			new RegExp('$.^'), 
+		NAME__REGEX_ALLOWEDCHARS: 		new RegExp('$.^'), 
 		
-		PASSWORD_MIN_CHARACTER:			0, 
-		PASSWORD_MAX_CHARACTER: 		0, 
+		PASSWORD__MIN_CHARACTER:			0, 
+		PASSWORD__MAX_CHARACTER: 		0, 
 
-		PASSWORD_REGEX:					new RegExp('$.^'), 
-		PASSWORD_REGEX_MINMAX:			new RegExp('$.^'), 
-		PASSWORD_REGEX_ALLOWEDCHARS:	new RegExp('$.^'), 
-		PASSWORD_REGEX_ALLOWEDSYMBOLS:	new RegExp('$.^'), 
+		PASSWORD__REGEX:					new RegExp('$.^'), 
+		PASSWORD__REGEX_MINMAX:			new RegExp('$.^'), 
+		PASSWORD__REGEX_ALLOWEDCHARS:	new RegExp('$.^'), 
+		PASSWORD__REGEX_ALLOWEDSYMBOLS:	new RegExp('$.^'), 
 	})
 
 
@@ -74,43 +74,43 @@ export const Provider_And_Context__Regex = ({ children }: Props__Provider__Regex
 			axiosPrivate.get<Type__Server_Response__Regex>('/auth/regex').then(response  => {
 	
 				const {
-					NAME_MIN_CHARACTER, 
-					NAME_MAX_CHARACTER, 
+					NAME__MIN_CHARACTER, 
+					NAME__MAX_CHARACTER, 
 					
-					NAME_REGEX, 
-					NAME_REGEX_MINMAX, 
-					NAME_REGEX_LETTERFIRST, 
-					NAME_REGEX_ALLOWEDCHARS, 
+					NAME__REGEX, 
+					NAME__REGEX_MINMAX, 
+					NAME__REGEX_LETTERFIRST, 
+					NAME__REGEX_ALLOWEDCHARS, 
 				
 				
-					PASSWORD_MIN_CHARACTER, 
-					PASSWORD_MAX_CHARACTER, 
+					PASSWORD__MIN_CHARACTER, 
+					PASSWORD__MAX_CHARACTER, 
 				
-					PASSWORD_REGEX, 
-					PASSWORD_REGEX_MINMAX, 
-					PASSWORD_REGEX_ALLOWEDCHARS, 
-					PASSWORD_REGEX_ALLOWEDSYMBOLS, 
+					PASSWORD__REGEX, 
+					PASSWORD__REGEX_MINMAX, 
+					PASSWORD__REGEX_ALLOWEDCHARS, 
+					PASSWORD__REGEX_ALLOWEDSYMBOLS, 
 				} = response.data
 	
 				setJson__response({
 					requesting_regex:				false, 
 
-					NAME_MIN_CHARACTER, 
-					NAME_MAX_CHARACTER, 
+					NAME__MIN_CHARACTER, 
+					NAME__MAX_CHARACTER, 
 					
-					NAME_REGEX:						new RegExp(NAME_REGEX), 
-					NAME_REGEX_MINMAX:				new RegExp(NAME_REGEX_MINMAX), 
-					NAME_REGEX_LETTERFIRST:			new RegExp(NAME_REGEX_LETTERFIRST), 
-					NAME_REGEX_ALLOWEDCHARS:		new RegExp(NAME_REGEX_ALLOWEDCHARS), 
+					NAME__REGEX:						new RegExp(NAME__REGEX), 
+					NAME__REGEX_MINMAX:				new RegExp(NAME__REGEX_MINMAX), 
+					NAME__REGEX_LETTERFIRST:			new RegExp(NAME__REGEX_LETTERFIRST), 
+					NAME__REGEX_ALLOWEDCHARS:		new RegExp(NAME__REGEX_ALLOWEDCHARS), 
 				
 				
-					PASSWORD_MIN_CHARACTER, 
-					PASSWORD_MAX_CHARACTER, 
+					PASSWORD__MIN_CHARACTER, 
+					PASSWORD__MAX_CHARACTER, 
 				
-					PASSWORD_REGEX:					new RegExp(PASSWORD_REGEX), 
-					PASSWORD_REGEX_MINMAX:			new RegExp(PASSWORD_REGEX_MINMAX), 
-					PASSWORD_REGEX_ALLOWEDCHARS:	new RegExp(PASSWORD_REGEX_ALLOWEDCHARS), 
-					PASSWORD_REGEX_ALLOWEDSYMBOLS:	new RegExp(PASSWORD_REGEX_ALLOWEDSYMBOLS), 
+					PASSWORD__REGEX:					new RegExp(PASSWORD__REGEX), 
+					PASSWORD__REGEX_MINMAX:			new RegExp(PASSWORD__REGEX_MINMAX), 
+					PASSWORD__REGEX_ALLOWEDCHARS:	new RegExp(PASSWORD__REGEX_ALLOWEDCHARS), 
+					PASSWORD__REGEX_ALLOWEDSYMBOLS:	new RegExp(PASSWORD__REGEX_ALLOWEDSYMBOLS), 
 				})
 	
 			}).catch((err: Error) => {

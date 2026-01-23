@@ -1,9 +1,9 @@
 
 
-import type { Type__Enum__View } from '../Type__Enum/Type__Enum__View'
-import type { Type__Enum__Month } from '../Type__Enum/Type__Enum__Month'
-import type { Type__Enum__Input_Type } from '../Type__Enum/Type__Enum__Input_Type'
-import type { Type__Enum__Statistics_View } from '../Type__Enum/Type__Enum__Statistics_View'
+import type { Enum__View } from '../Enum/Enum__View'
+import type { Enum__Month } from '../Enum/Enum__Month'
+import type { Enum__Input_Type } from '../Enum/Enum__Input_Type'
+import type { Enum__Statistics_View } from '../Enum/Enum__Statistics_View'
 
 export interface Type__Client_To_Server__Session__PATCH {
 		SessionID:					number
@@ -12,15 +12,15 @@ export interface Type__Client_To_Server__Session__PATCH {
 		Color?:						string
 		Columns?:					number
 
-		View?:						Type__Enum__View
-		View_Month?: 				Type__Enum__Month
-		View_Year?:					number
+		View?:						Enum__View
+		View__Month?: 				Enum__Month
+		View__Year?:					number
 		
-		InputType?:					Type__Enum__Input_Type
-		Scores_Visible?:			boolean
+		Input_Type?:					Enum__Input_Type
+		Show_Scores?:			boolean
 
-		Statistics_Show_Border?:	boolean
-		Statistics_View?:			Type__Enum__Statistics_View
-		Statistics_View_Month?:		Type__Enum__Month
-		Statistics_View_Year?:		number
+		Statistics__Show_Border?:	boolean
+		Statistics__View?:			Enum__Statistics_View
+		Statistics__View_Month?:		Enum__Month
+		Statistics__View_Year?:		number
 }

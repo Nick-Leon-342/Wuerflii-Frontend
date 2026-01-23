@@ -17,8 +17,8 @@ import { patch__session } from '../../api/session/session'
 import type { Type__User } from '../../types/Type__User'
 import type { Type__Session } from '../../types/Type__Session'
 import { Type__List_Months } from '../../types/Type__List_Months'
-import type { Type__Enum__Month } from '../../types/Type__Enum/Type__Enum__Month'
-import type { Type__Enum__Statistics_View } from '../../types/Type__Enum/Type__Enum__Statistics_View'
+import type { Enum__Month } from '../../types/Enum/Enum__Month'
+import type { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 
@@ -45,8 +45,8 @@ export default function Statistics__Select_View({
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const [ view, 		setView 		] = useState<Type__Enum__Statistics_View>('statistics_overall')
-	const [ view_month, setView_month 	] = useState<Type__Enum__Month>(1)
+	const [ view, 		setView 		] = useState<Enum__Statistics_View>('STATISTICS_OVERALL')
+	const [ view_month, setView_month 	] = useState<Enum__Month>(1)
 	const [ view_year, 	setView_year 	] = useState<number>(2026)
 
 	const mutate__user = useMutation({
@@ -54,9 +54,9 @@ export default function Statistics__Select_View({
 		onSuccess: (_, json) => {
 			query_client.setQueryData([ 'user' ], (prev: Type__User) => {
 				const tmp = { ...prev }
-				tmp.Statistics_View 		= json.Statistics_View || 'statistics_overall'
-				tmp.Statistics_View_Month 	= json.Statistics_View_Month || 1
-				tmp.Statistics_View_Year 	= json.Statistics_View_Year || 2026
+				tmp.Statistics__View 		= json.Statistics__View || 'STATISTICS_OVERALL'
+				tmp.Statistics__View_Month 	= json.Statistics__View_Month || 1
+				tmp.Statistics__View_Year 	= json.Statistics__View_Year || 2026
 				return tmp
 			})
 		}, 
@@ -73,9 +73,9 @@ export default function Statistics__Select_View({
 			query_client.setQueryData([ 'session', json.SessionID ], (prev: Type__Session) => {
 				if(!prev) return prev
 				const tmp = { ...prev }
-				tmp.Statistics_View 		= json.Statistics_View || 'statistics_overall'
-				tmp.Statistics_View_Month 	= json.Statistics_View_Month || 1
-				tmp.Statistics_View_Year 	= json.Statistics_View_Year || 2026
+				tmp.Statistics__View 		= json.Statistics__View || 'STATISTICS_OVERALL'
+				tmp.Statistics__View_Month 	= json.Statistics__View_Month || 1
+				tmp.Statistics__View_Year 	= json.Statistics__View_Year || 2026
 				return tmp
 			})
 		}, 
@@ -99,16 +99,16 @@ export default function Statistics__Select_View({
 			const tmp = isSession ? session : user
 			if(!tmp) return	
 	
-			setView(tmp.Statistics_View)
-			setView_month(tmp.Statistics_View_Month)
-			setView_year(tmp.Statistics_View_Year)
+			setView(tmp.Statistics__View)
+			setView_month(tmp.Statistics__View_Month)
+			setView_year(tmp.Statistics__View_Year)
 		}
 		init()
 	}, [ isSession, session, user ])
 
 	const sync_view = ( 
-		view: 		Type__Enum__Statistics_View, 
-		view_month:	Type__Enum__Month, 
+		view: 		Enum__Statistics_View, 
+		view_month:	Enum__Month, 
 		view_year:	number, 
 	) => {
 
@@ -116,9 +116,9 @@ export default function Statistics__Select_View({
 
 		const json = {
 			SessionID: session?.id || -1, 
-			Statistics_View: view, 
-			Statistics_View_Month: view_month, 
-			Statistics_View_Year: view_year, 
+			Statistics__View: view, 
+			Statistics__View_Month: view_month, 
+			Statistics__View_Year: view_year, 
 		}
 
 		if(isSession) {
@@ -147,17 +147,17 @@ export default function Statistics__Select_View({
 
 				<select
 					value={view}
-					onChange={({ target }) => sync_view(target.value as Type__Enum__Statistics_View, view_month, view_year)}
+					onChange={({ target }) => sync_view(target.value as Enum__Statistics_View, view_month, view_year)}
 				>
-					<option key={0} value='statistics_overall'>Gesamt</option>
-					<option key={1} value='statistics_year'>Jahr</option>
-					<option key={2} value='statistics_month'>Monat</option>
+					<option key={0} value='STATISTICS_OVERALL'>Gesamt</option>
+					<option key={1} value='STATISTICS_YEAR'>Jahr</option>
+					<option key={2} value='STATISTICS_MONTH'>Monat</option>
 				</select>
 
-				{view === 'statistics_month' && <>
+				{view === 'STATISTICS_MONTH' && <>
 					<select
 						value={view_month}
-						onChange={({ target }) => sync_view(view, +target.value as Type__Enum__Month, view_year)}
+						onChange={({ target }) => sync_view(view, +target.value as Enum__Month, view_year)}
 					>
 						{Type__List_Months.map((month, index_month) => <>
 							<option key={month} value={index_month + 1}>{month}</option>
@@ -165,7 +165,7 @@ export default function Statistics__Select_View({
 					</select>
 				</>}
 
-				{(view === 'statistics_year' || view === 'statistics_month') && <>
+				{(view === 'STATISTICS_YEAR' || view === 'STATISTICS_MONTH') && <>
 					<select
 						value={view_year}
 						onChange={({ target }) => sync_view(view, view_month, +target.value)}

@@ -139,9 +139,9 @@ export default function Analytics_Session() {
 		refetch()
 
 	}, [ // eslint-disable-line
-		session?.Statistics_View, 
-		session?.Statistics_View_Month, 
-		session?.Statistics_View_Year, 
+		session?.Statistics__View, 
+		session?.Statistics__View_Month, 
+		session?.Statistics__View_Year, 
 	])
 
 	const mutate__show_border = useMutation({
@@ -150,7 +150,7 @@ export default function Analytics_Session() {
 			setSession(prev => {
 				if(!prev) return prev
 				const tmp 					= { ...prev }
-				tmp.Statistics_Show_Border 	= Boolean(json.Statistics_Show_Border)
+				tmp.Statistics__Show_Border 	= Boolean(json.Statistics__Show_Border)
 				query_client.setQueryData([ 'session', prev.id ], tmp)
 				return tmp
 			})
@@ -169,7 +169,7 @@ export default function Analytics_Session() {
 		
 		mutate__show_border.mutate({
 			SessionID: 				session.id, 
-			Statistics_Show_Border: !session.Statistics_Show_Border, 
+			Statistics__Show_Border: !session.Statistics__Show_Border, 
 		})
 
 	}
@@ -230,7 +230,7 @@ export default function Analytics_Session() {
 					<ChartDoughnut
 						List_Players={list_players}
 						Total_Wins={total?.Total__Wins} 
-						IsBorderVisible={session?.Statistics_Show_Border}
+						IsBorderVisible={session?.Statistics__Show_Border}
 					/>
 
 
@@ -247,7 +247,7 @@ export default function Analytics_Session() {
 						{!mutate__show_border.isPending && <>
 							<input 
 								type='checkbox' 
-								checked={session?.Statistics_Show_Border || false} 
+								checked={session?.Statistics__Show_Border || false} 
 								onChange={sync__show_border}
 							/>
 						</>}
@@ -262,8 +262,8 @@ export default function Analytics_Session() {
 
 					
 					<Chart_Graph
-						labels={session?.Statistics_View === 'statistics_year' ? [ '0', ...Type__List_Months ] : total?.Data ? Object.keys(total?.Data) : []}
-						IsBorderVisible={Boolean(session?.Statistics_Show_Border)}
+						labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Type__List_Months ] : total?.Data ? Object.keys(total?.Data) : []}
+						IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
 						List_Players={list_players}
 						Data={total?.Data}
 					/>
@@ -297,7 +297,7 @@ export default function Analytics_Session() {
 						<span>Niedriste Punktzahlen:</span>
 
 						<Chart_Bar_Session
-							IsBorderVisible={session.Statistics_Show_Border}
+							IsBorderVisible={session.Statistics__Show_Border}
 							List_Players={list_players}
 							JSON={total.Scores__Lowest}
 						/>
@@ -311,7 +311,7 @@ export default function Analytics_Session() {
 						<span>Höchste Punktzahlen:</span>
 
 						<Chart_Bar_Session
-							IsBorderVisible={session.Statistics_Show_Border}
+							IsBorderVisible={session.Statistics__Show_Border}
 							List_Players={list_players}
 							JSON={total.Scores__Highest}
 						/>
@@ -325,7 +325,7 @@ export default function Analytics_Session() {
 						<span>⌀ Durschnittliche Punktzahlen:</span>
 
 						<Chart_Bar_Session
-							IsBorderVisible={session.Statistics_Show_Border}
+							IsBorderVisible={session.Statistics__Show_Border}
 							List_Players={list_players}
 							JSON={total.Scores__Average}
 						/>

@@ -38,7 +38,7 @@ export default function Registration_And_Login() {
 	const handle_error = useErrorHandling()
 
 	const { setError } = useContext(Context__Error)
-	const { NAME_REGEX, PASSWORD_REGEX } = useContext(Context__Regex)
+	const { NAME__REGEX, PASSWORD__REGEX } = useContext(Context__Regex)
 	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
     const [ name, 				setName				] = useState<string>('')
@@ -90,7 +90,7 @@ export default function Registration_And_Login() {
 
 	const registration = () => {
 		
-		if(!name || !NAME_REGEX.test(name) || !password || !PASSWORD_REGEX.test(password)) return setError('Bitte alles richtig ausfüllen.')
+		if(!name || !NAME__REGEX.test(name) || !password || !PASSWORD__REGEX.test(password)) return setError('Bitte alles richtig ausfüllen.')
 		if(password !== password_confirm) return setError('Passwörter stimmen nicht überein.')
 		setLoading(true)
 		setError('')
@@ -109,7 +109,7 @@ export default function Registration_And_Login() {
 
 			setAuth({ 
 				user: null, 
-				accessToken: data.accessToken 
+				access_token: data.access_token 
 			})
 			setName('')
 			setPassword('')
@@ -149,7 +149,7 @@ export default function Registration_And_Login() {
 
 			setAuth({ 
 				user: null, 
-				accessToken: data.accessToken 
+				access_token: data.access_token 
 			})
 			setName('')
 			setPassword('')

@@ -25,7 +25,7 @@ import { delete__session, get__sessions_list } from '../../api/session/session'
 import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
 import type { Type__Session } from '../../types/Type__Session'
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import type { Type__Enum__View_Sessions } from '../../types/Type__Enum/Type__Enum__View_Sessions'
+import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 
 
 
@@ -46,12 +46,12 @@ export default function Session__Select() {
 
 	interface option {
 		Text: 	string
-		Alias:	Type__Enum__View_Sessions
+		Alias:	Enum__View_Sessions
 	}
 	const list_orderOptions: Array<option> = [
-		{ Text: 'Zuletzt gespielt', 	Alias: 'Last_Played'	},
-		{ Text: 'Erstellt', 			Alias: 'Created'		},
-		{ Text: 'Name', 				Alias: 'Name'			},
+		{ Text: 'Zuletzt gespielt', 	Alias: 'LAST_PLAYED'	},
+		{ Text: 'Erstellt', 			Alias: 'CREATED'		},
+		{ Text: 'Name', 				Alias: 'NAME'			},
 	]
 
 
@@ -147,7 +147,7 @@ export default function Session__Select() {
 		}
 	})
 
-	function change_order(selected_option: Type__Enum__View_Sessions) {
+	function change_order(selected_option: Enum__View_Sessions) {
 
 		mutate__change_order.mutate({
 			View_Sessions: 		selected_option, 

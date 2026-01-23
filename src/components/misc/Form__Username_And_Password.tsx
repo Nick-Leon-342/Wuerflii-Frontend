@@ -52,21 +52,21 @@ export default function Form__Username_And_Password({
 	const {
 		requesting_regex, 
 
-		NAME_MIN_CHARACTER, 
-		NAME_MAX_CHARACTER, 
+		NAME__MIN_CHARACTER, 
+		NAME__MAX_CHARACTER, 
 
-		NAME_REGEX, 
-		NAME_REGEX_MINMAX, 
-		NAME_REGEX_LETTERFIRST, 
-		NAME_REGEX_ALLOWEDCHARS, 
+		NAME__REGEX, 
+		NAME__REGEX_MINMAX, 
+		NAME__REGEX_LETTERFIRST, 
+		NAME__REGEX_ALLOWEDCHARS, 
 
-		PASSWORD_MIN_CHARACTER, 
-		PASSWORD_MAX_CHARACTER, 
+		PASSWORD__MIN_CHARACTER, 
+		PASSWORD__MAX_CHARACTER, 
 
-		PASSWORD_REGEX, 
-		PASSWORD_REGEX_MINMAX, 
-		PASSWORD_REGEX_ALLOWEDCHARS, 
-		PASSWORD_REGEX_ALLOWEDSYMBOLS, 
+		PASSWORD__REGEX, 
+		PASSWORD__REGEX_MINMAX, 
+		PASSWORD__REGEX_ALLOWEDCHARS, 
+		PASSWORD__REGEX_ALLOWEDSYMBOLS, 
 	} = useContext(Context__Regex)
 
 
@@ -75,16 +75,16 @@ export default function Form__Username_And_Password({
 
 	useEffect(() => {
 		function check_if_name_popup_should_be_shown() {
-			setShow__popup_name(info__name && !requesting_regex && !NAME_REGEX?.test(name))
+			setShow__popup_name(info__name && !requesting_regex && !NAME__REGEX?.test(name))
 		}
 		check_if_name_popup_should_be_shown()
-	}, [ info__name, requesting_regex, NAME_REGEX, name ])
+	}, [ info__name, requesting_regex, NAME__REGEX, name ])
 	useEffect(() => {
 		function check_if_password_popup_should_be_shown() {
-			setShow__popup_password(info__password && !requesting_regex && !PASSWORD_REGEX?.test(password))
+			setShow__popup_password(info__password && !requesting_regex && !PASSWORD__REGEX?.test(password))
 		}
 		check_if_password_popup_should_be_shown()
-	}, [ info__password, requesting_regex, PASSWORD_REGEX, password ])
+	}, [ info__password, requesting_regex, PASSWORD__REGEX, password ])
 
 
 
@@ -107,8 +107,8 @@ export default function Form__Username_And_Password({
 				onFocus={() => setInfo__name(true)}
 				onBlur={() => setInfo__name(false)}
 
-				isValid={Boolean(name && NAME_REGEX && NAME_REGEX.test(name))}
-				isInvalid={Boolean(name && NAME_REGEX && !NAME_REGEX.test(name))}
+				isValid={Boolean(name && NAME__REGEX && NAME__REGEX.test(name))}
+				isInvalid={Boolean(name && NAME__REGEX && !NAME__REGEX.test(name))}
 			/>
 
 			<Popup__Dropdown
@@ -120,9 +120,9 @@ export default function Form__Username_And_Password({
 			>
 				<div className='form__username_and_password--popup'>
 
-					<ROW REGEX={NAME_REGEX_MINMAX} value={name} text={`${NAME_MIN_CHARACTER} - ${NAME_MAX_CHARACTER} Zeichen`}/>
-					<ROW REGEX={NAME_REGEX_LETTERFIRST} value={name} text={'Angefangen mit Buchstaben'}/>
-					<ROW REGEX={NAME_REGEX_ALLOWEDCHARS} value={name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
+					<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} Zeichen`}/>
+					<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={'Angefangen mit Buchstaben'}/>
+					<ROW REGEX={NAME__REGEX_ALLOWEDCHARS} value={name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
 
 				</div>
 			</Popup__Dropdown>
@@ -147,8 +147,8 @@ export default function Form__Username_And_Password({
 				onFocus={() => setInfo__password(true)}
 				onBlur={() => setInfo__password(false)}
 
-				isValid={Boolean(password && PASSWORD_REGEX && PASSWORD_REGEX.test(password))}
-				isInvalid={Boolean(password && PASSWORD_REGEX && !PASSWORD_REGEX.test(password))}
+				isValid={Boolean(password && PASSWORD__REGEX && PASSWORD__REGEX.test(password))}
+				isInvalid={Boolean(password && PASSWORD__REGEX && !PASSWORD__REGEX.test(password))}
 			/>
 
 			<Popup__Dropdown
@@ -159,9 +159,9 @@ export default function Form__Username_And_Password({
 			>
 				<div className='form__username_and_password--popup'>
 
-					<ROW REGEX={PASSWORD_REGEX_MINMAX} value={password} text={`${PASSWORD_MIN_CHARACTER} - ${PASSWORD_MAX_CHARACTER} Zeichen`}/>
-					<ROW REGEX={PASSWORD_REGEX_ALLOWEDSYMBOLS} value={password} text={'Zeichen: ! @ # $ % - _'}/>
-					<ROW REGEX={PASSWORD_REGEX_ALLOWEDCHARS} value={password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
+					<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} Zeichen`}/>
+					<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={'Zeichen: ! @ # $ % - _'}/>
+					<ROW REGEX={PASSWORD__REGEX_ALLOWEDCHARS} value={password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
 
 				</div>
 			</Popup__Dropdown>

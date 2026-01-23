@@ -367,10 +367,10 @@ export default function Session__Preview() {
 											return (
 												<td key={id}>
 													<span>
-														{session?.View === 'show_month' && (e.Wins__After_Month[id] || 0)}
-														{session?.View === 'show_year' && (e?.Wins__After_Year[id] || 0)}
-														{session?.View === 'show_custom_date' && (e?.Wins__After_SinceCustomDate[id] || 0)}
-														{session?.View === 'show_all' && (e?.Wins__After[id] || 0)}
+														{session?.View === 'SHOW__MONTH' && (e.Wins__After_Month[id] || 0)}
+														{session?.View === 'SHOW__YEAR' && (e?.Wins__After_Year[id] || 0)}
+														{session?.View === 'SHOW__CUSTOM_DATE' && (e?.Wins__After_SinceCustomDate[id] || 0)}
+														{session?.View === 'SHOW__ALL' && (e?.Wins__After[id] || 0)}
 													</span>
 												</td>
 											)
@@ -409,9 +409,9 @@ export default function Session__Preview() {
 										className='session__preview--list_element-date'
 									>
 										<span>
-											{session?.View === 'show_month' && `${day}.`}
-											{session?.View === 'show_year' && `${day}.${month}.`}
-											{(session?.View === 'show_custom_date' || session?.View === 'show_all') && `${day}.${month}.${year}`}
+											{session?.View === 'SHOW__MONTH' && `${day}.`}
+											{session?.View === 'SHOW__YEAR' && `${day}.${month}.`}
+											{(session?.View === 'SHOW__CUSTOM_DATE' || session?.View === 'SHOW__ALL') && `${day}.${month}.${year}`}
 										</span>
 									</li>
 								)
