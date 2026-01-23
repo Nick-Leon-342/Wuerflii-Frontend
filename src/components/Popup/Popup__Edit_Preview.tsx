@@ -16,7 +16,7 @@ import { patch__session } from '../../api/session/session'
 
 import type { Type__Session } from '../../types/Type__Session'
 import type { Enum__View } from '../../types/Enum/Enum__View'
-import type { Enum__Month } from '../../types/Enum/Enum__Month'
+import { List__Months, type Enum__Month } from '../../types/Enum/Enum__Month'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 
 
@@ -52,7 +52,7 @@ export default function Popup__Edit_Preview({
 	const handle_error = useErrorHandling()
 
 	const [ view,		setView			] = useState<Enum__View>('SHOW__ALL')
-	const [ view_month, setView_month	] = useState<Enum__Month>(1)
+	const [ view_month, setView_month	] = useState<Enum__Month>('JANUARY')
 	const [ view_year, 	setView_year	] = useState<number>(0)
 
 	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
@@ -77,9 +77,9 @@ export default function Popup__Edit_Preview({
 			setSession(prev => {
 				if(!prev) return prev
 				const tmp 		= { ...prev }
-				tmp.View 		= json.View || 'SHOW__ALL'
-				tmp.View__Month 	= json.View__Month || 1
-				tmp.View__Year 	= json.View__Year || 0
+				tmp.View 		= json.View			|| 'SHOW__ALL'
+				tmp.View__Month = json.View__Month	|| 'JANUARY'
+				tmp.View__Year 	= json.View__Year	|| 0
 				query_client.setQueryData([ 'session', session.id ], tmp)
 				return tmp
 			})
@@ -150,10 +150,10 @@ export default function Popup__Edit_Preview({
 
 						<select 
 							value={view_month}
-							onChange={({ target }) => update_view(view, +target.value as Enum__Month, view_year)}
+							onChange={({ target }) => update_view(view, target.value as Enum__Month, view_year)}
 						>
 							{list_months.map((month, index_month) => 
-								<option key={index_month} value={index_month + 1}>{month}</option>
+								<option key={index_month} value={List__Months[index_month]}>{month}</option>
 							)}
 						</select>
 					</div>
