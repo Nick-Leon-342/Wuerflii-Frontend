@@ -16,7 +16,7 @@ import { patch__session } from '../../api/session/session'
 
 import type { Type__User } from '../../types/Type__User'
 import type { Type__Session } from '../../types/Type__Session'
-import { List__Months, type Enum__Month } from '../../types/Enum/Enum__Month'
+import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Month'
 import { Type__List_Months } from '../../types/Type__List_Months'
 import type { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
@@ -160,7 +160,7 @@ export default function Statistics__Select_View({
 						onChange={({ target }) => sync_view(view, target.value as Enum__Month, view_year)}
 					>
 						{Type__List_Months.map((month, index_month) => <>
-							<option key={month} value={List__Months[index_month]}>{month}</option>
+							<option key={month} value={List__Months_Enum[index_month]}>{month}</option>
 						</>)}
 					</select>
 				</>}

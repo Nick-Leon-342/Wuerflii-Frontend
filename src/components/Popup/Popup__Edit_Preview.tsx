@@ -16,7 +16,7 @@ import { patch__session } from '../../api/session/session'
 
 import type { Type__Session } from '../../types/Type__Session'
 import type { Enum__View } from '../../types/Enum/Enum__View'
-import { List__Months, type Enum__Month } from '../../types/Enum/Enum__Month'
+import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Month'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 
 
@@ -153,7 +153,7 @@ export default function Popup__Edit_Preview({
 							onChange={({ target }) => update_view(view, target.value as Enum__Month, view_year)}
 						>
 							{list_months.map((month, index_month) => 
-								<option key={index_month} value={List__Months[index_month]}>{month}</option>
+								<option key={index_month} value={List__Months_Enum[index_month]}>{month}</option>
 							)}
 						</select>
 					</div>

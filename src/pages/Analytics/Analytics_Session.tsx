@@ -88,7 +88,7 @@ export default function Analytics_Session() {
 	}, [ tmp__session ])
 	
 
-	// ____________________ List_Players ____________________
+	// ____________________ List__Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
@@ -228,7 +228,7 @@ export default function Analytics_Session() {
 					{/* ____________________ Doughnut ____________________ */}
 
 					<ChartDoughnut
-						List_Players={list_players}
+						List__Players={list_players}
 						Total_Wins={total?.Total__Wins} 
 						IsBorderVisible={session?.Statistics__Show_Border}
 					/>
@@ -264,7 +264,7 @@ export default function Analytics_Session() {
 					<Chart_Graph
 						labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Type__List_Months ] : total?.Data ? Object.keys(total?.Data) : []}
 						IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
-						List_Players={list_players}
+						List__Players={list_players}
 						Data={total?.Data}
 					/>
 
@@ -298,7 +298,7 @@ export default function Analytics_Session() {
 
 						<Chart_Bar_Session
 							IsBorderVisible={session.Statistics__Show_Border}
-							List_Players={list_players}
+							List__Players={list_players}
 							JSON={total.Scores__Lowest}
 						/>
 
@@ -312,7 +312,7 @@ export default function Analytics_Session() {
 
 						<Chart_Bar_Session
 							IsBorderVisible={session.Statistics__Show_Border}
-							List_Players={list_players}
+							List__Players={list_players}
 							JSON={total.Scores__Highest}
 						/>
 						
@@ -326,7 +326,7 @@ export default function Analytics_Session() {
 
 						<Chart_Bar_Session
 							IsBorderVisible={session.Statistics__Show_Border}
-							List_Players={list_players}
+							List__Players={list_players}
 							JSON={total.Scores__Average}
 						/>
 

@@ -95,7 +95,7 @@ export default function Session__Select() {
 			// Cache all sessions and players to increase performance when selecting session
 			for(const session of tmp_list_sessions) {
 				query_client.setQueryData([ 'session', session.id ], session)
-				query_client.setQueryData([ 'session', session.id, 'players' ], session.List_Players)
+				query_client.setQueryData([ 'session', session.id, 'players' ], session.List__Players)
 			}
 		}
 		init()
@@ -108,9 +108,9 @@ export default function Session__Select() {
 	// __________________________________________________ Change List __________________________________________________
 
 	const mutate__show_session_date = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user?.Show_Session_Date }), 
+		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Date: !user?.Show__Session_Date }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user?.Show_Session_Date })
+			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Date: !user?.Show__Session_Date })
 		}, 
 		onError: err => {
 			handle_error({
@@ -120,9 +120,9 @@ export default function Session__Select() {
 	})
 
 	const mutate__show_session_names = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user?.Show_Session_Names }), 
+		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Names: !user?.Show__Session_Names }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user?.Show_Session_Names })
+			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Names: !user?.Show__Session_Names })
 		}, 
 		onError: err => {
 			handle_error({
@@ -150,8 +150,8 @@ export default function Session__Select() {
 	function change_order(selected_option: Enum__View_Sessions) {
 
 		mutate__change_order.mutate({
-			View_Sessions: 		selected_option, 
-			View_Sessions_Desc: selected_option === user?.View_Sessions ? !user?.View_Sessions_Desc : true
+			View__Sessions: 		selected_option, 
+			View__Sessions_Desc: selected_option === user?.View__Sessions ? !user?.View__Sessions_Desc : true
 		})
 
 	}
@@ -278,15 +278,15 @@ export default function Session__Select() {
 								onChange={({ target }) => !mutate__delete.isPending && checkbox_click(index_session, target.checked)} 
 							/>
 
-							{session.List_Players && <>
-								<Link to={`/session/${session.id}/${session.List_Players.length === 0 ? 'players' : 'preview'}`}>
+							{session.List__Players && <>
+								<Link to={`/session/${session.id}/${session.List__Players.length === 0 ? 'players' : 'preview'}`}>
 
 									<label className='names'>
-										{(user?.Show_Session_Names || session.List_Players.length === 0) && session.Name}
-										{!user?.Show_Session_Names && session.List_Players.length > 0 && session.List_Players.map(p => p.Name).join(' vs ')}
+										{(user?.Show__Session_Names || session.List__Players.length === 0) && session.Name}
+										{!user?.Show__Session_Names && session.List__Players.length > 0 && session.List__Players.map(p => p.Name).join(' vs ')}
 									</label>
 
-									{user?.Show_Session_Date && <label className='date'>{formatDate(session?.LastPlayed || new Date())}</label>}
+									{user?.Show__Session_Date && <label className='date'>{formatDate(session?.LastPlayed || new Date())}</label>}
 
 								</Link>
 							</>}
@@ -322,18 +322,18 @@ export default function Session__Select() {
 			
 			<div className='session__select--popup--settings--show'>
 				{mutate__show_session_names.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_names.isPending && <input type='checkbox' checked={user?.Show_Session_Names} onChange={() => mutate__show_session_names.mutate()}/>}
+				{!mutate__show_session_names.isPending && <input type='checkbox' checked={user?.Show__Session_Names} onChange={() => mutate__show_session_names.mutate()}/>}
 				<span>Partienamen anzeigen</span>
 			</div>
 			<div className='session__select--popup--settings--show'>
 				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_date.isPending && <input type='checkbox' checked={user?.Show_Session_Date} onChange={() => mutate__show_session_date.mutate()}/>}
+				{!mutate__show_session_date.isPending && <input type='checkbox' checked={user?.Show__Session_Date} onChange={() => mutate__show_session_date.mutate()}/>}
 				<span>Datum anzeigen</span>
 			</div>
 
 			{list_orderOptions.map(option => {
-				const cs = user?.View_Sessions === option.Alias
-				const desc = user?.View_Sessions_Desc
+				const cs = user?.View__Sessions === option.Alias
+				const desc = user?.View__Sessions_Desc
 
 				return (
 					<button 

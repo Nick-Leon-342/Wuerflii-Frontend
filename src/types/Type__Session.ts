@@ -31,5 +31,5 @@ export interface Type__Session {
 	Statistics__View_Month:			Enum__Month
 	Statistics__View_Year: 			number
 
-	List_Players?:					Array<Type__Client_To_Server__Player__POST>
+	List__Players?:					Array<Type__Client_To_Server__Player__POST>
 }

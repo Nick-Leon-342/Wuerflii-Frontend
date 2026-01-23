@@ -27,22 +27,22 @@ ChartJS.register(
 
 interface Props__Chart_Bar {
 	IsBorderVisible:	boolean
-	List_Players:		Array<Type__Server_Reponse__Player__Get>
+	List__Players:		Array<Type__Server_Reponse__Player__Get>
 	JSON:				Record<Type__Server_Reponse__Player__Get['id'], number>
 }
 
 export default function Chart_Bar({
 	IsBorderVisible, 
-	List_Players, 
+	List__Players, 
 	JSON, 
 }: Props__Chart_Bar) {
 
-	if(!List_Players) return <></>
+	if(!List__Players) return <></>
 
 	return <>
 		<Bar 
 			data={{
-				datasets: List_Players.map(player => ({
+				datasets: List__Players.map(player => ({
 					label: player.Name, 
 					data: [JSON[player.id]], 
 					backgroundColor: player.Color + '70',

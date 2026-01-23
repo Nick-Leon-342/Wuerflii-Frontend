@@ -17,24 +17,24 @@ ChartJS.register(
 
 interface Props__Chart_Doughnut {
 	IsBorderVisible:	boolean
-	List_Players:		Array<Type__Server_Reponse__Player__Get>
+	List__Players:		Array<Type__Server_Reponse__Player__Get>
 	Total_Wins:			Record<Type__Server_Reponse__Player__Get['id'], number>
 }
 
 export default function Chart_Doughnut({ 
 	IsBorderVisible, 
-	List_Players, 
+	List__Players, 
 	Total_Wins, 
 }: Props__Chart_Doughnut) {
 
 	return <>
 		<Doughnut 
 			data={{
-				labels: List_Players?.map(player => player.Name), 
+				labels: List__Players?.map(player => player.Name), 
 				datasets: [{
-					data: List_Players?.map(player => (Total_Wins && Total_Wins[player.id]) || 0), 
-					borderColor: IsBorderVisible ? 'black' : List_Players?.map(player => player.Color), 
-					backgroundColor: List_Players?.map(player => player.Color + '70'),
+					data: List__Players?.map(player => (Total_Wins && Total_Wins[player.id]) || 0), 
+					borderColor: IsBorderVisible ? 'black' : List__Players?.map(player => player.Color), 
+					backgroundColor: List__Players?.map(player => player.Color + '70'),
 					borderWidth: 2,
 				}], 
 			}}

@@ -90,7 +90,7 @@ export default function Game() {
 	}
 	
 
-	// ____________________ List_Players ____________________
+	// ____________________ List__Players ____________________
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 

@@ -55,7 +55,7 @@ export default function EndScreen() {
 	}
 
 
-	// ____________________ List_Players ____________________
+	// ____________________ List__Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', session_id, 'players' ], 

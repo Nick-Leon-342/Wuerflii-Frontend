@@ -9,11 +9,11 @@ export interface Type__User {
 	Name:					string
 	DarkMode:				boolean
 
-	Show_Session_Names:		boolean
-	Show_Session_Date:		boolean
+	Show__Session_Names:		boolean
+	Show__Session_Date:		boolean
 	
-	View_Sessions:			Enum__View_Sessions
-	View_Sessions_Desc:		boolean
+	View__Sessions:			Enum__View_Sessions
+	View__Sessions_Desc:		boolean
 
 	Statistics__View:		Enum__Statistics_View
 	Statistics__View_Month:	Enum__Month
