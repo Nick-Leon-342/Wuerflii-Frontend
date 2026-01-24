@@ -285,6 +285,7 @@ export default function Game() {
 							{list_players?.map((player, index_player) => (
 								<li 
 									className='button_scale_0 box' 
+									style={{ backgroundColor: player.Color }}
 									key={index_player} 
 									tabIndex={0}
 									onClick={() => setSurrender_winner(player)}

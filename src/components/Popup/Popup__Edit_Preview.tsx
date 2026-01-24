@@ -133,7 +133,7 @@ export default function Popup__Edit_Preview({
 							value={view_year}
 							onChange={({ target }) => update_view(view, view_month, +target.value)}
 						>
-							{session?.View_List_Years.map((y, i) => 
+							{session?.View__List_Years.map((y, i) => 
 								<option key={i} value={y}>{y}</option>
 							)}
 						</select>

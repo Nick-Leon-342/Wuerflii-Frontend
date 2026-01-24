@@ -14,7 +14,7 @@ export interface Type__Session {
 
 	Checkbox_Checked_To_Delete?:	boolean
 
-	View_List_Years:				Array<number>
+	View__List_Years:				Array<number>
 	CurrentGameStart:				Date | null
 	LastPlayed:						Date | null
 
