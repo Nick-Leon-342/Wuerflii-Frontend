@@ -2,31 +2,31 @@
 
 import './scss/Analytics_Session.scss'
 
-import { useContext, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import LoaderBox from '../../components/Loader/Loader_Box'
-import Chart_Graph from '../../components/Statistics/Chart_Graph'
-import Popup__Options from '../../components/Popup/Popup__Options'
-import Previous from '../../components/NavigationElements/Previous'
-import ChartDoughnut from '../../components/Statistics/Chart_Doughnut'
-import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
-import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
+import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
+import Chart_Doughnut from '../../components/Statistics/Chart_Doughnut'
+import Previous from '../../components/NavigationElements/Previous'
+import Popup__Options from '../../components/Popup/Popup__Options'
+import Chart_Graph from '../../components/Statistics/Chart_Graph'
+import LoaderBox from '../../components/Loader/Loader_Box'
 
-import { get__user } from '../../api/user'
+import { get__session_players } from '../../api/session/session_players'
 import { get__session, patch__session } from '../../api/session/session'
 import { get__analytics_session } from '../../api/analytics'
-import { get__session_players } from '../../api/session/session_players'
+import { get__user } from '../../api/user'
 
-import type { Type__Session } from '../../types/Type__Session'
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Type__Server_Response__Analytics_Session__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
+import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import { Type__List_Months } from '../../types/Type__List_Months'
+import type { Type__Session } from '../../types/Type__Session'
 
 
 
@@ -201,140 +201,142 @@ export default function Analytics_Session() {
 
 
 
-		<div className='analytics_session'>
+		<div className='analytics_session--background'>
+			<div className='analytics_session'>
 
-			<Previous onClick={() => navigate(-1)}/>
-
-
-
-
-			{/* __________________________________________________ Charts __________________________________________________ */}
-			{list_players && session && total?.Data && <>
-				<div className='analytics_session_charts box'>
-
-
-
-					{/* ____________________ Select ____________________ */}
-
-					<Statistics__Select_View
-						list__years={list__years}
-						user={user}
-						session={session}
-						isSession={true}
-					/>
-
-
-
-					{/* ____________________ Doughnut ____________________ */}
-
-					<ChartDoughnut
-						List__Players={list_players}
-						Total_Wins={total?.Total__Wins} 
-						IsBorderVisible={session?.Statistics__Show_Border}
-					/>
-
-
-
-					{/* ____________________ Show border ____________________ */}
-
-					<div className='analytics_session_show_border'>
-						{mutate__show_border.isPending && <>
-							<LoaderBox
-								dark={true}
-								className='analytics_session_show_border-loader'
-							/>
-						</>}
-						{!mutate__show_border.isPending && <>
-							<input 
-								type='checkbox' 
-								checked={session?.Statistics__Show_Border || false} 
-								onChange={sync__show_border}
-							/>
-						</>}
-						<span>Umrandung anzeigen</span>
-					</div>
-
-
-
-					{/* ____________________ Graph ____________________ */}
-
-					<h2>Verlauf</h2>
-
-					
-					<Chart_Graph
-						labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Type__List_Months ] : total?.Data ? Object.keys(total?.Data) : []}
-						IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
-						List__Players={list_players}
-						Data={total?.Data}
-					/>
-
-				</div>
+				<Previous onClick={() => navigate(-1)}/>
 
 
 
 
-
-				{/* __________________________________________________ More statistics __________________________________________________ */}
-
-				<div className='analytics_session_more-statistics box'>
-					
-					<h2>Mehr Statistiken</h2>
-
-					<div className='statistic'>
-						<span>Spiele gespielt</span>
-						<span>{total.Total__Games_Played}</span>
-					</div>
-
-					<div className='statistic'>
-						<span>Davon unentschieden</span>
-						<span>{total.Total__Draws}</span>
-					</div>
+				{/* __________________________________________________ Charts __________________________________________________ */}
+				{list_players && session && total?.Data && <>
+					<div className='analytics_session--charts box'>
 
 
 
-					<div className='chart-container'>
+						{/* ____________________ Select ____________________ */}
 
-						<span>Niedriste Punktzahlen:</span>
-
-						<Chart_Bar_Session
-							IsBorderVisible={session.Statistics__Show_Border}
-							List__Players={list_players}
-							JSON={total.Scores__Lowest}
+						<Statistics__Select_View
+							list__years={list__years}
+							session={session}
+							isSession={true}
+							user={user}
 						/>
 
-					</div>
 
 
+						{/* ____________________ Doughnut ____________________ */}
 
-					<div className='chart-container'>
-
-						<span>Höchste Punktzahlen:</span>
-
-						<Chart_Bar_Session
-							IsBorderVisible={session.Statistics__Show_Border}
+						<Chart_Doughnut
 							List__Players={list_players}
-							JSON={total.Scores__Highest}
+							Total_Wins={total?.Total__Wins} 
+							IsBorderVisible={session?.Statistics__Show_Border}
 						/>
+
+
+
+						{/* ____________________ Show border ____________________ */}
+
+						<div className='analytics_session--show_border'>
+							{mutate__show_border.isPending && <>
+								<LoaderBox
+									dark={true}
+									className='analytics_session--show_border--loader'
+								/>
+							</>}
+							{!mutate__show_border.isPending && <>
+								<input 
+									type='checkbox' 
+									checked={session?.Statistics__Show_Border || false} 
+									onChange={sync__show_border}
+								/>
+							</>}
+							<span>Umrandung anzeigen</span>
+						</div>
+
+
+
+						{/* ____________________ Graph ____________________ */}
+
+						<h2>Verlauf</h2>
+
 						
-					</div>
-
-
-
-					<div className='chart-container'>
-
-						<span>⌀ Durschnittliche Punktzahlen:</span>
-
-						<Chart_Bar_Session
-							IsBorderVisible={session.Statistics__Show_Border}
+						<Chart_Graph
+							labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Type__List_Months ] : total?.Data ? Object.keys(total?.Data) : []}
+							IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
 							List__Players={list_players}
-							JSON={total.Scores__Average}
+							Data={total?.Data}
 						/>
 
 					</div>
 
-				</div>
-			</>}
 
+
+
+
+					{/* __________________________________________________ More statistics __________________________________________________ */}
+
+					<div className='analytics_session--more_statistics box'>
+						
+						<h2>Mehr Statistiken</h2>
+
+						<div className='analytics_session--more_statistics--statistic'>
+							<span>Spiele gespielt</span>
+							<span>{total.Total__Games_Played}</span>
+						</div>
+
+						<div className='analytics_session--more_statistics--statistic'>
+							<span>Davon unentschieden</span>
+							<span>{total.Total__Draws}</span>
+						</div>
+
+
+
+						<div className='analytics_session--more_statistics--chart_container'>
+
+							<span>Niedriste Punktzahlen:</span>
+
+							<Chart_Bar_Session
+								IsBorderVisible={session.Statistics__Show_Border}
+								List__Players={list_players}
+								JSON={total.Scores__Lowest}
+							/>
+
+						</div>
+
+
+
+						<div className='analytics_session--more_statistics--chart_container'>
+
+							<span>Höchste Punktzahlen:</span>
+
+							<Chart_Bar_Session
+								IsBorderVisible={session.Statistics__Show_Border}
+								List__Players={list_players}
+								JSON={total.Scores__Highest}
+							/>
+							
+						</div>
+
+
+
+						<div className='analytics_session--more_statistics--chart_container'>
+
+							<span>⌀ Durschnittliche Punktzahlen:</span>
+
+							<Chart_Bar_Session
+								IsBorderVisible={session.Statistics__Show_Border}
+								List__Players={list_players}
+								JSON={total.Scores__Average}
+							/>
+
+						</div>
+
+					</div>
+				</>}
+
+			</div>
 		</div>
 	</>
 }

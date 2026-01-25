@@ -115,10 +115,10 @@ export default function Statistics__Select_View({
 		if(isSession && !session) return
 
 		const json = {
-			SessionID: session?.id || -1, 
-			Statistics__View: view, 
+			SessionID: 				session?.id || -1, 
+			Statistics__View: 		view, 
 			Statistics__View_Month: view_month, 
-			Statistics__View_Year: view_year, 
+			Statistics__View_Year: 	view_year, 
 		}
 
 		if(isSession) {

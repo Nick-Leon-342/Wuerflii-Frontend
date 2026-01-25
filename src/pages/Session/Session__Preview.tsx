@@ -181,7 +181,7 @@ export default function Session__Preview() {
 			setSession(prev => {
 				if(!prev) return prev
 				const tmp = { ...prev }
-				tmp.View_CustomDate = json.View_CustomDate
+				tmp.View__Custom_Date = json.View__Custom_Date
 				query_client.setQueryData([ 'session', session?.id ], tmp)
 				return tmp
 			})
@@ -201,7 +201,7 @@ export default function Session__Preview() {
 	const save_customDate = () => {
 
 		mutate__custom_date.mutate({ 
-			View_CustomDate: 	view_customDate, 
+			View__Custom_Date: 	view_customDate, 
 			SessionID: 			session?.id || -1, 
 		})
 

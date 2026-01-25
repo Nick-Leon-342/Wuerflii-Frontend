@@ -46,7 +46,7 @@ export default function Chart_Bar({
 					label: player.Name, 
 					data: [JSON[player.id]], 
 					backgroundColor: player.Color + '70',
-					borderColor: IsBorderVisible ? 'black' : player.Color,
+					borderColor: IsBorderVisible ? 'lightgray' : player.Color,
 					borderWidth: 2,
 				}))
 			}}

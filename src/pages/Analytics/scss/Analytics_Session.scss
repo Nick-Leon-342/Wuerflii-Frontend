@@ -6,22 +6,16 @@
 	width: 90vw;
 	max-width: 1000px;
 	gap: var(--padding);
-	padding-bottom: var(--padding);
+	padding: var(--padding) 0;
 
 
 
-	.analytics_session-loader {
-		display: grid;
-		place-content: center;
-	}
-
-
-
-	.analytics_session_charts {
+	.analytics_session--charts {
 		font-size: 20px;
+		padding: 50px;
 		gap: 10px;
 	
-		.analytics_session_show_border {
+		.analytics_session--show_border {
 			display: flex;
 			flex-direction: row;
 			align-items: center;
@@ -29,7 +23,7 @@
 			gap: 10px;
 			margin-bottom: 20px;
 	
-			.analytics_session_show_border-loader {
+			.analytics_session--show_border--loader {
 				width: 20px;
 				height: 20px;
 				border-radius: 2px;
@@ -44,20 +38,33 @@
 
 
 
-	.analytics_session_more-statistics {
+	.analytics_session--more_statistics {
 		font-size: 20px;
+		padding: 50px;
 		gap: 10px;
 
-		.statistic {
+		.analytics_session--more_statistics--statistic {
 			display: flex;
 			flex-direction: row;
 			justify-content: space-between;
 			max-width: 500px;
 		}
 
-		.chart-container {
+		.analytics_session--more_statistics--chart_container {
 			margin-top: 20px;
 			font-weight: 600;
 		}
 	}
+}
+
+
+
+
+
+.analytics_session--background {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	// background-color: var(--bg--dark);
 }

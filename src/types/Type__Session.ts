@@ -24,7 +24,7 @@ export interface Type__Session {
 	View: 							Enum__View
 	View__Month: 					Enum__Month
 	View__Year: 						number
-	View_CustomDate:				Date
+	View__Custom_Date:				Date
 
 	Statistics__Show_Border: 		boolean
 	Statistics__View: 				Enum__Statistics_View

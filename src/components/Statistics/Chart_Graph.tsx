@@ -52,13 +52,13 @@ export default function Chart_Graph({
 		}
 
 		const luminance = 0.299 * r + 0.587 * g + 0.114 * b
-		return luminance > 230 ? 'rgb(100, 100, 100)' : hex
+		return luminance > 230 ? 'lightgray' : hex
 
 	}
 
 	useEffect(() => {
 		function init() {
-			console.log(Data)
+			
 			if(!List__Players || !Data) return
 	
 			const tmp_values = []
