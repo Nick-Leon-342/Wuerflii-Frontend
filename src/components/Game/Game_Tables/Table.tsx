@@ -244,6 +244,8 @@ const Input_Element = ({
 
 	useEffect(() => { setId(index_player + '.' + index_row + '.' + column) }, [ index_player, index_row, column ])
 
+	useEffect(() => { init_value() }, [ list_players ]) // eslint-disable-line
+
 	useEffect(() => {
 		if(!session || !list__table_columns || !list__table_columns[index_player].List__Table_Columns[column]) return
 		init_value()

@@ -186,6 +186,7 @@ export default function Session__Preview() {
 				return tmp
 			})
 			setShow_customDate(false)
+			refetch()
 		}, 
 		onError: err => {
 			handle_error({
