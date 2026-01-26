@@ -123,6 +123,22 @@ export default function Popup__Edit_Preview({
 
 			<div className='popup__edit_preview--select'>
 
+				{/* __________________________________________________ View __________________________________________________ */}
+
+				<div className='popup__edit_preview--select_container view'>
+					<select 
+						value={view}
+						onChange={({ target }) => update_view(target.value as Enum__View, view_month, view_year)}
+					>
+						<option key={0} value='SHOW__ALL'>Gesamtansicht</option>
+						<option key={1} value='SHOW__YEAR'>Jahresansicht</option>
+						<option key={2} value='SHOW__MONTH'>Monatsansicht</option>
+						<option key={3} value='SHOW__CUSTOM_DATE'>Benutzerdefiniert</option>
+					</select>
+				</div>
+
+
+
 				{/* __________________________________________________ Year __________________________________________________ */}
 
 				{(view === 'SHOW__MONTH' || view === 'SHOW__YEAR') && <>
@@ -141,7 +157,7 @@ export default function Popup__Edit_Preview({
 				</>}
 
 
-				
+
 				{/* __________________________________________________ Month __________________________________________________ */}
 
 				{view === 'SHOW__MONTH' && <>
@@ -175,22 +191,6 @@ export default function Popup__Edit_Preview({
 						</button>
 					</div>
 				</>}
-
-
-
-				{/* __________________________________________________ View __________________________________________________ */}
-
-				<div className='popup__edit_preview--select_container view'>
-					<select 
-						value={view}
-						onChange={({ target }) => update_view(target.value as Enum__View, view_month, view_year)}
-					>
-						<option key={0} value='SHOW__ALL'>Gesamtansicht</option>
-						<option key={1} value='SHOW__YEAR'>Jahresansicht</option>
-						<option key={2} value='SHOW__MONTH'>Monatsansicht</option>
-						<option key={3} value='SHOW__CUSTOM_DATE'>Benutzerdefiniert</option>
-					</select>
-				</div>
 
 			</div>
 		</Popup__Dropdown>

@@ -39,6 +39,8 @@ export default function Session__Select() {
 	const handle_error = useErrorHandling()
 
 	const ref = useRef<HTMLButtonElement>(null)
+	const ref___show__session_date = useRef<HTMLInputElement>(null)
+	const ref___show__session_names = useRef<HTMLInputElement>(null)
 
 	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
 
@@ -322,13 +324,28 @@ export default function Session__Select() {
 			
 			<div className='session__select--popup--settings--show'>
 				{mutate__show_session_names.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_names.isPending && <input type='checkbox' checked={user?.Show__Session_Names} onChange={() => mutate__show_session_names.mutate()}/>}
-				<span>Partienamen anzeigen</span>
+				{!mutate__show_session_names.isPending && <>
+					<input 
+						onChange={() => mutate__show_session_names.mutate()}
+						checked={user?.Show__Session_Names} 
+						ref={ref___show__session_names}
+						type='checkbox' 
+
+					/>
+				</>}
+				<span onClick={() => ref___show__session_names.current?.click()}>Partienamen anzeigen</span>
 			</div>
 			<div className='session__select--popup--settings--show'>
 				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_date.isPending && <input type='checkbox' checked={user?.Show__Session_Date} onChange={() => mutate__show_session_date.mutate()}/>}
-				<span>Datum anzeigen</span>
+				{!mutate__show_session_date.isPending && <>
+					<input 
+						onChange={() => mutate__show_session_date.mutate()}
+						checked={user?.Show__Session_Date} 
+						ref={ref___show__session_date}
+						type='checkbox' 
+					/>
+				</>}
+				<span onClick={() => ref___show__session_date.current?.click()}>Datum anzeigen</span>
 			</div>
 
 			{list_orderOptions.map(option => {
