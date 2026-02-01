@@ -117,12 +117,17 @@ export default function Registration_And_Login() {
 			navigate('/session', { replace: true })
 
 
-		}).catch((err) => {
+		}).catch((err: AxiosError) => {
 
 			handle_error({
 				err, 
 				handle_409: () => {
-					setError('Der Benutzername ist vergeben!')
+					console.log(err)
+					if(err.response?.data === 'Username already taken.') {
+						setError('Der Benutzername ist vergeben!')
+					} else if(err.response?.data === 'User registration is disabled.') {
+						setError('Registrierungen wurden abgeschaltet.')
+					}
 				}
 			})
 
