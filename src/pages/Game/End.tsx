@@ -180,7 +180,7 @@ export default function EndScreen() {
 
 
 			<Link 
-				to='/'
+				to={`/session/${session_id}/preview`}
 				className='button' 
 			>Ok</Link>
 
