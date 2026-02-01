@@ -244,6 +244,8 @@ const Input_Element = ({
 
 	useEffect(() => { setId(index_player + '.' + index_row + '.' + column) }, [ index_player, index_row, column ])
 
+	useEffect(() => { init_value() }, [ list_players ]) // eslint-disable-line
+
 	useEffect(() => {
 		if(!session || !list__table_columns || !list__table_columns[index_player].List__Table_Columns[column]) return
 		init_value()
@@ -261,7 +263,7 @@ const Input_Element = ({
 			</div>
 		</>}
 
-		{!mutate__table_columns.isPending && session?.InputType === 'type' && <>
+		{!mutate__table_columns.isPending && session?.Input_Type === 'TYPE' && <>
 			<input 
 				tabIndex={0}
 				onBlur={onBlur}
@@ -270,7 +272,7 @@ const Input_Element = ({
 			/>
 		</>}
 
-		{!mutate__table_columns.isPending && session?.InputType === 'select' && <>
+		{!mutate__table_columns.isPending && session?.Input_Type === 'SELECT' && <>
 			<select 
 				tabIndex={0}
 				className={`${isIOS() ? 'isios' : ''}`}
@@ -287,7 +289,7 @@ const Input_Element = ({
 			</select>
 		</>}
 
-		{!mutate__table_columns.isPending && session?.InputType === 'select_and_type' && <>
+		{!mutate__table_columns.isPending && session?.Input_Type === 'SELECT_AND_TYPE' && <>
 			<input 
 				list={id} 
 				tabIndex={0}

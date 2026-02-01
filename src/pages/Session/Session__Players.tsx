@@ -80,7 +80,7 @@ export default function Session__Players() {
 	}
 
 
-	// ____________________ List_Players ____________________
+	// ____________________ List__Players ____________________
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
@@ -184,7 +184,7 @@ export default function Session__Players() {
 
 		const json: Type__Client_To_Server__Session_Players__POST_And_PATCH = { 
 			SessionID:		+(session_id || -1), 
-			List_Players:	list_players, 
+			List__Players:	list_players, 
 		}
 
 		if(isInit) {

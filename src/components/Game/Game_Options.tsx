@@ -18,7 +18,7 @@ import Person_Settings from '../../svg/Person_Settings.svg?react'
 import { patch__session } from '../../api/session/session'
 import type { Type__Session } from '../../types/Type__Session'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import type { Type__Enum__Input_Type } from '../../types/Type__Enum/Type__Enum__Input_Type'
+import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 
 
 
@@ -61,7 +61,7 @@ export default function Game_Options({
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
 				if(!prev) return prev
 				const tmp = { ...prev }
-				tmp.InputType = json.InputType || 'select'
+				tmp.Input_Type = json.Input_Type || 'SELECT'
 				return tmp
 			})
 		}
@@ -71,7 +71,7 @@ export default function Game_Options({
 
 		const json = {
 			SessionID: session.id, 
-			InputType: event.target.value as Type__Enum__Input_Type
+			Input_Type: event.target.value as Enum__Input_Type
 		}
 		mutate__input_type.mutate(json)
 
@@ -86,7 +86,7 @@ export default function Game_Options({
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
 				if(!prev) return prev
 				const tmp = { ...prev }
-				tmp.Scores_Visible = Boolean(json.Scores_Visible)
+				tmp.Show_Scores = Boolean(json.Show_Scores)
 				return tmp
 			})
 		}
@@ -96,7 +96,7 @@ export default function Game_Options({
 
 		const json = {
 			SessionID: session.id, 
-			Scores_Visible: event.target.checked
+			Show_Scores: event.target.checked
 		}
 		mutate__show_scores.mutate(json)
 
@@ -137,7 +137,7 @@ export default function Game_Options({
 		>
 			<div className='game_options'>
 
-				{/* __________________________________________________ InputType __________________________________________________ */}
+				{/* __________________________________________________ Input_Type __________________________________________________ */}
 
 				<section>
 					<label>Eingabetyp</label>
@@ -146,19 +146,19 @@ export default function Game_Options({
 
 					{!mutate__input_type.isPending && <>
 						<select
-							value={session?.InputType}
+							value={session?.Input_Type}
 							onChange={change_inputType}
 						>
-							<option value='select' key='select'>Auswahl</option>
-							<option value='select_and_type' key='select_and_type'>Auswahl und Eingabe</option>
-							<option value='type' key='type'>Eingabe</option>
+							<option value='SELECT' key='SELECT'>Auswahl</option>
+							<option value='SELECT_AND_TYPE' key='SELECT_AND_TYPE'>Auswahl und Eingabe</option>
+							<option value='TYPE' key='TYPE'>Eingabe</option>
 						</select>
 					</>}
 				</section>
 
 
 
-				{/* __________________________________________________ Scores_Visible __________________________________________________ */}
+				{/* __________________________________________________ Show_Scores __________________________________________________ */}
 
 				<section>
 					<label>Summe anzeigen</label>
@@ -168,7 +168,7 @@ export default function Game_Options({
 					{!mutate__show_scores.isPending && <>
 						<input
 							type='checkbox'
-							checked={session?.Scores_Visible}
+							checked={session?.Show_Scores}
 							onChange={change__scores_visible}
 						/>
 					</>}

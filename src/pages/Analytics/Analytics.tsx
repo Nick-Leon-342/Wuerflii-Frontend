@@ -84,9 +84,9 @@ export default function Analytics() {
 
 		// eslint-disable-next-line
 	}, [
-		user?.Statistics_View, 
-		user?.Statistics_View_Month, 
-		user?.Statistics_View_Year, 
+		user?.Statistics__View, 
+		user?.Statistics__View_Month, 
+		user?.Statistics__View_Year, 
 	])
 
 	useEffect(() => { setLoading__universal_loader(isLoading__user || isLoading__analytics) }, [ isLoading__user, isLoading__analytics ])
@@ -121,7 +121,7 @@ export default function Analytics() {
 
 			{total && <>
 				<Chart_Bar
-					labels={user?.Statistics_View === 'statistics_year' ? Type__List_Months : total?.Data ? Object.keys(total?.Data) : []}
+					labels={user?.Statistics__View === 'STATISTICS_YEAR' ? Type__List_Months : total?.Data ? Object.keys(total?.Data) : []}
 					data={total.Data}
 				/>
 			</>}
@@ -130,7 +130,7 @@ export default function Analytics() {
 
 			<div className='analytics--more_statistics box'>
 				
-				{user?.Statistics_View === 'statistics_overall' && <>
+				{user?.Statistics__View === 'STATISTICS_OVERALL' && <>
 					<div>
 						<span>Anzahl unterschiedlicher Partien:</span>
 						<span>{total?.Total__Sessions}</span>

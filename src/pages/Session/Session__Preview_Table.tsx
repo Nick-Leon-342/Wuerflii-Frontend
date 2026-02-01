@@ -68,7 +68,7 @@ export default function Session__Preview_Table() {
 	}
 
 
-	// ____________________ List_Players ____________________
+	// ____________________ List__Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 

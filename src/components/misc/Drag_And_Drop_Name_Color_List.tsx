@@ -76,7 +76,7 @@ export default function Drag_And_Drop_Name_Color_List({
 						{list_edit_players?.map((p, index) => (
 							<Draggable 
 								key={p.id}
-								draggableId={'Test' + p.id}
+								draggableId={'draggable_' + p.id}
 								index={index}
 							>
 								{(provided, snapshot) => (

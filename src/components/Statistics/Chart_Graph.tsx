@@ -16,14 +16,14 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 interface Props__Chart_Graph {
 	IsBorderVisible:	boolean
-	List_Players:		Array<Type__Server_Reponse__Player__Get>
+	List__Players:		Array<Type__Server_Reponse__Player__Get>
 	labels:				Array<string>
 	Data:				Record<string, Type__Server_Response__Analytics_Session__GET__Data>
 }
 
 export default function Chart_Graph({
 	IsBorderVisible, 
-	List_Players, 
+	List__Players, 
 	labels, 
 	Data, 
 }: Props__Chart_Graph) {
@@ -52,21 +52,21 @@ export default function Chart_Graph({
 		}
 
 		const luminance = 0.299 * r + 0.587 * g + 0.114 * b
-		return luminance > 230 ? 'rgb(100, 100, 100)' : hex
+		return luminance > 230 ? 'lightgray' : hex
 
 	}
 
 	useEffect(() => {
 		function init() {
-			console.log(Data)
-			if(!List_Players || !Data) return
+			
+			if(!List__Players || !Data) return
 	
 			const tmp_values = []
 			const incremental_values: Record<Type__Server_Reponse__Player__Get['id'], number> = {}
-			for(const player of List_Players) incremental_values[player.id] = 0
+			for(const player of List__Players) incremental_values[player.id] = 0
 	
 			for(const key of Object.keys(Data)) {
-				for(const player of List_Players) {
+				for(const player of List__Players) {
 					const id = player.id
 					incremental_values[id] = incremental_values[id] + (Data[key].Wins[id] || 0)
 				}
@@ -76,7 +76,7 @@ export default function Chart_Graph({
 			setValues(tmp_values)
 		}
 		init()
-	}, [ List_Players, Data ])
+	}, [ List__Players, Data ])
 
 
 
@@ -87,7 +87,7 @@ export default function Chart_Graph({
 		<Line
 			data={{
 				labels, 
-				datasets: List_Players?.map(player => ({
+				datasets: List__Players?.map(player => ({
 					backgroundColor: IsBorderVisible ? adjustColor(player.Color) : player.Color, 
 					borderColor: IsBorderVisible ? adjustColor(player.Color) : player.Color, 
 					data: values?.map(value => value[player.id]), 
