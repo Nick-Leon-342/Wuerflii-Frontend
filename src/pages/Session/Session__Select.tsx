@@ -25,7 +25,7 @@ import { delete__session, get__sessions_list } from '../../api/session/session'
 import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
 import type { Type__Session } from '../../types/Type__Session'
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import type { Type__Enum__View_Sessions } from '../../types/Type__Enum/Type__Enum__View_Sessions'
+import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 
 
 
@@ -39,6 +39,8 @@ export default function Session__Select() {
 	const handle_error = useErrorHandling()
 
 	const ref = useRef<HTMLButtonElement>(null)
+	const ref___show__session_date = useRef<HTMLInputElement>(null)
+	const ref___show__session_names = useRef<HTMLInputElement>(null)
 
 	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
 
@@ -46,12 +48,12 @@ export default function Session__Select() {
 
 	interface option {
 		Text: 	string
-		Alias:	Type__Enum__View_Sessions
+		Alias:	Enum__View_Sessions
 	}
 	const list_orderOptions: Array<option> = [
-		{ Text: 'Zuletzt gespielt', 	Alias: 'Last_Played'	},
-		{ Text: 'Erstellt', 			Alias: 'Created'		},
-		{ Text: 'Name', 				Alias: 'Name'			},
+		{ Text: 'Zuletzt gespielt', 	Alias: 'LAST_PLAYED'	},
+		{ Text: 'Erstellt', 			Alias: 'CREATED'		},
+		{ Text: 'Name', 				Alias: 'NAME'			},
 	]
 
 
@@ -95,7 +97,7 @@ export default function Session__Select() {
 			// Cache all sessions and players to increase performance when selecting session
 			for(const session of tmp_list_sessions) {
 				query_client.setQueryData([ 'session', session.id ], session)
-				query_client.setQueryData([ 'session', session.id, 'players' ], session.List_Players)
+				query_client.setQueryData([ 'session', session.id, 'players' ], session.List__Players)
 			}
 		}
 		init()
@@ -108,9 +110,9 @@ export default function Session__Select() {
 	// __________________________________________________ Change List __________________________________________________
 
 	const mutate__show_session_date = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Date: !user?.Show_Session_Date }), 
+		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Date: !user?.Show__Session_Date }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Date: !user?.Show_Session_Date })
+			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Date: !user?.Show__Session_Date })
 		}, 
 		onError: err => {
 			handle_error({
@@ -120,9 +122,9 @@ export default function Session__Select() {
 	})
 
 	const mutate__show_session_names = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show_Session_Names: !user?.Show_Session_Names }), 
+		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Names: !user?.Show__Session_Names }), 
 		onSuccess: () => {
-			query_client.setQueryData([ 'user' ], { ...user, Show_Session_Names: !user?.Show_Session_Names })
+			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Names: !user?.Show__Session_Names })
 		}, 
 		onError: err => {
 			handle_error({
@@ -147,11 +149,11 @@ export default function Session__Select() {
 		}
 	})
 
-	function change_order(selected_option: Type__Enum__View_Sessions) {
+	function change_order(selected_option: Enum__View_Sessions) {
 
 		mutate__change_order.mutate({
-			View_Sessions: 		selected_option, 
-			View_Sessions_Desc: selected_option === user?.View_Sessions ? !user?.View_Sessions_Desc : true
+			View__Sessions: 		selected_option, 
+			View__Sessions_Desc: selected_option === user?.View__Sessions ? !user?.View__Sessions_Desc : true
 		})
 
 	}
@@ -278,15 +280,15 @@ export default function Session__Select() {
 								onChange={({ target }) => !mutate__delete.isPending && checkbox_click(index_session, target.checked)} 
 							/>
 
-							{session.List_Players && <>
-								<Link to={`/session/${session.id}/${session.List_Players.length === 0 ? 'players' : 'preview'}`}>
+							{session.List__Players && <>
+								<Link to={`/session/${session.id}/${session.List__Players.length === 0 ? 'players' : 'preview'}`}>
 
 									<label className='names'>
-										{(user?.Show_Session_Names || session.List_Players.length === 0) && session.Name}
-										{!user?.Show_Session_Names && session.List_Players.length > 0 && session.List_Players.map(p => p.Name).join(' vs ')}
+										{(user?.Show__Session_Names || session.List__Players.length === 0) && session.Name}
+										{!user?.Show__Session_Names && session.List__Players.length > 0 && session.List__Players.map(p => p.Name).join(' vs ')}
 									</label>
 
-									{user?.Show_Session_Date && <label className='date'>{formatDate(session?.LastPlayed || new Date())}</label>}
+									{user?.Show__Session_Date && <label className='date'>{formatDate(session?.LastPlayed || new Date())}</label>}
 
 								</Link>
 							</>}
@@ -322,18 +324,33 @@ export default function Session__Select() {
 			
 			<div className='session__select--popup--settings--show'>
 				{mutate__show_session_names.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_names.isPending && <input type='checkbox' checked={user?.Show_Session_Names} onChange={() => mutate__show_session_names.mutate()}/>}
-				<span>Partienamen anzeigen</span>
+				{!mutate__show_session_names.isPending && <>
+					<input 
+						onChange={() => mutate__show_session_names.mutate()}
+						checked={user?.Show__Session_Names} 
+						ref={ref___show__session_names}
+						type='checkbox' 
+
+					/>
+				</>}
+				<span onClick={() => ref___show__session_names.current?.click()}>Partienamen anzeigen</span>
 			</div>
 			<div className='session__select--popup--settings--show'>
 				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_date.isPending && <input type='checkbox' checked={user?.Show_Session_Date} onChange={() => mutate__show_session_date.mutate()}/>}
-				<span>Datum anzeigen</span>
+				{!mutate__show_session_date.isPending && <>
+					<input 
+						onChange={() => mutate__show_session_date.mutate()}
+						checked={user?.Show__Session_Date} 
+						ref={ref___show__session_date}
+						type='checkbox' 
+					/>
+				</>}
+				<span onClick={() => ref___show__session_date.current?.click()}>Datum anzeigen</span>
 			</div>
 
 			{list_orderOptions.map(option => {
-				const cs = user?.View_Sessions === option.Alias
-				const desc = user?.View_Sessions_Desc
+				const cs = user?.View__Sessions === option.Alias
+				const desc = user?.View__Sessions_Desc
 
 				return (
 					<button 

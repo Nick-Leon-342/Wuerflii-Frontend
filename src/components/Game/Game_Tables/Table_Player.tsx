@@ -71,7 +71,7 @@ export default function Table_Player({
 
 			{/* __________________________________________________ Scores __________________________________________________ */}
 
-			{session.Scores_Visible && <>
+			{session.Show_Scores && <>
 				<div className='table_player_row'>
 
 					<div className='table_player_column'><span>Spieler gesamt</span></div>

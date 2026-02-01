@@ -6,9 +6,15 @@
 	justify-content: space-between;
 	align-items: center;
 	border-bottom: 1px solid var(--text--muted);
+	padding-bottom: 1px;
 
 	&.valid path { fill: var(--green); }
 	&.invalid path { fill: var(--red); }
+
+	&:focus-within { 
+		border-bottom: 2px solid var(--text); 
+		padding-bottom: 0;
+	}
 
 	svg {
 		width: 30px;
@@ -20,6 +26,7 @@
 		border: none;
 		padding: 10px;
 		min-height: fit-content;
+		outline: none;
 		&:focus { border: none !important; }
 	}
 }

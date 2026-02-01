@@ -16,9 +16,9 @@ export default function useRefreshToken() {
             withCredentials: true
         })
         setAuth(prev => {
-            return { ...prev, accessToken: response.data.accessToken }
+            return { ...prev, access_token: response.data.access_token }
         })
-        return response.data.accessToken
+        return response.data.access_token
     }
 
 }

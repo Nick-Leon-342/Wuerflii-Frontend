@@ -15,8 +15,8 @@ import Popup__Dropdown from './Popup__Dropdown'
 import { patch__session } from '../../api/session/session'
 
 import type { Type__Session } from '../../types/Type__Session'
-import type { Type__Enum__View } from '../../types/Type__Enum/Type__Enum__View'
-import type { Type__Enum__Month } from '../../types/Type__Enum/Type__Enum__Month'
+import type { Enum__View } from '../../types/Enum/Enum__View'
+import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Month'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 
 
@@ -51,8 +51,8 @@ export default function Popup__Edit_Preview({
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
-	const [ view,		setView			] = useState<Type__Enum__View>('show_all')
-	const [ view_month, setView_month	] = useState<Type__Enum__Month>(1)
+	const [ view,		setView			] = useState<Enum__View>('SHOW__ALL')
+	const [ view_month, setView_month	] = useState<Enum__Month>('JANUARY')
 	const [ view_year, 	setView_year	] = useState<number>(0)
 
 	const list_months = [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ]
@@ -61,8 +61,8 @@ export default function Popup__Edit_Preview({
 		function init() {
 			if(!session) return 
 			setView(session.View)
-			setView_month(session.View_Month)
-			setView_year(session.View_Year)
+			setView_month(session.View__Month)
+			setView_year(session.View__Year)
 		}
 		init()
 	}, [ session ])
@@ -77,9 +77,9 @@ export default function Popup__Edit_Preview({
 			setSession(prev => {
 				if(!prev) return prev
 				const tmp 		= { ...prev }
-				tmp.View 		= json.View || 'show_all'
-				tmp.View_Month 	= json.View_Month || 1
-				tmp.View_Year 	= json.View_Year || 0
+				tmp.View 		= json.View			|| 'SHOW__ALL'
+				tmp.View__Month = json.View__Month	|| 'JANUARY'
+				tmp.View__Year 	= json.View__Year	|| 0
 				query_client.setQueryData([ 'session', session.id ], tmp)
 				return tmp
 			})
@@ -93,16 +93,16 @@ export default function Popup__Edit_Preview({
 	})
 
 	function update_view(
-		view:		Type__Enum__View, 
-		view_month:	Type__Enum__Month, 
+		view:		Enum__View, 
+		view_month:	Enum__Month, 
 		view_year:	number
 	): void {
 
 		mutate__session.mutate({
 			SessionID:	session.id, 
 			View:		view, 
-			View_Month: view_month, 
-			View_Year: 	view_year, 
+			View__Month: view_month, 
+			View__Year: 	view_year, 
 		})
 
 	}
@@ -123,9 +123,25 @@ export default function Popup__Edit_Preview({
 
 			<div className='popup__edit_preview--select'>
 
+				{/* __________________________________________________ View __________________________________________________ */}
+
+				<div className='popup__edit_preview--select_container view'>
+					<select 
+						value={view}
+						onChange={({ target }) => update_view(target.value as Enum__View, view_month, view_year)}
+					>
+						<option key={0} value='SHOW__ALL'>Gesamtansicht</option>
+						<option key={1} value='SHOW__YEAR'>Jahresansicht</option>
+						<option key={2} value='SHOW__MONTH'>Monatsansicht</option>
+						<option key={3} value='SHOW__CUSTOM_DATE'>Benutzerdefiniert</option>
+					</select>
+				</div>
+
+
+
 				{/* __________________________________________________ Year __________________________________________________ */}
 
-				{(view === 'show_month' || view === 'show_year') && <>
+				{(view === 'SHOW__MONTH' || view === 'SHOW__YEAR') && <>
 					<div className='popup__edit_preview--select_container year'>
 						<span>Jahr:</span>
 
@@ -133,7 +149,7 @@ export default function Popup__Edit_Preview({
 							value={view_year}
 							onChange={({ target }) => update_view(view, view_month, +target.value)}
 						>
-							{session?.View_List_Years.map((y, i) => 
+							{session?.View__List_Years.map((y, i) => 
 								<option key={i} value={y}>{y}</option>
 							)}
 						</select>
@@ -141,19 +157,19 @@ export default function Popup__Edit_Preview({
 				</>}
 
 
-				
+
 				{/* __________________________________________________ Month __________________________________________________ */}
 
-				{view === 'show_month' && <>
+				{view === 'SHOW__MONTH' && <>
 					<div className='popup__edit_preview--select_container month'>
 						<span>Monat:</span>
 
 						<select 
 							value={view_month}
-							onChange={({ target }) => update_view(view, +target.value as Type__Enum__Month, view_year)}
+							onChange={({ target }) => update_view(view, target.value as Enum__Month, view_year)}
 						>
 							{list_months.map((month, index_month) => 
-								<option key={index_month} value={index_month + 1}>{month}</option>
+								<option key={index_month} value={List__Months_Enum[index_month]}>{month}</option>
 							)}
 						</select>
 					</div>
@@ -163,7 +179,7 @@ export default function Popup__Edit_Preview({
 
 				{/* __________________________________________________ Custom_Date __________________________________________________ */}
 
-				{view === 'show_custom_date' && <>
+				{view === 'SHOW__CUSTOM_DATE' && <>
 					<div className='popup__edit_preview--select_container custom_date'>
 						<span>Ansicht ab:</span>
 
@@ -171,26 +187,10 @@ export default function Popup__Edit_Preview({
 							onClick={() => setShow_customDate(true)}
 							className='button button_reverse button_scale_2'
 						>
-							{`${format(new Date(session?.View_CustomDate), 'dd.MM.yyyy')}` || 'Erstelle Ansicht'}
+							{`${format(new Date(session?.View__Custom_Date), 'dd.MM.yyyy')}` || 'Erstelle Ansicht'}
 						</button>
 					</div>
 				</>}
-
-
-
-				{/* __________________________________________________ View __________________________________________________ */}
-
-				<div className='popup__edit_preview--select_container view'>
-					<select 
-						value={view}
-						onChange={({ target }) => update_view(target.value as Type__Enum__View, view_month, view_year)}
-					>
-						<option key={0} value='show_all'>Gesamtansicht</option>
-						<option key={1} value='show_year'>Jahresansicht</option>
-						<option key={2} value='show_month'>Monatsansicht</option>
-						<option key={3} value='show_custom_date'>Benutzerdefiniert</option>
-					</select>
-				</div>
 
 			</div>
 		</Popup__Dropdown>

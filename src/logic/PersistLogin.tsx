@@ -38,7 +38,7 @@ export default function PersistLogin() {
 			}
 		} 
 	
-		if(!auth?.accessToken) {
+		if(!auth?.access_token) {
 			verifyRefreshToken()
 		} else {
 			setIsLoading(false)
