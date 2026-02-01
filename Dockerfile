@@ -1,6 +1,6 @@
 
 
-FROM node:25.2.1 AS build
+FROM node:25.5 AS build
 
 WORKDIR /wuerflii-frontend
 
