@@ -2,18 +2,18 @@
 
 import './scss/Table_Player.scss'
 
-import { useNavigate } from 'react-router-dom'
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../../hooks/useErrorHandling'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import useErrorHandling from '../../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import { useNavigate } from 'react-router-dom'
 
 import LoaderBox from '../../Loader/Loader_Box'
 
-import { patch__player } from '../../../api/player'
+import type { Type__Client_To_Server__Gnadenwurf__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Gnadenwurf__PATCH'
 import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Session } from '../../../types/Type__Session'
-import type { Type__Client_To_Server__Player__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Player__PATCH'
+import { patch__gnadenwurf } from '../../../api/gnadenwurf'
 
 
 
@@ -139,7 +139,7 @@ const Gnadenwurf = ({
 	const handle_error = useErrorHandling()
 
 	const mutate__gnadenwurf = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Player__PATCH) => patch__player(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Gnadenwurf__PATCH) => patch__gnadenwurf(axiosPrivate, json), 
 		onSuccess: (_, json) => {
 			setList_players(prev => {
 				const tmp = [ ...prev ]
