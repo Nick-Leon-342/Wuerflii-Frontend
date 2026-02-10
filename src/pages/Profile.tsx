@@ -141,7 +141,7 @@ export default function Profile() {
 
 		setLoading_logout(true)
 
-		axiosPrivate.delete('/logout').then(() => {
+		axiosPrivate.delete('/auth/logout').then(() => {
 			
 			query_client.clear()
 			setAuth({ 
