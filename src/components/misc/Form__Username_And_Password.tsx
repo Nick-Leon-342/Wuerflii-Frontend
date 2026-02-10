@@ -3,6 +3,7 @@
 import './scss/Form__Username_And_Password.scss'
 
 import { useContext, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import Context__Regex from '../../Provider_And_Context/Provider_And_Context__Regex'
 
@@ -38,6 +39,8 @@ export default function Form__Username_And_Password({
 	setPassword_confirm, 
 	password_confirm, 
 }: Props__Form__Username_And_Password) {
+
+	const { t } = useTranslation()
 
 	const ref__name = useRef<HTMLInputElement>(null)
 	const ref__password = useRef<HTMLInputElement>(null)
@@ -79,6 +82,7 @@ export default function Form__Username_And_Password({
 		}
 		check_if_name_popup_should_be_shown()
 	}, [ info__name, requesting_regex, NAME__REGEX, name ])
+
 	useEffect(() => {
 		function check_if_password_popup_should_be_shown() {
 			setShow__popup_password(info__password && !requesting_regex && !PASSWORD__REGEX?.test(password))
@@ -101,7 +105,7 @@ export default function Form__Username_And_Password({
 				ref={ref__name}
 				SVG={<Person/>}
 				isRequired={isRequired}
-				name='Benutzername'
+				name={t('username')}
 				onValueChange={({ target }) => setName(target.value)}
 
 				onFocus={() => setInfo__name(true)}
@@ -120,9 +124,9 @@ export default function Form__Username_And_Password({
 			>
 				<div className='form__username_and_password--popup'>
 
-					<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} Zeichen`}/>
-					<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={'Angefangen mit Buchstaben'}/>
-					<ROW REGEX={NAME__REGEX_ALLOWEDCHARS} value={name} text={'Buchstaben, Zahlen, Binde- oder Unterstriche'}/>
+					<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} ${t('characters')}`}/>
+					<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={t('begins_with_letter')}/>
+					<ROW REGEX={NAME__REGEX_ALLOWEDCHARS} value={name} text={t('letters_numbers_hyphens_underscores')}/>
 
 				</div>
 			</Popup__Dropdown>
@@ -138,10 +142,10 @@ export default function Form__Username_And_Password({
 			<InputWithSVG
 				SVG={<Key/>}
 				type='password'
-				name='Passwort'
 				value={password}
-				isRequired={isRequired}
 				ref={ref__password}
+				name={t('password')}
+				isRequired={isRequired}
 				onValueChange={({ target }) => setPassword(target.value)}
 
 				onFocus={() => setInfo__password(true)}
@@ -159,9 +163,9 @@ export default function Form__Username_And_Password({
 			>
 				<div className='form__username_and_password--popup'>
 
-					<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} Zeichen`}/>
-					<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={'Zeichen: ! @ # $ % - _'}/>
-					<ROW REGEX={PASSWORD__REGEX_ALLOWEDCHARS} value={password} text={'Kleinbuchstaben, Großuchstaben und Zahlen'}/>
+					<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} ${t('characters')}`}/>
+					<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={`${t('characters_special')}: ! @ # $ % - _`}/>
+					<ROW REGEX={PASSWORD__REGEX_ALLOWEDCHARS} value={password} text={t('characters_allowed')}/>
 
 				</div>
 			</Popup__Dropdown>
@@ -178,8 +182,8 @@ export default function Form__Username_And_Password({
 			type='password'
 			isRequired={isRequired}
 			value={password_confirm}
-			name='Passwort bestätigen'
 			ref={ref__password_confirm}
+			name={t('password_confirm')}
 			onValueChange={({ target }) => setPassword_confirm(target.value)}
 
 			isValid={Boolean(password && password === password_confirm)}

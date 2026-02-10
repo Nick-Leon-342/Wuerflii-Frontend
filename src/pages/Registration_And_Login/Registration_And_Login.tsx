@@ -25,15 +25,20 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 
 import type { AxiosError } from 'axios'
 
+import { useTranslation } from 'react-i18next'
+import Popup__Options from '../../components/Popup/Popup__Options'
+
 
 
 
 
 export default function Registration_And_Login() {
 
-    const { setAuth } = useAuth()
+	
+	const { setAuth } = useAuth()
 	const location = useLocation()
     const navigate = useNavigate()
+	const { t } = useTranslation()
 	const [ next, setNext ] = useState('')
 	const handle_error = useErrorHandling()
 
@@ -90,8 +95,8 @@ export default function Registration_And_Login() {
 
 	const registration = () => {
 		
-		if(!name || !NAME__REGEX.test(name) || !password || !PASSWORD__REGEX.test(password)) return setError('Bitte alles richtig ausfüllen.')
-		if(password !== password_confirm) return setError('Passwörter stimmen nicht überein.')
+		if(!name || !NAME__REGEX.test(name) || !password || !PASSWORD__REGEX.test(password)) return setError(t('please_fill_out_registration'))
+		if(password !== password_confirm) return setError(t('password_confirm_doesnt_match'))
 		setLoading(true)
 		setError('')
 
@@ -124,9 +129,9 @@ export default function Registration_And_Login() {
 				handle_409: () => {
 					console.log(err)
 					if(err.response?.data === 'Username already taken.') {
-						setError('Der Benutzername ist vergeben!')
+						setError(t('username_taken'))
 					} else if(err.response?.data === 'User registration is disabled.') {
-						setError('Registrierungen wurden abgeschaltet.')
+						setError(t('registration_disabled'))
 					}
 				}
 			})
@@ -167,7 +172,7 @@ export default function Registration_And_Login() {
 			handle_error({
 				err, 
 				handle_409: () => {
-					setError('Falscher Benutzername oder falsches Passwort!')
+					setError(t('wrong_username_or_password'))
 				}
 			})
 
@@ -178,8 +183,13 @@ export default function Registration_And_Login() {
 
 
 
-	
+
     return <>
+
+		<Popup__Options 
+			user={null}
+		/>
+
 		<div className='registration_and_login'>
 
 			<div className='registration_and_login--logo_container'>
@@ -209,16 +219,16 @@ export default function Registration_And_Login() {
 							value={name}
 							SVG={<Person/>}
 							isRequired={true}
-							name='Benutzername'
+							name={t('username')}
 							onValueChange={({ target }) => setName(target.value)}
 						/>
 
 						<Input_With_SVG
 							SVG={<Key/>}
 							type='password'
-							name='Passwort'
 							value={password}
 							isRequired={true}
+							name={t('password')}
 							onValueChange={({ target }) => setPassword(target.value)}
 						/>
 
@@ -246,7 +256,7 @@ export default function Registration_And_Login() {
 
 
 					<Custom_Button 
-						text={show_login ? 'Anmelden' : 'Registrieren'}
+						text={show_login ? t('login') : t('register')}
 						loading={loading}
 					/>
 
@@ -255,9 +265,9 @@ export default function Registration_And_Login() {
 
 
 				<Custom_Link 
-					text={show_login ? 'Erstellen' : 'Anmelden'}
 					onClick={() => setShow_login(prev => !prev)}
-					textBefore={show_login ? 'Noch keinen Account?' : 'Bereits einen Account?'}
+					text={show_login ? t('register') : t('login')}
+					textBefore={show_login ? t('no_account_yet') : t('already_have_an_account')}
 				/>
 				
 			</div>

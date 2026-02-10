@@ -1,0 +1,26 @@
+
+
+{
+	"account": "Account", 
+	"already_have_an_account": "Already have an account?", 
+	"begins_with_letter": "Begins with a letter", 
+	"characters": "characters", 
+	"characters_special": "Special characters", 
+	"characters_allowed": "Lowercases, uppercases and numbers", 
+	"darkmode": "Dark mode", 
+	"language": "Language", 
+	"letters_numbers_hyphens_underscores": "Letters, numbers, hyphens and underscores", 
+	"login": "Login", 
+	"no_account_yet": "No account yet?", 
+	"password": "Password", 
+	"password_confirm": "Confirm password", 
+	"password_confirm_doesnt_match": "Passwords don't match.", 
+	"please_fill_out_registration": "Please enter everything correctly.", 
+	"register": "Register", 
+	"registration_disabled": "Registration is disabled.", 
+	"server_version": "Server version", 
+	"settings": "Settings", 
+	"username": "Username", 
+	"username_taken": "Username already taken.", 
+	"wrong_username_or_password": "Wrong username or password!"
+}
