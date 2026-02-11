@@ -2,23 +2,25 @@
 
 import './scss/Game_Options.scss'
 
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Popup from '../Popup/Popup'
-import Loader from '../Loader/Loader'
 import LoaderBox from '../Loader/Loader_Box'
+import Loader from '../Loader/Loader'
+import Popup from '../Popup/Popup'
 
 import Person_Settings from '../../svg/Person_Settings.svg?react'
 
-import { patch__session } from '../../api/session/session'
-import type { Type__Session } from '../../types/Type__Session'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
+import type { Type__Session } from '../../types/Type__Session'
+
+import { patch__session } from '../../api/session/session'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -43,6 +45,7 @@ export default function Game_Options({
 }: Props__Game_Options) {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -107,7 +110,7 @@ export default function Game_Options({
 
 	function new_game(): void {
 
-		if(!window.confirm('Sicher, dass dieses Spiel gelöscht werden soll?')) return 
+		if(!window.confirm(t('sure_you_want_to_delete_this_game'))) return 
 		setLoading_newGame(true)
 	
 		axiosPrivate.delete(`/game?session_id=${session.id}`).then(() => {
@@ -131,7 +134,7 @@ export default function Game_Options({
 
 	return <>
 		<Popup
-			title='Einstellungen'
+			title={t('settings')}
 			show_popup={show_options}
 			setShow_popup={setShow_options}
 		>
@@ -140,7 +143,7 @@ export default function Game_Options({
 				{/* __________________________________________________ Input_Type __________________________________________________ */}
 
 				<section>
-					<label>Eingabetyp</label>
+					<label>{t('input_type.name')}</label>
 
 					{mutate__input_type.isPending && <LoaderBox className='game_options_loader-inputtype' dark={true}/>}
 
@@ -149,9 +152,9 @@ export default function Game_Options({
 							value={session?.Input_Type}
 							onChange={change_inputType}
 						>
-							<option value='SELECT' key='SELECT'>Auswahl</option>
-							<option value='SELECT_AND_TYPE' key='SELECT_AND_TYPE'>Auswahl und Eingabe</option>
-							<option value='TYPE' key='TYPE'>Eingabe</option>
+							<option value='SELECT' key='SELECT'>{t('input_type.select')}</option>
+							<option value='SELECT_AND_TYPE' key='SELECT_AND_TYPE'>{t('input_type.select_and_type')}</option>
+							<option value='TYPE' key='TYPE'>{t('input_type.type')}</option>
 						</select>
 					</>}
 				</section>
@@ -161,7 +164,7 @@ export default function Game_Options({
 				{/* __________________________________________________ Show_Scores __________________________________________________ */}
 
 				<section>
-					<label>Summe anzeigen</label>
+					<label>{t('show_scores')}</label>
 
 					{mutate__show_scores.isPending && <LoaderBox className='game_options_loader-showscores' dark={true}/>}
 
@@ -179,7 +182,7 @@ export default function Game_Options({
 				{/* __________________________________________________ Edit __________________________________________________ */}
 
 				<section>
-					<label>Spieler bearbeiten</label>
+					<label>{t('edit_players')}</label>
 
 					<Link
 						to={`/session/${session?.id}/players`}
@@ -195,7 +198,7 @@ export default function Game_Options({
 					<button 
 						className='button button_reverse_red'
 						onClick={() => setShow_surrender(true)}
-					>Aufgeben</button>
+					>{t('surrender')}</button>
 				</section>
 
 
@@ -208,7 +211,7 @@ export default function Game_Options({
 						<button 
 							onClick={new_game} 
 							className='button'
-						>Spiel verwerfen</button>
+						>{t('discard_game')}</button>
 					</>}
 				</section>
 

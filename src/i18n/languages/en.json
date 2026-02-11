@@ -5,6 +5,7 @@
 	"already_have_an_account": "Already have an account?", 
 	"back": "Back", 
 	"begins_with_letter": "Begins with a letter", 
+	"cancel": "Cancel", 
 	"change": "Change", 
 	"characters": "characters", 
 	"characters_special": "Special characters", 
@@ -21,7 +22,9 @@
 	"danger_zone": "Danger zone", 
 	"darkmode": "Dark mode", 
 	"delete_account": "Delete account", 
+	"discard_game": "Discard game", 
 	"edit": "Edit", 
+	"edit_players": "Edit players", 
 	"error": {
 		"error": "Error", 
 		"generic": "Something went wrong while loading the page. Please try again.",
@@ -39,6 +42,7 @@
 		"username_taken": "Username already taken.", 
 		"value_invalid": "Value '{{value}}' is invalid!"
 	}, 
+	"finish_game": "Finish game", 
 	"game": {
 		"ones": 					"Aces", 
 		"twos": 					"Twos", 
@@ -59,6 +63,18 @@
 		"wuerflii": 				"Wuerflii", 
 		"chance":					"Chance", 
 		"total":					"Total"
+	}, 
+	"game_end": {
+		"winner_one": "'{{name}}' has won!",
+		"winner_multiple": "{{names}} have won!",
+		"list_separator": ", ",
+		"list_and": " and "
+	}, 
+	"input_type": {
+		"name": 			"Input type", 
+		"select": 			"Select", 
+		"select_and_type": 	"Select and type", 
+		"type": 			"Type" 
 	}, 
 	"language": "Language", 
 	"lets_go": "Let's go", 
@@ -85,27 +101,34 @@
 	}, 
 	"name": "Name", 
 	"no_account_yet": "No account yet?", 
+	"ok": "Ok", 
 	"password": "Password", 
 	"password_confirm": "Confirm password", 
 	"player": "Player", 
 	"players": "Players", 
 	"please_fill_out_registration": "Please enter everything correctly.", 
+	"please_enter_all_values": "Please enter all values.", 
 	"recently_played": "Recently played", 
 	"register": "Register", 
 	"registration_disabled": "Registration is disabled.", 
 	"save": "Save", 
 	"score": "Score", 
+	"select_winner": "Select the winner", 
 	"server_version": "Server version", 
 	"session": "Session", 
 	"session_not_found": "Session not found.", 
 	"settings": "Settings", 
 	"show_date": "Show date", 
+	"show_scores": "Show scores", 
 	"show_session_name": "Show session name", 
 	"select": "Select", 
 	"statistics": "Statistics", 
 	"successfully_saved": "Saved successfully!", 
 	"sure_you_want_to_delete_session": "Are you sure you want to delete this session?", 
 	"sure_you_want_to_delete_sessions": "Are you sure you want to delete these sessions?", 
+	"sure_you_want_to_delete_this_game": "Are you sure you want to delete this game?", 
+	"sure_that_this_player_is_the_winner": "Are you sure that {{name}} should be the winner?", 
+	"surrender": "Surrender", 
 	"username": "Username", 
 	"view_edit_preview": {
 		"show__all": 			"All", 
@@ -114,6 +137,8 @@
 		"show__custom_date": 	"Custom" 
 	}, 
 	"view_from": "View from", 
+	"wins": "Wins", 
 	"wrong_username_or_password": "Wrong username or password!", 
-	"year": "Year"
+	"year": "Year", 
+	"yes": "Yes"
 }

@@ -5,6 +5,7 @@
 	"already_have_an_account": "Bereits einen Account?", 
 	"back": "Zurück", 
 	"begins_with_letter": "Angefangen mit Buchstaben", 
+	"cancel": "Abbrechen", 
 	"change": "Ändern", 
 	"characters": "Zeichen", 
 	"characters_special": "Spezielle Zeichen", 
@@ -21,7 +22,9 @@
 	"danger_zone": "Danger Zone", 
 	"darkmode": "Dunkler Modus", 
 	"delete_account": "Account löschen", 
+	"discard_game": "Spiel verwerfen", 
 	"edit": "Bearbeiten", 
+	"edit_players": "Spieler bearbeiten", 
 	"error": {
 		"error": "Fehler", 
 		"columns_required": "Bitte die Spaltenanzahl angeben.",
@@ -39,6 +42,7 @@
 		"username_taken": "Der Benutzername ist vergeben!", 
 		"value_invalid": "Der Eintrag '{{value}}' ist nicht zulässig!"
 	}, 
+	"finish_game": "Spiel beenden",
 	"game": {
 		"ones": 					"Einser", 
 		"twos": 					"Zweier", 
@@ -59,6 +63,18 @@
 		"wuerflii": 				"Wuerflii", 
 		"chance":					"Chance", 
 		"total":					"Gesamt"
+	}, 
+	"game_end": {
+		"winner_one": "'{{name}}' hat gewonnen!",
+		"winner_multiple": "{{names}} haben gewonnen!",
+		"list_separator": ", ",
+		"list_and": " und "
+	}, 
+	"input_type": {
+		"name": 			"Eingabetyp", 
+		"select": 			"Auswahl", 
+		"select_and_type": 	"Auswahl und Eingabe", 
+		"type": 			"Eingabe" 
 	}, 
 	"language": "Sprache", 
 	"lets_go": "Los geht's", 
@@ -85,27 +101,34 @@
 	}, 
 	"name": "Name", 
 	"no_account_yet": "Noch keinen Account?", 
+	"ok": "Ok", 
 	"password": "Passwort", 
 	"password_confirm": "Passwort bestätigen", 
 	"player": "Spieler", 
 	"players": "Spieler", 
 	"please_fill_out_registration": "Bitte alles richtig ausfüllen.", 
+	"please_enter_all_values": "Bitte alle Werte eingeben.", 
 	"recently_played": "Zuletzt gespielt", 
 	"register": "Registrieren", 
 	"registration_disabled": "Registrierungen wurden abgeschaltet.", 
 	"save": "Speichern", 
 	"score": "Punktzahl", 
+	"select_winner": "Gewinner auswählen", 
 	"server_version": "Server Version", 
 	"session": "Partie", 
 	"session_not_found": "Die Partie wurde nicht gefunden.", 
 	"settings": "Einstellungen", 
 	"show_date": "Datum anzeigen", 
+	"show_scores": "Punktzahl anzeigen", 
 	"show_session_name": "Partienamen anzeigen", 
 	"select": "Auswählen", 
 	"statistics": "Statistiken", 
 	"successfully_saved": "Erfolgreich gespeichert!", 
 	"sure_you_want_to_delete_session": "Bist du sicher, dass du diese Partie löschen möchtest?", 
 	"sure_you_want_to_delete_sessions": "Bist du sicher, dass du diese Partien löschen möchtest?", 
+	"sure_you_want_to_delete_this_game": "Bist du sicher, dass du das Spiel löschen möchtest?", 
+	"sure_that_this_player_is_the_winner": "Bist du sicher, dass {{name}} gewinnen soll?", 
+	"surrender": "Aufgeben", 
 	"username": "Benutzername", 
 	"view_edit_preview": {
 		"show__all": 			"Gesamtansicht", 
@@ -114,6 +137,8 @@
 		"show__custom_date": 	"Benutzerdefiniert" 
 	}, 
 	"view_from": "Ansicht ab", 
+	"wins": "Gewonnen", 
 	"wrong_username_or_password": "Falscher Benutzername oder falsches Passwort!", 
-	"year": "Jahr"
+	"year": "Jahr", 
+	"yes": "Ja"
 }

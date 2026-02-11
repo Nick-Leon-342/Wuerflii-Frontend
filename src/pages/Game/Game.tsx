@@ -2,29 +2,31 @@
 
 import './scss/Game.scss'
 
-import { useContext, useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Popup from '../../components/Popup/Popup'
-import Table from '../../components/Game/Game_Tables/Table'
-import Game_Options from '../../components/Game/Game_Options'
-import CustomButton from '../../components/misc/Custom_Button'
-import OptionsDialog from '../../components/Popup/Popup__Options'
-import Table_Player from '../../components/Game/Game_Tables/Table_Player'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import Table_Player from '../../components/Game/Game_Tables/Table_Player'
+import OptionsDialog from '../../components/Popup/Popup__Options'
+import CustomButton from '../../components/misc/Custom_Button'
+import Game_Options from '../../components/Game/Game_Options'
+import Table from '../../components/Game/Game_Tables/Table'
+import Popup from '../../components/Popup/Popup'
 
 import Settings from '../../svg/Settings.svg?react'
 
-import { get__user } from '../../api/user'
-import { get__session } from '../../api/session/session'
-import { get__table_columns } from '../../api/table_columns'
 import { get__session_players } from '../../api/session/session_players'
-import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import { get__table_columns } from '../../api/table_columns'
+import { get__session } from '../../api/session/session'
+import { get__user } from '../../api/user'
+
 import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
+import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 
 
 
@@ -33,6 +35,7 @@ import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type
 export default function Game() {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -83,7 +86,7 @@ export default function Game() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('error.session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -101,7 +104,7 @@ export default function Game() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('error.session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -126,7 +129,7 @@ export default function Game() {
 		handle_error({
 			err: error__list__table_columns, 
 			handle_404: () => {
-				alert('Eine Ressource wurde nicht gefunden.')
+				alert(t('error.resource_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -157,7 +160,7 @@ export default function Game() {
 	
 		if(!session || !list_players || !list__table_columns) return
 
-		if(!surrender_winner && list__table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert('Bitte alle Werte angeben.')	
+		if(!surrender_winner && list__table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert(t('please_enter_all_values'))	
 		if(list_players.length === 1) return navigate('/', { replace: true })
 
 		setLoading_finish_game(true)
@@ -176,7 +179,7 @@ export default function Game() {
 
 			handle_error({
 				err, 
-				handle_409: () => alert('Bitte alle Werte eingeben.')
+				handle_409: () => alert(t('please_enter_all_values'))
 			})
 
 		}).finally(() => setLoading_finish_game(false))
@@ -224,7 +227,7 @@ export default function Game() {
 					><Settings/></button>
 
 					<CustomButton 
-						text='Spiel beenden'
+						text={t('finish_game')}
 						onClick={finish_game}
 						loading={loading_finish_game}
 					/>
@@ -254,9 +257,9 @@ export default function Game() {
 		{/* __________________________________________________ Popup Surrender __________________________________________________ */}
 
 		<Popup
-			show_popup={show_surrender}
 			setShow_popup={setShow_surrender}
-			title='Gewinner auswählen'
+			show_popup={show_surrender}
+			title={t('select_winner')}
 		>
 			<div className='game_popup-surrender'>
 
@@ -264,18 +267,18 @@ export default function Game() {
 
 					<div className='askifsurrender'>
 
-						<h2>{`Sicher, dass ${surrender_winner.Name} gewinnen soll?`}</h2>
+						<h2>{t('sure_that_this_player_is_the_winner', { name: surrender_winner.Name })}</h2>
 
 						<CustomButton
 							loading={loading_finish_game}
-							text='Ja'
 							onClick={finish_game}
+							text={t('yes')}
 						/>
 
 						<button 
 							className='button button_reverse_red' 
 							onClick={() => setSurrender_winner(undefined)}
-						>Abbrechen</button>
+						>{t('cancel')}</button>
 					</div>
 
 				</>:<>
