@@ -2,30 +2,32 @@
 
 import './scss/Session__Select.scss'
 
-import { formatDate } from '../../logic/utils'
-import { Link, useNavigate } from 'react-router-dom'
-import { useContext, useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { formatDate } from '../../logic/utils'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../hooks/useErrorHandling'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import LoaderBox from '../../components/Loader/Loader_Box'
-import OptionsDialog from '../../components/Popup/Popup__Options'
-import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
+import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
+import OptionsDialog from '../../components/Popup/Popup__Options'
+import LoaderBox from '../../components/Loader/Loader_Box'
 
-import Trashcan from '../../svg/Trashcan.svg?react'
-import ListSort from '../../svg/List_Sort.svg?react'
 import ArrowDown from '../../svg/Arrow_Down.svg?react'
+import ListSort from '../../svg/List_Sort.svg?react'
+import Trashcan from '../../svg/Trashcan.svg?react'
 
-import { get__user, patch__user } from '../../api/user'
 import { delete__session, get__sessions_list } from '../../api/session/session'
-import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
-import type { Type__Session } from '../../types/Type__Session'
+import { get__user, patch__user } from '../../api/user'
+
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
+import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
 import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
+import type { Type__Session } from '../../types/Type__Session'
 
 
 
@@ -34,6 +36,7 @@ import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 export default function Session__Select() {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -51,9 +54,9 @@ export default function Session__Select() {
 		Alias:	Enum__View_Sessions
 	}
 	const list_orderOptions: Array<option> = [
-		{ Text: 'Zuletzt gespielt', 	Alias: 'LAST_PLAYED'	},
-		{ Text: 'Erstellt', 			Alias: 'CREATED'		},
-		{ Text: 'Name', 				Alias: 'NAME'			},
+		{ Text: t('recently_played'), 	Alias: 'LAST_PLAYED'	},
+		{ Text: t('created'), 			Alias: 'CREATED'		},
+		{ Text: t('name'), 				Alias: 'NAME'			},
 	]
 
 
@@ -173,7 +176,7 @@ export default function Session__Select() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert('Die Partie wurde nicht gefunden.')
+					alert(t('session_not_found'))
 					window.location.reload()
 				}
 			})
@@ -182,7 +185,8 @@ export default function Session__Select() {
 
 	const handle_delete = async () => {
 
-		if(!window.confirm(`Sicher, dass du diese Session${list_sessions?.filter(s => s.Checkbox_Checked_To_Delete).length > 1 ? '(s)' : ''} löschen willst?`)) return
+		const multiple_sessions_selected = list_sessions?.filter(s => s.Checkbox_Checked_To_Delete).length > 1
+		if(!window.confirm(multiple_sessions_selected ? t('sure_you_want_to_delete_sessions') : t('sure_you_want_to_delete_session'))) return
 
 		for(const session of list_sessions) { if(session.Checkbox_Checked_To_Delete) {
 
@@ -305,7 +309,7 @@ export default function Session__Select() {
 
 			<Custom_Link 
 				onClick={() => navigate('/session', { replace: false })}
-				text='Spiel erstellen'
+				text={t('create_session')}
 			/>
 
 		</div>
@@ -333,7 +337,7 @@ export default function Session__Select() {
 
 					/>
 				</>}
-				<span onClick={() => ref___show__session_names.current?.click()}>Partienamen anzeigen</span>
+				<span onClick={() => ref___show__session_names.current?.click()}>{t('show_session_name')}</span>
 			</div>
 			<div className='session__select--popup--settings--show'>
 				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
@@ -345,7 +349,7 @@ export default function Session__Select() {
 						type='checkbox' 
 					/>
 				</>}
-				<span onClick={() => ref___show__session_date.current?.click()}>Datum anzeigen</span>
+				<span onClick={() => ref___show__session_date.current?.click()}>{t('show_date')}</span>
 			</div>
 
 			{list_orderOptions.map(option => {

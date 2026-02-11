@@ -2,18 +2,20 @@
 
 import './scss/Table_Player.scss'
 
-import { useNavigate } from 'react-router-dom'
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../../hooks/useErrorHandling'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import useErrorHandling from '../../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import LoaderBox from '../../Loader/Loader_Box'
 
-import { patch__player } from '../../../api/player'
+import type { Type__Client_To_Server__Gnadenwurf__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Gnadenwurf__PATCH'
 import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Session } from '../../../types/Type__Session'
-import type { Type__Client_To_Server__Player__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Player__PATCH'
+
+import { patch__gnadenwurf } from '../../../api/gnadenwurf'
 
 
 
@@ -35,6 +37,8 @@ export default function Table_Player({
 	session, 
 }: Props__Table_Player) {
 
+	const { t } = useTranslation()
+
 	function calculateScore(index_player: number): number {
 
 		if(list__table_columns.length === 0) return 0
@@ -50,14 +54,13 @@ export default function Table_Player({
 
 
 	return <>
-
 		<div className='table_player'>
 
 			{/* __________________________________________________ Names __________________________________________________ */}
 
 			<div className='table_player_row'>
 
-				<div className='table_player_column'><span>Spieler</span></div>
+				<div className='table_player_column'><span>{t('player')}</span></div>
 
 				{list_players?.map((player, index_player) => 
 					<div className='table_player_column' key={index_player}>
@@ -74,7 +77,7 @@ export default function Table_Player({
 			{session.Show_Scores && <>
 				<div className='table_player_row'>
 
-					<div className='table_player_column'><span>Spieler gesamt</span></div>
+					<div className='table_player_column'><span>{t('score')}</span></div>
 
 					{list_players?.map((_, index_player) => 
 						<div className='table_player_column' key={index_player}>
@@ -134,12 +137,13 @@ const Gnadenwurf = ({
 }: Props__Gnadenwurf) => {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
 	const mutate__gnadenwurf = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Player__PATCH) => patch__player(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Gnadenwurf__PATCH) => patch__gnadenwurf(axiosPrivate, json), 
 		onSuccess: (_, json) => {
 			setList_players(prev => {
 				const tmp = [ ...prev ]
@@ -152,14 +156,14 @@ const Gnadenwurf = ({
 			handle_error({
 				err, 
 				handle_no_server_response: () => {
-					if(window.confirm(`Der Server antwortet nicht.\nDer Gnadenwurf für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) mutate__gnadenwurf.mutate(json)
+					if(window.confirm(t('synchronization_of_gnadenwurf_failed', { name: list_players[index_player].Name }))) mutate__gnadenwurf.mutate(json)
 				}, 
 				handle_404: () => {
-					alert('Die Ressource wurde nicht gefunden!')
+					alert(t('error.resource_not_found'))
 					navigate(`/`)
 				}, 
 				handle_500: () => {
-					if(window.confirm(`Beim Server ist ein Fehler aufgetreten.\nDer Gnadenwurf für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) mutate__gnadenwurf.mutate(json)
+					if(window.confirm(t('synchronization_of_gnadenwurf_failed', { name: list_players[index_player].Name }))) mutate__gnadenwurf.mutate(json)
 				}
 			})
 		}

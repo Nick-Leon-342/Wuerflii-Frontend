@@ -2,26 +2,27 @@
 
 import './scss/Session__Add_And_Edit.scss'
 
-import { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import CustomButton from '../../components/misc/Custom_Button'
-import OptionsDialog from '../../components/Popup/Popup__Options'
-import Previous from '../../components/NavigationElements/Previous'
 import Custom_Link from '../../components/NavigationElements/Custom_Link'
+import Previous from '../../components/NavigationElements/Previous'
+import OptionsDialog from '../../components/Popup/Popup__Options'
+import CustomButton from '../../components/misc/Custom_Button'
 
-import { get__user } from '../../api/user'
 import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
+import { get__user } from '../../api/user'
 
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 
-import type { Type__Session } from '../../types/Type__Session'
-import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
+import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
+import type { Type__Session } from '../../types/Type__Session'
 
 
 
@@ -30,6 +31,7 @@ import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__C
 export default function Session__Add_And_Edit() {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -40,7 +42,7 @@ export default function Session__Add_And_Edit() {
 	
 	// ____________________ Session ____________________
 
-	const [ name,				setName				] = useState<string>('Partie')
+	const [ name,				setName				] = useState<string>(t('session'))
 	const [ color,				setColor			] = useState<string>('#00FF00')
 	const [ columns,			setColumns			] = useState<number>(1)
 
@@ -78,7 +80,7 @@ export default function Session__Add_And_Edit() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -139,7 +141,7 @@ export default function Session__Add_And_Edit() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert('Die Partie wurde nicht gefunden.')
+					alert(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})
@@ -148,12 +150,12 @@ export default function Session__Add_And_Edit() {
 
 	const ok = async () => {
 
-		if(!env_variables) return setError('Beim Laden der Seit ist etwas schiefgelaufen. Bitte erneut versuchen.')
+		if(!env_variables) return setError(t('error.generic'))
 		
-		if(!name)													return setError('Bitte einen Namen für die Parte eingeben.')
-		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) 	return setError(`Der Name der Partie darf nicht länger als ${env_variables?.MAX_LENGTH_SESSION_NAME} Zeichen sein.`)
-		if(!session && !+columns) 									return setError('Bitte die Spaltenanzahl angeben.')
-		if(!session && +columns > env_variables?.MAX_COLUMNS) 		return setError(`Die maximale Spaltenanzahl ist ${env_variables?.MAX_COLUMNS}.`) 
+		if(!name)													return setError(t('error.name_required'))
+		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) 	return setError(t('error.name_too_long', { max: env_variables.MAX_LENGTH_SESSION_NAME }))
+		if(!session && !+columns) 									return setError(t('error.columns_required'))
+		if(!session && +columns > env_variables?.MAX_COLUMNS) 		return setError(t('error.columns_too_many', { max: env_variables.MAX_COLUMNS })) 
 
 		if(session) {
 			mutate__session_edit.mutate({
@@ -211,18 +213,18 @@ export default function Session__Add_And_Edit() {
 
 			<div className='session__add_and_edit__columns_and_color'>
 				<div className='session__add_and_edit__columns'>
-					<span>Spalten:</span>
+					<span>{t('columns')}:</span>
 					<select 
 						value={columns} 
 						onChange={({ target }) => setColumns(+target.value)}
 					>
-						<option value='' disabled>Auswählen</option>
+						<option value='' disabled>{t('select')}</option>
 						{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
 					</select>
 				</div>
 
 				<div className='session__add_and_edit__color'>
-					<span>Farbe:</span>
+					<span>{t('color')}:</span>
 					<input 
 						type='color' 
 						value={color}
@@ -236,14 +238,14 @@ export default function Session__Add_And_Edit() {
 			<CustomButton 
 				loading={isLoading__user || isLoading__session || isLoading__env_variables}
 				className='button' 
-				text={session_id ? 'Speichern' : 'Match erstellen'}
+				text={session_id ? t('save') : t('create_session')}
 				onClick={ok}
 			/>
 
 			{!session_id && <>
 				<Custom_Link 
 					onClick={() => navigate('/', { replace: false })}
-					text='Spiel laden'
+					text={t('load_session')}
 				/>
 			</>}
 

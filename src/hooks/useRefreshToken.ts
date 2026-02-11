@@ -12,7 +12,7 @@ export default function useRefreshToken() {
     const { setAuth } = useAuth()
 
     return async () => {
-        const response = await axiosDefault.get('/refreshtoken', {
+        const response = await axiosDefault.get('/auth/refreshtoken', {
             withCredentials: true
         })
         setAuth(prev => {

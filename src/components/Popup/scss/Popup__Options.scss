@@ -58,6 +58,26 @@
 			}
 		}
 
+		&.language {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			gap: 20px;
+
+			span {
+				display: flex;
+				flex-direction: row;
+				gap: 5px;
+			}
+
+			select {
+				width: 200px;
+				text-align: end;
+				border-color: var(--bg--dark);
+			}
+		}
+
 		.popup__options--profile {
 			justify-content: flex-start;
 			padding: 0 var(--padding);

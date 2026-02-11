@@ -15,6 +15,7 @@ import { get__user } from '../../api/user'
 import { get__final_score } from '../../api/final_score'
 import { get__session_players } from '../../api/session/session_players'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -23,6 +24,7 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 export default function EndScreen() {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
@@ -66,7 +68,7 @@ export default function EndScreen() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -84,7 +86,7 @@ export default function EndScreen() {
 		handle_error({
 			err: error__final_score, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -110,23 +112,20 @@ export default function EndScreen() {
 	
 	
 			// Init header
-			if(list_winner.length === 1) {
-				setHeader(`'${list_winner[0]}' hat gewonnen!`)
+			if (list_winner.length === 1) {
+    			setHeader(t('game_end.winner_one', { name: list_winner[0] }))
 			} else {
-				let string = `'${list_winner[0]}' `
-				for(let i = 1; list_winner.length > i; i++) {
-					const p = `'${list_winner[i]}'`
-					if((i + 1) === list_winner.length) {
-						string += ` und ${p} haben gewonnen!`
-					} else {
-						string += `, ${p}`
-					}
-				}
-				setHeader(string)
+				const lastWinner = list_winner[list_winner.length - 1]
+				const otherWinners = list_winner.slice(0, -1);
+				
+				const namesJoined = `'${otherWinners.join("', '")}'`
+				const finalNamesString = `${namesJoined}${t('game_end.list_and')}'${lastWinner}'`
+				
+				setHeader(t('game_end.winner_multiple', { names: finalNamesString }))
 			}
 		}
 		init()
-	}, [ list_players, final_score ])
+	}, [ list_players, final_score, t ])
 
 	useEffect(() => { setLoading__universal_loader(isLoading__user || isLoading__list_players || isLoading__final_score) }, [ isLoading__user, isLoading__list_players, isLoading__final_score, setLoading__universal_loader ])
 
@@ -153,21 +152,21 @@ export default function EndScreen() {
 					<tbody>
 
 						<tr>
-							<td>Spieler</td>
+							<td>{t('player')}</td>
 							{list_players?.map(player => (
 								<td key={player.id}><span>{player.Name}</span></td>
 							))}
 						</tr>
 
 						<tr>
-							<td>Gewonnen</td>
+							<td>{t('wins')}</td>
 							{list_players?.map(player => (
 								<td key={player.id}><span>{final_score?.Wins__After[player.id]}</span></td>
 							))}
 						</tr>
 
 						<tr>
-							<td>Punkte</td>
+							<td>{t('game.points')}</td>
 							{list_players?.map(player => (
 								<td key={player.id}><span>{final_score?.PlayerScores[player.id]}</span></td>
 							))}
@@ -182,7 +181,7 @@ export default function EndScreen() {
 			<Link 
 				to={`/session/${session_id}/preview`}
 				className='button' 
-			>Ok</Link>
+			>{t('ok')}</Link>
 
 		</div>
 		

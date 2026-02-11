@@ -14,16 +14,18 @@ import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
 
 import Settings from '../../svg/Settings.svg?react'
+import Translate from '../../svg/Translate.svg?react'
 
 import { patch__user } from '../../api/user'
 
 import type { Type__User } from '../../types/Type__User'
+import { useTranslation } from 'react-i18next'
 
 
 
 
 interface Props__Popup__Options {
-	user:	Type__User | undefined
+	user:	Type__User | undefined | null
 }
 
 export default function Popup__Options({
@@ -32,46 +34,68 @@ export default function Popup__Options({
 
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
-
-	const { server_version } = useContext(Context__Server_Version)
-
-	const [ show_options, setShow_options ] = useState(false)
+	const { t, i18n } = useTranslation()
 
 	const darkMode_string = 'Wuerflii_DarkMode'
+	const { server_version } = useContext(Context__Server_Version)
+
+	const [ show_options, 	setShow_options ] = useState(false)
+	const [ darkMode, 		setDarkMode		] = useState(localStorage.getItem(darkMode_string) === 'true')
 
 	const change_dark_mode = useMutation({
 		mutationFn: () => patch__user(axiosPrivate, { DarkMode: !user?.DarkMode }), 
 		onSuccess: () => {
+			setDarkMode(!user?.DarkMode)
 			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user?.DarkMode })
 		}
 	})
 
+	const list__languages = [
+		{ Name: 'English', 	Code: 'en' }, 
+		{ Name: 'Deutsch', 	Code: 'de' }, 
+	]
 
 
 
 
-	useEffect(() => {
 
-		if(localStorage.getItem(darkMode_string) === 'true') document.body.classList.add('dark')
+	// useEffect(() => {
 
-	}, [])
+	// 	if(localStorage.getItem(darkMode_string) === 'true') document.body.classList.add('dark')
+
+	// }, []) // eslint-disable-line
 
 	useEffect(() => {
 		function configure_darkmode() {
 			
 			if(!user) return
-			
-			if(user.DarkMode) {
-				document.body.classList.add('dark')
-				localStorage.setItem(darkMode_string, 'true')
-			} else {
-				document.body.classList.remove('dark')
-				localStorage.setItem(darkMode_string, 'false')
-			}
+			setDarkMode(user.DarkMode)
 
 		}
 		configure_darkmode()
 	}, [ user ])
+
+	useEffect(() => {
+		
+		if(darkMode) {
+			document.body.classList.add('dark')
+			localStorage.setItem(darkMode_string, 'true')
+		} else {
+			document.body.classList.remove('dark')
+			localStorage.setItem(darkMode_string, 'false')
+		}
+
+	}, [ darkMode ])
+
+	function change_darkmode() {
+
+		if(user === null) {
+			setDarkMode(prev => !prev)
+		} else {
+			change_dark_mode.mutate()
+		}
+
+	}
 
 
 
@@ -89,7 +113,7 @@ export default function Popup__Options({
 
 
 		<Popup
-			title='Einstellungen'
+			title={t('settings')}
 			show_popup={show_options}
 			setShow_popup={setShow_options}
 		>
@@ -109,24 +133,49 @@ export default function Popup__Options({
 							{!change_dark_mode?.isPending &&
 								<input
 									type='checkbox'
-									checked={Boolean(user?.DarkMode)}
-									onChange={() => change_dark_mode.mutate()}
+									checked={darkMode}
+									onChange={change_darkmode}
 								/>
 							}
 
-							<label>Dark mode</label>
+							<label>{t('darkmode')}</label>
 						</div>
 
-						<span>Server Version: {server_version}</span>
+						<span>{t('server_version')}: {server_version}</span>
 						
 					</section>
 
+
+
 					<hr/>
 
-					<Link 
-						to='/profile'
-						className='button button_scale_2 popup__options--profile'
-					>Account</Link>
+					<section className='language'>
+						<span>
+							<Translate/>
+							{t('language')}
+						</span>
+						<select
+							value={i18n.language}
+							onChange={(e) => i18n.changeLanguage(e.target.value)}
+						>
+							{list__languages.map(language_json => (
+								<option key={language_json.Code} value={language_json.Code}>
+									{language_json.Name}
+								</option>
+							))}
+						</select>
+					</section>
+
+
+
+					{user !== null && <>
+						<hr/>
+
+						<Link 
+							to='/profile'
+							className='button button_scale_2 popup__options--profile'
+						>{t('account')}</Link>
+					</>}
 
 				</div>
 				

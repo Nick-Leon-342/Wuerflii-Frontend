@@ -1,5 +1,7 @@
 
 
+import type { TFunction } from 'i18next'
+
 import DiceOne from '../svg/Dice_One.svg?react'
 import DiceTwo from '../svg/Dice_Two.svg?react'
 import DiceThree from '../svg/Dice_Three.svg?react'
@@ -54,98 +56,89 @@ export const list_rows: Array<Type__Row> = [
 		Name: 				'Upper_Table_1', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_1,
 		Border_Top: 		true, 
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceOne/>
 				<DiceOne/>
 				<DiceOne/>
 			</td>
-			<td><label>Nur Einser<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.ones')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_2', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_2,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceTwo/>
 				<DiceTwo/>
 				<DiceTwo/>
 			</td>
-			<td><label>Nur Zweier<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.twos')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_3', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_3,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceThree/>
 				<DiceThree/>
 				<DiceThree/>
 			</td>
-			<td><label>Nur Dreier<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.threes')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_4', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_4,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceFour/>
 				<DiceFour/>
 				<DiceFour/>
 			</td>
-			<td><label>Nur Vierer<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.fours')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_5', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_5,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceFive/>
 				<DiceFive/>
 				<DiceFive/>
 			</td>
-			<td><label>Nur Fünfer<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.fives')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_6', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_6,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceSix/>
 				<DiceSix/>
 				<DiceSix/>
 			</td>
-			<td><label>Nur Sechser<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.sixes')}</label></td>
+		</>), 
 	}, {
 		Name: 'Upper_Table_Score', 
 		Border_Top: true, 
-		td: 
-		<>
-			<td>gesamt</td>
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.points')}</label></td>
 			<td><ArrowLeft/></td>
-		</>, 
+		</>), 
 	}, {
 		Name: 'Upper_Table_Add35', 
-		td: 
-		<>
-			<td>Bonus bei 63<br/>oder mehr</td>
-			<td>plus 35</td>
-		</>, 
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.uppertable_bonus_if_63')}</label></td>
+			<td><label>{t('game.uppertable_add_35')}</label></td>
+		</>), 
 	}, {
 		Name: 'Upper_Table_TotalScore', 
 		Border_Bottom: true, 
-		td: 
-		<>
-			<td>gesamt<br/>oberer Teil</td>
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.uppertable_total')}</label></td>
 			<td><ArrowLeft/></td>
-		</>, 
+		</>), 
 	},
 
 
@@ -164,82 +157,72 @@ export const list_rows: Array<Type__Row> = [
 		Name: 				'Bottom_Table_1', 
 		Border_Top: 		true, 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_1,
-		td: 
-		<>
-			<td><label>Dreierpasch</label></td>
-			<td><label>alle Augen<br/>zählen</label></td>
-		</>,
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.three_kind')}</label></td>
+			<td><label>{t('game.all_dice_count')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Bottom_Table_2', 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_2,
-		td:
-		<>
-			<td><label>Viererpasch</label></td>
-			<td><label>alle Augen<br/>zählen</label></td>
-		</>, 
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.four_kind')}</label></td>
+			<td><label>{t('game.all_dice_count')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Bottom_Table_3', 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_3, 
-		td: 
-		<>
-			<td><label>Full-House</label></td>
-			<td><label>25<br/>Punkte</label></td>
-		</>,
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.full_house')}</label></td>
+			<td><label>{t('game.all_dice_count')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Bottom_Table_4', 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_4, 
-		td:
-		<>
-			<td><label>Kleine Straße</label></td>
-			<td><label>30<br/>Punkte</label></td>
-		</>, 
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.small_straight')}</label></td>
+			<td><label>30 {t('game.points')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Bottom_Table_5', 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_5, 
-		td: 
-		<>
-			<td><label>Große Straße</label></td>
-			<td><label>40<br/>Punkte</label></td>
-		</>, 
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.large_straight')}</label></td>
+			<td><label>40 {t('game.points')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Bottom_Table_6', 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_6, 
-		td:
-		<>
-			<td><label>Wuerflii</label></td>
-			<td><label>50<br/>Punkte</label></td>
-		</>, 
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.wuerflii')}</label></td>
+			<td><label>50 {t('game.points')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Bottom_Table_7', 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_7, 
 		Border_Bottom: 		true, 
-		td: 
-		<>
-			<td><label>Chance</label></td>
-			<td><label>alle Augen<br/>zählen</label></td>
-		</>, 
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.chance')}</label></td>
+			<td><label>{t('game.all_dice_count')}</label></td>
+		</>), 
 	}, {
 		Name: 'Bottom_Table_Score', 
-		td:
-		<>
-			<td>gesamt<br/>unterer Teil</td>
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.points')}</label></td>
 			<td><ArrowLeft/></td>
-		</>, 
+		</>), 
 	}, {
 		Name: 'Upper_Table_TotalScore', 
-		td:
-		<>
-			<td>gesamt<br/>oberer Teil</td>
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.uppertable_total')}</label></td>
 			<td><ArrowLeft/></td>
-		</>, 
+		</>), 
 	}, {
 		Name: 'Bottom_Table_TotalScore', 
 		Border_Bottom: true, 
-		td:
-		<>
-			<td>Endsumme</td>
+		renderTd: 			(t: TFunction) => (<>
+			<td><label>{t('game.total')}</label></td>
 			<td><ArrowLeft/></td>
-		</>
+		</>), 
 	}
 
 ]

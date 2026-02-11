@@ -2,25 +2,27 @@
 
 import './scss/Statistics__Select_View.scss'
 
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import LoaderBox from '../Loader/Loader_Box'
 
-import { patch__user } from '../../api/user'
 import { patch__session } from '../../api/session/session'
+import { patch__user } from '../../api/user'
 
-import type { Type__User } from '../../types/Type__User'
-import type { Type__Session } from '../../types/Type__Session'
 import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Month'
 import { Type__List_Months } from '../../types/Type__List_Months'
-import type { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
-import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
+
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
+import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
+import type { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
+import type { Type__Session } from '../../types/Type__Session'
+import type { Type__User } from '../../types/Type__User'
 
 
 
@@ -41,6 +43,7 @@ export default function Statistics__Select_View({
 }: Props__Statistics__Select_View) {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -83,7 +86,7 @@ export default function Statistics__Select_View({
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert('Die Partie wurde nicht gefunden.')
+					alert(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})
@@ -149,9 +152,9 @@ export default function Statistics__Select_View({
 					value={view}
 					onChange={({ target }) => sync_view(target.value as Enum__Statistics_View, view_month, view_year)}
 				>
-					<option key={0} value='STATISTICS_OVERALL'>Gesamt</option>
-					<option key={1} value='STATISTICS_YEAR'>Jahr</option>
-					<option key={2} value='STATISTICS_MONTH'>Monat</option>
+					<option key={0} value='STATISTICS_OVERALL'>{t('statistics_view.overall')}</option>
+					<option key={1} value='STATISTICS_YEAR'>{t('statistics_view.year')}</option>
+					<option key={2} value='STATISTICS_MONTH'>{t('statistics_view.month')}</option>
 				</select>
 
 				{view === 'STATISTICS_MONTH' && <>
@@ -160,7 +163,7 @@ export default function Statistics__Select_View({
 						onChange={({ target }) => sync_view(view, target.value as Enum__Month, view_year)}
 					>
 						{Type__List_Months.map((month, index_month) => <>
-							<option key={month} value={List__Months_Enum[index_month]}>{month}</option>
+							<option key={month} value={List__Months_Enum[index_month]}>{t('months.' + month)}</option>
 						</>)}
 					</select>
 				</>}

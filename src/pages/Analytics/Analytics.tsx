@@ -3,21 +3,23 @@
 import './scss/Analytics.scss'
 
 import { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Chart_Bar from '../../components/Statistics/Chart_Bar'
-import PopupOptions from '../../components/Popup/Popup__Options'
-import Previous from '../../components/NavigationElements/Previous'
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
+import Previous from '../../components/NavigationElements/Previous'
+import PopupOptions from '../../components/Popup/Popup__Options'
+import Chart_Bar from '../../components/Statistics/Chart_Bar'
 
-import { get__user } from '../../api/user'
-import { get__analytics } from '../../api/analytics'
-import { Type__List_Months } from '../../types/Type__List_Months'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { Type__List_Months } from '../../types/Type__List_Months'
+import { get__analytics } from '../../api/analytics'
+import { get__user } from '../../api/user'
+
 import type { Type__Server_Response__Analytics__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
 
 
@@ -27,6 +29,7 @@ import type { Type__Server_Response__Analytics__GET__Total } from '../../types/T
 export default function Analytics() {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
 
@@ -121,7 +124,7 @@ export default function Analytics() {
 
 			{total && <>
 				<Chart_Bar
-					labels={user?.Statistics__View === 'STATISTICS_YEAR' ? Type__List_Months : total?.Data ? Object.keys(total?.Data) : []}
+					labels={user?.Statistics__View === 'STATISTICS_YEAR' ? Type__List_Months.map(month => t('months.' + month)) : total?.Data ? Object.keys(total?.Data) : []}
 					data={total.Data}
 				/>
 			</>}
@@ -132,13 +135,13 @@ export default function Analytics() {
 				
 				{user?.Statistics__View === 'STATISTICS_OVERALL' && <>
 					<div>
-						<span>Anzahl unterschiedlicher Partien:</span>
+						<span>{t('amount_of_different_sessions')}:</span>
 						<span>{total?.Total__Sessions}</span>
 					</div>
 				</>}
 				
 				<div>
-					<span>Anzahl von Spielen:</span>
+					<span>{t('amount_of_games')}:</span>
 					<span>{total?.Total__Games_Played}</span>
 				</div>
 

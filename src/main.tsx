@@ -15,6 +15,8 @@ import { Provider_And_Context__Regex } from './Provider_And_Context/Provider_And
 import { Provider_And_Context__Server_Version } from './Provider_And_Context/Provider_And_Context__Server_Version'
 import { Provider_And_Context__Universal_Loader } from './Provider_And_Context/Provider_And_Context__Universal_Loader'
 
+import './i18n/i18n'
+
 const query_client = new QueryClient()
 
 

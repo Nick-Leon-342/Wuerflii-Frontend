@@ -2,26 +2,28 @@
 
 import './scss/Profile.scss'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 
-import useAuth from '../hooks/useAuth'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useErrorHandling from '../hooks/useErrorHandling'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import useAuth from '../hooks/useAuth'
 
-import CustomButton from '../components/misc/Custom_Button'
-import Popup__Options from '../components/Popup/Popup__Options'
-import Previous from '../components/NavigationElements/Previous'
 import Form__Username_And_Password from '../components/misc/Form__Username_And_Password'
+import Previous from '../components/NavigationElements/Previous'
+import Popup__Options from '../components/Popup/Popup__Options'
+import CustomButton from '../components/misc/Custom_Button'
 
 import { get__user, patch__user } from '../api/user'
 
 import Context__Error from '../Provider_And_Context/Provider_And_Context__Error'
 import Context__Regex from '../Provider_And_Context/Provider_And_Context__Regex'
 
-import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 import Context__Universal_Loader from '../Provider_And_Context/Provider_And_Context__Universal_Loader'
+
+import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 
 
 
@@ -30,8 +32,8 @@ import Context__Universal_Loader from '../Provider_And_Context/Provider_And_Cont
 export default function Profile() {
 
     const { setAuth } = useAuth()
-	
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -42,7 +44,7 @@ export default function Profile() {
 	const [ name, 					setName						] = useState<string>('')
 	const [ password, 				setPassword					] = useState<string>('')
 	const [ password__confirm,		setPassword__confirm		] = useState<string>('')
-	const { NAME__REGEX,				PASSWORD__REGEX				} = useContext(Context__Regex)
+	const { NAME__REGEX,			PASSWORD__REGEX				} = useContext(Context__Regex)
 
 	const [ loading_delete_account, setLoading_delete_account	] = useState<boolean>(false)
 
@@ -69,7 +71,7 @@ export default function Profile() {
 		onError: err => {
 			handle_error({
 				err,
-				handle_409: () => setError('Name bereits vergeben!')
+				handle_409: () => setError(t('error.username_taken'))
 			})
 		}
 	})
@@ -88,7 +90,7 @@ export default function Profile() {
 		setError('')
 
 		if((name && !NAME__REGEX.test(name)) || (password && !PASSWORD__REGEX.test(password)) || (!name && !password)) return
-		if(password !== password__confirm) return setError('Passwörter stimmen nicht überein.')
+		if(password !== password__confirm) return setError(t('error.password_confirm_doesnt_match'))
 
 
 		const json: Type__Client_To_Server__User__PATCH = {}
@@ -110,8 +112,8 @@ export default function Profile() {
 
 	function delete_account() {
 
-		if(!window.confirm('Sicher, dass du deinen Account löschen willst?\nDas kann man nicht rückgängig machen!')) return
-		if(!window.confirm('Wirklich, ganz sicher?')) return
+		if(!window.confirm(t('confirm_user_deletion'))) return
+		if(!window.confirm(t('confirm_user_deletion_confirm'))) return
 
 		setLoading_delete_account(true)
 
@@ -141,7 +143,7 @@ export default function Profile() {
 
 		setLoading_logout(true)
 
-		axiosPrivate.delete('/logout').then(() => {
+		axiosPrivate.delete('/auth/logout').then(() => {
 			
 			query_client.clear()
 			setAuth({ 
@@ -181,7 +183,7 @@ export default function Profile() {
 			<Link 
 				to='/analytics'
 				className='button button_scale_2 profile--analytics'
-			>Statistiken</Link>
+			>{t('statistics')}</Link>
 
 
 			{/* __________________________________________________ Change credentials __________________________________________________ */}
@@ -189,9 +191,9 @@ export default function Profile() {
 
 				<hr/>
 
-				<h1>Anmeldedaten ändern</h1>
+				<h1>{t('change_credentials')}</h1>
 
-				{mutate__user.isSuccess && <h2>Erfolgreich gespeichert!</h2>}
+				{mutate__user.isSuccess && <h2>{t('successfully_saved')}</h2>}
 
 				<Form__Username_And_Password 
 					name={name} 
@@ -207,9 +209,9 @@ export default function Profile() {
 				/>
 
 				<CustomButton
-					text='Ändern'
 					className='profile--change_credentials'
 					loading={mutate__user.isPending}
+					text={t('change')}
 				/>
 
 			</form>
@@ -221,18 +223,18 @@ export default function Profile() {
 			
 				<hr/>
 
-				<h1>Danger Zone</h1>
+				<h1>{t('danger_zone')}</h1>
 			
 				<CustomButton
-					text='Ausloggen'
 					onClick={logout}
+					text={t('logout')}
 					loading={loading_logout}
 					className='button_reverse_red'
 				/>
 
 				<CustomButton
-					text='Account löschen'
 					onClick={delete_account}
+					text={t('delete_account')}
 					className='button_reverse_red'
 					loading={loading_delete_account}
 				/>

@@ -2,29 +2,30 @@
 
 import './scss/Session__Players.scss'
 
-import { v4 } from 'uuid'
-import { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { v4 } from 'uuid'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import CustomButton from '../../components/misc/Custom_Button'
-import OptionsDialog from '../../components/Popup/Popup__Options'
-import Previous from '../../components/NavigationElements/Previous'
 import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
+import Previous from '../../components/NavigationElements/Previous'
+import OptionsDialog from '../../components/Popup/Popup__Options'
+import CustomButton from '../../components/misc/Custom_Button'
 
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 
-import Person_Add from '../../svg/Person_Add.svg?react'
 import Person_Remove from '../../svg/Person_Remove.svg?react'
+import Person_Add from '../../svg/Person_Add.svg?react'
 
-import { get__user } from '../../api/user'
 import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '../../api/session/session_players'
+import { get__user } from '../../api/user'
 
-import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
 import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
+import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
 
 
 
@@ -33,6 +34,7 @@ import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '..
 export default function Session__Players() {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -91,7 +93,7 @@ export default function Session__Players() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -113,11 +115,11 @@ export default function Session__Players() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert('Die Partie wurde nicht gefunden.')
+					alert(t('session_not_found'))
 					navigate('/', { replace: true })
 				}, 
 				handle_409: () => {
-					alert('Es trat ein Fehler auf.\nFür diese Partie wurde Spieler bereits angelegt.')
+					alert(t('players_already_exist'))
 					navigate(`/session/${session_id}/players`, { replace: true })
 				}
 			})
@@ -134,7 +136,7 @@ export default function Session__Players() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert('Die Partie wurde nicht gefunden.')
+					alert(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})
@@ -149,14 +151,14 @@ export default function Session__Players() {
 	function new_player( list: Array<Type__Client_To_Server__Player__POST> ): Type__Client_To_Server__Player__POST { 
 		return {
 			id:		v4(), 
-			Name:	`Spieler_${list.length + 1}`, 
+			Name:	`${t('player')}_${list.length + 1}`, 
 			Color:	list.length % 2 === 0 ? '#ffffff' : '#ADD8E6'
 		}
 	}
 
 	function add_player() {
 		
-		if(list_players.length === env_variables?.MAX_PLAYERS) return setError(`Es dürfen maximal nur ${env_variables?.MAX_PLAYERS} Spieler sein.`)
+		if(list_players.length === env_variables?.MAX_PLAYERS) return setError(t('error.players_too_many', { max: env_variables?.MAX_PLAYERS }))
 
 		setList_players(prev => {
 			const list = [ ...prev ]
@@ -180,7 +182,7 @@ export default function Session__Players() {
 
 	async function save() {
 
-		if(!list_players || list_players.some(p => p.Name.length > (env_variables?.MAX_LENGTH_PLAYER_NAME || -1))) return setError(`Die Spielernamen dürfen nicht länger als ${env_variables?.MAX_LENGTH_PLAYER_NAME} Zeichen sein.`)
+		if(!list_players || list_players.some(p => p.Name.length > (env_variables?.MAX_LENGTH_PLAYER_NAME || -1))) return setError(t('error.player_name_too_long', { max: env_variables?.MAX_LENGTH_PLAYER_NAME }))
 
 		const json: Type__Client_To_Server__Session_Players__POST_And_PATCH = { 
 			SessionID:		+(session_id || -1), 
@@ -218,13 +220,13 @@ export default function Session__Players() {
 
 			<Previous onClick={() => navigate(-1)}>
 				{isInit && <>
-					<div className='session__players--previous_container'>
+					<div className='session__players--button_container'>
 						<button 
-							className='button button_reverse_red button_scale_3 session__players--previous'
+							className='button button_reverse_red button_scale_3 session__players--button'
 							onClick={remove_player}
 						><Person_Remove/></button>
 						<button 
-							className='button button_reverse button_scale_3 session__players--previous'
+							className='button button_reverse button_scale_3 session__players--button'
 							onClick={add_player}
 						><Person_Add/></button>
 					</div>
@@ -245,7 +247,7 @@ export default function Session__Players() {
 
 			<CustomButton 
 				onClick={save}
-				text={'Speichern'}
+				text={t('save')}
 				loading={isLoading__user || isLoading__list_players || isLoading__env_variables}
 			/>
 
