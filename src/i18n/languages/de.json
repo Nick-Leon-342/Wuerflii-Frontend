@@ -3,6 +3,8 @@
 {
 	"account": "Account", 
 	"already_have_an_account": "Bereits einen Account?", 
+	"amount_of_different_sessions": "Anzahl unterschiedlicher Partien", 
+	"amount_of_games": "Anzahl von Spielen", 
 	"back": "Zurück", 
 	"begins_with_letter": "Angefangen mit Buchstaben", 
 	"cancel": "Abbrechen", 
@@ -23,6 +25,7 @@
 	"darkmode": "Dunkler Modus", 
 	"delete_account": "Account löschen", 
 	"discard_game": "Spiel verwerfen", 
+	"draws": "Davon unentschieden", 
 	"edit": "Bearbeiten", 
 	"edit_players": "Spieler bearbeiten", 
 	"error": {
@@ -70,6 +73,8 @@
 		"list_separator": ", ",
 		"list_and": " und "
 	}, 
+	"games_played": "Spiele gespielt", 
+	"history": "Verlauf", 
 	"input_type": {
 		"name": 			"Eingabetyp", 
 		"select": 			"Auswahl", 
@@ -99,6 +104,7 @@
 		"november": 	"November", 
 		"december": 	"Dezember" 
 	}, 
+	"more_statistics": "Mehr Statistiken", 
 	"name": "Name", 
 	"no_account_yet": "Noch keinen Account?", 
 	"ok": "Ok", 
@@ -108,6 +114,9 @@
 	"players": "Spieler", 
 	"please_fill_out_registration": "Bitte alles richtig ausfüllen.", 
 	"please_enter_all_values": "Bitte alle Werte eingeben.", 
+	"points_average": "Durchschnittliche Punktzahlen", 
+	"points_maximum": "Höchste Punktzahlen", 
+	"points_minimum": "Niedrigste Punktzahlen", 
 	"recently_played": "Zuletzt gespielt", 
 	"register": "Registrieren", 
 	"registration_disabled": "Registrierungen wurden abgeschaltet.", 
@@ -118,11 +127,17 @@
 	"session": "Partie", 
 	"session_not_found": "Die Partie wurde nicht gefunden.", 
 	"settings": "Einstellungen", 
+	"show_border": "Umrandung anzeigen", 
 	"show_date": "Datum anzeigen", 
 	"show_scores": "Punktzahl anzeigen", 
 	"show_session_name": "Partienamen anzeigen", 
 	"select": "Auswählen", 
 	"statistics": "Statistiken", 
+	"statistics_view": {
+		"overall": "Gesamt", 
+		"year": "Jahr", 
+		"month": "Monat" 
+	}, 
 	"successfully_saved": "Erfolgreich gespeichert!", 
 	"sure_you_want_to_delete_session": "Bist du sicher, dass du diese Partie löschen möchtest?", 
 	"sure_you_want_to_delete_sessions": "Bist du sicher, dass du diese Partien löschen möchtest?", 

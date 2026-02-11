@@ -5,6 +5,7 @@ import './scss/Analytics_Session.scss'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -35,6 +36,7 @@ import type { Type__Session } from '../../types/Type__Session'
 export default function Analytics_Session() {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -76,7 +78,7 @@ export default function Analytics_Session() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -99,7 +101,7 @@ export default function Analytics_Session() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -252,18 +254,18 @@ export default function Analytics_Session() {
 									onChange={sync__show_border}
 								/>
 							</>}
-							<span>Umrandung anzeigen</span>
+							<span>{t('show_border')}</span>
 						</div>
 
 
 
 						{/* ____________________ Graph ____________________ */}
 
-						<h2>Verlauf</h2>
+						<h2>{t('history')}</h2>
 
 						
 						<Chart_Graph
-							labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Type__List_Months ] : total?.Data ? Object.keys(total?.Data) : []}
+							labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Type__List_Months.map(month => t('months.' + month)) ] : total?.Data ? Object.keys(total?.Data) : []}
 							IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
 							List__Players={list_players}
 							Data={total?.Data}
@@ -279,15 +281,15 @@ export default function Analytics_Session() {
 
 					<div className='analytics_session--more_statistics box'>
 						
-						<h2>Mehr Statistiken</h2>
+						<h2>{t('more_statistics')}</h2>
 
 						<div className='analytics_session--more_statistics--statistic'>
-							<span>Spiele gespielt</span>
+							<span>{t('games_played')}</span>
 							<span>{total.Total__Games_Played}</span>
 						</div>
 
 						<div className='analytics_session--more_statistics--statistic'>
-							<span>Davon unentschieden</span>
+							<span>{t('draws')}</span>
 							<span>{total.Total__Draws}</span>
 						</div>
 
@@ -295,7 +297,7 @@ export default function Analytics_Session() {
 
 						<div className='analytics_session--more_statistics--chart_container'>
 
-							<span>Niedriste Punktzahlen:</span>
+							<span>{t('points_minimum')}:</span>
 
 							<Chart_Bar_Session
 								IsBorderVisible={session.Statistics__Show_Border}
@@ -309,7 +311,7 @@ export default function Analytics_Session() {
 
 						<div className='analytics_session--more_statistics--chart_container'>
 
-							<span>Höchste Punktzahlen:</span>
+							<span>{t('points_maximum')}:</span>
 
 							<Chart_Bar_Session
 								IsBorderVisible={session.Statistics__Show_Border}
@@ -323,7 +325,7 @@ export default function Analytics_Session() {
 
 						<div className='analytics_session--more_statistics--chart_container'>
 
-							<span>⌀ Durschnittliche Punktzahlen:</span>
+							<span>⌀ {t('points_average')}:</span>
 
 							<Chart_Bar_Session
 								IsBorderVisible={session.Statistics__Show_Border}

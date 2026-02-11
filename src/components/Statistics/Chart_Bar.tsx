@@ -1,5 +1,7 @@
 
 
+import type { Type__Server_Response__Analytics__GET__Data } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
+import { useTranslation } from 'react-i18next'
 import { Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -10,7 +12,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import type { Type__Server_Response__Analytics__GET__Data } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
 
 ChartJS.register(
 	CategoryScale,
@@ -35,13 +36,15 @@ export default function Chart_Bar({
 	data, 
 }: Props__Chart_Bar) {
 
+	const { t } = useTranslation()
+
 	if(!JSON) return <></>
 	return <>
 		<Bar 
 			data={{
 				labels,
 				datasets: [{
-					label: 'Spiele gespielt',
+					label: t('games_played'),
 					data: Object.keys(data).map(key => data[key].Games_Played),
 					backgroundColor: 'rgba(0, 230, 0, 0.3)',
 					borderColor: 'rgba(0, 230, 0, 1)',
