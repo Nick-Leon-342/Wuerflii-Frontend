@@ -8,12 +8,15 @@
 	max-width: 600px;
 	min-width: 300px;
 
-	.session__players--previous_container {
+	.session__players--button_container {
 		display: flex;
 		flex-direction: row;
 		gap: 10px;
 
-		.session__players--previous svg { width: 30px; }
+		.session__players--button {
+			width: 45px;
+			svg { width: 30px; }
+		} 
 	}
 
 	.session__players--list {

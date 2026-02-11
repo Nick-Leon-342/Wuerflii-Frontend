@@ -4,35 +4,36 @@
 import './scss/Session__Preview.scss'
 import 'react-calendar/dist/Calendar.css'
 
-import Calendar from 'react-calendar'
-import { useInView } from 'react-intersection-observer'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { useTranslation } from 'react-i18next'
+import Calendar from 'react-calendar'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../hooks/useErrorHandling'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Popup from '../../components/Popup/Popup'
-import Custom_Button from '../../components/misc/Custom_Button'
-import OptionsDialog from '../../components/Popup/Popup__Options'
-import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
-import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Popup__Edit_Preview from '../../components/Popup/Popup__Edit_Preview'
+import Custom_Link from '../../components/NavigationElements/Custom_Link'
+import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
+import OptionsDialog from '../../components/Popup/Popup__Options'
+import Custom_Button from '../../components/misc/Custom_Button'
+import Popup from '../../components/Popup/Popup'
 
-import Settings from '../../svg/Settings.svg?react'
 import List_Sort from '../../svg/List_Sort.svg?react'
+import Settings from '../../svg/Settings.svg?react'
 
-import { get__user } from '../../api/user'
-import { get__final_scores_page } from '../../api/final_score'
-import { get__session_players } from '../../api/session/session_players'
 import { get__session, patch__session_date } from '../../api/session/session'
+import { get__session_players } from '../../api/session/session_players'
+import { get__final_scores_page } from '../../api/final_score'
+import { get__user } from '../../api/user'
 
-import type { Type__Session } from '../../types/Type__Session'
 import type { Type__Client_To_Server__Session_Date__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
 import type { Type__Server_Response__Final_Score__GET } from '../../types/Type__Server_Response/Type__Server_Response__Final_Score__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Session } from '../../types/Type__Session'
 
 
 
@@ -40,14 +41,15 @@ import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server
 
 export default function Session__Preview() {
 	
-	const navigate = useNavigate()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const navigate			= useNavigate()
+	const { t, i18n }		= useTranslation()
+	const query_client		= useQueryClient()
+	const axiosPrivate		= useAxiosPrivate()
+	const handle_error		= useErrorHandling()
 
-	const { session_id } = useParams()
-	const ref_edit_list = useRef<HTMLButtonElement>(null)
-	const ref_edit_session = useRef<HTMLButtonElement>(null)
+	const { session_id }	= useParams()
+	const ref_edit_list		= useRef<HTMLButtonElement>(null)
+	const ref_edit_session	= useRef<HTMLButtonElement>(null)
 	
 	const [ loading_preparing_game, setLoading_preparing_game	] = useState<boolean>(false)
 
@@ -90,7 +92,7 @@ export default function Session__Preview() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -110,7 +112,7 @@ export default function Session__Preview() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -192,7 +194,7 @@ export default function Session__Preview() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert('Die Partie wurde nicht gefunden.')
+					alert(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})
@@ -326,7 +328,7 @@ export default function Session__Preview() {
 					className='button button_reverse button_scale_2'
 				>
 					<List_Sort/>
-					<span>Liste</span>
+					<span>{t('list')}</span>
 				</button>
 
 				<button
@@ -334,7 +336,7 @@ export default function Session__Preview() {
 					onClick={() => setShow_edit_session(true)}
 					className='button button_reverse button_scale_1'
 				>
-					<span>Einstellungen</span>
+					<span>{t('settings')}</span>
 					<Settings/>
 				</button>
 
@@ -440,9 +442,9 @@ export default function Session__Preview() {
 							}
 						})}
 						{(isLoading__list_finalscores || isFetchingNextPage) && <>
-							<li>Wird geladen...</li>
+							<li>{t('loading')}...</li>
 						</>}
-						{error && <li>Fehler...</li>}
+						{error && <li>{t('error')}...</li>}
 					</ul>
 
 				</div>
@@ -451,14 +453,14 @@ export default function Session__Preview() {
 
 
 			<Custom_Button
-				text={`Los geht's!`}
+				text={t('lets_go')}
 				onClick={start_game}
 				loading={loading_preparing_game}
 			/>
 
 			<Custom_Link 
 				onClick={() => navigate('/',  { replace: false })}
-				text='Zurück'
+				text={t('back')}
 			/>
 
 		</div>
@@ -472,11 +474,12 @@ export default function Session__Preview() {
 		<Popup
 			show_popup={show_customDate}
 			setShow_popup={setShow_customDate}
-			title='Beginn auswählen'
+			title={t('choose_beginning')}
 			className='session__preview--popup--calendar'
 		>
 			<div className='session__preview--popup'>
 				<Calendar
+					locale={i18n.language}
 					value={view_customDate}
 					onChange={(cd) => setView_customDate(cd as Date)}
 				/>
@@ -484,7 +487,7 @@ export default function Session__Preview() {
 				<Custom_Button
 					loading={mutate__custom_date.isPending}
 					onClick={save_customDate}
-					text='Speichern'
+					text={t('save')}
 				/>
 			</div>
 		</Popup>
@@ -504,20 +507,20 @@ export default function Session__Preview() {
 				<Link
 					className='button button_scale_1'
 					to={`/session/${session?.id}/analytics`}
-				>Statistiken</Link>
+				>{t('statistics')}</Link>
 
 				<div className='session__preview--popup--settings--edit'>
-					<span>Bearbeiten</span>
+					<span>{t('edit')}</span>
 
 					<div>
 						<Link
 							className='button button_scale_1'
 							to={`/session/${session?.id}`}
-						>Partie</Link>
+						>{t('session')}</Link>
 						<Link
 							className='button button_scale_1'
 							to={`/session/${session?.id}/players`}
-						>Spieler</Link>
+						>{t('players')}</Link>
 					</div>
 				</div>
 			</div>

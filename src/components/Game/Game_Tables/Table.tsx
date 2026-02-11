@@ -2,23 +2,24 @@
 
 import './scss/Table.scss'
 
-import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState, type ChangeEvent, type FocusEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
-import { list_rows } from '../../../logic/utils'
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import useErrorHandling from '../../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import { list_rows } from '../../../logic/utils'
 
 import LoaderBox from '../../Loader/Loader_Box'
 
 import { patch__table_columns } from '../../../api/table_columns'
 
-import type { Type__Session } from '../../../types/Type__Session'
-import type { Type__Table_Columns } from '../../../types/Type__Table_Column'
-import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
-import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
 import type { Type__Client_To_Server__Table_Columns__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Table_Columns__PATCH'
+import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
+import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Table_Columns } from '../../../types/Type__Table_Column'
+import type { Type__Session } from '../../../types/Type__Session'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -40,6 +41,7 @@ export default function Table({
 	session, 
 }: Props__Table) {
 
+	const { t } = useTranslation()
 	const [ list_columns, setList_columns ] = useState<Array<number>>([])
 
 
@@ -74,7 +76,7 @@ export default function Table({
 						>
 							
 							{/* First two columns */}
-							{row.td}
+							{row.renderTd?.(t)}
 
 
 
@@ -154,6 +156,7 @@ const Input_Element = ({
 }: Props__Input_Element) => {
 
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const query_client = useQueryClient()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -185,21 +188,21 @@ const Input_Element = ({
 			handle_error({
 				err, 
 				handle_no_server_response: () => {
-					if(window.confirm(`Der Server antwortet nicht.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) {
+					if(window.confirm(t('error.synchronization_of_input_failed', { value: value, column: column + 1, name: list_players[index_player].Name }))) {
 						mutate__table_columns.mutate(json)
 					} else {
 						init_value()
 					}
 				}, 
 				handle_404: () => {
-					alert('Eine Ressource wurde nicht gefunden!')
+					alert(t('error.resource_not_found'))
 					navigate(`/`)
 				}, 
 				handle_409: () => {
-					alert(`Der Eintrag '${value}' ist nicht zulässig!`)
+					alert(t('error.value_invalid', { value: value }))
 				}, 
 				handle_500: () => {
-					if(window.confirm(`Beim Server ist ein Fehler aufgetreten.\nDer Eintrag '${value}' in der ${column + 1}. Spalte für '${list_players[index_player].Name}' wurde nicht synchronisiert.\nErneut versuchen?`)) {
+					if(window.confirm(t('error.synchronization_of_input_failed', { value: value, column: column + 1, name: list_players[index_player].Name }))) {
 						mutate__table_columns.mutate(json)
 					} else {
 						init_value()

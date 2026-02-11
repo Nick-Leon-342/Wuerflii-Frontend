@@ -96,7 +96,7 @@ export default function Registration_And_Login() {
 	const registration = () => {
 		
 		if(!name || !NAME__REGEX.test(name) || !password || !PASSWORD__REGEX.test(password)) return setError(t('please_fill_out_registration'))
-		if(password !== password_confirm) return setError(t('password_confirm_doesnt_match'))
+		if(password !== password_confirm) return setError(t('error.password_confirm_doesnt_match'))
 		setLoading(true)
 		setError('')
 
@@ -129,7 +129,7 @@ export default function Registration_And_Login() {
 				handle_409: () => {
 					console.log(err)
 					if(err.response?.data === 'Username already taken.') {
-						setError(t('username_taken'))
+						setError(t('error.username_taken'))
 					} else if(err.response?.data === 'User registration is disabled.') {
 						setError(t('registration_disabled'))
 					}

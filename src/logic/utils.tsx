@@ -24,6 +24,7 @@ import { Possible_Entries__Bottom_Table_4 } from './Possible_Entries/Possible_En
 import { Possible_Entries__Bottom_Table_5 } from './Possible_Entries/Possible_Entries__Bottom_Table_5'
 import { Possible_Entries__Bottom_Table_6 } from './Possible_Entries/Possible_Entries__Bottom_Table_6'
 import { Possible_Entries__Bottom_Table_7 } from './Possible_Entries/Possible_Entries__Bottom_Table_7'
+import type { TFunction } from 'i18next'
 
 export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
 
@@ -54,98 +55,89 @@ export const list_rows: Array<Type__Row> = [
 		Name: 				'Upper_Table_1', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_1,
 		Border_Top: 		true, 
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceOne/>
 				<DiceOne/>
 				<DiceOne/>
 			</td>
-			<td><label>Nur Einser<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.uppertable_1')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_2', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_2,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceTwo/>
 				<DiceTwo/>
 				<DiceTwo/>
 			</td>
-			<td><label>Nur Zweier<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.uppertable_2')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_3', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_3,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceThree/>
 				<DiceThree/>
 				<DiceThree/>
 			</td>
-			<td><label>Nur Dreier<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.uppertable_3')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_4', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_4,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceFour/>
 				<DiceFour/>
 				<DiceFour/>
 			</td>
-			<td><label>Nur Vierer<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.uppertable_4')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_5', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_5,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceFive/>
 				<DiceFive/>
 				<DiceFive/>
 			</td>
-			<td><label>Nur Fünfer<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.uppertable_5')}</label></td>
+		</>), 
 	}, {
 		Name: 				'Upper_Table_6', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_6,
-		td: 
-		<>
+		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<DiceSix/>
 				<DiceSix/>
 				<DiceSix/>
 			</td>
-			<td><label>Nur Sechser<br/>zählen</label></td>
-		</>, 
+			<td><label>{t('game.uppertable_6')}</label></td>
+		</>), 
 	}, {
 		Name: 'Upper_Table_Score', 
 		Border_Top: true, 
-		td: 
-		<>
-			<td>gesamt</td>
+		renderTd: 			(t: TFunction) => (<>
+			<td>{t('game.uppertable_score')}</td>
 			<td><ArrowLeft/></td>
-		</>, 
+		</>), 
 	}, {
 		Name: 'Upper_Table_Add35', 
-		td: 
-		<>
-			<td>Bonus bei 63<br/>oder mehr</td>
-			<td>plus 35</td>
-		</>, 
+		renderTd: 			(t: TFunction) => (<>
+			<td>{t('game.uppertable_bonus_if_63')}<br/>{t('game.uppertable_or_more')}</td>
+			<td>{t('game.uppertable_add_35')}</td>
+		</>), 
 	}, {
 		Name: 'Upper_Table_TotalScore', 
 		Border_Bottom: true, 
-		td: 
-		<>
-			<td>gesamt<br/>oberer Teil</td>
+		renderTd: 			(t: TFunction) => (<>
+			<td>{t('game.uppertable_total')}</td>
 			<td><ArrowLeft/></td>
-		</>, 
+		</>), 
 	},
 
 

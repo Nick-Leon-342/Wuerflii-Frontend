@@ -2,22 +2,23 @@
 
 import '../Game/scss/Game.scss'
 
-import { useContext, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
+import { useContext, useEffect } from 'react'
 
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import useErrorHandling from '../../hooks/useErrorHandling'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import useErrorHandling from '../../hooks/useErrorHandling'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Table from '../../components/Game/Game_Tables/Table'
-import OptionsDialog from '../../components/Popup/Popup__Options'
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
+import OptionsDialog from '../../components/Popup/Popup__Options'
+import Table from '../../components/Game/Game_Tables/Table'
 
-import { get__user } from '../../api/user'
-import { get__session } from '../../api/session/session'
-import { get__table_columns_archive } from '../../api/table_columns'
 import { get__session_players } from '../../api/session/session_players'
+import { get__table_columns_archive } from '../../api/table_columns'
+import { get__session } from '../../api/session/session'
+import { get__user } from '../../api/user'
 
 
 
@@ -25,6 +26,7 @@ import { get__session_players } from '../../api/session/session_players'
 
 export default function Session__Preview_Table() {
 
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const axiosPrivate = useAxiosPrivate()
 	const handle_error = useErrorHandling()
@@ -61,7 +63,7 @@ export default function Session__Preview_Table() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -79,7 +81,7 @@ export default function Session__Preview_Table() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert('Die Partie wurde nicht gefunden.')
+				alert(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -97,7 +99,7 @@ export default function Session__Preview_Table() {
 		handle_error({
 			err: error__list__table_columns, 
 			handle_404: () => {
-				alert('Eine Ressource wurde nicht gefunden.')
+				alert(t('error.generic'))
 				navigate(`/session/${session_id}/preview`, { replace: true })
 			}
 		})
@@ -156,7 +158,7 @@ export default function Session__Preview_Table() {
 				<button
 					className='button'
 					onClick={() => navigate(-1)}
-				>Zurück</button>
+				>{t('back')}</button>
 				
 			</div>
 		</div>
