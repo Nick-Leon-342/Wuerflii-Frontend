@@ -94,7 +94,12 @@ export default function Session__Select() {
 	useEffect(() => {
 		function init() {
 			// List_Session is edited only in frontend (checkbox to delete multiple sessions), that's why the read-only tmp_list_sessions has to be copied into a editable variable
-			setList_sessions(tmp_list_sessions || [])
+			// Reset Checkbox_Checked_To_Delete to false for all sessions when list updates
+			const sessionsWithResetCheckbox = (tmp_list_sessions || []).map(session => ({
+				...session,
+				Checkbox_Checked_To_Delete: false
+			}))
+			setList_sessions(sessionsWithResetCheckbox)
 	
 			if(!tmp_list_sessions) return 
 			// Cache all sessions and players to increase performance when selecting session
