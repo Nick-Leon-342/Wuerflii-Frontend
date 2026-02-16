@@ -200,6 +200,7 @@ const Input_Element = ({
 				}, 
 				handle_409: () => {
 					alert(t('error.value_invalid', { value: value }))
+					init_value()
 				}, 
 				handle_500: () => {
 					if(window.confirm(t('error.synchronization_of_input_failed', { value: value, column: column + 1, name: list_players[index_player].Name }))) {
@@ -218,14 +219,21 @@ const Input_Element = ({
 
 	function onBlur(event: FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
 
-		const value = event.target.value
+		const input = event.target.value
+		const new_value = input === '' ? null : +input
+
+		// Check if value is the same as before
+		const tmp = list__table_columns[index_player].List__Table_Columns[column][list_rows[index_row].Name as keyof Type__Table_Columns]
+		const value = tmp === null ? null : tmp
+		if(new_value === value) return
+
 
 		mutate__table_columns.mutate({
 			SessionID: session.id, 
 			PlayerID: list_players[index_player].id, 
 			Column: column, 
 			Name: list_rows[index_row].Name, 
-			Value: value === '' ? null : +value, 
+			Value: new_value, 
 		})
 
 	}
