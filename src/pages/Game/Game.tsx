@@ -12,7 +12,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
-import OptionsDialog from '../../components/Popup/Popup__Options'
+import OptionsDialog from '../../components/Popup/Popup__Settings'
 import CustomButton from '../../components/misc/Custom_Button'
 import Game_Options from '../../components/Game/Game_Options'
 import Table from '../../components/Game/Game_Tables/Table'

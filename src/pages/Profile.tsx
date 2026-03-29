@@ -13,7 +13,7 @@ import useAuth from '../hooks/useAuth'
 
 import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
 import Previous from '../components/NavigationElements/Previous'
-import Popup__Options from '../components/Popup/Popup__Options'
+import Popup__Settings from '../components/Popup/Popup__Settings'
 import CustomButton from '../components/misc/Custom_Button'
 
 import { get__user, patch__user } from '../api/user'
@@ -168,7 +168,7 @@ export default function Profile() {
 
 	return <>
 	
-		<Popup__Options user={user}/>
+		<Popup__Settings user={user}/>
 	
 	
 

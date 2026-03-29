@@ -2,7 +2,6 @@
 
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useContext } from 'react'
-import packageJson from '../../../package.json'
 import { useTranslation } from 'react-i18next'
 import type { AxiosError } from 'axios'
 
@@ -12,7 +11,7 @@ import useAuth from '@/hooks/useAuth'
 
 import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
 import Username_And_Password__Input from '@/components/Username_And_Password/Username_And_Password__Input'
-import Popup__Options from '@/components/Popup/Popup__Options'
+import Popup__Settings from '@/components/Popup/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
 import Wuerflii from '@/svg/wuerflii.svg?react'
@@ -179,21 +178,16 @@ export default function Registration_And_Login() {
 
     return <>
 
-		<Popup__Options 
+		<Popup__Settings 
 			user={null}
 		/>
 
 		<div className='registration_and_login flex flex-row items-center justify-center h-dvh'>
 			<div className='flex flex-col lg:flex-row items-center gap-15 lg:gap-10'>
 
-				<div className='flex flex-col gap-1'>
-
-					<div className='flex flex-row items-center gap-2'>
-						<Wuerflii className='[&_path]:fill-muted-foreground w-17 h-17'/>
-						<h1 className='text-muted-foreground text-4xl font-bold'>Wuerflii</h1>
-					</div>
-					<span className='text-muted-foreground'>v_{packageJson.version}</span>
-
+				<div className='flex flex-row items-center gap-3'>
+					<Wuerflii className='[&_path]:fill-muted-foreground w-17 h-17'/>
+					<h1 className='text-muted-foreground text-4xl font-bold'>Wuerflii</h1>
 				</div>
 
 

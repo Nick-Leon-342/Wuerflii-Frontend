@@ -15,7 +15,7 @@ import Statistics__Select_View from '../../components/Statistics/Statistics__Sel
 import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
 import Chart_Doughnut from '../../components/Statistics/Chart_Doughnut'
 import Previous from '../../components/NavigationElements/Previous'
-import Popup__Options from '../../components/Popup/Popup__Options'
+import Popup__Settings from '../../components/Popup/Popup__Settings'
 import Chart_Graph from '../../components/Statistics/Chart_Graph'
 import LoaderBox from '../../components/Loader/Loader_Box'
 
@@ -199,7 +199,7 @@ export default function Analytics_Session() {
 
 	return <>
 
-		<Popup__Options user={user}/>
+		<Popup__Settings user={user}/>
 
 
 

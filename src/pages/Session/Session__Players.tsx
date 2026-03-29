@@ -13,7 +13,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
 import Previous from '../../components/NavigationElements/Previous'
-import OptionsDialog from '../../components/Popup/Popup__Options'
+import OptionsDialog from '../../components/Popup/Popup__Settings'
 import CustomButton from '../../components/misc/Custom_Button'
 
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'

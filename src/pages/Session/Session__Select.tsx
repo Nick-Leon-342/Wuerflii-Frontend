@@ -13,7 +13,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
-import OptionsDialog from '../../components/Popup/Popup__Options'
+import OptionsDialog from '../../components/Popup/Popup__Settings'
 import LoaderBox from '../../components/Loader/Loader_Box'
 
 import { delete__session, get__sessions_list } from '../../api/session/session'

@@ -12,7 +12,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
-import OptionsDialog from '../../components/Popup/Popup__Options'
+import OptionsDialog from '../../components/Popup/Popup__Settings'
 import Table from '../../components/Game/Game_Tables/Table'
 
 import { get__session_players } from '../../api/session/session_players'

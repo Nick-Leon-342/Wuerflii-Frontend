@@ -12,7 +12,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import Previous from '../../components/NavigationElements/Previous'
-import PopupOptions from '../../components/Popup/Popup__Options'
+import PopupOptions from '../../components/Popup/Popup__Settings'
 import Chart_Bar from '../../components/Statistics/Chart_Bar'
 
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'

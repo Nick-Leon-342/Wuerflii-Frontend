@@ -17,7 +17,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Popup__Edit_Preview from '../../components/Popup/Popup__Edit_Preview'
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
-import OptionsDialog from '../../components/Popup/Popup__Options'
+import OptionsDialog from '../../components/Popup/Popup__Settings'
 import Custom_Button from '../../components/misc/Custom_Button'
 import Popup from '../../components/Popup/Popup'
 

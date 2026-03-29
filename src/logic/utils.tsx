@@ -28,6 +28,7 @@ import { Possible_Entries__Bottom_Table_6 } from './Possible_Entries/Possible_En
 import { Possible_Entries__Bottom_Table_7 } from './Possible_Entries/Possible_Entries__Bottom_Table_7'
 
 export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
+export const darkMode_string = 'Wuerflii_DarkMode'
 
 
 
