@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Previous from '../../components/NavigationElements/Previous'
 import OptionsDialog from '../../components/Popup/Popup__Options'
 import CustomButton from '../../components/misc/Custom_Button'
@@ -243,10 +242,10 @@ export default function Session__Add_And_Edit() {
 			/>
 
 			{!session_id && <>
-				<Custom_Link 
+				{/* <Custom_Link 
 					onClick={() => navigate('/', { replace: false })}
 					text={t('load_session')}
-				/>
+				/> */}
 			</>}
 
 		</div>

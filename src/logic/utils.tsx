@@ -2,13 +2,13 @@
 
 import type { TFunction } from 'i18next'
 
-import DiceOne from '../svg/Dice_One.svg?react'
-import DiceTwo from '../svg/Dice_Two.svg?react'
-import DiceThree from '../svg/Dice_Three.svg?react'
-import DiceFour from '../svg/Dice_Four.svg?react'
-import DiceFive from '../svg/Dice_Five.svg?react'
-import DiceSix from '../svg/Dice_Six.svg?react'
-import ArrowLeft from '../svg/Arrow_Left.svg?react'
+import Dice_1 from '../svg/Dice_1.svg?react'
+import Dice_2 from '../svg/Dice_2.svg?react'
+import Dice_3 from '../svg/Dice_3.svg?react'
+import Dice_4 from '../svg/Dice_4.svg?react'
+import Dice_5 from '../svg/Dice_5.svg?react'
+import Dice_6 from '../svg/Dice_6.svg?react'
+import { MoveRight } from 'lucide-react'
 
 import type { Type__Row } from '../types/Type__Row'
 
@@ -58,9 +58,9 @@ export const list_rows: Array<Type__Row> = [
 		Border_Top: 		true, 
 		renderTd: 			(t: TFunction) => (<>
 			<td>
-				<DiceOne/>
-				<DiceOne/>
-				<DiceOne/>
+				<Dice_1/>
+				<Dice_1/>
+				<Dice_1/>
 			</td>
 			<td><label>{t('game.ones')}</label></td>
 		</>), 
@@ -69,9 +69,9 @@ export const list_rows: Array<Type__Row> = [
 		Possible_Entries: 	Possible_Entries__Upper_Table_2,
 		renderTd: 			(t: TFunction) => (<>
 			<td>
-				<DiceTwo/>
-				<DiceTwo/>
-				<DiceTwo/>
+				<Dice_2/>
+				<Dice_2/>
+				<Dice_2/>
 			</td>
 			<td><label>{t('game.twos')}</label></td>
 		</>), 
@@ -80,9 +80,9 @@ export const list_rows: Array<Type__Row> = [
 		Possible_Entries: 	Possible_Entries__Upper_Table_3,
 		renderTd: 			(t: TFunction) => (<>
 			<td>
-				<DiceThree/>
-				<DiceThree/>
-				<DiceThree/>
+				<Dice_3/>
+				<Dice_3/>
+				<Dice_3/>
 			</td>
 			<td><label>{t('game.threes')}</label></td>
 		</>), 
@@ -91,9 +91,9 @@ export const list_rows: Array<Type__Row> = [
 		Possible_Entries: 	Possible_Entries__Upper_Table_4,
 		renderTd: 			(t: TFunction) => (<>
 			<td>
-				<DiceFour/>
-				<DiceFour/>
-				<DiceFour/>
+				<Dice_4/>
+				<Dice_4/>
+				<Dice_4/>
 			</td>
 			<td><label>{t('game.fours')}</label></td>
 		</>), 
@@ -102,9 +102,9 @@ export const list_rows: Array<Type__Row> = [
 		Possible_Entries: 	Possible_Entries__Upper_Table_5,
 		renderTd: 			(t: TFunction) => (<>
 			<td>
-				<DiceFive/>
-				<DiceFive/>
-				<DiceFive/>
+				<Dice_5/>
+				<Dice_5/>
+				<Dice_5/>
 			</td>
 			<td><label>{t('game.fives')}</label></td>
 		</>), 
@@ -113,9 +113,9 @@ export const list_rows: Array<Type__Row> = [
 		Possible_Entries: 	Possible_Entries__Upper_Table_6,
 		renderTd: 			(t: TFunction) => (<>
 			<td>
-				<DiceSix/>
-				<DiceSix/>
-				<DiceSix/>
+				<Dice_6/>
+				<Dice_6/>
+				<Dice_6/>
 			</td>
 			<td><label>{t('game.sixes')}</label></td>
 		</>), 
@@ -124,7 +124,7 @@ export const list_rows: Array<Type__Row> = [
 		Border_Top: true, 
 		renderTd: 			(t: TFunction) => (<>
 			<td><label>{t('game.points')}</label></td>
-			<td><ArrowLeft/></td>
+			<td><MoveRight/></td>
 		</>), 
 	}, {
 		Name: 'Upper_Table_Add35', 
@@ -137,7 +137,7 @@ export const list_rows: Array<Type__Row> = [
 		Border_Bottom: true, 
 		renderTd: 			(t: TFunction) => (<>
 			<td><label>{t('game.uppertable_total')}</label></td>
-			<td><ArrowLeft/></td>
+			<td><MoveRight/></td>
 		</>), 
 	},
 
@@ -208,20 +208,20 @@ export const list_rows: Array<Type__Row> = [
 		Name: 'Bottom_Table_Score', 
 		renderTd: 			(t: TFunction) => (<>
 			<td><label>{t('game.points')}</label></td>
-			<td><ArrowLeft/></td>
+			<td><MoveRight/></td>
 		</>), 
 	}, {
 		Name: 'Upper_Table_TotalScore', 
 		renderTd: 			(t: TFunction) => (<>
 			<td><label>{t('game.uppertable_total')}</label></td>
-			<td><ArrowLeft/></td>
+			<td><MoveRight/></td>
 		</>), 
 	}, {
 		Name: 'Bottom_Table_TotalScore', 
 		Border_Bottom: true, 
 		renderTd: 			(t: TFunction) => (<>
 			<td><label>{t('game.total')}</label></td>
-			<td><ArrowLeft/></td>
+			<td><MoveRight/></td>
 		</>), 
 	}
 

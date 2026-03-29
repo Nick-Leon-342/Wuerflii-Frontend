@@ -18,8 +18,6 @@ import Game_Options from '../../components/Game/Game_Options'
 import Table from '../../components/Game/Game_Tables/Table'
 import Popup from '../../components/Popup/Popup'
 
-import Settings from '../../svg/Settings.svg?react'
-
 import { get__session_players } from '../../api/session/session_players'
 import { get__table_columns } from '../../api/table_columns'
 import { get__session } from '../../api/session/session'
@@ -27,6 +25,7 @@ import { get__user } from '../../api/user'
 
 import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import { Settings } from 'lucide-react'
 
 
 

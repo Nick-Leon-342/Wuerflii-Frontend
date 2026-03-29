@@ -2,9 +2,8 @@
 
 import './scss/Previous.scss'
 
-import ArrowBack from '../../svg/Arrow_Back.svg?react'
-
 import type { MouseEventHandler, ReactNode } from 'react'
+import { ChevronLeft } from 'lucide-react'
 
 
 
@@ -28,7 +27,7 @@ export default function Previous({
 			<button
 				onClick={onClick} 
 				className='button button_reverse button_scale_3 previous--button' 
-			><ArrowBack/></button>
+			><ChevronLeft/></button>
 
 			{children}
 

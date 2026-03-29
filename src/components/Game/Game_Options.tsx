@@ -13,14 +13,13 @@ import LoaderBox from '../Loader/Loader_Box'
 import Loader from '../Loader/Loader'
 import Popup from '../Popup/Popup'
 
-import Person_Settings from '../../svg/Person_Settings.svg?react'
-
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 import type { Type__Session } from '../../types/Type__Session'
 
 import { patch__session } from '../../api/session/session'
 import { useTranslation } from 'react-i18next'
+import { UserCog } from 'lucide-react'
 
 
 
@@ -187,7 +186,7 @@ export default function Game_Options({
 					<Link
 						to={`/session/${session?.id}/players`}
 						className='button button_reverse button_scale_3 edit'
-					><Person_Settings/></Link>
+					><UserCog/></Link>
 				</section>
 
 

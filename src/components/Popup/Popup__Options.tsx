@@ -13,13 +13,11 @@ import Context__Server_Version from '../../Provider_And_Context/Provider_And_Con
 import Popup from './Popup'
 import LoaderBox from '../Loader/Loader_Box'
 
-import Settings from '../../svg/Settings.svg?react'
-import Translate from '../../svg/Translate.svg?react'
-
 import { patch__user } from '../../api/user'
 
 import type { Type__User } from '../../types/Type__User'
 import { useTranslation } from 'react-i18next'
+import { Languages, Settings } from 'lucide-react'
 
 
 
@@ -151,7 +149,7 @@ export default function Popup__Options({
 
 					<section className='language'>
 						<span>
-							<Translate/>
+							<Languages/>
 							{t('language')}
 						</span>
 						<select

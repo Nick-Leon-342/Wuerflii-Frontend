@@ -12,14 +12,9 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import OptionsDialog from '../../components/Popup/Popup__Options'
 import LoaderBox from '../../components/Loader/Loader_Box'
-
-import ArrowDown from '../../svg/Arrow_Down.svg?react'
-import ListSort from '../../svg/List_Sort.svg?react'
-import Trashcan from '../../svg/Trashcan.svg?react'
 
 import { delete__session, get__sessions_list } from '../../api/session/session'
 import { get__user, patch__user } from '../../api/user'
@@ -28,6 +23,7 @@ import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Clie
 import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
 import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 import type { Type__Session } from '../../types/Type__Session'
+import { ChevronDown, SortDesc, Trash2 } from 'lucide-react'
 
 
 
@@ -248,12 +244,12 @@ export default function Session__Select() {
 					ref={ref}
 					className='button button_reverse button_scale_3'
 					onClick={() => setShow_settings(true)}
-				><ListSort/></button>
+				><SortDesc/></button>
 
 				<button
 					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions.some?.(session => session.Checkbox_Checked_To_Delete) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
 					onClick={handle_delete} 
-				><Trashcan/></button>
+				><Trash2/></button>
 
 			</header>
 
@@ -312,10 +308,10 @@ export default function Session__Select() {
 
 
 
-			<Custom_Link 
+			{/* <Custom_Link 
 				onClick={() => navigate('/session', { replace: false })}
 				text={t('create_session')}
-			/>
+			/> */}
 
 		</div>
 		
@@ -368,7 +364,7 @@ export default function Session__Select() {
 						className={`button button_reverse${cs ? ' session__select--popup--settings--currently_selected' : ''}${desc ? ' session__select--popup--settings--desc' : ''}`}
 					>
 						{option.Text}
-						<ArrowDown/>
+						<ChevronDown/>
 					</button>
 				)
 				

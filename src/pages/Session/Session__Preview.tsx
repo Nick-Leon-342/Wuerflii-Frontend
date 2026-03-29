@@ -16,14 +16,10 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Popup__Edit_Preview from '../../components/Popup/Popup__Edit_Preview'
-import Custom_Link from '../../components/NavigationElements/Custom_Link'
 import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
 import OptionsDialog from '../../components/Popup/Popup__Options'
 import Custom_Button from '../../components/misc/Custom_Button'
 import Popup from '../../components/Popup/Popup'
-
-import List_Sort from '../../svg/List_Sort.svg?react'
-import Settings from '../../svg/Settings.svg?react'
 
 import { get__session, patch__session_date } from '../../api/session/session'
 import { get__session_players } from '../../api/session/session_players'
@@ -34,6 +30,7 @@ import type { Type__Client_To_Server__Session_Date__PATCH } from '../../types/Ty
 import type { Type__Server_Response__Final_Score__GET } from '../../types/Type__Server_Response/Type__Server_Response__Final_Score__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Session } from '../../types/Type__Session'
+import { Settings, SortDesc } from 'lucide-react'
 
 
 
@@ -327,7 +324,7 @@ export default function Session__Preview() {
 					onClick={() => setShow_edit_list(true)}
 					className='button button_reverse button_scale_2'
 				>
-					<List_Sort/>
+					<SortDesc/>
 					<span>{t('list')}</span>
 				</button>
 
@@ -458,10 +455,10 @@ export default function Session__Preview() {
 				loading={loading_preparing_game}
 			/>
 
-			<Custom_Link 
+			{/* <Custom_Link 
 				onClick={() => navigate('/',  { replace: false })}
 				text={t('back')}
-			/>
+			/> */}
 
 		</div>
 

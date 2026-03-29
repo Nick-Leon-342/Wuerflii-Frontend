@@ -1,32 +1,25 @@
 
 
-import './scss/Registration_And_Login.scss'
-
-import packageJson from '../../../package.json'
-import { useState, useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-
-import useAuth from '../../hooks/useAuth'
-import { axiosDefault } from '../../api/axios'
-import useErrorHandling from '../../hooks/useErrorHandling'
-
-import Custom_Button from '../../components/misc/Custom_Button'
-import Input_With_SVG from '../../components/misc/Input_With_SVG'
-import Custom_Link from '../../components/NavigationElements/Custom_Link'
-import Form__Username_And_Password from '../../components/misc/Form__Username_And_Password'
-
-import Key from '../../svg/Key.svg?react'
-import Icon from '../../svg/default.svg?react'
-import Person from '../../svg/Person.svg?react'
-
-import Context__Regex from '../../Provider_And_Context/Provider_And_Context__Regex'
-import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
-
+import { useState, useEffect, useContext } from 'react'
+import packageJson from '../../../package.json'
+import { useTranslation } from 'react-i18next'
 import type { AxiosError } from 'axios'
 
-import { useTranslation } from 'react-i18next'
-import Popup__Options from '../../components/Popup/Popup__Options'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import { axiosDefault } from '@/api/axios'
+import useAuth from '@/hooks/useAuth'
+
+import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
+import Username_And_Password__Input from '@/components/Username_And_Password/Username_And_Password__Input'
+import Popup__Options from '@/components/Popup/Popup__Options'
+import Custom_Button from '@/components/misc/Custom_Button'
+import { Button } from '@/components/ui/button'
+import Wuerflii from '@/svg/wuerflii.svg?react'
+
+import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
+import Context__Error from '@/Provider_And_Context/Provider_And_Context__Error'
+import Context__Regex from '@/Provider_And_Context/Provider_And_Context__Regex'
 
 
 
@@ -190,88 +183,91 @@ export default function Registration_And_Login() {
 			user={null}
 		/>
 
-		<div className='registration_and_login'>
+		<div className='registration_and_login flex flex-row items-center justify-center h-dvh'>
+			<div className='flex flex-col lg:flex-row items-center gap-15 lg:gap-10'>
 
-			<div className='registration_and_login--logo_container'>
+				<div className='flex flex-col gap-1'>
 
-				<div className='registration_and_login--logo'>
-					<Icon/>
-					<h1>Wuerflii</h1>
+					<div className='flex flex-row items-center gap-2'>
+						<Wuerflii className='[&_path]:fill-muted-foreground w-17 h-17'/>
+						<h1 className='text-muted-foreground text-4xl font-bold'>Wuerflii</h1>
+					</div>
+					<span className='text-muted-foreground'>v_{packageJson.version}</span>
+
 				</div>
-				<div className='registration_and_login--version'>
-					<span>v_{packageJson.version}</span>
+
+
+				<hr className='bg-border w-full lg:w-px h-px lg:h-70'/>
+
+
+				<div className='flex flex-col gap-2'>
+
+					<form 
+						onSubmit={handleSubmit}
+						className='flex flex-col gap-6 w-lg'
+					>
+
+						{show_login && <>
+
+							<Username_And_Password__Input
+								placeholder='username'
+								setValue={setName}
+								value={name}
+								type='text'
+							/>
+
+							<Username_And_Password__Input
+								placeholder='password'
+								setValue={setPassword}
+								value={password}
+								type='password'
+							/>
+
+						</>}
+
+
+
+						{!show_login && <>
+
+							<Username_And_Password__Form 
+								name={name} 
+								setName={setName} 
+								
+								password={password} 
+								setPassword={setPassword} 
+		
+								password_confirm={password_confirm}
+								setPassword_confirm={setPassword_confirm}
+
+								isRequired={true}
+							/>
+
+						</>}
+
+
+
+						<Custom_Button 
+							text={show_login ? t('login') : t('register')}
+							className='justify-baseline h-12 text-lg'
+							loading={loading}
+						/>
+
+					</form>
+
+
+
+					<div className='flex flex-row items-center justify-end gap-2'>
+						<span className='text-sm'>{show_login ? t('no_account_yet') : t('already_have_an_account')}</span>
+						<Button
+							variant='link'
+							className='text-secondary p-0'
+							onClick={() => setShow_login(prev => !prev)}
+						>{show_login ? t('register') : t('login')}</Button>
+					</div>
+					
 				</div>
 
 			</div>
-
-
-			<div className='registration_and_login--line'/>
-
-
-			<div className='registration_and_login--page'>
-
-				<form onSubmit={handleSubmit}>
-
-					{show_login && <>
-
-						<Input_With_SVG
-							type='text'
-							value={name}
-							SVG={<Person/>}
-							isRequired={true}
-							name={t('username')}
-							onValueChange={({ target }) => setName(target.value)}
-						/>
-
-						<Input_With_SVG
-							SVG={<Key/>}
-							type='password'
-							value={password}
-							isRequired={true}
-							name={t('password')}
-							onValueChange={({ target }) => setPassword(target.value)}
-						/>
-
-					</>}
-
-
-
-					{!show_login && <>
-
-						<Form__Username_And_Password 
-							name={name} 
-							setName={setName} 
-							
-							password={password} 
-							setPassword={setPassword} 
-	
-							password_confirm={password_confirm}
-							setPassword_confirm={setPassword_confirm}
-
-							isRequired={true}
-						/>
-
-					</>}
-
-
-
-					<Custom_Button 
-						text={show_login ? t('login') : t('register')}
-						loading={loading}
-					/>
-
-				</form>
-
-
-
-				<Custom_Link 
-					onClick={() => setShow_login(prev => !prev)}
-					text={show_login ? t('register') : t('login')}
-					textBefore={show_login ? t('no_account_yet') : t('already_have_an_account')}
-				/>
-				
-			</div>
-
 		</div>
 	</>
 }

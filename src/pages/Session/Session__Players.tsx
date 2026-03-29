@@ -18,14 +18,12 @@ import CustomButton from '../../components/misc/Custom_Button'
 
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 
-import Person_Remove from '../../svg/Person_Remove.svg?react'
-import Person_Add from '../../svg/Person_Add.svg?react'
-
 import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '../../api/session/session_players'
 import { get__user } from '../../api/user'
 
 import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
 import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
+import { UserMinus, UserPlus } from 'lucide-react'
 
 
 
@@ -224,11 +222,11 @@ export default function Session__Players() {
 						<button 
 							className='button button_reverse_red button_scale_3 session__players--button'
 							onClick={remove_player}
-						><Person_Remove/></button>
+						><UserMinus/></button>
 						<button 
 							className='button button_reverse button_scale_3 session__players--button'
 							onClick={add_player}
-						><Person_Add/></button>
+						><UserPlus/></button>
 					</div>
 				</>}
 			</Previous>

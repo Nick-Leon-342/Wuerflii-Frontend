@@ -1,10 +1,10 @@
 
 
-import './scss/Popup__Error.scss'
-
+import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
-import type { Type__Context__Error } from '../../types/Type__Context/Type__Context__Error'
+import type { Type__Context__Error } from '@/types/Type__Context/Type__Context__Error'
+import { XCircle } from 'lucide-react'
 
 
 
@@ -15,8 +15,11 @@ export default function Popup__Error({
 	error, 
 }: Type__Context__Error) {
 
+	const { t } = useTranslation()
+
 	const [ progress, 	setProgress		] = useState<number>(100)
 	const [ isHovered, 	setIsHovered	] = useState<boolean>(false)
+	const milliseconds = 5000
 
 
 
@@ -31,7 +34,7 @@ export default function Popup__Error({
 		// clear popup
 		let timeout: ReturnType<typeof setTimeout> | undefined
 		if(!isHovered) 
-			timeout = setTimeout(() => setError(''), 5000) // 5sec timer ( if you want to edit the timer you also have to edit the progress-transition time in scss )
+			timeout = setTimeout(() => setError(''), milliseconds)
 
 		return () => {
 			clearTimeout(timeout)
@@ -42,13 +45,6 @@ export default function Popup__Error({
 
 	useEffect(() => { if(error) setTimeout(() => setProgress(isHovered ? 100 : 0) , 50) }, [ isHovered, error ])
 
-	// useEffect(() => {
-	// 	if(!error) return
-	// 	setProgress(0)
-	// 	// setIsHovered(true)
-	// 	// setTimeout(() => setIsHovered(false), 10)
-	// }, [ error ])
-
 
 
 
@@ -57,25 +53,28 @@ export default function Popup__Error({
 
 	return <>
 		<div 
-			className='popup__error'
+			className='flex fixed top-5 right-5 overflow-hidden rounded-lg shadow-2xl bg-background z-100'
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			<div className='popup__error-container'>
+			<div 
+				onClick={() => setError('')}
+				className='flex flex-col relative p-5 bg-[rgba(200,0,0,0.07)]'
+			>
 
-				<header>
-					<svg viewBox='0 -960 960 960'><path d='m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/></svg>
-					<span>Fehler</span>
+				<header className='flex gap-1.25 items-center mb-2.5'>
+					<XCircle className='h-7.5a [&_path]:stroke-destructive [&_circle]:stroke-destructive'/>
+					<span className='text-2xl font-semibold text-destructive'>{t('error.error')}</span>
 				</header>
 
 				<div>
 					<p>{error}</p>
 				</div>
 
-				<div className='popup__error_progress_bar'>
+				<div className='flex flex-col-reverse absolute bottom-0 left-0 w-1.25 h-full'>
 					<div 
-						className={`popup__error_progress${isHovered ? ' instant' : ''}`}
-						style={{ height: `${progress}%` }}
+						className={`w-full bg-destructive transition-[height] ease-linear ${isHovered ? 'transition-none' : ''}`}
+						style={{ height: `${progress}%`, transitionDuration: isHovered ? '0ms' : `${milliseconds}ms` }}
 					/>
 				</div>
 				
