@@ -148,7 +148,7 @@ export default function Popup__Settings({
 						<Button 
 							variant='link'
 							onClick={() => navigate('/profile')}
-							className='text-lg w-full'
+							className='text-lg w-full h-fit'
 						>{t('account')}</Button>
 					</>}
 

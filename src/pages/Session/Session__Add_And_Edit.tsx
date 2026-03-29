@@ -1,7 +1,5 @@
 
 
-import './scss/Session__Add_And_Edit.scss'
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
@@ -12,7 +10,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Previous from '../../components/NavigationElements/Previous'
 import OptionsDialog from '../../components/Popup/Popup__Settings'
-import CustomButton from '../../components/misc/Custom_Button'
+import Custom_Button from '../../components/misc/Custom_Button'
 
 import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
 import { get__user } from '../../api/user'
@@ -22,6 +20,9 @@ import Context__Error from '../../Provider_And_Context/Provider_And_Context__Err
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
 import type { Type__Session } from '../../types/Type__Session'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 
 
@@ -185,24 +186,21 @@ export default function Session__Add_And_Edit() {
 
 
 
-		{/* __________________________________________________ Page __________________________________________________ */}
-		
-		<div className='session__add_and_edit'>
+		<div className='session__add_and_edit flex flex-col w-9/10 gap-4 md:w-150'>
 
 			{session_id && <Previous onClick={() => navigate(-1)}/>}
 
 
 
 			{/* ____________________ Name ____________________ */}
-
-			<input 
-				value={name}
+			<Input 
 				onChange={(event) => setName(event.target.value)}
-				placeholder='Name of match'
+				placeholder={t('name_of_match')}
+				className='text-xl! h-12'
+				value={name}
 				style={{ 
 					backgroundColor: color + '70', 
-					border: '2px solid', 
-					borderColor: color + '90', 
+					border: '2px solid ' + color + '90', 
 				}}
 			/>
 			
@@ -210,23 +208,41 @@ export default function Session__Add_And_Edit() {
 
 			{/* ____________________ Columns and Color ____________________ */}
 
-			<div className='session__add_and_edit__columns_and_color'>
-				<div className='session__add_and_edit__columns'>
-					<span>{t('columns')}:</span>
-					<select 
-						value={columns} 
-						onChange={({ target }) => setColumns(+target.value)}
+			<div className='flex flex-col md:flex-row gap-4 md:gap-20 justify-between'>
+				<div className='flex flex-row justify-between items-center w-full'>
+					<span className='text-lg'>{t('columns')}:</span>
+					<Select
+						value={columns.toString()}
+						onValueChange={(value) => setColumns(+value)}
 					>
-						<option value='' disabled>{t('select')}</option>
-						{options_columns.map((e) => <option key={e} value={e}>{e}</option>)}
-					</select>
+						<SelectTrigger className='h-12! justify-baseline [&_span]:text-lg cursor-pointer'>
+							<SelectValue/>
+						</SelectTrigger>
+
+						<SelectContent>
+							<SelectGroup>
+								{options_columns.map(column => (
+									<SelectItem
+										key={column}
+										value={column.toString()}
+										className='text-lg cursor-pointer'
+									>{column}</SelectItem>
+								))}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
 				</div>
 
-				<div className='session__add_and_edit__color'>
-					<span>{t('color')}:</span>
-					<input 
+				<div className='flex flex-row justify-between items-center w-full'>
+					<span className='text-lg'>{t('color')}:</span>
+					<Input 
 						type='color' 
 						value={color}
+						className='p-0 border-none w-12 h-12 bg-transparent cursor-pointer 
+								[&::-webkit-color-swatch-wrapper]:p-0  
+								[&::-webkit-color-swatch]:border-none 
+								[&::-moz-color-swatch]:rounded-full 
+								[&::-moz-color-swatch]:border-none'
 						onChange={({ target }) => setColor(target.value)}
 					/>
 				</div>
@@ -234,18 +250,20 @@ export default function Session__Add_And_Edit() {
 
 
 
-			<CustomButton 
+			<Custom_Button 
 				loading={isLoading__user || isLoading__session || isLoading__env_variables}
-				className='button' 
 				text={session_id ? t('save') : t('create_session')}
 				onClick={ok}
 			/>
 
+
+
 			{!session_id && <>
-				{/* <Custom_Link 
+				<Button
+					variant='link'
+					className='p-0 w-fit h-fit text-md'
 					onClick={() => navigate('/', { replace: false })}
-					text={t('load_session')}
-				/> */}
+				>{t('load_session')}</Button>
 			</>}
 
 		</div>

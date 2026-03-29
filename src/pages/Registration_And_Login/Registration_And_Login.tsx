@@ -242,7 +242,7 @@ export default function Registration_And_Login() {
 
 						<Custom_Button 
 							text={show_login ? t('login') : t('register')}
-							className='justify-baseline h-12 text-lg'
+							className='justify-baseline'
 							loading={loading}
 						/>
 

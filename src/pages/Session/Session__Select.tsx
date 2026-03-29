@@ -24,6 +24,7 @@ import type { Type__Context__Universal_Loader } from '../../types/Type__Context/
 import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 import type { Type__Session } from '../../types/Type__Session'
 import { ChevronDown, SortDesc, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 
 
@@ -308,10 +309,11 @@ export default function Session__Select() {
 
 
 
-			{/* <Custom_Link 
+			<Button
+				variant='link'
+				className='p-0 w-fit'
 				onClick={() => navigate('/session', { replace: false })}
-				text={t('create_session')}
-			/> */}
+			>{t('create_session')}</Button>
 
 		</div>
 		
