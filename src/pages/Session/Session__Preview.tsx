@@ -31,6 +31,7 @@ import type { Type__Server_Response__Final_Score__GET } from '../../types/Type__
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Session } from '../../types/Type__Session'
 import { Settings, SortDesc } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 
 
@@ -455,10 +456,11 @@ export default function Session__Preview() {
 				loading={loading_preparing_game}
 			/>
 
-			{/* <Custom_Link 
-				onClick={() => navigate('/',  { replace: false })}
-				text={t('back')}
-			/> */}
+			<Button
+				variant='link'
+				className='p-0 w-fit h-fit text-md'
+				onClick={() => navigate('/', { replace: false })}
+			>{t('back')}</Button>
 
 		</div>
 

@@ -182,8 +182,8 @@ export default function Registration_And_Login() {
 			user={null}
 		/>
 
-		<div className='registration_and_login flex flex-row items-center justify-center h-dvh'>
-			<div className='flex flex-col lg:flex-row items-center gap-15 lg:gap-10'>
+		<div className='registration_and_login flex flex-row items-center justify-center h-dvh w-9/10!'>
+			<div className='flex flex-col lg:flex-row items-center gap-15 lg:gap-10 w-full md:w-fit'>
 
 				<div className='flex flex-row items-center gap-3'>
 					<Wuerflii className='[&_path]:fill-muted-foreground w-17 h-17'/>
@@ -194,11 +194,11 @@ export default function Registration_And_Login() {
 				<hr className='bg-border w-full lg:w-px h-px lg:h-70'/>
 
 
-				<div className='flex flex-col gap-2'>
+				<div className='flex flex-col gap-2 w-full md:w-lg'>
 
 					<form 
 						onSubmit={handleSubmit}
-						className='flex flex-col gap-6 w-lg'
+						className='flex flex-col gap-6'
 					>
 
 						{show_login && <>

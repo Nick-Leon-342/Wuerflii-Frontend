@@ -109,6 +109,7 @@
 	"name": "Name", 
 	"name_of_match": "Name des Spiels", 
 	"no_account_yet": "Noch keinen Account?", 
+	"no_game_yet": "Es gibt noch keine Partie.", 
 	"ok": "Ok", 
 	"password": "Passwort", 
 	"password_confirm": "Passwort bestätigen", 
