@@ -1,15 +1,10 @@
 
 
-
-import './scss/Session__Preview.scss'
-import 'react-calendar/dist/Calendar.css'
-
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useTranslation } from 'react-i18next'
-import Calendar from 'react-calendar'
 
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -32,6 +27,8 @@ import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server
 import type { Type__Session } from '../../types/Type__Session'
 import { Settings, SortDesc } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { format } from 'date-fns'
 
 
 
@@ -316,136 +313,166 @@ export default function Session__Preview() {
 
 
 
-		<div className='session__preview'>
+		<div className='session__preview flex flex-col w-9/10 lg:w-4xl gap-4'>
 
-			<header>
+			<header className='flex flex-row justify-between'>
 
-				<button
-					ref={ref_edit_list}
-					onClick={() => setShow_edit_list(true)}
-					className='button button_reverse button_scale_2'
-				>
-					<SortDesc/>
-					<span>{t('list')}</span>
-				</button>
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button
+							variant='ghost'
+							className='w-10 h-10'
+						><SortDesc className='w-8! h-8!'/></Button>
+					</PopoverTrigger>
 
-				<button
-					ref={ref_edit_session}
-					onClick={() => setShow_edit_session(true)}
-					className='button button_reverse button_scale_1'
-				>
-					<span>{t('settings')}</span>
-					<Settings/>
-				</button>
+					<PopoverContent>
+						
+					</PopoverContent>
+				</Popover>
+
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button
+							variant='ghost'
+							className='w-10 h-10'
+						><Settings className='w-8! h-8!'/></Button>
+					</PopoverTrigger>
+
+					<PopoverContent align='end'>
+						<Link
+							className='button button_scale_1'
+							to={`/session/${session?.id}/analytics`}
+						>{t('statistics')}</Link>
+
+						<div className='session__preview--popup--settings--edit'>
+							<span>{t('edit')}</span>
+
+							<div>
+								<Link
+									className='button button_scale_1'
+									to={`/session/${session?.id}`}
+								>{t('session')}</Link>
+								<Link
+									className='button button_scale_1'
+									to={`/session/${session?.id}/players`}
+								>{t('players')}</Link>
+							</div>
+						</div>
+					</PopoverContent>
+				</Popover>
+
 
 			</header>
 
 
 
-			<div className='session__preview--body'>
-				<div className='session__preview--body_container'>
-					
-					{/* __________________________________________________ Table __________________________________________________ */}
+			<div className=''>
+				
+				{/* __________________________________________________ Table __________________________________________________ */}
 
-					<div className='session__preview--table_container'>
-						<table className='table session__preview--table'>
-							<tbody>
-								<tr>
-									{list_players?.map(player => (
-										<td key={player.id}>
-											<span>{player.Name}</span>
-										</td>
-									))}
+				<div className='flex flex-col rounded-lg border-2 border-primary overflow-y-auto [scrollbar-gutter:stable_both-edges] bg-green-100'>
+					<table className='w-full [&_tr]:flex [&_td]:grid [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-10 text-xl'>
+						<tbody>
+							<tr>
+								{list_players?.map(player => (
+									<td key={player.id}>
+										<span>{player.Name}</span>
+									</td>
+								))}
+							</tr>
+							{list_finalScores.length > 0 && <>
+								<tr className='border-t border-primary'>
+									{list_players?.map(player => {
+
+										const id = player.id
+										const e = list_finalScores.at(index_visible_row)
+										if(!e) return
+
+										return (
+											<td key={id}>
+												<span>
+													{session?.View === 'SHOW__MONTH' && (e.Wins__After_Month[id] || 0)}
+													{session?.View === 'SHOW__YEAR' && (e?.Wins__After_Year[id] || 0)}
+													{session?.View === 'SHOW__CUSTOM_DATE' && (e?.Wins__After_SinceCustomDate[id] || 0)}
+													{session?.View === 'SHOW__ALL' && (e?.Wins__After[id] || 0)}
+												</span>
+											</td>
+										)
+										
+									})}
 								</tr>
-								{list_finalScores.length > 0 && <>
-									<tr>
-										{list_players?.map(player => {
-
-											const id = player.id
-											const e = list_finalScores.at(index_visible_row)
-											if(!e) return
-
-											return (
-												<td key={id}>
-													<span>
-														{session?.View === 'SHOW__MONTH' && (e.Wins__After_Month[id] || 0)}
-														{session?.View === 'SHOW__YEAR' && (e?.Wins__After_Year[id] || 0)}
-														{session?.View === 'SHOW__CUSTOM_DATE' && (e?.Wins__After_SinceCustomDate[id] || 0)}
-														{session?.View === 'SHOW__ALL' && (e?.Wins__After[id] || 0)}
-													</span>
-												</td>
-											)
-											
-										})}
-									</tr>
-								</>}
-							</tbody>
-						</table>
-					</div>
-
-
-
-
-
-					{/* __________________________________________________ List __________________________________________________ */}
-
-					<ul 
-						className='session__preview--list'
-						onScroll={handle_scroll}
-					>
-						{list_finalScores?.map((final_score, index_final_score) => {
-
-							const tmp_ref = list_finalScores.length - 1 === index_final_score ? ref : null
-
-							if(final_score.Group_Date) {
-
-								const day = new Date(final_score.Group_Date).getDate()
-								const month = new Date(final_score.Group_Date).getMonth() + 1
-								const year = new Date(final_score.Group_Date).getFullYear()
-
-								return (
-									<li 
-										ref={tmp_ref}
-										key={index_final_score}
-										className='session__preview--list_element-date'
-									>
-										<span>
-											{session?.View === 'SHOW__MONTH' && `${day}.`}
-											{session?.View === 'SHOW__YEAR' && `${day}.${month}.`}
-											{(session?.View === 'SHOW__CUSTOM_DATE' || session?.View === 'SHOW__ALL') && `${day}.${month}.${year}`}
-										</span>
-									</li>
-								)
-
-							} else {
-
-								return (
-									<li 
-										ref={tmp_ref}
-										key={index_final_score} 
-										className={`session__preview--list_element-scores${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' no_border_top'}`}
-									>
-										<Link to={`/session/${session?.id}/preview/table/${final_score.id}`}>
-											{list_players?.map((player, index_player) => 
-												<div key={`${index_final_score}.${index_player}`}>
-													<span>
-														{final_score.PlayerScores[player.id]}
-													</span>
-												</div>
-											)}
-										</Link>
-									</li>
-								)
-
-							}
-						})}
-						{(isLoading__list_finalscores || isFetchingNextPage) && <>
-							<li>{t('loading')}...</li>
-						</>}
-						{error && <li>{t('error')}...</li>}
-					</ul>
-
+							</>}
+						</tbody>
+					</table>
 				</div>
+
+
+
+
+
+				{/* __________________________________________________ List __________________________________________________ */}
+
+				<ul 
+					onScroll={handle_scroll}
+					className='flex flex-col max-h-100 overflow-y-scroll [&_li]:h-[70px] [scrollbar-gutter:stable_both-edges]'
+				>
+					{list_finalScores?.map((final_score, index_final_score) => {
+
+						const tmp_ref = list_finalScores.length - 1 === index_final_score ? ref : null
+
+						if(final_score.Group_Date) {
+
+							const date = new Date(final_score.Group_Date)
+
+							return (
+								<li 
+									ref={tmp_ref}
+									key={index_final_score}
+									className='flex flex-row shrink-0 items-center'
+								>
+									<span className='translate-y-2 text-xl font-bold'>
+										{session?.View === 'SHOW__MONTH' && format(date, 'dd.')}
+										{session?.View === 'SHOW__YEAR' && format(date, 'dd.MM.')}
+										{(session?.View === 'SHOW__CUSTOM_DATE' || session?.View === 'SHOW__ALL') && format(date, 'dd.MM.yyyy')}
+									</span>
+								</li>
+							)
+
+						} else {
+
+							return (
+								<li 
+									ref={tmp_ref}
+									key={index_final_score} 
+									className={`flex flex-row shrink-0${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' no_border_top'}`}
+								>
+									<Button 
+										variant='ghost'
+										className='flex flex-row gap-0 p-0 w-full h-full border border-muted-foreground'
+										onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score.id}`, { replace: false })}
+									>
+										{list_players?.map((player, index_player) => 
+											<div 
+												key={`${index_final_score}.${index_player}`}
+												className='grid place-items-center w-full h-full not-last-of-type:border-r border-muted-foreground'
+											>
+												<span>
+													{final_score.PlayerScores[player.id]}
+												</span>
+											</div>
+										)}
+									</Button>
+								</li>
+							)
+
+						}
+					})}
+					{(isLoading__list_finalscores || isFetchingNextPage) && <>
+						<li>{t('loading')}...</li>
+					</>}
+					{error && <li>{t('error')}...</li>}
+				</ul>
+
 			</div>
 
 
@@ -477,11 +504,12 @@ export default function Session__Preview() {
 			className='session__preview--popup--calendar'
 		>
 			<div className='session__preview--popup'>
-				<Calendar
+				{/* TODO mit Shadcn machen */}
+				{/* <Calendar
 					locale={i18n.language}
 					value={view_customDate}
 					onChange={(cd) => setView_customDate(cd as Date)}
-				/>
+				/> */}
 
 				<Custom_Button
 					loading={mutate__custom_date.isPending}
@@ -490,40 +518,6 @@ export default function Session__Preview() {
 				/>
 			</div>
 		</Popup>
-
-
-
-
-
-		{/* __________________________________________________ Popup Settings __________________________________________________ */}
-
-		<Popup__Dropdown
-			target_ref={ref_edit_session}
-			show_popup={show_edit_session}
-			setShow_popup={setShow_edit_session}
-		>
-			<div className='session__preview--popup--settings'>
-				<Link
-					className='button button_scale_1'
-					to={`/session/${session?.id}/analytics`}
-				>{t('statistics')}</Link>
-
-				<div className='session__preview--popup--settings--edit'>
-					<span>{t('edit')}</span>
-
-					<div>
-						<Link
-							className='button button_scale_1'
-							to={`/session/${session?.id}`}
-						>{t('session')}</Link>
-						<Link
-							className='button button_scale_1'
-							to={`/session/${session?.id}/players`}
-						>{t('players')}</Link>
-					</div>
-				</div>
-			</div>
-		</Popup__Dropdown>
 
 
 
