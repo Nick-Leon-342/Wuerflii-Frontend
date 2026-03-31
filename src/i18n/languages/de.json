@@ -149,11 +149,12 @@
 	"username": "Benutzername", 
 	"version_app": "App Version", 
 	"version_server": "Server Version", 
-	"view_edit_preview": {
-		"show__all": 			"Gesamtansicht", 
-		"show__year": 			"Jahresansicht", 
-		"show__month": 			"Monatsansicht", 
-		"show__custom_date": 	"Benutzerdefiniert" 
+	"view": {
+		"label":				"Ansicht", 
+		"SHOW__ALL": 			"Gesamt", 
+		"SHOW__YEAR": 			"Jahr", 
+		"SHOW__MONTH": 			"Monat", 
+		"SHOW__CUSTOM_DATE": 	"Benutzerdefiniert" 
 	}, 
 	"view_from": "Ansicht ab", 
 	"wins": "Gewonnen", 

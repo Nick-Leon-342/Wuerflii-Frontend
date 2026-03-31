@@ -149,11 +149,12 @@
 	"username": "Username", 
 	"version_app": "App version", 
 	"version_server": "Server version", 
-	"view_edit_preview": {
-		"show__all": 			"All", 
-		"show__year": 			"Year", 
-		"show__month": 			"Month", 
-		"show__custom_date": 	"Custom" 
+	"view": {
+		"label":				"View", 
+		"SHOW__ALL": 			"All", 
+		"SHOW__YEAR": 			"Year", 
+		"SHOW__MONTH": 			"Month", 
+		"SHOW__CUSTOM_DATE": 	"Custom" 
 	}, 
 	"view_from": "View from", 
 	"wins": "Wins", 

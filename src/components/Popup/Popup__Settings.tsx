@@ -109,6 +109,7 @@ export default function Popup__Settings({
 				<div className='popup__options flex flex-col gap-4'>
 
 					{/* ____________________ DarkMode ____________________ */}
+					
 					<Custom_Button
 						variant='outline'
 						onClick={change_darkmode}
@@ -120,13 +121,16 @@ export default function Popup__Settings({
 						className='flex flex-row h-12 justify-baseline w-full text-lg'
 					/>
 
+
+
 					{/* ____________________ Languages ____________________ */}
+
 					<Select
 						value={i18n.language}
 						onValueChange={(value) => i18n.changeLanguage(value)}
 					>
-						<SelectTrigger className='h-12! justify-baseline [&_span]:text-lg w-full cursor-pointer'>
-							<Languages/>
+						<SelectTrigger className='pl-8'>
+							<Languages className='absolute left-7'/>
 							<SelectValue/>
 						</SelectTrigger>
 
@@ -143,7 +147,10 @@ export default function Popup__Settings({
 						</SelectContent>
 					</Select>
 
+
+
 					{/* ____________________ Profile ____________________ */}
+
 					{user !== null && <>
 						<Button 
 							variant='link'

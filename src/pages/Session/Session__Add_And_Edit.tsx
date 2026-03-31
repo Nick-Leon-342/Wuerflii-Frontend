@@ -8,21 +8,19 @@ import { useTranslation } from 'react-i18next'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import Previous from '../../components/NavigationElements/Previous'
 import OptionsDialog from '../../components/Popup/Popup__Settings'
 import Custom_Button from '../../components/misc/Custom_Button'
-
-import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
-import { get__user } from '../../api/user'
-
-import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
+import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 import type { Type__Session } from '../../types/Type__Session'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { get__user } from '../../api/user'
 
 
 
@@ -209,29 +207,27 @@ export default function Session__Add_And_Edit() {
 			{/* ____________________ Columns and Color ____________________ */}
 
 			<div className='flex flex-col md:flex-row gap-4 md:gap-20 justify-between'>
-				<div className='flex flex-row justify-between items-center w-full'>
-					<span className='text-lg'>{t('columns')}:</span>
-					<Select
-						value={columns.toString()}
-						onValueChange={(value) => setColumns(+value)}
-					>
-						<SelectTrigger className='h-12! justify-baseline [&_span]:text-lg cursor-pointer'>
-							<SelectValue/>
-						</SelectTrigger>
+				<Select
+					value={columns.toString()}
+					onValueChange={(value) => setColumns(+value)}
+				>
+					<SelectTrigger>
+						<SelectValue/>
+					</SelectTrigger>
 
-						<SelectContent>
-							<SelectGroup>
-								{options_columns.map(column => (
-									<SelectItem
-										key={column}
-										value={column.toString()}
-										className='text-lg cursor-pointer'
-									>{column}</SelectItem>
-								))}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</div>
+					<SelectContent>
+						<SelectGroup>
+							<SelectLabel>{t('columns')}</SelectLabel>
+							{options_columns.map(column => (
+								<SelectItem
+									key={column}
+									value={column.toString()}
+									className='text-lg cursor-pointer'
+								>{column}</SelectItem>
+							))}
+						</SelectGroup>
+					</SelectContent>
+				</Select>
 
 				<div className='flex flex-row justify-between items-center w-full'>
 					<span className='text-lg'>{t('color')}:</span>

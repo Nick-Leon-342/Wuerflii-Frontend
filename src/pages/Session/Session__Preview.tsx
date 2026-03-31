@@ -1,34 +1,31 @@
 
 
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useContext, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { format } from 'date-fns'
 
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
-import Popup__Edit_Preview from '../../components/Popup/Popup__Edit_Preview'
-import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
+import Session__Preview___Edit from '../../components/Session__Preview/Session__Preview___Edit'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import OptionsDialog from '../../components/Popup/Popup__Settings'
 import Custom_Button from '../../components/misc/Custom_Button'
-import Popup from '../../components/Popup/Popup'
+import { Button } from '@/components/ui/button'
+import { Settings } from 'lucide-react'
 
-import { get__session, patch__session_date } from '../../api/session/session'
 import { get__session_players } from '../../api/session/session_players'
 import { get__final_scores_page } from '../../api/final_score'
+import { get__session } from '../../api/session/session'
 import { get__user } from '../../api/user'
 
-import type { Type__Client_To_Server__Session_Date__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
 import type { Type__Server_Response__Final_Score__GET } from '../../types/Type__Server_Response/Type__Server_Response__Final_Score__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Session } from '../../types/Type__Session'
-import { Settings, SortDesc } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { format } from 'date-fns'
 
 
 
@@ -36,20 +33,14 @@ import { format } from 'date-fns'
 
 export default function Session__Preview() {
 	
-	const navigate			= useNavigate()
-	const { t, i18n }		= useTranslation()
-	const query_client		= useQueryClient()
-	const axiosPrivate		= useAxiosPrivate()
-	const handle_error		= useErrorHandling()
+	const navigate		= useNavigate()
+	const { t }			= useTranslation()
+	const axiosPrivate	= useAxiosPrivate()
+	const handle_error	= useErrorHandling()
 
 	const { session_id }	= useParams()
-	const ref_edit_list		= useRef<HTMLButtonElement>(null)
-	const ref_edit_session	= useRef<HTMLButtonElement>(null)
 	
 	const [ loading_preparing_game, setLoading_preparing_game	] = useState<boolean>(false)
-
-	const [ show_edit_session,		setShow_edit_session		] = useState<boolean>(false)
-	const [ show_edit_list,			setShow_edit_list			] = useState<boolean>(false)
 
 	const height_dateElement = 70
 	const height_element = 70
@@ -160,48 +151,6 @@ export default function Session__Preview() {
 			})
 
 		}).finally(() => setLoading_preparing_game(true))
-
-	}
-
-
-
-
-
-	// __________________________________________________ Edit CustomDate __________________________________________________
-
-	const [ show_customDate, setShow_customDate ] = useState<boolean>(false)
-	const [ view_customDate, setView_customDate ] = useState<Date>(new Date())
-
-	const mutate__custom_date = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Date__PATCH) => patch__session_date(axiosPrivate, json), 
-		onSuccess: (_, json) => {
-			setSession(prev => {
-				if(!prev) return prev
-				const tmp = { ...prev }
-				tmp.View__Custom_Date = json.View__Custom_Date
-				query_client.setQueryData([ 'session', session?.id ], tmp)
-				return tmp
-			})
-			setShow_customDate(false)
-			refetch()
-		}, 
-		onError: err => {
-			handle_error({
-				err, 
-				handle_404: () => {
-					alert(t('session_not_found'))
-					navigate('/', { replace: true })
-				}
-			})
-		}
-	})
-
-	const save_customDate = () => {
-
-		mutate__custom_date.mutate({ 
-			View__Custom_Date: 	view_customDate, 
-			SessionID: 			session?.id || -1, 
-		})
 
 	}
 	
@@ -317,18 +266,11 @@ export default function Session__Preview() {
 
 			<header className='flex flex-row justify-between'>
 
-				<Popover>
-					<PopoverTrigger asChild>
-						<Button
-							variant='ghost'
-							className='w-10 h-10'
-						><SortDesc className='w-8! h-8!'/></Button>
-					</PopoverTrigger>
-
-					<PopoverContent>
-						
-					</PopoverContent>
-				</Popover>
+				<Session__Preview___Edit
+					setSession={setSession}
+					session={session}
+					refetch={refetch}
+				/>
 
 				<Popover>
 					<PopoverTrigger asChild>
@@ -366,12 +308,12 @@ export default function Session__Preview() {
 
 
 
-			<div className=''>
+			<div>
 				
 				{/* __________________________________________________ Table __________________________________________________ */}
 
-				<div className='flex flex-col rounded-lg border-2 border-primary overflow-y-auto [scrollbar-gutter:stable_both-edges] bg-green-100'>
-					<table className='w-full [&_tr]:flex [&_td]:grid [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-10 text-xl'>
+				<div className='flex flex-col w-full rounded-lg border-2 border-primary overflow-y-auto [scrollbar-gutter:stable_both-edges] bg-green-200'>
+					<table className='w-full [&_tr]:flex [&_td]:grid [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-12 text-xl'>
 						<tbody>
 							<tr>
 								{list_players?.map(player => (
@@ -444,11 +386,11 @@ export default function Session__Preview() {
 								<li 
 									ref={tmp_ref}
 									key={index_final_score} 
-									className={`flex flex-row shrink-0${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' no_border_bottom'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' no_border_top'}`}
+									className='flex flex-row shrink-0'
 								>
 									<Button 
 										variant='ghost'
-										className='flex flex-row gap-0 p-0 w-full h-full border border-muted-foreground'
+										className={`flex flex-row gap-0 p-0 w-full h-full border border-muted-foreground${!list_finalScores[index_final_score + 1] || list_finalScores[index_final_score + 1]?.Group_Date ? '' : ' border-b-0 rounded-b-none'}${!list_finalScores[index_final_score - 1] || list_finalScores[index_final_score - 1]?.Group_Date ? '' : ' rounded-t-none'}`}
 										onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score.id}`, { replace: false })}
 									>
 										{list_players?.map((player, index_player) => 
@@ -490,56 +432,6 @@ export default function Session__Preview() {
 			>{t('back')}</Button>
 
 		</div>
-
-
-
-
-
-		{/* __________________________________________________ Popup Calendar __________________________________________________ */}
-
-		<Popup
-			show_popup={show_customDate}
-			setShow_popup={setShow_customDate}
-			title={t('choose_beginning')}
-			className='session__preview--popup--calendar'
-		>
-			<div className='session__preview--popup'>
-				{/* TODO mit Shadcn machen */}
-				{/* <Calendar
-					locale={i18n.language}
-					value={view_customDate}
-					onChange={(cd) => setView_customDate(cd as Date)}
-				/> */}
-
-				<Custom_Button
-					loading={mutate__custom_date.isPending}
-					onClick={save_customDate}
-					text={t('save')}
-				/>
-			</div>
-		</Popup>
-
-
-
-
-
-		{/* __________________________________________________ Popup Edit Preview __________________________________________________ */}
-
-		{session && <>
-			<Popup__Edit_Preview
-				target_ref={ref_edit_list}
-
-				setShow_customDate={setShow_customDate}
-
-				setShow_popup={setShow_edit_list}
-				show_popup={show_edit_list}
-				
-				setSession={setSession}
-				session={session}
-				refetch={refetch}
-
-			/>
-		</>}
 
 	</>
 }
