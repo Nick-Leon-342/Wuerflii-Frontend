@@ -330,21 +330,21 @@ export default function Session__Select() {
 
 							<input 
 								type='checkbox' 
-								className='h-4 w-4 cursor-pointer'
 								onClick={e => e.stopPropagation()}
+								className='h-4 w-4 cursor-pointer shrink-0'
 								checked={session.Checkbox_Checked_To_Delete}
 								onChange={({ target }) => !mutate__delete.isPending && checkbox_click(index_session, target.checked)} 
 							/>
 
 							{session.List__Players && <>
-								<div className='flex flex-col w-full md:items-center md:flex-row md:justify-between'>
+								<div className='flex flex-col w-full md:items-center md:flex-row md:justify-between overflow-hidden gap-2'>
 
-									<span className='flex'>
+									<span className='block text-start w-full truncate'>
 										{(user?.Show__Session_Names || session.List__Players.length === 0) && session.Name}
 										{!user?.Show__Session_Names && session.List__Players.length > 0 && session.List__Players.map(p => p.Name).join(' vs ')}
 									</span>
 
-									<span className='flex text-sm text-muted-foreground'>
+									<span className='flex text-sm text-muted-foreground shrink-0'>
 										{user?.Show__Session_Date && <label className='date'>{format(new Date(session?.LastPlayed || new Date()), 'dd.MM.yyyy')}</label>}
 									</span>
 

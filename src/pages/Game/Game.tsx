@@ -13,10 +13,9 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
 import OptionsDialog from '../../components/Popup/Popup__Settings'
+import Game__Settings from '../../components/Game/Game__Settings'
 import CustomButton from '../../components/misc/Custom_Button'
-import Game_Options from '../../components/Game/Game_Options'
 import Table from '../../components/Game/Game_Tables/Table'
-import Popup from '../../components/Popup/Popup'
 
 import { get__session_players } from '../../api/session/session_players'
 import { get__table_columns } from '../../api/table_columns'
@@ -43,14 +42,12 @@ export default function Game() {
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
 	
-	const [ list_players,			setList_players			] = useState<Array<Type__Server_Reponse__Player__Get>>([])
-	const [ list__table_columns, 	setList_table_columns	] = useState<Array<Type__Server_Response__Table_Columns__Get>>([])
+	const [ list__players,			setList__players		] = useState<Array<Type__Server_Reponse__Player__Get>>([])
+	const [ list__table_columns, 	setList__table_columns	] = useState<Array<Type__Server_Response__Table_Columns__Get>>([])
 
-	const [ loading_finish_game, 	setLoading_finish_game	] = useState<boolean>(false)
+	const [ loading__finish_game, 	setLoading__finish_game	] = useState<boolean>(false)
 
 	const [ surrender_winner, 		setSurrender_winner		] = useState<Type__Server_Reponse__Player__Get>()	// Player-Object of the 'winner'
-
-	const [ show_surrender, 		setShow_surrender		] = useState(false)
 
 
 
@@ -109,7 +106,7 @@ export default function Game() {
 
 	useEffect(() => { 
 		function init() {
-			if(tmp__list_players) setList_players(tmp__list_players)
+			if(tmp__list_players) setList__players(tmp__list_players)
 		}
 		init()
 	}, [ tmp__list_players ])
@@ -134,7 +131,7 @@ export default function Game() {
 
 	useEffect(() => {
 		function init() {
-			if(tmp__list__table_columns) setList_table_columns(tmp__list__table_columns)
+			if(tmp__list__table_columns) setList__table_columns(tmp__list__table_columns)
 		}
 		init()
 	}, [ tmp__list__table_columns ])
@@ -155,12 +152,12 @@ export default function Game() {
 
 	const finish_game = () => {
 	
-		if(!session || !list_players || !list__table_columns) return
+		if(!session || !list__players || !list__table_columns) return
 
 		if(!surrender_winner && list__table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert(t('please_enter_all_values'))	
-		if(list_players.length === 1) return navigate('/', { replace: true })
+		if(list__players.length === 1) return navigate('/', { replace: true })
 
-		setLoading_finish_game(true)
+		setLoading__finish_game(true)
 
 		axiosPrivate.post('/game', { 
 			SessionID: session.id, 
@@ -179,7 +176,7 @@ export default function Game() {
 				handle_409: () => alert(t('please_enter_all_values'))
 			})
 
-		}).finally(() => setLoading_finish_game(false))
+		}).finally(() => setLoading__finish_game(false))
 	
 	}
 
@@ -202,8 +199,8 @@ export default function Game() {
 					<Table_Player 
 						disabled={false}
 						session={session}
-						list_players={list_players}
-						setList_players={setList_players}
+						list_players={list__players}
+						setList_players={setList__players}
 						list__table_columns={list__table_columns}
 					/>
 				</>}
@@ -211,78 +208,31 @@ export default function Game() {
 				<Table 
 					disabled={false}
 					session={session}
-					list_players={list_players}
+					list_players={list__players}
 					list__table_columns={list__table_columns}
-					setList_table_columns={setList_table_columns}
+					setList_table_columns={setList__table_columns}
 				/>
 
 				<footer>
 
-					<Game_Options
-						setShow_surrender={setShow_surrender}			
+					<Game__Settings
+						loading__finish_game={loading__finish_game}
+						setSurrender_winner={setSurrender_winner}
+						surrender_winner={surrender_winner}
+						list__players={list__players}
+						finish_game={finish_game}
 						session={session}
 					/>
 
 					<CustomButton 
 						text={t('finish_game')}
 						onClick={finish_game}
-						loading={loading_finish_game}
+						loading={loading__finish_game}
 					/>
 
 				</footer>
 				
 			</div>
 		</div>
-
-
-
-		{/* __________________________________________________ Popup Surrender __________________________________________________ */}
-
-		<Popup
-			setShow_popup={setShow_surrender}
-			show_popup={show_surrender}
-			title={t('select_winner')}
-		>
-			<div className='game_popup-surrender'>
-
-				{surrender_winner ? <>
-
-					<div className='askifsurrender'>
-
-						<h2>{t('sure_that_this_player_is_the_winner', { name: surrender_winner.Name })}</h2>
-
-						<CustomButton
-							loading={loading_finish_game}
-							onClick={finish_game}
-							text={t('yes')}
-						/>
-
-						<button 
-							className='button button_reverse_red' 
-							onClick={() => setSurrender_winner(undefined)}
-						>{t('cancel')}</button>
-					</div>
-
-				</>:<>
-				
-					<div className='list-container'>
-						<ul>
-							{list_players?.map((player, index_player) => (
-								<li 
-									className='button_scale_0 box' 
-									style={{ backgroundColor: player.Color }}
-									key={index_player} 
-									tabIndex={0}
-									onClick={() => setSurrender_winner(player)}
-								><label>{player.Name}</label></li>
-							))}
-						</ul>
-					</div>
-
-				</>}
-
-			</div>
-		</Popup>
-
 	</>
 }

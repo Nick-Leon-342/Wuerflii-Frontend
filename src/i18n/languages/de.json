@@ -145,7 +145,7 @@
 	"sure_you_want_to_delete_session": "Bist du sicher, dass du diese Partie löschen möchtest?", 
 	"sure_you_want_to_delete_sessions": "Bist du sicher, dass du diese Partien löschen möchtest?", 
 	"sure_you_want_to_delete_this_game": "Bist du sicher, dass du das Spiel löschen möchtest?", 
-	"sure_that_this_player_is_the_winner": "Bist du sicher, dass {{name}} gewinnen soll?", 
+	"sure_that_this_player_is_the_winner": "Bist du sicher, dass <br> <span>{{name}}</span> <br> gewinnen soll?", 
 	"surrender": "Aufgeben", 
 	"username": "Benutzername", 
 	"version_app": "App Version", 

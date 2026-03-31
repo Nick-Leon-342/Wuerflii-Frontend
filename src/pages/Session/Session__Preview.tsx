@@ -318,7 +318,7 @@ export default function Session__Preview() {
 				{/* __________________________________________________ Table __________________________________________________ */}
 
 				<div className='flex flex-col w-full rounded-lg border-2 border-primary overflow-y-auto [scrollbar-gutter:stable_both-edges] bg-green-200'>
-					<table className='w-full [&_tr]:flex [&_td]:grid [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-12 text-xl'>
+					<table className='w-full [&_tr]:flex [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-12 [&_td]:truncate [&_td]:block [&_td]:text-center text-xl'>
 						<tbody>
 							<tr>
 								{list_players?.map(player => (

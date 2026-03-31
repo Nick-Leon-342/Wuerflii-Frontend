@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
+import type { Type__Server_Reponse__Player__Get } from '@/types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 import type { Type__Session } from '../../types/Type__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -16,6 +17,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Settings, Square, SquareCheck, UserCog } from 'lucide-react'
 import Custom_Button from '../misc/Custom_Button'
+import Game__Surrender from './Game__Surrender'
 import { Spinner } from '../ui/spinner'
 import { Button } from '../ui/button'
 
@@ -23,15 +25,23 @@ import { Button } from '../ui/button'
 
 
 
-interface Props__Game_Options {
-	setShow_surrender:	React.Dispatch<React.SetStateAction<boolean>>
-	session?:			Type__Session
+interface Props___Game__Settings {
+	loading__finish_game:	boolean
+	setSurrender_winner:	React.Dispatch<React.SetStateAction<Type__Server_Reponse__Player__Get | undefined>>
+	surrender_winner?:		Type__Server_Reponse__Player__Get
+	list__players:			Array<Type__Server_Reponse__Player__Get>
+	finish_game:			() => void
+	session?:				Type__Session
 }
 
-export default function Game_Options({
-	setShow_surrender, 
+export default function Game__Settings({
+	loading__finish_game, 
+	setSurrender_winner, 
+	surrender_winner, 
+	list__players, 
+	finish_game, 
 	session, 
-}: Props__Game_Options) {
+}: Props___Game__Settings) {
 
 	const navigate = useNavigate()
 	const { t } = useTranslation()
@@ -217,10 +227,13 @@ export default function Game_Options({
 
 					{/* ____________________ Surrender ____________________ */}
 
-					<Button
-						variant='destructive'
-						onClick={() => setShow_surrender(true)}
-					>{t('surrender')}</Button>
+					<Game__Surrender
+						loading__finish_game={loading__finish_game}
+						setSurrender_winner={setSurrender_winner}
+						surrender_winner={surrender_winner}
+						list__players={list__players}
+						finish_game={finish_game}
+					/>
 
 
 
