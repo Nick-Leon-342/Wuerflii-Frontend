@@ -40,6 +40,7 @@
 		"players_already_exist": "Players already exist for this session.", 
 		"players_too_many": "Maximum amount of players is {{max}}.", 
 		"resource_not_found": "Resource not found!", 
+		"session_not_found": "Session not found.", 
 		"synchronization_of_gnadenwurf_failed": "Server is not responding.\nGnadenwurf for '{{name}}' couldn't be synchronized.\nTry again?", 
 		"synchronization_of_input_failed": "Server is not responding.\nValue '{{value}}' in column {{column}} of player '{{name}}' couldn't be synchronized.\nTry again?", 
 		"username_taken": "Username already taken.", 
@@ -77,9 +78,9 @@
 	"history": "History", 
 	"input_type": {
 		"name": 			"Input type", 
-		"select": 			"Select", 
-		"select_and_type": 	"Select and type", 
-		"type": 			"Type" 
+		"SELECT": 			"Select", 
+		"SELECT_AND_TYPE": 	"Select and type", 
+		"TYPE": 			"Type" 
 	}, 
 	"language": "Language", 
 	"lets_go": "Let's go", 

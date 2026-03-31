@@ -40,6 +40,7 @@
 		"players_already_exist": "Spieler für diese Partie existieren bereits.",
 		"players_too_many": "Es dürfen maximal nur {{max}} Spieler sein.", 
 		"resource_not_found": "Die Ressource wurde nicht gefunden!", 
+		"session_not_found": "Partie wurde nicht gefunden.", 
 		"synchronization_of_gnadenwurf_failed": "Der Server antwortet nicht.\nDer Gnadenwurf für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 
 		"synchronization_of_input_failed": "Der Server antwortet nicht.\nDer Eintrag '{{value}}' in der {{column}}. Spalte für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 
 		"username_taken": "Der Benutzername ist vergeben!", 
@@ -77,9 +78,9 @@
 	"history": "Verlauf", 
 	"input_type": {
 		"name": 			"Eingabetyp", 
-		"select": 			"Auswahl", 
-		"select_and_type": 	"Auswahl und Eingabe", 
-		"type": 			"Eingabe" 
+		"SELECT": 			"Auswahl", 
+		"SELECT_AND_TYPE": 	"Auswahl und Eingabe", 
+		"TYPE": 			"Eingabe" 
 	}, 
 	"language": "Sprache", 
 	"lets_go": "Los geht's", 

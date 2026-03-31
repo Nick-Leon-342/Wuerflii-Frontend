@@ -25,7 +25,6 @@ import { get__user } from '../../api/user'
 
 import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
-import { Settings } from 'lucide-react'
 
 
 
@@ -51,7 +50,6 @@ export default function Game() {
 
 	const [ surrender_winner, 		setSurrender_winner		] = useState<Type__Server_Reponse__Player__Get>()	// Player-Object of the 'winner'
 
-	const [ show_options, 			setShow_options			] = useState(false)
 	const [ show_surrender, 		setShow_surrender		] = useState(false)
 
 
@@ -220,10 +218,10 @@ export default function Game() {
 
 				<footer>
 
-					<button
-						onClick={() => setShow_options(true)}
-						className='button button_reverse button_scale_3 options'
-					><Settings/></button>
+					<Game_Options
+						setShow_surrender={setShow_surrender}			
+						session={session}
+					/>
 
 					<CustomButton 
 						text={t('finish_game')}
@@ -235,21 +233,6 @@ export default function Game() {
 				
 			</div>
 		</div>
-
-
-
-		{/* __________________________________________________ Options __________________________________________________ */}
-
-		{session && <>
-			<Game_Options
-				setShow_surrender={setShow_surrender}
-	
-				setShow_options={setShow_options}
-				show_options={show_options}
-	
-				session={session}
-			/>
-		</>}
 
 
 

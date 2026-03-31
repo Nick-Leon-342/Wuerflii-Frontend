@@ -1,25 +1,23 @@
 
 
-import './scss/Game_Options.scss'
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-
-import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-
-import LoaderBox from '../Loader/Loader_Box'
-import Loader from '../Loader/Loader'
-import Popup from '../Popup/Popup'
 
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 import type { Type__Session } from '../../types/Type__Session'
-
+import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
-import { useTranslation } from 'react-i18next'
-import { UserCog } from 'lucide-react'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
+import { Settings, Square, SquareCheck, UserCog } from 'lucide-react'
+import Custom_Button from '../misc/Custom_Button'
+import { Spinner } from '../ui/spinner'
+import { Button } from '../ui/button'
 
 
 
@@ -27,19 +25,11 @@ import { UserCog } from 'lucide-react'
 
 interface Props__Game_Options {
 	setShow_surrender:	React.Dispatch<React.SetStateAction<boolean>>
-
-	setShow_options:	React.Dispatch<React.SetStateAction<boolean>>
-	show_options:		boolean
-
-	session:			Type__Session
+	session?:			Type__Session
 }
 
 export default function Game_Options({
 	setShow_surrender, 
-
-	setShow_options, 
-	show_options, 
-
 	session, 
 }: Props__Game_Options) {
 
@@ -51,15 +41,22 @@ export default function Game_Options({
 
 	const [ loading_newGame, setLoading_newGame ] = useState(false)
 
+	const list__input_type: Array<Enum__Input_Type> = [
+		'SELECT', 
+		'SELECT_AND_TYPE', 
+		'TYPE', 
+	]
 
 
 
 
-	// __________________________________________________ Input Type __________________________________________________
+
+	// ____________________ Input Type ____________________
 
 	const mutate__input_type = useMutation({
 		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
 		onSuccess: (_, json) => {
+			if(!session) return
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
 				if(!prev) return prev
 				const tmp = { ...prev }
@@ -69,22 +66,24 @@ export default function Game_Options({
 		}
 	})
 
-	function change_inputType(event: React.ChangeEvent<HTMLSelectElement>) {
+	function change__input_type(input_type: Enum__Input_Type) {
 
+		if(!session) return
 		const json = {
-			SessionID: session.id, 
-			Input_Type: event.target.value as Enum__Input_Type
+			SessionID:	session.id, 
+			Input_Type: input_type
 		}
 		mutate__input_type.mutate(json)
 
 	}
 
 
-	// __________________________________________________ Scores Visible __________________________________________________
+	// ____________________ Scores Visible ____________________
 
 	const mutate__show_scores = useMutation({
 		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
 		onSuccess: (_, json) => {
+			if(!session) return
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
 				if(!prev) return prev
 				const tmp = { ...prev }
@@ -94,21 +93,23 @@ export default function Game_Options({
 		}
 	})
 
-	function change__scores_visible(event: React.ChangeEvent<HTMLInputElement>): void {
+	function change__scores_visible(): void {
 
+		if(!session) return
 		const json = {
-			SessionID: session.id, 
-			Show_Scores: event.target.checked
+			SessionID:		session.id, 
+			Show_Scores:	!session.Show_Scores
 		}
 		mutate__show_scores.mutate(json)
 
 	}
 
 
-	// __________________________________________________ New Game __________________________________________________
+	// ____________________ New Game ____________________
 
 	function new_game(): void {
 
+		if(!session) return
 		if(!window.confirm(t('sure_you_want_to_delete_this_game'))) return 
 		setLoading_newGame(true)
 	
@@ -132,89 +133,109 @@ export default function Game_Options({
 
 
 	return <>
-		<Popup
-			title={t('settings')}
-			show_popup={show_options}
-			setShow_popup={setShow_options}
-		>
-			<div className='game_options'>
-
-				{/* __________________________________________________ Input_Type __________________________________________________ */}
-
-				<section>
-					<label>{t('input_type.name')}</label>
-
-					{mutate__input_type.isPending && <LoaderBox className='game_options_loader-inputtype' dark={true}/>}
-
-					{!mutate__input_type.isPending && <>
-						<select
-							value={session?.Input_Type}
-							onChange={change_inputType}
-						>
-							<option value='SELECT' key='SELECT'>{t('input_type.select')}</option>
-							<option value='SELECT_AND_TYPE' key='SELECT_AND_TYPE'>{t('input_type.select_and_type')}</option>
-							<option value='TYPE' key='TYPE'>{t('input_type.type')}</option>
-						</select>
-					</>}
-				</section>
+		<Dialog>
+			<DialogTrigger asChild>
+				<Button
+					variant='outline'
+					className='w-10 h-10'
+				><Settings className='w-8! h-8!'/></Button>
+			</DialogTrigger>
 
 
 
-				{/* __________________________________________________ Show_Scores __________________________________________________ */}
+			<DialogContent showCloseButton={false}>
 
-				<section>
-					<label>{t('show_scores')}</label>
-
-					{mutate__show_scores.isPending && <LoaderBox className='game_options_loader-showscores' dark={true}/>}
-
-					{!mutate__show_scores.isPending && <>
-						<input
-							type='checkbox'
-							checked={session?.Show_Scores}
-							onChange={change__scores_visible}
-						/>
-					</>}
-				</section>
+				<DialogHeader>
+					<DialogTitle>{t('settings')}</DialogTitle>
+				</DialogHeader>
 
 
 
-				{/* __________________________________________________ Edit __________________________________________________ */}
+				<div className='flex flex-col gap-4'>
 
-				<section>
-					<label>{t('edit_players')}</label>
+					{/* ____________________ Input_Type ____________________ */}
 
-					<Link
-						to={`/session/${session?.id}/players`}
-						className='button button_reverse button_scale_3 edit'
-					><UserCog/></Link>
-				</section>
+					<Select
+						onValueChange={(value) => change__input_type(value as Enum__Input_Type)}
+						disabled={mutate__input_type.isPending}
+						value={session?.Input_Type}
+					>
+						<SelectTrigger>
+							<SelectValue/>
+						</SelectTrigger>
+
+						<SelectContent>
+							<SelectGroup>
+								<SelectLabel>{t('input_type.name')}</SelectLabel>
+								{list__input_type.map(input_type => (
+									<SelectItem
+										key={input_type}
+										value={input_type}
+										className='text-lg cursor-pointer'
+									>{t('input_type.' + input_type)}</SelectItem>
+								))}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
 
 
 
-				{/* __________________________________________________ Surrender __________________________________________________ */}
+					{/* ____________________ Show_Scores ____________________ */}
 
-				<section>
-					<button 
-						className='button button_reverse_red'
+					<Button
+						disabled={mutate__show_scores.isPending}
+						onClick={change__scores_visible}
+						className='justify-between'
+						variant='outline'
+					>
+						<span>{t('show_scores')}</span>
+						{mutate__show_scores.isPending && <Spinner/>}
+						{!mutate__show_scores.isPending && (session?.Show_Scores
+							? <SquareCheck/>
+							: <Square/>
+						)}
+					</Button>
+
+
+
+					{/* ____________________ Edit ____________________ */}
+
+					<Button
+						variant='outline'
+						className='justify-between'
+						onClick={() => navigate(`/session/${session?.id}/players`)}
+					>
+						<span>{t('edit_players')}</span>
+						<UserCog/>
+					</Button>
+
+				</div>
+
+
+
+				<DialogFooter>
+
+					{/* ____________________ Surrender ____________________ */}
+
+					<Button
+						variant='destructive'
 						onClick={() => setShow_surrender(true)}
-					>{t('surrender')}</button>
-				</section>
+					>{t('surrender')}</Button>
 
 
 
-				{/* __________________________________________________ New Game __________________________________________________ */}
+					{/* ____________________ New Game ____________________ */}
 
-				<section>
-					{loading_newGame && <Loader loading={true}/>}
-					{!loading_newGame && <>
-						<button 
-							onClick={new_game} 
-							className='button'
-						>{t('discard_game')}</button>
-					</>}
-				</section>
+					<Custom_Button 
+						loading={loading_newGame}
+						text={t('discard_game')}
+						variant='destructive'
+						onClick={new_game} 
+					/>
 
-			</div>
-		</Popup>
+				</DialogFooter>
+
+			</DialogContent>
+		</Dialog>
 	</>
 }
