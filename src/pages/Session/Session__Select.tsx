@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useAPI from '../../hooks/useAPI'
 
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
@@ -30,11 +30,11 @@ import { format } from 'date-fns'
 
 export default function Session__Select() {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+	const navigate		= useNavigate()
+	const { t }			= useTranslation()
+	const query_client	= useQueryClient()
+	const handle_error	= useErrorHandling()
 
 	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
 
@@ -56,7 +56,7 @@ export default function Session__Select() {
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
-		queryFn: () => get__user(axiosPrivate), 
+		queryFn: () => get__user(api), 
 		
 	})
 
@@ -70,7 +70,7 @@ export default function Session__Select() {
 	// ____________________ List_Sessions ____________________
 
 	const { data: tmp_list_sessions, isLoading: isLoading__list_sessions, error: error__list_sessions } = useQuery({
-		queryFn: () => get__sessions_list(axiosPrivate), 
+		queryFn: () => get__sessions_list(api), 
 		queryKey: [ 'session', 'list' ], 
 	})
 
@@ -107,7 +107,7 @@ export default function Session__Select() {
 	// __________________________________________________ Change List __________________________________________________
 
 	const mutate__show_session_date = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Date: !user?.Show__Session_Date }), 
+		mutationFn: () => patch__user(api, { Show__Session_Date: !user?.Show__Session_Date }), 
 		onSuccess: () => {
 			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Date: !user?.Show__Session_Date })
 		}, 
@@ -119,7 +119,7 @@ export default function Session__Select() {
 	})
 
 	const mutate__show_session_names = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Names: !user?.Show__Session_Names }), 
+		mutationFn: () => patch__user(api, { Show__Session_Names: !user?.Show__Session_Names }), 
 		onSuccess: () => {
 			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Names: !user?.Show__Session_Names })
 		}, 
@@ -131,7 +131,7 @@ export default function Session__Select() {
 	})
 
 	const mutate__change_order = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(api, json), 
 		onSuccess: ( _, json ) => {
 			query_client.setQueryData([ 'user' ], { ...user, ...json })
 			query_client.invalidateQueries({
@@ -162,7 +162,7 @@ export default function Session__Select() {
 	// __________________________________________________ Delete __________________________________________________
 
 	const mutate__delete = useMutation({
-		mutationFn: (session_id: number) => delete__session(axiosPrivate, session_id),
+		mutationFn: (session_id: number) => delete__session(api, session_id),
 		onSuccess: ( _, session_id ) => {
 			query_client.setQueryData([ 'session', 'list' ], (list_sessions: Array<Type__Session>) => list_sessions.filter(session => session.id !== session_id))
 		}, 

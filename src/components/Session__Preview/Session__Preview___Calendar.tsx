@@ -8,10 +8,10 @@ import { de } from 'date-fns/locale'
 import { format } from 'date-fns' 
 
 import type { Type__Client_To_Server__Session_Date__PATCH } from '@/types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
-import { patch__session_date } from '../../api/session/session'
+import { patch__session_date } from '@/api/session/session'
 import type { Type__Session } from '@/types/Type__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import { axiosPrivate } from '@/api/axios'
+import useAPI from '@/hooks/useAPI'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from '../ui/dialog'
 import Custom_Button from '../misc/Custom_Button'
@@ -25,16 +25,15 @@ import { Button } from '../ui/button'
 interface Props___Session__Preview___Calendar {
 	setSession:	React.Dispatch<React.SetStateAction<Type__Session | undefined>>
 	session?:	Type__Session
-	refetch:	() => void
 }
 
 export default function Session__Preview___Calendar({
 	setSession, 
 	session, 
-	refetch, 
 }: Props___Session__Preview___Calendar) {
 
 	const { t } = useTranslation()
+	const api			= useAPI()
 	const navigate		= useNavigate()
 	const query_client	= useQueryClient()
 	const handle_error	= useErrorHandling()
@@ -57,8 +56,9 @@ export default function Session__Preview___Calendar({
 
 
 	const mutate__custom_date = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Date__PATCH) => patch__session_date(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Date__PATCH) => patch__session_date(api, json), 
 		onSuccess: (_, json) => {
+			
 			setSession(prev => {
 				if(!prev) return prev
 				const tmp = { ...prev }
@@ -67,7 +67,10 @@ export default function Session__Preview___Calendar({
 				return tmp
 			})
 			setSuccessfully_saved(true)
-			refetch()
+			
+			// Invalidate Query so that final_scores are being refetched
+			query_client.invalidateQueries({ queryKey: [ 'session', +(session?.id || -1), 'finalscores' ] })
+
 		}, 
 		onError: err => {
 			handle_error({

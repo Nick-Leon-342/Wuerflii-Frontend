@@ -8,7 +8,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useAPI from '../../hooks/useAPI'
 
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
@@ -35,11 +35,12 @@ import type { Type__Session } from '../../types/Type__Session'
 
 export default function Analytics_Session() {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+	const navigate 		= useNavigate()
+	const { t } 		= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error	= useErrorHandling()
+
 	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const { session_id } = useParams()
@@ -56,7 +57,7 @@ export default function Analytics_Session() {
 	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(axiosPrivate), 
+		queryFn: () => get__user(api), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -70,7 +71,7 @@ export default function Analytics_Session() {
 	// ____________________ Session ____________________
 
 	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__session(api, +(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ], 
 	})
 
@@ -93,7 +94,7 @@ export default function Analytics_Session() {
 	// ____________________ List__Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__session_players(api, +(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 	})
 
@@ -111,7 +112,7 @@ export default function Analytics_Session() {
 	// ____________________ Analytics ____________________
 
 	const { data: analytics, isLoading: isLoading__analytics, error: error__analytics, refetch } = useQuery({
-		queryFn: () => get__analytics_session(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__analytics_session(api, +(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'analytics' ], 
 	})
 
@@ -147,7 +148,7 @@ export default function Analytics_Session() {
 	])
 
 	const mutate__show_border = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
 		onSuccess: (_, json) => {
 			setSession(prev => {
 				if(!prev) return prev

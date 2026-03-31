@@ -1,15 +1,16 @@
 
 
-import useAuth from './useAuth'
 import { useEffect } from 'react'
-import { axiosPrivate } from '../api/axios'
+
 import useRefreshToken from './useRefreshToken'
+import { axiosPrivate } from '../api/axios'
+import useAuth from './useAuth'
 
 
 
 
 
-export default function useAxiosPrivate() {
+export default function useAPI() {
 
     const refresh = useRefreshToken()
     const { auth } = useAuth()

@@ -8,8 +8,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import useErrorHandling from '../hooks/useErrorHandling'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
+import useAPI from '../hooks/useAPI'
 
 import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
 import Previous from '../components/misc/Previous'
@@ -31,12 +31,12 @@ import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_
 
 export default function Profile() {
 
-    const { setAuth } = useAuth()
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+    const { setAuth }	= useAuth()
+	const navigate		= useNavigate()
+	const { t }			= useTranslation()
+	const query_client	= useQueryClient()
+	const handle_error	= useErrorHandling()
 
 	const { setError } = useContext(Context__Error)
 	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
@@ -53,7 +53,7 @@ export default function Profile() {
 	// __________________________________________________ User __________________________________________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(axiosPrivate), 
+		queryFn: () => get__user(api), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -64,7 +64,7 @@ export default function Profile() {
 	}
 
 	const mutate__user = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(api, json), 
 		onSuccess: () => {
 			navigate(-1)
 		}, 
@@ -117,7 +117,7 @@ export default function Profile() {
 
 		setLoading_delete_account(true)
 
-		axiosPrivate.delete('/user').then(() => {
+		api.delete('/user').then(() => {
 
 			query_client.clear()
 			navigate('/registration_and_login', { replace: true })
@@ -143,7 +143,7 @@ export default function Profile() {
 
 		setLoading_logout(true)
 
-		axiosPrivate.delete('/auth/logout').then(() => {
+		api.delete('/auth/logout').then(() => {
 			
 			query_client.clear()
 			setAuth({ 

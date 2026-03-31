@@ -2,7 +2,7 @@
 
 import { useTranslation } from 'react-i18next'
 
-import type { Type__Server_Reponse__Player__Get } from '@/types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Player } from '@/types/Type__Player'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import Custom_Button from '../misc/Custom_Button'
@@ -14,9 +14,9 @@ import { Button } from '../ui/button'
 
 interface Props___Game__Surrender {
 	loading__finish_game:	boolean
-	setSurrender_winner:	React.Dispatch<React.SetStateAction<Type__Server_Reponse__Player__Get | undefined>>
-	surrender_winner?:		Type__Server_Reponse__Player__Get
-	list__players:			Array<Type__Server_Reponse__Player__Get>
+	setSurrender_winner:	React.Dispatch<React.SetStateAction<Type__Player | undefined>>
+	surrender_winner?:		Type__Player
+	list__players:			Array<Type__Player>
 	finish_game:			() => void
 }
 

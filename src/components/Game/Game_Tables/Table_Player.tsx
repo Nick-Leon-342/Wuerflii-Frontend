@@ -3,17 +3,17 @@
 import './scss/Table_Player.scss'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import useErrorHandling from '../../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import LoaderBox from '../../Loader/Loader_Box'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import useAPI from '@/hooks/useAPI'
 
 import type { Type__Client_To_Server__Gnadenwurf__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Gnadenwurf__PATCH'
 import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
-import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Session } from '../../../types/Type__Session'
+import type { Type__Player } from '../../../types/Type__Player'
 
 import { patch__gnadenwurf } from '../../../api/gnadenwurf'
 
@@ -23,8 +23,8 @@ import { patch__gnadenwurf } from '../../../api/gnadenwurf'
 
 interface Props__Table_Player {
 	list__table_columns:	Array<Type__Server_Response__Table_Columns__Get>
-	setList_players:		React.Dispatch<React.SetStateAction<Array<Type__Server_Reponse__Player__Get>>>
-	list_players:			Array<Type__Server_Reponse__Player__Get>
+	setList_players:		React.Dispatch<React.SetStateAction<Array<Type__Player>>>
+	list_players:			Array<Type__Player>
 	disabled:				boolean
 	session:				Type__Session
 }
@@ -123,8 +123,8 @@ export default function Table_Player({
 
 
 interface Props__Gnadenwurf {
-	setList_players:	React.Dispatch<React.SetStateAction<Array<Type__Server_Reponse__Player__Get>>>
-	list_players:		Array<Type__Server_Reponse__Player__Get>
+	setList_players:	React.Dispatch<React.SetStateAction<Array<Type__Player>>>
+	list_players:		Array<Type__Player>
 	index_player:		number
 	session:			Type__Session
 }
@@ -136,14 +136,14 @@ const Gnadenwurf = ({
 	session, 
 }: Props__Gnadenwurf) => {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api 			= useAPI()
+	const navigate 		= useNavigate()
+	const { t } 		= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
 
 	const mutate__gnadenwurf = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Gnadenwurf__PATCH) => patch__gnadenwurf(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Gnadenwurf__PATCH) => patch__gnadenwurf(api, json), 
 		onSuccess: (_, json) => {
 			setList_players(prev => {
 				const tmp = [ ...prev ]

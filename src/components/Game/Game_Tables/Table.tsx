@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
 import useErrorHandling from '../../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import useAPI from '../../../hooks/useAPI'
 import { list_rows } from '../../../logic/utils'
 
 import LoaderBox from '../../Loader/Loader_Box'
@@ -16,9 +16,9 @@ import { patch__table_columns } from '../../../api/table_columns'
 
 import type { Type__Client_To_Server__Table_Columns__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Table_Columns__PATCH'
 import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
-import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Table_Columns } from '../../../types/Type__Table_Column'
 import type { Type__Session } from '../../../types/Type__Session'
+import type { Type__Player } from '../../../types/Type__Player'
 import { useTranslation } from 'react-i18next'
 
 
@@ -27,8 +27,8 @@ import { useTranslation } from 'react-i18next'
 
 interface Props__Table {
 	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
-	list__table_columns:		Array<Type__Server_Response__Table_Columns__Get>
-	list_players:			Array<Type__Server_Reponse__Player__Get>
+	list__table_columns:	Array<Type__Server_Response__Table_Columns__Get>
+	list_players:			Array<Type__Player>
 	disabled:				boolean
 	session:				Type__Session | undefined
 }
@@ -137,8 +137,8 @@ export default function Table({
 
 interface Props__Input_Element {
 	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
-	list__table_columns:		Array<Type__Server_Response__Table_Columns__Get>
-	list_players:			Array<Type__Server_Reponse__Player__Get>
+	list__table_columns:	Array<Type__Server_Response__Table_Columns__Get>
+	list_players:			Array<Type__Player>
 	index_player:			number
 	index_row:				number
 	session:				Type__Session
@@ -155,11 +155,11 @@ const Input_Element = ({
 	column, 
 }: Props__Input_Element) => {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+	const navigate		= useNavigate()
+	const { t } 		= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
 
 	const [ id,				setId			] = useState<string>('')
 	const [ input_value,	setInput_value	] = useState<number | null>(null)
@@ -173,7 +173,7 @@ const Input_Element = ({
 	}
 
 	const mutate__table_columns = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Table_Columns__PATCH) => patch__table_columns(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Table_Columns__PATCH) => patch__table_columns(api, json), 
 		onSuccess: data => {
 			setList_table_columns(prev => {
 				if(!prev) return prev

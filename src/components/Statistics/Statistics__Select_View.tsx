@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useAPI from '@/hooks/useAPI'
 
 import LoaderBox from '../Loader/Loader_Box'
 
@@ -42,18 +42,18 @@ export default function Statistics__Select_View({
 	isSession, 
 }: Props__Statistics__Select_View) {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+	const navigate		= useNavigate()
+	const { t }			= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
 
 	const [ view, 		setView 		] = useState<Enum__Statistics_View>('STATISTICS_OVERALL')
 	const [ view_month, setView_month 	] = useState<Enum__Month>('JANUARY')
 	const [ view_year, 	setView_year 	] = useState<number>(2026)
 
 	const mutate__user = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(api, json), 
 		onSuccess: (_, json) => {
 			query_client.setQueryData([ 'user' ], (prev: Type__User) => {
 				const tmp = { ...prev }
@@ -71,7 +71,7 @@ export default function Statistics__Select_View({
 	})
 
 	const mutate__session = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
 		onSuccess: (_, json) => {
 			query_client.setQueryData([ 'session', json.SessionID ], (prev: Type__Session) => {
 				if(!prev) return prev

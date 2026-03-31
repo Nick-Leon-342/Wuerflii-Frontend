@@ -1,9 +1,9 @@
 
 
-export interface Type__Server_Reponse__Player__Get {
+export interface Type__Player {
 	id:					number
 	Name:				string
 	Color:				string
-	Order_Indev:		number
+	Order_Index:		number
 	Gnadenwurf_Used:	boolean
 }

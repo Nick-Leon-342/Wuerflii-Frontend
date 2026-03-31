@@ -10,7 +10,7 @@ import type { Type__Session } from '../../types/Type__Session'
 import type { Enum__View } from '../../types/Enum/Enum__View'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useAPI from '@/hooks/useAPI'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -26,19 +26,17 @@ import { Button } from '../ui/button'
 interface Props___Session__Preview___Edit {
 	setSession:			React.Dispatch<React.SetStateAction<Type__Session | undefined>>
 	session?:			Type__Session
-	refetch:			() => void
 }
 
 export default function Session__Preview___Edit({
 	setSession, 
 	session, 
-	refetch, 
 }: Props___Session__Preview___Edit) {
 
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+	const { t } 		= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
 
 	const [ view,		setView			] = useState<Enum__View>('SHOW__ALL')
 	const [ view_month, setView_month	] = useState<Enum__Month>('JANUARY')
@@ -81,7 +79,7 @@ export default function Session__Preview___Edit({
 
 
 	const mutate__session = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			setSession(prev => {
@@ -93,7 +91,10 @@ export default function Session__Preview___Edit({
 				query_client.setQueryData([ 'session', session.id ], tmp)
 				return tmp
 			})
-			refetch()
+			
+			// Invalidate Query so that final_scores are being refetched
+			query_client.invalidateQueries({ queryKey: [ 'session', +(session?.id || -1), 'finalscores' ] })
+
 		}, 
 		onError: err => {
 			handle_error({
@@ -227,7 +228,6 @@ export default function Session__Preview___Edit({
 						<Session__Preview___Calendar
 							setSession={setSession}
 							session={session}
-							refetch={refetch}
 						/>
 					</>}
 

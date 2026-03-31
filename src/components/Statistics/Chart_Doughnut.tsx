@@ -3,7 +3,7 @@
 import { Doughnut } from 'react-chartjs-2'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 
-import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Player'
 
 ChartJS.register(
 	ArcElement, 

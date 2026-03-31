@@ -11,8 +11,8 @@ import { get__session_players, get__session_players_env, patch__session_players,
 import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { get__user } from '../../api/user'
+import useAPI from '../../hooks/useAPI'
 
 import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
 import OptionsDialog from '../../components/Popup/Popup__Settings'
@@ -27,11 +27,11 @@ import { Button } from '@/components/ui/button'
 
 export default function Session__Players() {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+	const navigate		= useNavigate()
+	const query_client	= useQueryClient()
+	const { t }			= useTranslation()
+	const handle_error	= useErrorHandling()
 
 	const { session_id } = useParams()
 	const { setError } = useContext(Context__Error)
@@ -52,7 +52,7 @@ export default function Session__Players() {
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
-		queryFn: () => get__user(axiosPrivate), 
+		queryFn: () => get__user(api), 
 	})
 
 	if(error__user) {
@@ -66,7 +66,7 @@ export default function Session__Players() {
 
 	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
 		queryKey: [ 'session', 'players', 'env' ], 
-		queryFn: () => get__session_players_env(axiosPrivate), 
+		queryFn: () => get__session_players_env(api), 
 	})
 
 	if(error__env_variables) {
@@ -80,7 +80,7 @@ export default function Session__Players() {
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
-		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__session_players(api, +(session_id || -1)), 
 	})
 
 	if(error__list_players) {
@@ -100,7 +100,7 @@ export default function Session__Players() {
 	// __________________________________________________ Mutations __________________________________________________
 
 	const mutate__players_add = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => post__session_players(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => post__session_players(api, json), 
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], data)
 			navigate(`/session/${session_id}/preview`, { replace: true })
@@ -121,7 +121,7 @@ export default function Session__Players() {
 	})
 
 	const mutate__players_edit = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => patch__session_players(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => patch__session_players(api, json), 
 		onSuccess: () => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], list_players)
 			navigate(-1)

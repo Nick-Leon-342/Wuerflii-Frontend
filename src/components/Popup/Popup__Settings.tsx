@@ -9,9 +9,9 @@ import { useTranslation } from 'react-i18next'
 
 import Context__Server_Version from '@/Provider_And_Context/Provider_And_Context__Server_Version'
 import type { Type__User } from '../../types/Type__User'
-import useAxiosPrivate from '@/hooks/useAxiosPrivate'
 import { darkMode_string } from '@/logic/utils'
 import { patch__user } from '../../api/user'
+import useAPI from '@/hooks/useAPI'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
@@ -31,16 +31,16 @@ export default function Popup__Settings({
 	user, 
 }: Props___Popup__Settings) {
 
-	const navigate = useNavigate()
-	const { t, i18n } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
+	const api			= useAPI()
+	const navigate 		= useNavigate()
+	const { t, i18n }	= useTranslation()
+	const query_client 	= useQueryClient()
 
 	const { server_version } = useContext(Context__Server_Version)
 	const [ darkMode, setDarkMode ] = useState(localStorage.getItem(darkMode_string) === 'true')
 
 	const change_dark_mode = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { DarkMode: !user?.DarkMode }), 
+		mutationFn: () => patch__user(api, { DarkMode: !user?.DarkMode }), 
 		onSuccess: () => {
 			setDarkMode(!user?.DarkMode)
 			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user?.DarkMode })

@@ -7,23 +7,21 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-
+import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { get__session_players } from '../../api/session/session_players'
+import type { Type__Player } from '../../types/Type__Player'
+import { get__table_columns } from '../../api/table_columns'
+import useErrorHandling from '../../hooks/useErrorHandling'
+import { get__session } from '../../api/session/session'
+import { get__user } from '../../api/user'
+import useAPI from '../../hooks/useAPI'
+
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
 import OptionsDialog from '../../components/Popup/Popup__Settings'
 import Game__Settings from '../../components/Game/Game__Settings'
 import CustomButton from '../../components/misc/Custom_Button'
 import Table from '../../components/Game/Game_Tables/Table'
-
-import { get__session_players } from '../../api/session/session_players'
-import { get__table_columns } from '../../api/table_columns'
-import { get__session } from '../../api/session/session'
-import { get__user } from '../../api/user'
-
-import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
-import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 
 
 
@@ -31,23 +29,23 @@ import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server
 
 export default function Game() {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api			= useAPI()
+	const navigate 		= useNavigate()
+	const { t } 		= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
 
 	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
 	
-	const [ list__players,			setList__players		] = useState<Array<Type__Server_Reponse__Player__Get>>([])
+	const [ list__players,			setList__players		] = useState<Array<Type__Player>>([])
 	const [ list__table_columns, 	setList__table_columns	] = useState<Array<Type__Server_Response__Table_Columns__Get>>([])
 
 	const [ loading__finish_game, 	setLoading__finish_game	] = useState<boolean>(false)
 
-	const [ surrender_winner, 		setSurrender_winner		] = useState<Type__Server_Reponse__Player__Get>()	// Player-Object of the 'winner'
+	const [ surrender_winner, 		setSurrender_winner		] = useState<Type__Player>()	// Player-Object of the 'winner'
 
 
 
@@ -59,7 +57,7 @@ export default function Game() {
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
-		queryFn: () => get__user(axiosPrivate), 
+		queryFn: () => get__user(api), 
 	})
 
 	if(error__user) {
@@ -73,7 +71,7 @@ export default function Game() {
 
 	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
 		queryKey: [ 'session', +(session_id || -1) ], 
-		queryFn: () => get__session(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__session(api, +(session_id || -1)), 
 	})
 
 	if(error__session) {
@@ -91,7 +89,7 @@ export default function Game() {
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
-		queryFn: () => get__session_players(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__session_players(api, +(session_id || -1)), 
 	})
 
 	if(error__list_players) {
@@ -116,7 +114,7 @@ export default function Game() {
 
 	const { data: tmp__list__table_columns, isLoading: isLoading__list__table_columns, error: error__list__table_columns } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'table_columns' ], 
-		queryFn: () => get__table_columns(axiosPrivate, +(session_id || -1)), 
+		queryFn: () => get__table_columns(api, +(session_id || -1)), 
 	})
 
 	if(error__list__table_columns) {
@@ -159,7 +157,7 @@ export default function Game() {
 
 		setLoading__finish_game(true)
 
-		axiosPrivate.post('/game', { 
+		api.post('/game', { 
 			SessionID: session.id, 
 			Surrendered_PlayerID: surrender_winner?.id
 		}).then(({ data }) => {

@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import type { Type__Server_Reponse__Player__Get } from '@/types/Type__Server_Response/Type__Server_Response__Player__GET'
+import type { Type__Player } from '@/types/Type__Player'
 import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 import type { Type__Session } from '../../types/Type__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import useAPI from '../../hooks/useAPI'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
@@ -27,9 +27,9 @@ import { Button } from '../ui/button'
 
 interface Props___Game__Settings {
 	loading__finish_game:	boolean
-	setSurrender_winner:	React.Dispatch<React.SetStateAction<Type__Server_Reponse__Player__Get | undefined>>
-	surrender_winner?:		Type__Server_Reponse__Player__Get
-	list__players:			Array<Type__Server_Reponse__Player__Get>
+	setSurrender_winner:	React.Dispatch<React.SetStateAction<Type__Player | undefined>>
+	surrender_winner?:		Type__Player
+	list__players:			Array<Type__Player>
 	finish_game:			() => void
 	session?:				Type__Session
 }
@@ -43,11 +43,11 @@ export default function Game__Settings({
 	session, 
 }: Props___Game__Settings) {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const api 			= useAPI()
+	const navigate 		= useNavigate()
+	const { t } 		= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
 
 	const [ loading_newGame, setLoading_newGame ] = useState(false)
 
@@ -64,7 +64,7 @@ export default function Game__Settings({
 	// ____________________ Input Type ____________________
 
 	const mutate__input_type = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
@@ -91,7 +91,7 @@ export default function Game__Settings({
 	// ____________________ Scores Visible ____________________
 
 	const mutate__show_scores = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
@@ -123,7 +123,7 @@ export default function Game__Settings({
 		if(!window.confirm(t('sure_you_want_to_delete_this_game'))) return 
 		setLoading_newGame(true)
 	
-		axiosPrivate.delete(`/game?session_id=${session.id}`).then(() => {
+		api.delete(`/game?session_id=${session.id}`).then(() => {
 
 			query_client.removeQueries({ queryKey: [ 'session', session.id, 'table_columns' ] })
 			navigate('/', { replace: true })
