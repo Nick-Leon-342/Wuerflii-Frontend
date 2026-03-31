@@ -1,7 +1,7 @@
 
 
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +26,7 @@ import { get__user } from '../../api/user'
 import type { Type__Server_Response__Final_Score__GET } from '../../types/Type__Server_Response/Type__Server_Response__Final_Score__GET'
 import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
 import type { Type__Session } from '../../types/Type__Session'
+import { Separator } from '@/components/ui/separator'
 
 
 
@@ -280,26 +281,30 @@ export default function Session__Preview() {
 						><Settings className='w-8! h-8!'/></Button>
 					</PopoverTrigger>
 
-					<PopoverContent align='end'>
-						<Link
-							className='button button_scale_1'
-							to={`/session/${session?.id}/analytics`}
-						>{t('statistics')}</Link>
+					<PopoverContent 
+						className='gap-4 [&_button]:justify-start!'
+						align='end'
+					>
+						
+						<Button
+							variant='outline'
+							onClick={() => navigate(`/session/${session?.id}/analytics`)}
+						>{t('statistics')}</Button>
 
-						<div className='session__preview--popup--settings--edit'>
-							<span>{t('edit')}</span>
+						<Separator/>
 
-							<div>
-								<Link
-									className='button button_scale_1'
-									to={`/session/${session?.id}`}
-								>{t('session')}</Link>
-								<Link
-									className='button button_scale_1'
-									to={`/session/${session?.id}/players`}
-								>{t('players')}</Link>
-							</div>
-						</div>
+						<span className='text-lg font-bold'>{t('edit')}</span>
+
+						<Button
+							variant='outline'
+							onClick={() => navigate(`/session/${session?.id}`)}
+						>{t('session')}</Button>
+						
+						<Button
+							variant='outline'
+							onClick={() => navigate(`/session/${session?.id}/players`)}
+						>{t('players')}</Button>
+
 					</PopoverContent>
 				</Popover>
 

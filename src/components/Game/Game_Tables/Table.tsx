@@ -63,7 +63,7 @@ export default function Table({
 	if(!session || list__table_columns.length === 0) return 
 
 	return <>
-		<table className='table table_game'>
+		<table className='table table_game [&_path]:fill-foreground'>
 			<tbody>
 				{list_rows.map((row, index_row) => {
 					

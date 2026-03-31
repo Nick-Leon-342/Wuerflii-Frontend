@@ -11,7 +11,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
-import Previous from '../../components/NavigationElements/Previous'
+import Previous from '../../components/misc/Previous'
 import PopupOptions from '../../components/Popup/Popup__Settings'
 import Chart_Bar from '../../components/Statistics/Chart_Bar'
 

@@ -12,7 +12,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
 
 import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
-import Previous from '../components/NavigationElements/Previous'
+import Previous from '../components/misc/Previous'
 import Popup__Settings from '../components/Popup/Popup__Settings'
 import CustomButton from '../components/misc/Custom_Button'
 

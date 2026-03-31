@@ -40,7 +40,7 @@ export default function Custom_Button({
 			onClick={onClick}
 			variant={variant}
 			disabled={loading || ok || disabled}
-			className={`button button_scale_0${className ? ` ${className}` : ''}`}
+			className={className ? className : ''}
         >
             
 			{loading && <Spinner/>}

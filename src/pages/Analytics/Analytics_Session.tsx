@@ -14,7 +14,7 @@ import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_C
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
 import Chart_Doughnut from '../../components/Statistics/Chart_Doughnut'
-import Previous from '../../components/NavigationElements/Previous'
+import Previous from '../../components/misc/Previous'
 import Popup__Settings from '../../components/Popup/Popup__Settings'
 import Chart_Graph from '../../components/Statistics/Chart_Graph'
 import LoaderBox from '../../components/Loader/Loader_Box'

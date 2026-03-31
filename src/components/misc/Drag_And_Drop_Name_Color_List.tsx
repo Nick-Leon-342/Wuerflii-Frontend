@@ -1,12 +1,12 @@
 
 
-import './scss/Drag_And_Drop_Name_Color_List.scss'
-
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
+import type { ChangeEvent } from 'react'
 
 import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
-import type { ChangeEvent } from 'react'
+
 import { GripHorizontal } from 'lucide-react'
+import { Input } from '../ui/input'
 
 
 
@@ -71,7 +71,7 @@ export default function Drag_And_Drop_Name_Color_List({
 					<div 
 						{...provided.droppableProps} 
 						ref={provided.innerRef} 
-						className='drag_and_drop_name_color_list'
+						className='flex flex-col w-full gap-2'
 					>
 						{list_edit_players?.map((p, index) => (
 							<Draggable 
@@ -84,7 +84,7 @@ export default function Drag_And_Drop_Name_Color_List({
 										{...provided.draggableProps}
 										{...provided.dragHandleProps}
 										ref={provided.innerRef}
-										className='drag_and_drop_name_color_list--element'
+										className='flex flex-row items-center gap-2'
 										style={{
 											...provided.draggableProps.style,
 											opacity: snapshot.isDragging ? '0.7' : '1'
@@ -93,20 +93,21 @@ export default function Drag_And_Drop_Name_Color_List({
 
 										<GripHorizontal/>
 
-										<input
+										<Input
 											type='text'
 											style={{
 												backgroundColor: p.Color
 											}}
 											value={p.Name}
 											onChange={(e) => change_name(e, index)}
-											className={`${p.Name.length > MAX_LENGTH_PLAYER_NAME ? 'invalid' : ''}`}
+											className={`h-10${p.Name.length > MAX_LENGTH_PLAYER_NAME ? ' text-destructive' : ''}`}
 										/>
 
-										<input
+										<Input
 											type='color'
 											value={p.Color}
 											onChange={(e) => change_color(e, index)}
+											className='p-0 border w-10 h-10 bg-transparent cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0  [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none'
 										/>
 
 									</div>

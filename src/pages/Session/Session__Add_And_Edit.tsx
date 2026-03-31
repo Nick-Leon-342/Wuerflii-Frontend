@@ -9,7 +9,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import Previous from '../../components/NavigationElements/Previous'
+import Previous from '../../components/misc/Previous'
 import OptionsDialog from '../../components/Popup/Popup__Settings'
 import Custom_Button from '../../components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
@@ -232,14 +232,10 @@ export default function Session__Add_And_Edit() {
 				<div className='flex flex-row justify-between items-center w-full'>
 					<span className='text-lg'>{t('color')}:</span>
 					<Input 
-						type='color' 
-						value={color}
-						className='p-0 border-none w-12 h-12 bg-transparent cursor-pointer 
-								[&::-webkit-color-swatch-wrapper]:p-0  
-								[&::-webkit-color-swatch]:border-none 
-								[&::-moz-color-swatch]:rounded-full 
-								[&::-moz-color-swatch]:border-none'
+						className='p-0 border-none w-12 h-12 bg-transparent cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0  [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none'
 						onChange={({ target }) => setColor(target.value)}
+						value={color}
+						type='color' 
 					/>
 				</div>
 			</div>
@@ -247,7 +243,7 @@ export default function Session__Add_And_Edit() {
 
 
 			<Custom_Button 
-				loading={isLoading__user || isLoading__session || isLoading__env_variables}
+				loading={isLoading__user || isLoading__session || isLoading__env_variables || mutate__session_add.isPending || mutate__session_edit.isPending}
 				text={session_id ? t('save') : t('create_session')}
 				onClick={ok}
 			/>

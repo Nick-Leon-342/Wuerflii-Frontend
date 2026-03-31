@@ -1,9 +1,9 @@
 
 
-import './scss/Previous.scss'
-
 import type { MouseEventHandler, ReactNode } from 'react'
+
 import { ChevronLeft } from 'lucide-react'
+import { Button } from '../ui/button'
 
 
 
@@ -22,12 +22,13 @@ export default function Previous({
 }: Props__Previous) {
 
 	return <>
-		<div className={`previous${className ? ` ${className}` : ''}`}>
+		<div className={`flex flex-row items-center justify-between${className ? ` ${className}` : ''}`}>
 
-			<button
+			<Button
 				onClick={onClick} 
-				className='button button_reverse button_scale_3 previous--button' 
-			><ChevronLeft/></button>
+				variant='outline'
+				className='w-10 h-10' 
+			><ChevronLeft className='w-8! h-8!'/></Button>
 
 			{children}
 

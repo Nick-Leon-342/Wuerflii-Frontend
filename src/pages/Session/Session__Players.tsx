@@ -1,29 +1,25 @@
 
 
-import './scss/Session__Players.scss'
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { v4 } from 'uuid'
 
+import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
+import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '../../api/session/session_players'
+import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
+import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-
-import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
-import Previous from '../../components/NavigationElements/Previous'
-import OptionsDialog from '../../components/Popup/Popup__Settings'
-import CustomButton from '../../components/misc/Custom_Button'
-
-import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
-
-import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '../../api/session/session_players'
 import { get__user } from '../../api/user'
 
-import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
-import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
+import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
+import OptionsDialog from '../../components/Popup/Popup__Settings'
+import Custom_Button from '../../components/misc/Custom_Button'
+import Previous from '../../components/misc/Previous'
 import { UserMinus, UserPlus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 
 
@@ -214,26 +210,27 @@ export default function Session__Players() {
 
 
 
-		<div className='session__players'>
+		<div className='session__players flex flex-col w-9/10 md:w-2xl gap-4'>
 
 			<Previous onClick={() => navigate(-1)}>
 				{isInit && <>
-					<div className='session__players--button_container'>
-						<button 
-							className='button button_reverse_red button_scale_3 session__players--button'
+					<div className='flex flex-row [&_button]:w-10 [&_button]:h-10 [&_svg]:w-6! [&_svg]:h-6!'>
+						<Button 
+							variant='ghost'
 							onClick={remove_player}
-						><UserMinus/></button>
-						<button 
-							className='button button_reverse button_scale_3 session__players--button'
+						><UserMinus className='text-destructive'/></Button>
+
+						<Button 
+							variant='ghost'
 							onClick={add_player}
-						><UserPlus/></button>
+						><UserPlus className='text-primary'/></Button>
 					</div>
 				</>}
 			</Previous>
 
 
 
-			{env_variables && <div className='session__players--list'>
+			{env_variables && <div>
 				<DragAndDropNameColorList
 					list_edit_players={list_players}
 					setList_edit_players={setList_players}
@@ -243,10 +240,10 @@ export default function Session__Players() {
 
 
 
-			<CustomButton 
-				onClick={save}
+			<Custom_Button 
+				loading={isLoading__user || isLoading__list_players || isLoading__env_variables || mutate__players_add.isPending || mutate__players_edit.isPending}
 				text={t('save')}
-				loading={isLoading__user || isLoading__list_players || isLoading__env_variables}
+				onClick={save}
 			/>
 
 		</div>
