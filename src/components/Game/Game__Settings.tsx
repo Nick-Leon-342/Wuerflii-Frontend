@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import type { Type__Player } from '@/types/Type__Player'
+import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
 import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 import type { Type__Session } from '../../types/Type__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
@@ -26,19 +26,19 @@ import { Button } from '../ui/button'
 
 
 interface Props___Game__Settings {
-	loading__finish_game:	boolean
-	setSurrender_winner:	React.Dispatch<React.SetStateAction<Type__Player | undefined>>
-	surrender_winner?:		Type__Player
-	list__players:			Array<Type__Player>
-	finish_game:			() => void
-	session?:				Type__Session
+	list__player_with_table_columns:	Array<Type__Player_With_Table_Columns>
+	loading__finish_game:				boolean
+	setSurrender_winner:				React.Dispatch<React.SetStateAction<Type__Player_With_Table_Columns | undefined>>
+	surrender_winner?:					Type__Player_With_Table_Columns
+	finish_game:						() => void
+	session?:							Type__Session
 }
 
 export default function Game__Settings({
+	list__player_with_table_columns, 
 	loading__finish_game, 
 	setSurrender_winner, 
 	surrender_winner, 
-	list__players, 
 	finish_game, 
 	session, 
 }: Props___Game__Settings) {
@@ -147,7 +147,7 @@ export default function Game__Settings({
 			<DialogTrigger asChild>
 				<Button
 					variant='outline'
-					className='w-10 h-10'
+					className='w-12 h-12'
 				><Settings className='w-8! h-8!'/></Button>
 			</DialogTrigger>
 
@@ -231,7 +231,7 @@ export default function Game__Settings({
 						loading__finish_game={loading__finish_game}
 						setSurrender_winner={setSurrender_winner}
 						surrender_winner={surrender_winner}
-						list__players={list__players}
+						list__player_with_table_columns={list__player_with_table_columns}
 						finish_game={finish_game}
 					/>
 

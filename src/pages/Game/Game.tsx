@@ -1,27 +1,26 @@
 
 
-import './scss/Game.scss'
-
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { Type__Server_Response__Table_Columns__Get } from '../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
-import { get__session_players } from '../../api/session/session_players'
-import type { Type__Player } from '../../types/Type__Player'
-import { get__table_columns } from '../../api/table_columns'
-import useErrorHandling from '../../hooks/useErrorHandling'
-import { get__session } from '../../api/session/session'
-import { get__user } from '../../api/user'
-import useAPI from '../../hooks/useAPI'
+import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
+import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
 
-import Table_Player from '../../components/Game/Game_Tables/Table_Player'
-import OptionsDialog from '../../components/Popup/Popup__Settings'
-import Game__Settings from '../../components/Game/Game__Settings'
-import CustomButton from '../../components/misc/Custom_Button'
-import Table from '../../components/Game/Game_Tables/Table'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import useAPI from '@/hooks/useAPI'
+
+import { get__table_columns } from '@/api/table_columns'
+import { get__session } from '@/api/session/session'
+import { get__user } from '@/api/user'
+
+import Table_Player from '@/components/Game/Game_Tables/Table_Player'
+import Popup__Settings from '@/components/Popup/Popup__Settings'
+import Game__Settings from '@/components/Game/Game__Settings'
+import Custom_Button from '@/components/misc/Custom_Button'
+import Table from '@/components/Game/Game_Tables/Table'
+import { toast } from 'sonner'
 
 
 
@@ -39,13 +38,10 @@ export default function Game() {
 
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
-	
-	const [ list__players,			setList__players		] = useState<Array<Type__Player>>([])
-	const [ list__table_columns, 	setList__table_columns	] = useState<Array<Type__Server_Response__Table_Columns__Get>>([])
 
 	const [ loading__finish_game, 	setLoading__finish_game	] = useState<boolean>(false)
 
-	const [ surrender_winner, 		setSurrender_winner		] = useState<Type__Player>()	// Player-Object of the 'winner'
+	const [ surrender_winner, 		setSurrender_winner		] = useState<Type__Player_With_Table_Columns>()	// Player-Object of the 'winner'
 
 
 
@@ -85,34 +81,11 @@ export default function Game() {
 	}
 	
 
-	// ____________________ List__Players ____________________
+	// ____________________ List__Table_Columns ____________________	
 
-	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryKey: [ 'session', +(session_id || -1), 'players' ], 
-		queryFn: () => get__session_players(api, +(session_id || -1)), 
-	})
+	const [ list__player_with_table_columns, 	setList__player_with_table_columns	] = useState<Array<Type__Player_With_Table_Columns>>([])
 
-	if(error__list_players) {
-		handle_error({
-			err: error__list_players, 
-			handle_404: () => {
-				alert(t('error.session_not_found'))
-				navigate('/', { replace: true })
-			}
-		})
-	}
-
-	useEffect(() => { 
-		function init() {
-			if(tmp__list_players) setList__players(tmp__list_players)
-		}
-		init()
-	}, [ tmp__list_players ])
-	
-
-	// ____________________ List__Table_Columns ____________________
-
-	const { data: tmp__list__table_columns, isLoading: isLoading__list__table_columns, error: error__list__table_columns } = useQuery({
+	const { data: tmp__list__table_columns, isLoading: isLoading___list__player_with_table_columns, error: error__list__table_columns } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'table_columns' ], 
 		queryFn: () => get__table_columns(api, +(session_id || -1)), 
 	})
@@ -129,7 +102,7 @@ export default function Game() {
 
 	useEffect(() => {
 		function init() {
-			if(tmp__list__table_columns) setList__table_columns(tmp__list__table_columns)
+			if(tmp__list__table_columns) setList__player_with_table_columns(tmp__list__table_columns)
 		}
 		init()
 	}, [ tmp__list__table_columns ])
@@ -138,7 +111,7 @@ export default function Game() {
 
 
 
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list__table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list__table_columns ])
+	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading___list__player_with_table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading___list__player_with_table_columns ])
 
 	useEffect(() => {
 
@@ -150,10 +123,10 @@ export default function Game() {
 
 	const finish_game = () => {
 	
-		if(!session || !list__players || !list__table_columns) return
+		if(!session || !list__player_with_table_columns || !list__player_with_table_columns) return
 
-		if(!surrender_winner && list__table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return alert(t('please_enter_all_values'))	
-		if(list__players.length === 1) return navigate('/', { replace: true })
+		if(!surrender_winner && list__player_with_table_columns.some(table_column => table_column.List__Table_Columns.some(tc => !tc.Bottom_Table_TotalScore))) return toast.info(t('please_enter_all_values'))	
+		if(list__player_with_table_columns.length === 1) return navigate('/', { replace: true })
 
 		setLoading__finish_game(true)
 
@@ -184,48 +157,47 @@ export default function Game() {
 
 	return <>
 
-		<OptionsDialog user={user}/>
+		<Popup__Settings user={user}/>
 
 
 
 		{/* __________________________________________________ Game __________________________________________________ */}
 
-		<div className='game-container'>
-			<div className='game'>
+		<div className='absolute top-0 left-0'>
+			<div className='flex flex-col gap-4 m-300'>
 
 				{session && <>
 					<Table_Player 
-						disabled={false}
+						setList__player_with_table_columns={setList__player_with_table_columns}
+						list__player_with_table_columns={list__player_with_table_columns}
 						session={session}
-						list_players={list__players}
-						setList_players={setList__players}
-						list__table_columns={list__table_columns}
+						disabled={false}
 					/>
 				</>}
 
 				<Table 
-					disabled={false}
+					setList__player_with_table_columns={setList__player_with_table_columns}
+					list__player_with_table_columns={list__player_with_table_columns}
 					session={session}
-					list_players={list__players}
-					list__table_columns={list__table_columns}
-					setList_table_columns={setList__table_columns}
+					disabled={false}
 				/>
 
-				<footer>
+				<footer className='flex flex-row justify-between gap-4'>
 
 					<Game__Settings
+						list__player_with_table_columns={list__player_with_table_columns}
 						loading__finish_game={loading__finish_game}
 						setSurrender_winner={setSurrender_winner}
 						surrender_winner={surrender_winner}
-						list__players={list__players}
 						finish_game={finish_game}
 						session={session}
 					/>
 
-					<CustomButton 
+					<Custom_Button 
+						loading={loading__finish_game}
 						text={t('finish_game')}
 						onClick={finish_game}
-						loading={loading__finish_game}
+						className='flex-1'
 					/>
 
 				</footer>

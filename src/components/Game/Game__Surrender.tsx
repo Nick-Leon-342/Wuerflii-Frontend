@@ -2,7 +2,7 @@
 
 import { useTranslation } from 'react-i18next'
 
-import type { Type__Player } from '@/types/Type__Player'
+import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import Custom_Button from '../misc/Custom_Button'
@@ -13,18 +13,18 @@ import { Button } from '../ui/button'
 
 
 interface Props___Game__Surrender {
-	loading__finish_game:	boolean
-	setSurrender_winner:	React.Dispatch<React.SetStateAction<Type__Player | undefined>>
-	surrender_winner?:		Type__Player
-	list__players:			Array<Type__Player>
-	finish_game:			() => void
+	list__player_with_table_columns:	Array<Type__Player_With_Table_Columns>
+	loading__finish_game:				boolean
+	setSurrender_winner:				React.Dispatch<React.SetStateAction<Type__Player_With_Table_Columns | undefined>>
+	surrender_winner?:					Type__Player_With_Table_Columns
+	finish_game:						() => void
 }
 
 export default function Game__Surrender({
 	loading__finish_game, 
 	setSurrender_winner, 
 	surrender_winner, 
-	list__players, 
+	list__player_with_table_columns, 
 	finish_game, 
 }: Props___Game__Surrender) {
 
@@ -62,7 +62,7 @@ export default function Game__Surrender({
 
 					</>:<>
 					
-						{list__players?.map(player => (
+						{list__player_with_table_columns?.map(player => (
 							<Button 
 								onClick={() => setSurrender_winner(player)}
 								style={{ backgroundColor: player.Color }}

@@ -10,7 +10,7 @@ import useAPI from '../../hooks/useAPI'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import Previous from '../../components/misc/Previous'
-import OptionsDialog from '../../components/Popup/Popup__Settings'
+import Popup__Settings from '../../components/Popup/Popup__Settings'
 import Custom_Button from '../../components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -178,7 +178,7 @@ export default function Session__Add_And_Edit() {
 
 	return <>
 
-		<OptionsDialog user={user}/>
+		<Popup__Settings user={user}/>
 
 
 

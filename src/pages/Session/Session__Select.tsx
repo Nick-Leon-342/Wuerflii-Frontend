@@ -18,7 +18,7 @@ import { get__user, patch__user } from '../../api/user'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ChevronUp, SortDesc, Square, SquareCheck, Trash2 } from 'lucide-react'
-import OptionsDialog from '../../components/Popup/Popup__Settings'
+import Popup__Settings from '../../components/Popup/Popup__Settings'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
@@ -221,7 +221,7 @@ export default function Session__Select() {
 
 	return <>
 
-		<OptionsDialog user={user}/>
+		<Popup__Settings user={user}/>
 
 
 

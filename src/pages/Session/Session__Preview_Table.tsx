@@ -1,7 +1,5 @@
 
 
-import '../Game/scss/Game.scss'
-
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -12,13 +10,14 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import useAPI from '../../hooks/useAPI'
 
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
-import OptionsDialog from '../../components/Popup/Popup__Settings'
+import Popup__Settings from '../../components/Popup/Popup__Settings'
 import Table from '../../components/Game/Game_Tables/Table'
 
 import { get__session_players } from '../../api/session/session_players'
 import { get__table_columns_archive } from '../../api/table_columns'
 import { get__session } from '../../api/session/session'
 import { get__user } from '../../api/user'
+import { Button } from '@/components/ui/button'
 
 
 
@@ -126,39 +125,38 @@ export default function Session__Preview_Table() {
 
 	return <>
 
-		<OptionsDialog user={user}/>
+		<Popup__Settings user={user}/>
 
 
 
-		<div className='game-container'>
-			<div className='game'>
+		<div className='absolute top-0 left-0'>
+			<div className='flex flex-col gap-4 m-300'>
 
 				{!(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list__table_columns) && session && list_players && list__table_columns && list__table_columns?.length !== 0 && <>
 
 					<Table_Player 
-						disabled={true}
+						list__player_with_table_columns={list__table_columns}
+						setList__player_with_table_columns={() => {}}
 						session={session}
-						list_players={list_players}
-						setList_players={() => {}}
-						list__table_columns={list__table_columns}
+						disabled={true}
 					/>
 
 					<Table 
-						disabled={true}
+						list__player_with_table_columns={list__table_columns}
+						setList__player_with_table_columns={() => {}}
 						session={session}
-						list_players={list_players}
-						setList_table_columns={() => {}}
-						list__table_columns={list__table_columns}
+						disabled={true}
 					/>
 
 				</>}
 
 
 
-				<button
-					className='button'
+				<Button
 					onClick={() => navigate(-1)}
-				>{t('back')}</button>
+				>
+					{t('back')}
+				</Button>
 				
 			</div>
 		</div>

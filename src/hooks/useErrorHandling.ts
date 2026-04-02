@@ -7,6 +7,7 @@ import type { AxiosError } from 'axios'
 
 import useRedirectToLogin from './useRedirectToLogin'
 import axios from 'axios'
+import { toast } from 'sonner'
 
 
 
@@ -68,7 +69,7 @@ export default function useErrorHandling() {
 		if(!axios.isAxiosError(err)) {
 			if(handle_default) return handle_default()
 			console.error(format(new Date(), 'HH:mm.ss:'), err)
-			return window.alert(`Ein unerwarteter Fehler ist aufgetreten: ${err?.message || 'Unbekannt'}`)
+			return toast.error(`Ein unerwarteter Fehler ist aufgetreten: ${err?.message || 'Unbekannt'}`)
 		}
 
 		// Server doesn't respond
@@ -76,7 +77,7 @@ export default function useErrorHandling() {
 	
 			if(handle_no_server_response) return handle_no_server_response()
 			console.error(format(new Date(), 'HH:mm.ss:'), err)
-			return window.alert('Server antwortet nicht!')
+			return toast.error('Server antwortet nicht!')
 	
 		} 
 
@@ -89,7 +90,7 @@ export default function useErrorHandling() {
 		const status = err?.response?.status
 		switch (status) {
 			case 400:
-				window.alert(`Clientanfrage fehlerhaft!\n${err.response.data}`)
+				toast.error(`Clientanfrage fehlerhaft!\n${err.response.data}`)
 				break
 
 			case 401:
@@ -122,7 +123,7 @@ export default function useErrorHandling() {
 				if(handle_500) {
 					handle_500()
 				} else {
-					window.alert('Beim Server trat ein unerwarteter Fehler auf!')
+					toast.error('Beim Server trat ein unerwarteter Fehler auf!')
 				}
 				break
 
@@ -131,7 +132,7 @@ export default function useErrorHandling() {
 					handle_default()
 				} else {
 					console.error(err)
-					window.alert(`Ein unbehandelter Fehler trat auf: ${status}`)
+					toast.error(`Ein unbehandelter Fehler trat auf: ${status}`)
 				}
 				break
 		}

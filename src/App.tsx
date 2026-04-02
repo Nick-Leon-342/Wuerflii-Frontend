@@ -3,6 +3,7 @@
 import './App.css'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Toaster } from './components/ui/sonner'
 
 
 // ____________________ RegistrationAndLogin ____________________
@@ -42,6 +43,7 @@ export default function App() {
 	
 	return <>
 		<div className='App' id='App'>
+			<Toaster/>
 			<Router>
 				<Routes>
 

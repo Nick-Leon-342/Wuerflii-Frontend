@@ -1,8 +1,6 @@
 
 
-import './scss/End.scss'
-
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -10,12 +8,13 @@ import { useTranslation } from 'react-i18next'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import useAPI from '../../hooks/useAPI'
 
-import OptionsDialog from '../../components/Popup/Popup__Settings'
+import Popup__Settings from '../../components/Popup/Popup__Settings'
 
 import { get__user } from '../../api/user'
 import { get__final_score } from '../../api/final_score'
 import { get__session_players } from '../../api/session/session_players'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { Button } from '@/components/ui/button'
 
 
 
@@ -25,17 +24,18 @@ export default function EndScreen() {
 
 	const api			= useAPI()
 	const navigate		= useNavigate()
+	const location 		= useLocation()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
+	
+	const urlParams 	= new URLSearchParams(location.search)
+	const session_id 	= +(urlParams.get('session_id') || -1)
+	const finalscore_id = +(urlParams.get('finalscore_id') || -1)
 
 	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const [ header, setHeader ] = useState('')
 
-	const location = useLocation()
-	const urlParams = new URLSearchParams(location.search)
-	const session_id = +(urlParams.get('session_id') || -1)
-	const finalscore_id = +(urlParams.get('finalscore_id') || -1)
 
 
 
@@ -135,23 +135,23 @@ export default function EndScreen() {
 
 	return <>
 
-		<OptionsDialog user={user}/>
+		<Popup__Settings user={user}/>
 
 		
 
 
 
-		<div className='end_container'>
+		<div className='end flex flex-col w-9/10 lg:w-4xl gap-4'>
 
-			<h1>{header}</h1>
+			<h1 className='text-2xl font-bold text-center'>{header}</h1>
 
 
 
-			<div className='table_container'>
-				<table className='table'>
+			<div className='rounded-lg border-2 border-primary overflow-hidden'>
+				<table className='flex flex-col w-full [&_tr]:flex [&_tr]:border-primary [&_tr]:not-last-of-type:border-b [&_td]:px-1 [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-12 [&_td]:truncate [&_td]:block [&_td]:text-center text-xl'>
 					<tbody>
 
-						<tr>
+						<tr className='bg-green-200'>
 							<td>{t('player')}</td>
 							{list_players?.map(player => (
 								<td key={player.id}><span>{player.Name}</span></td>
@@ -178,10 +178,12 @@ export default function EndScreen() {
 
 
 
-			<Link 
-				to={`/session/${session_id}/preview`}
-				className='button' 
-			>{t('ok')}</Link>
+			<Button 
+				variant='default'
+				onClick={() => navigate(`/session/${session_id}/preview`)}
+			>
+				{t('ok')}
+			</Button>
 
 		</div>
 		

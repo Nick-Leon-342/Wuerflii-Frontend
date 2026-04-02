@@ -20,7 +20,7 @@ import Session__Preview___Player_Table from '@/components/Session__Preview/Sessi
 import Session__Preview___Final_Scores from '@/components/Session__Preview/Session__Preview___Final_Scores'
 import Session__Preview___Edit from '@/components/Session__Preview/Session__Preview___Edit'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import OptionsDialog from '@/components/Popup/Popup__Settings'
+import Popup__Settings from '@/components/Popup/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
@@ -135,7 +135,7 @@ export default function Session__Preview() {
 	
 	return <>
 
-		<OptionsDialog user={user}/>
+		<Popup__Settings user={user}/>
 
 
 
