@@ -7,11 +7,11 @@ import { useTranslation } from 'react-i18next'
 
 import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import useAPI from '@/hooks/useAPI'
 
 import { get__session_players } from '@/api/session/session_players'
 import { get__session } from '@/api/session/session'
 import { get__user } from '@/api/user'
+import { api } from '@/api/axios'
 
 import type { Type__Final_Score } from '@/types/Type__Final_Score'
 import type { Type__Session } from '@/types/Type__Session'
@@ -31,8 +31,7 @@ import { Settings } from 'lucide-react'
 
 
 export default function Session__Preview() {
-	
-	const api			= useAPI()
+
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
@@ -51,7 +50,7 @@ export default function Session__Preview() {
 	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -67,7 +66,7 @@ export default function Session__Preview() {
 	const [ session, setSession ] = useState<Type__Session>()
 
 	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(api, +(session_id || -1)), 
+		queryFn: () => get__session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ], 
 	})
 
@@ -88,7 +87,7 @@ export default function Session__Preview() {
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
-		queryFn: () => get__session_players(api, +(session_id || -1)), 
+		queryFn: () => get__session_players(+(session_id || -1)), 
 	})
 
 	if(error__list_players) {

@@ -13,7 +13,6 @@ import type { Type__Final_Score__Session_Preview } from '@/types/Type__Final_Sco
 import type { Type__Final_Score } from '@/types/Type__Final_Score'
 import type { Type__Session } from '@/types/Type__Session'
 import type { Type__Player } from '@/types/Type__Player'
-import useAPI from '@/hooks/useAPI'
 
 import { Button } from '../ui/button'
 
@@ -33,7 +32,6 @@ export default function Session__Preview___Final_Scores({
 	session, 
 }: Props___Session__Preview___Final_Scores) {
 
-	const api		= useAPI()
 	const navigate	= useNavigate()
 	const { t }		= useTranslation()
 
@@ -53,10 +51,11 @@ export default function Session__Preview___Final_Scores({
 		isFetchingNextPage, 
 		isLoading: isLoading__list_finalscores, 
 	} = useInfiniteQuery({
-		queryFn: ({ pageParam }) => get__final_scores_page(api, +(session?.id || -1), pageParam), 
+		queryFn: ({ pageParam }) => get__final_scores_page(+(session?.id || -1), pageParam), 
 		queryKey: [ 'session', +(session?.id || -1), 'finalscores' ], 
 		getNextPageParam: prevData => prevData.nextPage, 
 		initialPageParam: 1, 
+		enabled: !!session, 
 	})
 
 	useEffect(() => { if(inView) fetchNextPage() }, [ fetchNextPage, inView ])

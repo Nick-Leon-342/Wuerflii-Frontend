@@ -5,15 +5,13 @@ import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
+import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { get__session_players } from '../../api/session/session_players'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAPI from '../../hooks/useAPI'
+import { get__final_score } from '../../api/final_score'
+import { get__user } from '../../api/user'
 
 import Popup__Settings from '../../components/Popup/Popup__Settings'
-
-import { get__user } from '../../api/user'
-import { get__final_score } from '../../api/final_score'
-import { get__session_players } from '../../api/session/session_players'
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import { Button } from '@/components/ui/button'
 
 
@@ -22,7 +20,6 @@ import { Button } from '@/components/ui/button'
 
 export default function EndScreen() {
 
-	const api			= useAPI()
 	const navigate		= useNavigate()
 	const location 		= useLocation()
 	const { t }			= useTranslation()
@@ -46,7 +43,7 @@ export default function EndScreen() {
 	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -61,7 +58,7 @@ export default function EndScreen() {
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', session_id, 'players' ], 
-		queryFn: () => get__session_players(api, session_id), 
+		queryFn: () => get__session_players(session_id), 
 	})
 
 	if(error__list_players) {
@@ -79,7 +76,7 @@ export default function EndScreen() {
 
 	const { data: final_score, isLoading: isLoading__final_score, error: error__final_score } = useQuery({
 		queryKey: [ 'session', session_id, 'finalscore', finalscore_id ], 
-		queryFn: () => get__final_score(api, session_id, finalscore_id), 
+		queryFn: () => get__final_score(session_id, finalscore_id), 
 	})
 
 	if(error__final_score) {

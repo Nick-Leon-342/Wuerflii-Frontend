@@ -2,10 +2,10 @@
 
 import { createContext, useEffect, useState, type ReactNode } from 'react'
 
-import useAPI from '@/hooks/useAPI'
+import { api } from '@/api/axios'
 
-import type { Type__Context__Regex } from '../types/Type__Context/Type__Context__Regex'
 import type { Type__Server_Response__Regex } from '../types/Type__Server_Response/Type__Server_Response__Regex'
+import type { Type__Context__Regex } from '../types/Type__Context/Type__Context__Regex'
 
 
 
@@ -39,8 +39,6 @@ interface Props__Provider__Regex { children: ReactNode }
 
 
 export const Provider_And_Context__Regex = ({ children }: Props__Provider__Regex) => {
-
-	const api = useAPI()
 
 	const [ json__response,		setJson__response	] = useState<Type__Context__Regex>({
 		requesting_regex:				false, 

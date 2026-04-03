@@ -10,7 +10,6 @@ import type { Type__Session } from '../../types/Type__Session'
 import type { Enum__View } from '../../types/Enum/Enum__View'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
-import useAPI from '@/hooks/useAPI'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -33,7 +32,6 @@ export default function Session__Preview___Edit({
 	session, 
 }: Props___Session__Preview___Edit) {
 
-	const api			= useAPI()
 	const { t } 		= useTranslation()
 	const query_client 	= useQueryClient()
 	const handle_error 	= useErrorHandling()
@@ -79,7 +77,7 @@ export default function Session__Preview___Edit({
 
 
 	const mutate__session = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			setSession(prev => {

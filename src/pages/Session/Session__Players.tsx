@@ -12,7 +12,6 @@ import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Cli
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { get__user } from '../../api/user'
-import useAPI from '../../hooks/useAPI'
 
 import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
 import Popup__Settings from '../../components/Popup/Popup__Settings'
@@ -27,7 +26,6 @@ import { Button } from '@/components/ui/button'
 
 export default function Session__Players() {
 
-	const api			= useAPI()
 	const navigate		= useNavigate()
 	const query_client	= useQueryClient()
 	const { t }			= useTranslation()
@@ -52,7 +50,7 @@ export default function Session__Players() {
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 	})
 
 	if(error__user) {
@@ -66,7 +64,7 @@ export default function Session__Players() {
 
 	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
 		queryKey: [ 'session', 'players', 'env' ], 
-		queryFn: () => get__session_players_env(api), 
+		queryFn: () => get__session_players_env(), 
 	})
 
 	if(error__env_variables) {
@@ -80,7 +78,7 @@ export default function Session__Players() {
 
 	const { data: tmp__list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
-		queryFn: () => get__session_players(api, +(session_id || -1)), 
+		queryFn: () => get__session_players(+(session_id || -1)), 
 	})
 
 	if(error__list_players) {
@@ -100,7 +98,7 @@ export default function Session__Players() {
 	// __________________________________________________ Mutations __________________________________________________
 
 	const mutate__players_add = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => post__session_players(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => post__session_players(json), 
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], data)
 			navigate(`/session/${session_id}/preview`, { replace: true })
@@ -121,7 +119,7 @@ export default function Session__Players() {
 	})
 
 	const mutate__players_edit = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => patch__session_players(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => patch__session_players(json), 
 		onSuccess: () => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], list_players)
 			navigate(-1)

@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next'
 import type { AxiosError } from 'axios'
 
 import useErrorHandling from '@/hooks/useErrorHandling'
-import { axiosDefault } from '@/api/axios'
-import useAuth from '@/hooks/useAuth'
+import { api } from '@/api/axios'
 
 import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
 import Username_And_Password__Input from '@/components/Username_And_Password/Username_And_Password__Input'
@@ -26,8 +25,6 @@ import Context__Regex from '@/Provider_And_Context/Provider_And_Context__Regex'
 
 export default function Registration_And_Login() {
 
-	
-	const { setAuth } = useAuth()
 	const location = useLocation()
     const navigate = useNavigate()
 	const { t } = useTranslation()
@@ -93,7 +90,7 @@ export default function Registration_And_Login() {
 		setError('')
 
 
-		axiosDefault.post('/auth/registration', 
+		api.post('/auth/registration', 
 			{ 
 				Name: name, 
 				Password: password, 
@@ -101,25 +98,18 @@ export default function Registration_And_Login() {
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
-		).then(({ data }) => {
+		).then(() => {
 
-
-			setAuth({ 
-				user: null, 
-				access_token: data.access_token 
-			})
 			setName('')
 			setPassword('')
 
 			navigate('/session', { replace: true })
-
 
 		}).catch((err: AxiosError) => {
 
 			handle_error({
 				err, 
 				handle_409: () => {
-					console.log(err)
 					if(err.response?.data === 'Username already taken.') {
 						setError(t('error.username_taken'))
 					} else if(err.response?.data === 'User registration is disabled.') {
@@ -138,7 +128,7 @@ export default function Registration_And_Login() {
 		setError('')
 
 
-		axiosDefault.post('/auth/login', 
+		api.post('/auth/login', 
 			{ 
 				Name: name, 
 				Password: password, 
@@ -146,18 +136,12 @@ export default function Registration_And_Login() {
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true
 			}
-		).then(({ data }) => {
+		).then(() => {
 
-
-			setAuth({ 
-				user: null, 
-				access_token: data.access_token 
-			})
 			setName('')
 			setPassword('')
 
 			navigate(next || '/', { replace: true })
-
 
 		}).catch((err: AxiosError) => {
 

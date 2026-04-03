@@ -7,23 +7,18 @@ import { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import useErrorHandling from '../hooks/useErrorHandling'
-import useAuth from '../hooks/useAuth'
-import useAPI from '../hooks/useAPI'
-
-import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
-import Previous from '../components/misc/Previous'
-import Popup__Settings from '../components/Popup/Popup__Settings'
-import CustomButton from '../components/misc/Custom_Button'
-
-import { get__user, patch__user } from '../api/user'
-
+import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
+import Context__Universal_Loader from '../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import Context__Error from '../Provider_And_Context/Provider_And_Context__Error'
 import Context__Regex from '../Provider_And_Context/Provider_And_Context__Regex'
+import useErrorHandling from '../hooks/useErrorHandling'
+import { get__user, patch__user } from '../api/user'
+import { api } from '@/api/axios'
 
-import Context__Universal_Loader from '../Provider_And_Context/Provider_And_Context__Universal_Loader'
-
-import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
+import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
+import Popup__Settings from '../components/Popup/Popup__Settings'
+import CustomButton from '../components/misc/Custom_Button'
+import Previous from '../components/misc/Previous'
 
 
 
@@ -31,8 +26,6 @@ import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_
 
 export default function Profile() {
 
-	const api			= useAPI()
-    const { setAuth }	= useAuth()
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const query_client	= useQueryClient()
@@ -53,7 +46,7 @@ export default function Profile() {
 	// __________________________________________________ User __________________________________________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -64,7 +57,7 @@ export default function Profile() {
 	}
 
 	const mutate__user = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(api, json), 
+		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(json), 
 		onSuccess: () => {
 			navigate(-1)
 		}, 
@@ -146,10 +139,6 @@ export default function Profile() {
 		api.delete('/auth/logout').then(() => {
 			
 			query_client.clear()
-			setAuth({ 
-				user: 			null, 
-				access_token: 	'', 
-			})
 			navigate('/registration_and_login', { replace: true })
 				
 		}).catch(err => {

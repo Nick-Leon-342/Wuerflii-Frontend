@@ -6,7 +6,6 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAPI from '../../hooks/useAPI'
 
 import { get__session_players } from '../../api/session/session_players'
 import { get__session, patch__session } from '../../api/session/session'
@@ -36,7 +35,6 @@ import { Button } from '@/components/ui/button'
 
 export default function Analytics_Session() {
 
-	const api			= useAPI()
 	const navigate 		= useNavigate()
 	const { t } 		= useTranslation()
 	const query_client 	= useQueryClient()
@@ -56,7 +54,7 @@ export default function Analytics_Session() {
 	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -70,7 +68,7 @@ export default function Analytics_Session() {
 	// ____________________ Session ____________________
 
 	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(api, +(session_id || -1)), 
+		queryFn: () => get__session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ], 
 	})
 
@@ -93,7 +91,7 @@ export default function Analytics_Session() {
 	// ____________________ List__Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryFn: () => get__session_players(api, +(session_id || -1)), 
+		queryFn: () => get__session_players(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 	})
 
@@ -111,7 +109,7 @@ export default function Analytics_Session() {
 	// ____________________ Analytics ____________________
 
 	const { data: analytics, isLoading: isLoading__analytics, error: error__analytics, refetch } = useQuery({
-		queryFn: () => get__analytics_session(api, +(session_id || -1)), 
+		queryFn: () => get__analytics_session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'analytics' ], 
 	})
 
@@ -147,7 +145,7 @@ export default function Analytics_Session() {
 	])
 
 	const mutate__show_border = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
 		onSuccess: (_, json) => {
 			setSession(prev => {
 				if(!prev) return prev
