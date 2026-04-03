@@ -2,7 +2,6 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext, useEffect, useState } from 'react'
-import { Languages, Moon, Settings, Sun } from 'lucide-react'
 import packageJson from '../../../package.json'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -11,10 +10,10 @@ import Context__Server_Version from '@/Provider_And_Context/Provider_And_Context
 import type { Type__User } from '../../types/Type__User'
 import { darkMode_string } from '@/logic/utils'
 import { patch__user } from '../../api/user'
-import useAPI from '@/hooks/useAPI'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Languages, Moon, Settings, Sun } from 'lucide-react'
 import Custom_Button from '../misc/Custom_Button'
 import { Spinner } from '../ui/spinner'
 import { Button } from '../ui/button'
@@ -31,7 +30,6 @@ export default function Popup__Settings({
 	user, 
 }: Props___Popup__Settings) {
 
-	const api			= useAPI()
 	const navigate 		= useNavigate()
 	const { t, i18n }	= useTranslation()
 	const query_client 	= useQueryClient()
@@ -40,7 +38,7 @@ export default function Popup__Settings({
 	const [ darkMode, setDarkMode ] = useState(localStorage.getItem(darkMode_string) === 'true')
 
 	const change_dark_mode = useMutation({
-		mutationFn: () => patch__user(api, { DarkMode: !user?.DarkMode }), 
+		mutationFn: () => patch__user({ DarkMode: !user?.DarkMode }), 
 		onSuccess: () => {
 			setDarkMode(!user?.DarkMode)
 			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user?.DarkMode })

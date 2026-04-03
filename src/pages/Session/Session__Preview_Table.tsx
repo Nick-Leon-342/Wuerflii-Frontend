@@ -6,17 +6,15 @@ import { useTranslation } from 'react-i18next'
 import { useContext, useEffect } from 'react'
 
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { get__session_players } from '../../api/session/session_players'
+import { get__table_columns_archive } from '../../api/table_columns'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAPI from '../../hooks/useAPI'
+import { get__session } from '../../api/session/session'
+import { get__user } from '../../api/user'
 
 import Table_Player from '../../components/Game/Game_Tables/Table_Player'
 import Popup__Settings from '../../components/Popup/Popup__Settings'
 import Table from '../../components/Game/Game_Tables/Table'
-
-import { get__session_players } from '../../api/session/session_players'
-import { get__table_columns_archive } from '../../api/table_columns'
-import { get__session } from '../../api/session/session'
-import { get__user } from '../../api/user'
 import { Button } from '@/components/ui/button'
 
 
@@ -25,7 +23,6 @@ import { Button } from '@/components/ui/button'
 
 export default function Session__Preview_Table() {
 
-	const api			= useAPI()
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
@@ -40,7 +37,7 @@ export default function Session__Preview_Table() {
 	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -54,7 +51,7 @@ export default function Session__Preview_Table() {
 	// ____________________ Session ____________________
 
 	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(api, +(session_id || -1)), 
+		queryFn: () => get__session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ]
 	})
 
@@ -72,7 +69,7 @@ export default function Session__Preview_Table() {
 	// ____________________ List__Players ____________________
 
 	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
-		queryFn: () => get__session_players(api, +(session_id || -1)), 
+		queryFn: () => get__session_players(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 	})
 
@@ -90,7 +87,7 @@ export default function Session__Preview_Table() {
 	// ____________________ List__Table_Columns ____________________
 
 	const { data: list__table_columns, isLoading: isLoading__list__table_columns, error: error__list__table_columns } = useQuery({
-		queryFn: () => get__table_columns_archive(api, +(session_id || -1), +(finalscore_id || -1)), 
+		queryFn: () => get__table_columns_archive(+(session_id || -1), +(finalscore_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), +(finalscore_id || -1), 'table_columns' ], 
 	})
 

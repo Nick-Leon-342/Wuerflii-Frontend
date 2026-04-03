@@ -7,20 +7,17 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import useErrorHandling from '../../hooks/useErrorHandling'
-import useAPI from '../../hooks/useAPI'
-
-import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
-import Previous from '../../components/misc/Previous'
-import PopupOptions from '../../components/Popup/Popup__Settings'
-import Chart_Bar from '../../components/Statistics/Chart_Bar'
-
+import type { Type__Server_Response__Analytics__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
 import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import { Type__List_Months } from '../../types/Type__List_Months'
+import useErrorHandling from '../../hooks/useErrorHandling'
 import { get__analytics } from '../../api/analytics'
 import { get__user } from '../../api/user'
 
-import type { Type__Server_Response__Analytics__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
+import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
+import PopupOptions from '../../components/Popup/Popup__Settings'
+import Chart_Bar from '../../components/Statistics/Chart_Bar'
+import Previous from '../../components/misc/Previous'
 
 
 
@@ -28,7 +25,6 @@ import type { Type__Server_Response__Analytics__GET__Total } from '../../types/T
 
 export default function Analytics() {
 
-	const api			= useAPI()
 	const navigate 		= useNavigate()
 	const { t } 		= useTranslation()
 	const handle_error	= useErrorHandling()
@@ -44,7 +40,7 @@ export default function Analytics() {
 	// ____________________ User ____________________
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
 
@@ -58,7 +54,7 @@ export default function Analytics() {
 	// ____________________ Analytics ____________________
 
 	const { data: analytics, isLoading: isLoading__analytics, error: error__analytics, refetch } = useQuery({
-		queryFn: () => get__analytics(api), 
+		queryFn: () => get__analytics(), 
 		queryKey: [ 'analytics' ], 
 	})
 

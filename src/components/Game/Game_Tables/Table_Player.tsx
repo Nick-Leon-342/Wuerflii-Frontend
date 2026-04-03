@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import useErrorHandling from '@/hooks/useErrorHandling'
-import useAPI from '@/hooks/useAPI'
 
 import type { Type__Client_To_Server__Gnadenwurf__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Gnadenwurf__PATCH'
 import type { Type__Player_With_Table_Columns } from '../../../types/Type__Player_With_Table_Columns'
@@ -138,14 +137,13 @@ const Gnadenwurf = ({
 	session, 
 }: Props__Gnadenwurf) => {
 
-	const api 			= useAPI()
 	const navigate 		= useNavigate()
 	const { t } 		= useTranslation()
 	const query_client 	= useQueryClient()
 	const handle_error 	= useErrorHandling()
 
 	const mutate__gnadenwurf = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Gnadenwurf__PATCH) => patch__gnadenwurf(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Gnadenwurf__PATCH) => patch__gnadenwurf(json), 
 		onSuccess: (_, json) => {
 			setList__player_with_table_columns(prev => {
 				const tmp = [ ...prev ]

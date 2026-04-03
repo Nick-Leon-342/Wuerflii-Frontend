@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 
 import useErrorHandling from '../../../hooks/useErrorHandling'
 import { list_rows } from '../../../logic/utils'
-import useAPI from '../../../hooks/useAPI'
 
 import { patch__table_columns } from '../../../api/table_columns'
 
@@ -202,7 +201,6 @@ const Dialog__Input = ({
 	show, 
 }: Props___Dialog__Input) => {
 
-	const api			= useAPI()
 	const navigate		= useNavigate()
 	const { t } 		= useTranslation()
 	const query_client 	= useQueryClient()
@@ -211,7 +209,7 @@ const Dialog__Input = ({
 	const [ input_value,		setInput_value			] = useState<string | 'none'>('none')
 
 	const mutate__table_columns = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Table_Columns__PATCH) => patch__table_columns(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Table_Columns__PATCH) => patch__table_columns(json), 
 		onSuccess: data => {
 
 			setList__player_with_table_columns(prev => {

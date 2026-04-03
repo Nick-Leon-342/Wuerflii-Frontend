@@ -9,11 +9,11 @@ import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Conte
 import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
 
 import useErrorHandling from '@/hooks/useErrorHandling'
-import useAPI from '@/hooks/useAPI'
 
 import { get__table_columns } from '@/api/table_columns'
 import { get__session } from '@/api/session/session'
 import { get__user } from '@/api/user'
+import { api } from '@/api/axios'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
 import Popup__Settings from '@/components/Popup/Popup__Settings'
@@ -28,7 +28,6 @@ import { toast } from 'sonner'
 
 export default function Game() {
 
-	const api			= useAPI()
 	const navigate 		= useNavigate()
 	const { t } 		= useTranslation()
 	const query_client 	= useQueryClient()
@@ -53,7 +52,7 @@ export default function Game() {
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 	})
 
 	if(error__user) {
@@ -67,7 +66,7 @@ export default function Game() {
 
 	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
 		queryKey: [ 'session', +(session_id || -1) ], 
-		queryFn: () => get__session(api, +(session_id || -1)), 
+		queryFn: () => get__session(+(session_id || -1)), 
 	})
 
 	if(error__session) {
@@ -87,7 +86,7 @@ export default function Game() {
 
 	const { data: tmp__list__table_columns, isLoading: isLoading___list__player_with_table_columns, error: error__list__table_columns } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'table_columns' ], 
-		queryFn: () => get__table_columns(api, +(session_id || -1)), 
+		queryFn: () => get__table_columns(+(session_id || -1)), 
 	})
 
 	if(error__list__table_columns) {

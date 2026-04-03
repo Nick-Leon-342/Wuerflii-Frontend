@@ -11,7 +11,6 @@ import type { Type__Client_To_Server__Session_Date__PATCH } from '@/types/Type__
 import { patch__session_date } from '@/api/session/session'
 import type { Type__Session } from '@/types/Type__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import useAPI from '@/hooks/useAPI'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from '../ui/dialog'
 import Custom_Button from '../misc/Custom_Button'
@@ -33,7 +32,6 @@ export default function Session__Preview___Calendar({
 }: Props___Session__Preview___Calendar) {
 
 	const { t } = useTranslation()
-	const api			= useAPI()
 	const navigate		= useNavigate()
 	const query_client	= useQueryClient()
 	const handle_error	= useErrorHandling()
@@ -56,7 +54,7 @@ export default function Session__Preview___Calendar({
 
 
 	const mutate__custom_date = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Date__PATCH) => patch__session_date(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session_Date__PATCH) => patch__session_date(json), 
 		onSuccess: (_, json) => {
 			
 			setSession(prev => {

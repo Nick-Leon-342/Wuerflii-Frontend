@@ -5,22 +5,20 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import useErrorHandling from '../../hooks/useErrorHandling'
-import useAPI from '../../hooks/useAPI'
-
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import Previous from '../../components/misc/Previous'
-import Popup__Settings from '../../components/Popup/Popup__Settings'
-import Custom_Button from '../../components/misc/Custom_Button'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
 import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
 import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 import type { Type__Session } from '../../types/Type__Session'
+import useErrorHandling from '../../hooks/useErrorHandling'
 import { get__user } from '../../api/user'
+
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import Popup__Settings from '../../components/Popup/Popup__Settings'
+import Custom_Button from '../../components/misc/Custom_Button'
+import Previous from '../../components/misc/Previous'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 
 
@@ -28,7 +26,6 @@ import { get__user } from '../../api/user'
 
 export default function Session__Add_And_Edit() {
 
-	const api			= useAPI()
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const query_client	= useQueryClient()
@@ -56,7 +53,7 @@ export default function Session__Add_And_Edit() {
 
 	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
-		queryFn: () => get__user(api), 
+		queryFn: () => get__user(), 
 	})
 
 	if(error__user) {
@@ -69,7 +66,7 @@ export default function Session__Add_And_Edit() {
 	// ____________________ Session ____________________
 
 	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
-		queryFn: () => get__session(api, +(session_id || -1)), 
+		queryFn: () => get__session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ], 
 		enabled: Boolean(session_id), 
 	})
@@ -98,7 +95,7 @@ export default function Session__Add_And_Edit() {
 	// ____________________ Env_Variables ____________________
 
 	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
-		queryFn: () => get__session_env_variables(api), 
+		queryFn: () => get__session_env_variables(), 
 		queryKey: [ 'session', 'env' ], 
 	})
 
@@ -117,7 +114,7 @@ export default function Session__Add_And_Edit() {
 	// __________________________________________________ Add / Edit __________________________________________________
 
 	const mutate__session_add = useMutation({
-		mutationFn: (session_json: Type__Client_To_Server__Session__POST) => post__session(api, session_json),
+		mutationFn: (session_json: Type__Client_To_Server__Session__POST) => post__session(session_json),
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', data.id ], data)
 			navigate(`/session/${data.id}/players`, { replace: false })
@@ -130,7 +127,7 @@ export default function Session__Add_And_Edit() {
 	})
 
 	const mutate__session_edit = useMutation({
-		mutationFn: (session_json: Type__Client_To_Server__Session__PATCH) => patch__session(api, session_json), 
+		mutationFn: (session_json: Type__Client_To_Server__Session__PATCH) => patch__session(session_json), 
 		onSuccess: ( _, session_json ) => {
 			query_client.setQueryData([ 'session', session_json.SessionID ], (prev: Type__Session) => ({ ...prev, ...session_json }))
 			navigate(-1)

@@ -1,6 +1,6 @@
 
 
-import type { Axios } from 'axios'
+import { api } from './axios'
 
 import type { Type__Final_Score } from '@/types/Type__Final_Score'
 
@@ -10,7 +10,6 @@ import type { Type__Final_Score } from '@/types/Type__Final_Score'
 
 
 export async function get__final_score(
-	api: 			Axios, 
 	session_id:		number, 
 	final_score_id:	number, 
 ): Promise<Type__Final_Score> {
@@ -28,7 +27,6 @@ interface Type__Server_Response__Final_Score__All__GET {
 }
 
 export async function get__final_scores_page(
-	api:		Axios, 
 	session_id:	number, 
 	page:		number, 
 ): Promise<Type__Server_Response__Final_Score__All__GET> {

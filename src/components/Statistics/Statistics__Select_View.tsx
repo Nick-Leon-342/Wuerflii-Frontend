@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAPI from '@/hooks/useAPI'
 
 import { patch__session } from '../../api/session/session'
 import { patch__user } from '../../api/user'
@@ -24,8 +23,8 @@ import type { Type__User } from '../../types/Type__User'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from '../ui/popover'
-import { Button } from '../ui/button'
 import { ChartNoAxesColumn } from 'lucide-react'
+import { Button } from '../ui/button'
 import { toast } from 'sonner'
 
 
@@ -46,7 +45,6 @@ export default function Statistics__Select_View({
 	isSession, 
 }: Props__Statistics__Select_View) {
 
-	const api			= useAPI()
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const query_client 	= useQueryClient()
@@ -67,7 +65,7 @@ export default function Statistics__Select_View({
 
 
 	const mutate__user = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(api, json), 
+		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(json), 
 		onSuccess: (_, json) => {
 			query_client.setQueryData([ 'user' ], (prev: Type__User) => {
 				const tmp = { ...prev }
@@ -85,7 +83,7 @@ export default function Statistics__Select_View({
 	})
 
 	const mutate__session = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
 		onSuccess: (_, json) => {
 			query_client.setQueryData([ 'session', json.SessionID ], (prev: Type__Session) => {
 				if(!prev) return prev

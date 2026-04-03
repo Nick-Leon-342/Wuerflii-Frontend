@@ -3,13 +3,13 @@
 import './App.css'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Axios_Private_Route from './logic/Axios_Private_Route'
 import { Toaster } from './components/ui/sonner'
 
 
 // ____________________ RegistrationAndLogin ____________________
 
 import Registration_And_Login from './pages/Registration_And_Login/Registration_And_Login'
-import PersistLogin from './logic/PersistLogin'
 
 import Profile from './pages/Profile'
 
@@ -55,7 +55,7 @@ export default function App() {
 						Routes that are protected by a token
 						PersistLogin is needed, so that the user doesn't have to login after page refresh
 					*/}
-					<Route element={<PersistLogin />}>
+					<Route element={<Axios_Private_Route />}>
 
 						<Route path='/profile' element={<Profile />} />
 

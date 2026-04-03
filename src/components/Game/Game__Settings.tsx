@@ -11,7 +11,7 @@ import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 import type { Type__Session } from '../../types/Type__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
-import useAPI from '../../hooks/useAPI'
+import { api } from '@/api/axios'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
@@ -43,7 +43,6 @@ export default function Game__Settings({
 	session, 
 }: Props___Game__Settings) {
 
-	const api 			= useAPI()
 	const navigate 		= useNavigate()
 	const { t } 		= useTranslation()
 	const query_client 	= useQueryClient()
@@ -64,7 +63,7 @@ export default function Game__Settings({
 	// ____________________ Input Type ____________________
 
 	const mutate__input_type = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
@@ -91,7 +90,7 @@ export default function Game__Settings({
 	// ____________________ Scores Visible ____________________
 
 	const mutate__show_scores = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(api, json), 
+		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
