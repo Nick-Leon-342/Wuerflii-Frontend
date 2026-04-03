@@ -137,9 +137,9 @@
 	"select": "Auswählen", 
 	"statistics": "Statistiken", 
 	"statistics_view": {
-		"overall": "Gesamt", 
-		"year": "Jahr", 
-		"month": "Monat" 
+		"STATISTICS_OVERALL":	"Gesamt", 
+		"STATISTICS_YEAR":		"Jahr", 
+		"STATISTICS_MONTH":		"Monat" 
 	}, 
 	"successfully_saved": "Erfolgreich gespeichert!", 
 	"sure_you_want_to_delete_session": "Bist du sicher, dass du diese Partie löschen möchtest?", 

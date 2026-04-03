@@ -137,9 +137,9 @@
 	"select": "Select", 
 	"statistics": "Statistics", 
 	"statistics_view": {
-		"overall": "Overall", 
-		"year": "Year", 
-		"month": "Month" 
+		"STATISTICS_OVERALL":	"Overall", 
+		"STATISTICS_YEAR":		"Year", 
+		"STATISTICS_MONTH":		"Month" 
 	}, 
 	"successfully_saved": "Saved successfully!", 
 	"sure_you_want_to_delete_session": "Are you sure you want to delete this session?", 
