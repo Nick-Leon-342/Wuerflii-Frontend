@@ -1,10 +1,8 @@
 
 
-import './scss/Profile.scss'
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useContext, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
@@ -15,10 +13,13 @@ import useErrorHandling from '../hooks/useErrorHandling'
 import { get__user, patch__user } from '../api/user'
 import { api } from '@/api/axios'
 
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
 import Popup__Settings from '../components/Popup/Popup__Settings'
-import CustomButton from '../components/misc/Custom_Button'
+import Custom_Button from '../components/misc/Custom_Button'
 import Previous from '../components/misc/Previous'
+import { Button } from '@/components/ui/button'
+import { ChartNoAxesColumn, LogOut, UserPen, UserX } from 'lucide-react'
 
 
 
@@ -77,9 +78,8 @@ export default function Profile() {
 
 
 
-	function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
+	function change_credentials(): void {
 
-		event.preventDefault()
 		setError('')
 
 		if((name && !NAME__REGEX.test(name)) || (password && !PASSWORD__REGEX.test(password)) || (!name && !password)) return
@@ -163,68 +163,85 @@ export default function Profile() {
 
 
 
-		<div className='profile'>
+		<div className='flex flex-col w-9/10 gap-4 md:w-150 [&_button]:not-first:justify-start'>
 
 			<Previous onClick={() => navigate(-1)}/>
 
 
 			
-			<Link 
-				to='/analytics'
-				className='button button_scale_2 profile--analytics'
-			>{t('statistics')}</Link>
-
-
-			{/* __________________________________________________ Change credentials __________________________________________________ */}
-			<form onSubmit={handleSubmit}>
-
-				<hr/>
-
-				<h1>{t('change_credentials')}</h1>
-
-				{mutate__user.isSuccess && <h2>{t('successfully_saved')}</h2>}
-
-				<Form__Username_And_Password 
-					name={name} 
-					setName={setName} 
-
-					password={password} 
-					setPassword={setPassword} 
-
-					password_confirm={password__confirm} 
-					setPassword_confirm={setPassword__confirm} 
-					
-					isRequired={false}
-				/>
-
-				<CustomButton
-					className='profile--change_credentials'
-					loading={mutate__user.isPending}
-					text={t('change')}
-				/>
-
-			</form>
+			{/* ____________________ Statistics ____________________ */}
+			<Button 
+				onClick={() => navigate('/analytics', { replace: false })}
+				variant='outline'
+			>
+				<ChartNoAxesColumn/>
+				{t('statistics')}
+			</Button>
 
 
 
-			{/* __________________________________________________ Danger Zone __________________________________________________ */}
+			{/* ____________________ Change Credentials ____________________ */}
+			<Dialog>
+				<DialogTrigger asChild>
+					<Button variant='outline'>
+						<UserPen/>
+						{t('change_credentials')}
+					</Button>
+				</DialogTrigger>
+
+
+
+				<DialogContent showCloseButton={false}>
+					<DialogHeader>
+						<DialogTitle>{t('change_credentials')}</DialogTitle>
+					</DialogHeader>
+
+					<Form__Username_And_Password 
+						name={name} 
+						setName={setName} 
+
+						password={password} 
+						setPassword={setPassword} 
+
+						password_confirm={password__confirm} 
+						setPassword_confirm={setPassword__confirm} 
+						
+						isRequired={false}
+					/>
+
+					<DialogFooter>
+						<Custom_Button
+							className='profile--change_credentials'
+							loading={mutate__user.isPending}
+							onClick={change_credentials}
+							text={t('change')}
+						/>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+			
+
+
+			{/* ____________________ Danger Zone ____________________ */}
 			<>
 			
 				<hr/>
 
-				<h1>{t('danger_zone')}</h1>
+				<h1 className='text-xl'>{t('danger_zone')}</h1>
 			
-				<CustomButton
+				<Custom_Button
+					SVG={<LogOut/>}
 					onClick={logout}
 					text={t('logout')}
+					variant='destructive'
 					loading={loading_logout}
-					className='button_reverse_red'
 				/>
 
-				<CustomButton
+				<Custom_Button
+					SVG={<UserX/>}
+					variant='destructive'
 					onClick={delete_account}
 					text={t('delete_account')}
-					className='button_reverse_red'
 					loading={loading_delete_account}
 				/>
 			</>

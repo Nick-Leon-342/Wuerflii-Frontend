@@ -8,16 +8,17 @@ import type { AxiosError } from 'axios'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { api } from '@/api/axios'
 
+import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
+import Context__Error from '@/Provider_And_Context/Provider_And_Context__Error'
+import Context__Regex from '@/Provider_And_Context/Provider_And_Context__Regex'
+
 import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
 import Username_And_Password__Input from '@/components/Username_And_Password/Username_And_Password__Input'
 import Popup__Settings from '@/components/Popup/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
 import Wuerflii from '@/svg/wuerflii.svg?react'
-
-import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
-import Context__Error from '@/Provider_And_Context/Provider_And_Context__Error'
-import Context__Regex from '@/Provider_And_Context/Provider_And_Context__Regex'
+import { FileUser, LogIn } from 'lucide-react'
 
 
 
@@ -226,6 +227,7 @@ export default function Registration_And_Login() {
 
 						<Custom_Button 
 							text={show_login ? t('login') : t('register')}
+							SVG={show_login ? <LogIn/> : <FileUser/>}
 							className='justify-baseline'
 							loading={loading}
 						/>

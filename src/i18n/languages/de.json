@@ -40,6 +40,7 @@
 		"players_already_exist": "Spieler für diese Partie existieren bereits.",
 		"players_too_many": "Es dürfen maximal nur {{max}} Spieler sein.", 
 		"resource_not_found": "Die Ressource wurde nicht gefunden!", 
+		"session_invalid": "Session abgelaufen.", 
 		"session_not_found": "Partie wurde nicht gefunden.", 
 		"server_is_not_responding": "Server is not responding.", 
 		"synchronization_of_gnadenwurf_failed": "Der Server antwortet nicht.\nDer Gnadenwurf für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 

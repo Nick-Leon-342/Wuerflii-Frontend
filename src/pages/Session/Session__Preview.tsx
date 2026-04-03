@@ -18,13 +18,11 @@ import type { Type__Session } from '@/types/Type__Session'
 
 import Session__Preview___Player_Table from '@/components/Session__Preview/Session__Preview___Player_Table'
 import Session__Preview___Final_Scores from '@/components/Session__Preview/Session__Preview___Final_Scores'
+import Session__Preview___Settings from '@/components/Session__Preview/Session__Preview___Settings'
 import Session__Preview___Edit from '@/components/Session__Preview/Session__Preview___Edit'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import Popup__Settings from '@/components/Popup/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
-import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { Settings } from 'lucide-react'
 
 
 
@@ -147,41 +145,9 @@ export default function Session__Preview() {
 					session={session}
 				/>
 
-				<Popover>
-					<PopoverTrigger asChild>
-						<Button
-							variant='ghost'
-							className='w-10 h-10'
-						><Settings className='w-8! h-8!'/></Button>
-					</PopoverTrigger>
-
-					<PopoverContent 
-						className='gap-4 [&_button]:justify-start!'
-						align='end'
-					>
-						
-						<Button
-							variant='outline'
-							onClick={() => navigate(`/session/${session?.id}/analytics`)}
-						>{t('statistics')}</Button>
-
-						<Separator/>
-
-						<span className='text-lg font-bold'>{t('edit')}</span>
-
-						<Button
-							variant='outline'
-							onClick={() => navigate(`/session/${session?.id}`)}
-						>{t('session')}</Button>
-						
-						<Button
-							variant='outline'
-							onClick={() => navigate(`/session/${session?.id}/players`)}
-						>{t('players')}</Button>
-
-					</PopoverContent>
-				</Popover>
-
+				<Session__Preview___Settings
+					session={session}
+				/>
 
 			</header>
 
