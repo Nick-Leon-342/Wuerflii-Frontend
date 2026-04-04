@@ -22,12 +22,13 @@ import Statistics__Select_View from '../../components/Statistics/Statistics__Sel
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
 import Chart_Doughnut from '../../components/Statistics/Chart_Doughnut'
-import Popup__Settings from '../../components/Popup/Popup__Settings'
+import Popup__Settings from '../../components/misc/Popup__Settings'
 import Chart_Graph from '../../components/Statistics/Chart_Graph'
 import Previous from '../../components/misc/Previous'
 import { Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -76,7 +77,7 @@ export default function Analytics_Session() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -99,7 +100,7 @@ export default function Analytics_Session() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})

@@ -1,13 +1,11 @@
 
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useContext, useState } from 'react'
 
 import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import Context__Universal_Loader from '../Provider_And_Context/Provider_And_Context__Universal_Loader'
-import Context__Error from '../Provider_And_Context/Provider_And_Context__Error'
 import Context__Regex from '../Provider_And_Context/Provider_And_Context__Regex'
 import useErrorHandling from '../hooks/useErrorHandling'
 import { get__user, patch__user } from '../api/user'
@@ -15,11 +13,13 @@ import { api } from '@/api/axios'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
-import Popup__Settings from '../components/Popup/Popup__Settings'
-import Custom_Button from '../components/misc/Custom_Button'
-import Previous from '../components/misc/Previous'
-import { Button } from '@/components/ui/button'
 import { ChartNoAxesColumn, LogOut, UserPen, UserX } from 'lucide-react'
+import Popup__Settings from '@/components/misc/Popup__Settings'
+import Custom_Button from '@/components/misc/Custom_Button'
+import { Spinner } from '@/components/ui/spinner'
+import Previous from '@/components/misc/Previous'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -31,9 +31,6 @@ export default function Profile() {
 	const { t }			= useTranslation()
 	const query_client	= useQueryClient()
 	const handle_error	= useErrorHandling()
-
-	const { setError } = useContext(Context__Error)
-	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 	const [ name, 					setName						] = useState<string>('')
 	const [ password, 				setPassword					] = useState<string>('')
@@ -65,25 +62,19 @@ export default function Profile() {
 		onError: err => {
 			handle_error({
 				err,
-				handle_409: () => setError(t('error.username_taken'))
+				handle_409: () => toast.error(t('error.username_taken'))
 			})
 		}
 	})
 
-	useEffect(() => {
-		setLoading__universal_loader(isLoading__user)
-	}, [ isLoading__user, setLoading__universal_loader ])
 
 
 
 
-
-	function change_credentials(): void {
-
-		setError('')
+	function change_credentials() {
 
 		if((name && !NAME__REGEX.test(name)) || (password && !PASSWORD__REGEX.test(password)) || (!name && !password)) return
-		if(password !== password__confirm) return setError(t('error.password_confirm_doesnt_match'))
+		if(password !== password__confirm) return toast.error(t('error.password_confirm_doesnt_match'))
 
 
 		const json: Type__Client_To_Server__User__PATCH = {}
@@ -184,7 +175,7 @@ export default function Profile() {
 			<Dialog>
 				<DialogTrigger asChild>
 					<Button variant='outline'>
-						<UserPen/>
+						{isLoading__user ? <Spinner/> : <UserPen/>}
 						{t('change_credentials')}
 					</Button>
 				</DialogTrigger>

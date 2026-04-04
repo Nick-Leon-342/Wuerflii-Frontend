@@ -7,6 +7,8 @@ import { api } from '@/api/axios'
 import type { Type__Server_Response__Regex } from '../types/Type__Server_Response/Type__Server_Response__Regex'
 import type { Type__Context__Regex } from '../types/Type__Context/Type__Context__Regex'
 
+import { toast } from 'sonner'
+
 
 
 
@@ -112,13 +114,13 @@ export const Provider_And_Context__Regex = ({ children }: Props__Provider__Regex
 				})
 	
 			}).catch((err: Error) => {
-				alert(`Ein unerwarteter Fehler trat auf.\n${err}`)
+				toast.error(`Ein unerwarteter Fehler trat auf.\n${err}`)
 				setJson__response(prev => ({ ...prev, requesting_regex: false }))
 			})
 		}
 
 		request_regex()
-	}, []) // eslint-disable-line
+	}, [])
 
 
 

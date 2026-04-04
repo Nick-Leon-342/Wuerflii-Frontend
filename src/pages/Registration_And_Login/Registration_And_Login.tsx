@@ -1,24 +1,23 @@
 
 
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useState, useEffect, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useState, useContext } from 'react'
 import type { AxiosError } from 'axios'
 
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { api } from '@/api/axios'
 
-import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
-import Context__Error from '@/Provider_And_Context/Provider_And_Context__Error'
 import Context__Regex from '@/Provider_And_Context/Provider_And_Context__Regex'
 
 import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
 import Username_And_Password__Input from '@/components/Username_And_Password/Username_And_Password__Input'
-import Popup__Settings from '@/components/Popup/Popup__Settings'
+import Popup__Settings from '@/components/misc/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
 import Wuerflii from '@/svg/wuerflii.svg?react'
 import { FileUser, LogIn } from 'lucide-react'
+import { toast } from 'sonner'
 
 
 
@@ -26,51 +25,32 @@ import { FileUser, LogIn } from 'lucide-react'
 
 export default function Registration_And_Login() {
 
-	const location = useLocation()
-    const navigate = useNavigate()
-	const { t } = useTranslation()
-	const [ next, setNext ] = useState('')
-	const handle_error = useErrorHandling()
-
-	const { setError } = useContext(Context__Error)
+	const location		= useLocation()
+    const navigate		= useNavigate()
+	const { t }			= useTranslation()
+	const handle_error	= useErrorHandling()
+	
 	const { NAME__REGEX, PASSWORD__REGEX } = useContext(Context__Regex)
-	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
-
+	
     const [ name, 				setName				] = useState<string>('')
     const [ password, 			setPassword			] = useState<string>('')
     const [ password_confirm,	setPassword_confirm	] = useState<string>('')
 	
+	const next = new URLSearchParams(location.search).get('next') || ''
 	const [ loading, 			setLoading			] = useState(false)
-
 	const [ show_login, 		setShow_login		] = useState(true)
 
 
 
 
 
+	function switch_between_registration_and_login() {
 
-	useEffect(() => {
-		function reset_ui() {
-			setError('')
-			setName('')
-			setPassword('')
-		}
-		reset_ui()
-	}, [ show_login ]) // eslint-disable-line
+		setShow_login(prev => !prev)
+		setName('')
+		setPassword('')
 
-	useEffect(() => {
-		function start() {
-			setLoading__universal_loader(false)
-			setNext(new URLSearchParams(location.search).get('next') || '')
-		}
-		start()
-	}, []) // eslint-disable-line
-
-	useEffect(() => setError(''), [ name, password, setError ])
-
-
-
-
+	}
 
 	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 
@@ -85,10 +65,9 @@ export default function Registration_And_Login() {
 
 	const registration = () => {
 		
-		if(!name || !NAME__REGEX.test(name) || !password || !PASSWORD__REGEX.test(password)) return setError(t('please_fill_out_registration'))
-		if(password !== password_confirm) return setError(t('error.password_confirm_doesnt_match'))
+		if(!name || !NAME__REGEX.test(name) || !password || !PASSWORD__REGEX.test(password)) return toast.error(t('please_fill_out_registration'))
+		if(password !== password_confirm) return toast.error(t('error.password_confirm_doesnt_match'))
 		setLoading(true)
-		setError('')
 
 
 		api.post('/auth/registration', 
@@ -112,9 +91,9 @@ export default function Registration_And_Login() {
 				err, 
 				handle_409: () => {
 					if(err.response?.data === 'Username already taken.') {
-						setError(t('error.username_taken'))
+						toast.error(t('error.username_taken'))
 					} else if(err.response?.data === 'User registration is disabled.') {
-						setError(t('registration_disabled'))
+						toast.error(t('registration_disabled'))
 					}
 				}
 			})
@@ -126,7 +105,6 @@ export default function Registration_And_Login() {
 	const login = () => {
 
 		setLoading(true)
-		setError('')
 
 
 		api.post('/auth/login', 
@@ -149,7 +127,7 @@ export default function Registration_And_Login() {
 			handle_error({
 				err, 
 				handle_409: () => {
-					setError(t('wrong_username_or_password'))
+					toast.error(t('wrong_username_or_password'))
 				}
 			})
 
@@ -241,7 +219,7 @@ export default function Registration_And_Login() {
 						<Button
 							variant='link'
 							className='text-secondary p-0'
-							onClick={() => setShow_login(prev => !prev)}
+							onClick={switch_between_registration_and_login}
 						>{show_login ? t('register') : t('login')}</Button>
 					</div>
 					

@@ -5,14 +5,15 @@ import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
-import { get__session_players } from '../../api/session/session_players'
-import useErrorHandling from '../../hooks/useErrorHandling'
-import { get__final_score } from '../../api/final_score'
-import { get__user } from '../../api/user'
+import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { get__session_players } from '@/api/session/session_players'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import { get__final_score } from '@/api/final_score'
+import { get__user } from '@/api/user'
 
-import Popup__Settings from '../../components/Popup/Popup__Settings'
+import Popup__Settings from '@/components/misc/Popup__Settings'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -65,7 +66,7 @@ export default function EndScreen() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -83,7 +84,7 @@ export default function EndScreen() {
 		handle_error({
 			err: error__final_score, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})

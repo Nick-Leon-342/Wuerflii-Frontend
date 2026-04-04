@@ -30,6 +30,7 @@
 	"edit_players": "Spieler bearbeiten", 
 	"error": {
 		"error": "Fehler", 
+		"client_request_invalid": "Clientanfrage fehlerhaft.", 
 		"columns_required": "Bitte die Spaltenanzahl angeben.",
 		"columns_too_many": "Die maximale Spaltenanzahl ist {{max}}.", 
 		"generic": "Beim Laden der Seite ist etwas schiefgelaufen. Bitte erneut versuchen.",
@@ -44,6 +45,7 @@
 		"session_not_found": "Partie wurde nicht gefunden.", 
 		"server_is_not_responding": "Server is not responding.", 
 		"synchronization_of_gnadenwurf_failed": "Der Server antwortet nicht.\nDer Gnadenwurf für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 
+		"unhandled_error": "Es trat ein unerwarteter Fehler auf.", 
 		"username_taken": "Der Benutzername ist vergeben!", 
 		"value_invalid": "Der Eintrag '{{value}}' ist nicht zulässig!"
 	}, 

@@ -5,17 +5,18 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useContext, useEffect } from 'react'
 
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
-import { get__session_players } from '../../api/session/session_players'
-import { get__table_columns_archive } from '../../api/table_columns'
-import useErrorHandling from '../../hooks/useErrorHandling'
-import { get__session } from '../../api/session/session'
-import { get__user } from '../../api/user'
+import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
+import { get__session_players } from '@/api/session/session_players'
+import { get__table_columns_archive } from '@/api/table_columns'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import { get__session } from '@/api/session/session'
+import { get__user } from '@/api/user'
 
-import Table_Player from '../../components/Game/Game_Tables/Table_Player'
-import Popup__Settings from '../../components/Popup/Popup__Settings'
-import Table from '../../components/Game/Game_Tables/Table'
+import Table_Player from '@/components/Game/Game_Tables/Table_Player'
+import Popup__Settings from '@/components/misc/Popup__Settings'
+import Table from '@/components/Game/Game_Tables/Table'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -59,7 +60,7 @@ export default function Session__Preview_Table() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -77,7 +78,7 @@ export default function Session__Preview_Table() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -95,7 +96,7 @@ export default function Session__Preview_Table() {
 		handle_error({
 			err: error__list__table_columns, 
 			handle_404: () => {
-				alert(t('error.generic'))
+				toast.error(t('error.generic'))
 				navigate(`/session/${session_id}/preview`, { replace: true })
 			}
 		})

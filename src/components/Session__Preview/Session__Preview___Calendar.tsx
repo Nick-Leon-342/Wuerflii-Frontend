@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from
 import Custom_Button from '../misc/Custom_Button'
 import { Calendar } from '../ui/calendar'
 import { Button } from '../ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -74,7 +75,7 @@ export default function Session__Preview___Calendar({
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('session_not_found'))
+					toast.error(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})

@@ -2,23 +2,23 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 import { v4 } from 'uuid'
 
-import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
-import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '../../api/session/session_players'
-import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
-import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
-import useErrorHandling from '../../hooks/useErrorHandling'
-import { get__user } from '../../api/user'
+import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '@/types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
+import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '@/api/session/session_players'
+import type { Type__Client_To_Server__Player__POST } from '@/types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import { get__user } from '@/api/user'
 
-import DragAndDropNameColorList from '../../components/misc/Drag_And_Drop_Name_Color_List'
-import Popup__Settings from '../../components/Popup/Popup__Settings'
-import Custom_Button from '../../components/misc/Custom_Button'
-import Previous from '../../components/misc/Previous'
+import DragAndDropNameColorList from '@/components/misc/Drag_And_Drop_Name_Color_List'
+import Popup__Settings from '@/components/misc/Popup__Settings'
+import Custom_Button from '@/components/misc/Custom_Button'
+import Previous from '@/components/misc/Previous'
 import { UserMinus, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -32,7 +32,6 @@ export default function Session__Players() {
 	const handle_error	= useErrorHandling()
 
 	const { session_id } = useParams()
-	const { setError } = useContext(Context__Error)
 
 
 	// ____________________ Players ____________________
@@ -85,7 +84,7 @@ export default function Session__Players() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -107,11 +106,11 @@ export default function Session__Players() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('session_not_found'))
+					toast.error(t('session_not_found'))
 					navigate('/', { replace: true })
 				}, 
 				handle_409: () => {
-					alert(t('players_already_exist'))
+					toast.error(t('players_already_exist'))
 					navigate(`/session/${session_id}/players`, { replace: true })
 				}
 			})
@@ -128,7 +127,7 @@ export default function Session__Players() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('session_not_found'))
+					toast.error(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})
@@ -150,7 +149,7 @@ export default function Session__Players() {
 
 	function add_player() {
 		
-		if(list_players.length === env_variables?.MAX_PLAYERS) return setError(t('error.players_too_many', { max: env_variables?.MAX_PLAYERS }))
+		if(list_players.length === env_variables?.MAX_PLAYERS) return toast.error(t('error.players_too_many', { max: env_variables?.MAX_PLAYERS }))
 
 		setList_players(prev => {
 			const list = [ ...prev ]
@@ -174,7 +173,7 @@ export default function Session__Players() {
 
 	async function save() {
 
-		if(!list_players || list_players.some(p => p.Name.length > (env_variables?.MAX_LENGTH_PLAYER_NAME || -1))) return setError(t('error.player_name_too_long', { max: env_variables?.MAX_LENGTH_PLAYER_NAME }))
+		if(!list_players || list_players.some(p => p.Name.length > (env_variables?.MAX_LENGTH_PLAYER_NAME || -1))) return toast.error(t('error.player_name_too_long', { max: env_variables?.MAX_LENGTH_PLAYER_NAME }))
 
 		const json: Type__Client_To_Server__Session_Players__POST_And_PATCH = { 
 			SessionID:		+(session_id || -1), 

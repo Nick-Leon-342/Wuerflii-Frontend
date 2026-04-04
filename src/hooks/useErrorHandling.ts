@@ -8,6 +8,7 @@ import type { AxiosError } from 'axios'
 import useRedirectToLogin from './useRedirectToLogin'
 import axios from 'axios'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -44,8 +45,9 @@ interface Type__Use__Error_Handling {
 
 export default function useErrorHandling() {
 
-	const navigate = useNavigate()
-	const location = useLocation()
+	const navigate 			= useNavigate()
+	const location 			= useLocation()
+	const { t }				= useTranslation()
 	const redirect_to_login = useRedirectToLogin()
 
 
@@ -68,16 +70,16 @@ export default function useErrorHandling() {
 		
 		if(!axios.isAxiosError(err)) {
 			if(handle_default) return handle_default()
-			console.error(format(new Date(), 'HH:mm.ss:'), err)
-			return toast.error(`Ein unerwarteter Fehler ist aufgetreten: ${err?.message || 'Unbekannt'}`)
+			console.error(format(new Date(), 'dd.MM.yyyy - HH:mm.ss:'), err)
+			return toast.error(`${t('error.unhandled_error')} ${err?.message || ''}`)
 		}
 
 		// Server doesn't respond
 		if(!err?.response) {
 	
 			if(handle_no_server_response) return handle_no_server_response()
-			console.error(format(new Date(), 'HH:mm.ss:'), err)
-			return toast.error('Server antwortet nicht!')
+			console.error(format(new Date(), 'dd.MM.yyyy - HH:mm.ss:'), err)
+			return toast.error(t('error.server_is_not_responding'))
 	
 		} 
 
@@ -90,7 +92,7 @@ export default function useErrorHandling() {
 		const status = err?.response?.status
 		switch (status) {
 			case 400:
-				toast.error(`Clientanfrage fehlerhaft!\n${err.response.data}`)
+				toast.error(`${t('error.client_request_invalid')}\n${err.response.data}`)
 				break
 
 			case 401:
@@ -107,7 +109,7 @@ export default function useErrorHandling() {
 				if(handle_404) {
 					handle_404()
 				} else {
-					alert(err.response.data)
+					toast.error(err.response.data)
 				}
 				break
 
@@ -115,7 +117,7 @@ export default function useErrorHandling() {
 				if(handle_409) {
 					handle_409()
 				} else {
-					alert(err.response.data)
+					toast.error(err.response.data)
 				}
 				break
 
@@ -123,7 +125,7 @@ export default function useErrorHandling() {
 				if(handle_500) {
 					handle_500()
 				} else {
-					toast.error('Beim Server trat ein unerwarteter Fehler auf!')
+					toast.error(t('error.server_is_not_responding'))
 				}
 				break
 
@@ -132,7 +134,7 @@ export default function useErrorHandling() {
 					handle_default()
 				} else {
 					console.error(err)
-					toast.error(`Ein unbehandelter Fehler trat auf: ${status}`)
+					toast.error(`${t('error.unhandled_error')} ${status}`)
 				}
 				break
 		}

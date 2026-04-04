@@ -20,9 +20,10 @@ import Session__Preview___Player_Table from '@/components/Session__Preview/Sessi
 import Session__Preview___Final_Scores from '@/components/Session__Preview/Session__Preview___Final_Scores'
 import Session__Preview___Settings from '@/components/Session__Preview/Session__Preview___Settings'
 import Session__Preview___Edit from '@/components/Session__Preview/Session__Preview___Edit'
-import Popup__Settings from '@/components/Popup/Popup__Settings'
+import Popup__Settings from '@/components/misc/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -73,7 +74,7 @@ export default function Session__Preview() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -93,7 +94,7 @@ export default function Session__Preview() {
 		handle_error({
 			err: error__list_players, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})

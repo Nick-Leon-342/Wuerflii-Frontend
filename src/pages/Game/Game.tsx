@@ -16,7 +16,7 @@ import { get__user } from '@/api/user'
 import { api } from '@/api/axios'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
-import Popup__Settings from '@/components/Popup/Popup__Settings'
+import Popup__Settings from '@/components/misc/Popup__Settings'
 import Game__Settings from '@/components/Game/Game__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
 import Table from '@/components/Game/Game_Tables/Table'
@@ -73,7 +73,7 @@ export default function Game() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert(t('error.session_not_found'))
+				toast.error(t('error.session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -93,7 +93,7 @@ export default function Game() {
 		handle_error({
 			err: error__list__table_columns, 
 			handle_404: () => {
-				alert(t('error.resource_not_found'))
+				toast.error(t('error.resource_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -143,7 +143,7 @@ export default function Game() {
 
 			handle_error({
 				err, 
-				handle_409: () => alert(t('please_enter_all_values'))
+				handle_409: () => toast.error(t('please_enter_all_values'))
 			})
 
 		}).finally(() => setLoading__finish_game(false))

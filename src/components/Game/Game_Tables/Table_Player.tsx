@@ -15,6 +15,7 @@ import { patch__gnadenwurf } from '../../../api/gnadenwurf'
 import { Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -170,7 +171,7 @@ const Gnadenwurf = ({
 					if(window.confirm(t('synchronization_of_gnadenwurf_failed', { name: list__player_with_table_columns[index_player].Name }))) mutate__gnadenwurf.mutate(json)
 				}, 
 				handle_404: () => {
-					alert(t('error.resource_not_found'))
+					toast.error(t('error.resource_not_found'))
 					navigate(`/`)
 				}, 
 				handle_500: () => {

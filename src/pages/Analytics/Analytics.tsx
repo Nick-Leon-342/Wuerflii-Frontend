@@ -15,7 +15,7 @@ import { get__analytics } from '../../api/analytics'
 import { get__user } from '../../api/user'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
-import PopupOptions from '../../components/Popup/Popup__Settings'
+import PopupOptions from '../../components/misc/Popup__Settings'
 import Chart_Bar from '../../components/Statistics/Chart_Bar'
 import Previous from '../../components/misc/Previous'
 

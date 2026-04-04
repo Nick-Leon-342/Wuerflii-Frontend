@@ -233,7 +233,7 @@ const Dialog__Input = ({
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('error.resource_not_found'))
+					toast.error(t('error.resource_not_found'))
 					navigate(`/`)
 				}, 
 				handle_409: () => { toast.error(t('error.value_invalid', { value: value })) }, 

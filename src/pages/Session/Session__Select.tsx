@@ -1,27 +1,27 @@
 
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import useErrorHandling from '../../hooks/useErrorHandling'
 
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
 import { delete__session, get__sessions_list } from '../../api/session/session'
 import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 import type { Type__Session } from '../../types/Type__Session'
+import useRedirectToLogin from '@/hooks/useRedirectToLogin'
 import { get__user, patch__user } from '../../api/user'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ChevronUp, SortDesc, Square, SquareCheck, Trash2 } from 'lucide-react'
-import Popup__Settings from '../../components/Popup/Popup__Settings'
+import Popup__Settings from '@/components/misc/Popup__Settings'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
+import { toast } from 'sonner'
 
 
 
@@ -29,10 +29,11 @@ import { format } from 'date-fns'
 
 export default function Session__Select() {
 
-	const navigate		= useNavigate()
-	const { t }			= useTranslation()
-	const query_client	= useQueryClient()
-	const handle_error	= useErrorHandling()
+	const navigate			= useNavigate()
+	const { t }				= useTranslation()
+	const query_client		= useQueryClient()
+	const handle_error		= useErrorHandling()
+	const redirect_to_login	= useRedirectToLogin()
 
 	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
 
@@ -168,8 +169,8 @@ export default function Session__Select() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('session_not_found'))
-					window.location.reload()
+					toast.error(t('session_not_found'))
+					redirect_to_login()
 				}
 			})
 		}
@@ -203,15 +204,6 @@ export default function Session__Select() {
 		})
 
 	}
-
-
-
-
-
-	// __________________________________________________ Universal Loader __________________________________________________
-
-	const { setLoading__universal_loader } = useContext<Type__Context__Universal_Loader>(Context__Universal_Loader)
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__list_sessions || mutate__change_order?.isPending), [ setLoading__universal_loader, isLoading__user, isLoading__list_sessions, mutate__change_order?.isPending ])
 
 
 
@@ -304,13 +296,13 @@ export default function Session__Select() {
 
 
 
-			{/* __________________________________________________ No session in list __________________________________________________ */}
+			{/* ____________________ No session in list ____________________ */}
 
 			{!isLoading__list_sessions && list_sessions?.length === 0 && <h1 className='flex flex-row justify-center text-xl font-bold'>{t('no_game_yet')}</h1>}
 
 
 
-			{/* __________________________________________________ Session list __________________________________________________ */}
+			{/* ____________________ Session list ____________________ */}
 
 			{!isLoading__list_sessions && list_sessions?.length !== 0 && <>
 

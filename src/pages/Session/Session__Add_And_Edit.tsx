@@ -2,23 +2,23 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
 import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
-import Context__Error from '../../Provider_And_Context/Provider_And_Context__Error'
 import type { Type__Session } from '../../types/Type__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { get__user } from '../../api/user'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import Popup__Settings from '../../components/Popup/Popup__Settings'
-import Custom_Button from '../../components/misc/Custom_Button'
-import Previous from '../../components/misc/Previous'
+import Popup__Settings from '@/components/misc/Popup__Settings'
+import Custom_Button from '@/components/misc/Custom_Button'
+import Previous from '@/components/misc/Previous'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
 
 
 
@@ -32,7 +32,6 @@ export default function Session__Add_And_Edit() {
 	const handle_error	= useErrorHandling()
 
 	const { session_id } = useParams()
-	const { setError } = useContext(Context__Error)
 
 	
 	// ____________________ Session ____________________
@@ -75,7 +74,7 @@ export default function Session__Add_And_Edit() {
 		handle_error({
 			err: error__session, 
 			handle_404: () => {
-				alert(t('session_not_found'))
+				toast.error(t('session_not_found'))
 				navigate('/', { replace: true })
 			}
 		})
@@ -136,7 +135,7 @@ export default function Session__Add_And_Edit() {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('session_not_found'))
+					toast.error(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})
@@ -145,12 +144,12 @@ export default function Session__Add_And_Edit() {
 
 	const ok = async () => {
 
-		if(!env_variables) return setError(t('error.generic'))
+		if(!env_variables) return toast.error(t('error.generic'))
 		
-		if(!name)													return setError(t('error.name_required'))
-		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) 	return setError(t('error.name_too_long', { max: env_variables.MAX_LENGTH_SESSION_NAME }))
-		if(!session && !+columns) 									return setError(t('error.columns_required'))
-		if(!session && +columns > env_variables?.MAX_COLUMNS) 		return setError(t('error.columns_too_many', { max: env_variables.MAX_COLUMNS })) 
+		if(!name)													return toast.error(t('error.name_required'))
+		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) 	return toast.error(t('error.name_too_long', { max: env_variables.MAX_LENGTH_SESSION_NAME }))
+		if(!session && !+columns) 									return toast.error(t('error.columns_required'))
+		if(!session && +columns > env_variables?.MAX_COLUMNS) 		return toast.error(t('error.columns_too_many', { max: env_variables.MAX_COLUMNS })) 
 
 		if(session) {
 			mutate__session_edit.mutate({
