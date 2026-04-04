@@ -37,10 +37,10 @@ export default function Session__Preview___Player_Table({
 								return (
 									<td key={id}>
 										<span>
-											{session?.View === 'SHOW__MONTH' 		&& (current_top_row.Wins__After_Month[id] || 0)}
-											{session?.View === 'SHOW__YEAR' 		&& (current_top_row.Wins__After_Year[id] || 0)}
+											{session?.View === 'SHOW__MONTH' 		&& (current_top_row.Wins__After_Month[id]			|| 0)}
+											{session?.View === 'SHOW__YEAR' 		&& (current_top_row.Wins__After_Year[id]			|| 0)}
 											{session?.View === 'SHOW__CUSTOM_DATE' 	&& (current_top_row.Wins__After_SinceCustomDate[id] || 0)}
-											{session?.View === 'SHOW__ALL' 			&& (current_top_row.Wins__After[id] || 0)}
+											{session?.View === 'SHOW__ALL' 			&& (current_top_row.Wins__After[id]					|| 0)}
 										</span>
 									</td>
 								)

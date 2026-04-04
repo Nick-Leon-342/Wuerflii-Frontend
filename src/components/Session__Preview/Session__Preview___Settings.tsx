@@ -15,10 +15,12 @@ import { Button } from '../ui/button'
 
 
 interface Props___Session__Preview___Settings {
-	session?: Type__Session
+	do_final_scores_exist:	boolean
+	session?: 				Type__Session
 }
 
 export default function Session__Preview___Settings({
+	do_final_scores_exist, 
 	session, 
 }: Props___Session__Preview___Settings) {
 
@@ -39,15 +41,19 @@ export default function Session__Preview___Settings({
 				align='end'
 			>
 				
-				<Button
-					variant='outline'
-					onClick={() => navigate(`/session/${session?.id}/analytics`)}
-				>
-					{t('statistics')}
-					<ChartNoAxesColumn/>
-				</Button>
+				{do_final_scores_exist && <>
 
-				<Separator/>
+					<Button
+						variant='outline'
+						onClick={() => navigate(`/session/${session?.id}/analytics`)}
+					>
+						{t('statistics')}
+						<ChartNoAxesColumn/>
+					</Button>
+
+					<Separator/>
+					
+				</>}
 
 				<span className='text-lg font-bold'>{t('edit')}</span>
 

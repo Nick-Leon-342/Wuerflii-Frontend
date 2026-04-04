@@ -38,6 +38,7 @@ export default function Session__Preview() {
 	
 	const [ current_top_row,		setCurrent_top_row			] = useState<Type__Final_Score>()
 	const [ loading_preparing_game, setLoading_preparing_game	] = useState<boolean>(false)
+	const [ do_final_scores_exist, 	setDo_final_scores_exist	] = useState<boolean>(false)
 
 
 
@@ -146,6 +147,7 @@ export default function Session__Preview() {
 				/>
 
 				<Session__Preview___Settings
+					do_final_scores_exist={do_final_scores_exist}
 					session={session}
 				/>
 
@@ -168,6 +170,7 @@ export default function Session__Preview() {
 				{/* ____________________ List ____________________ */}
 
 				<Session__Preview___Final_Scores
+					setDo_final_scores_exist={setDo_final_scores_exist}
 					setCurrent_top_row={setCurrent_top_row}
 					list__players={list_players}
 					session={session}

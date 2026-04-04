@@ -21,12 +21,14 @@ import { Button } from '../ui/button'
 
 
 interface Props___Session__Preview___Final_Scores {
-	setCurrent_top_row:	React.Dispatch<React.SetStateAction<Type__Final_Score | undefined>>
-	list__players?:		Array<Type__Player>
-	session?:			Type__Session
+	setDo_final_scores_exist:	React.Dispatch<React.SetStateAction<boolean>>
+	setCurrent_top_row:			React.Dispatch<React.SetStateAction<Type__Final_Score | undefined>>
+	list__players?:				Array<Type__Player>
+	session?:					Type__Session
 }
 
 export default function Session__Preview___Final_Scores({
+	setDo_final_scores_exist, 
 	setCurrent_top_row, 
 	list__players, 
 	session, 
@@ -122,7 +124,8 @@ export default function Session__Preview___Final_Scores({
 	
 		if(isLoading__list_finalscores || !data) return 
 		const list = data.pages.flatMap(data => data.list_finalscores)
-		if(list__final_scores.length === 0 && list.length > 0) setCurrent_top_row(list[0])
+		if((data.pageParams.length === 1 || data.pageParams[0] === 1) && list.length > 0) setCurrent_top_row(list[0])
+		setDo_final_scores_exist(list.length > 0)
 		edit_list(list)
 	
 	}, [ data, isLoading__list_finalscores ])
