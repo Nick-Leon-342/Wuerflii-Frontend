@@ -35,7 +35,7 @@ export default function Session__Preview___Settings({
 			</PopoverTrigger>
 
 			<PopoverContent 
-				className='gap-4 [&_button]:justify-start!'
+				className='gap-4 [&_button]:justify-between'
 				align='end'
 			>
 				
@@ -43,8 +43,8 @@ export default function Session__Preview___Settings({
 					variant='outline'
 					onClick={() => navigate(`/session/${session?.id}/analytics`)}
 				>
-					<ChartNoAxesColumn/>
 					{t('statistics')}
+					<ChartNoAxesColumn/>
 				</Button>
 
 				<Separator/>
@@ -52,19 +52,19 @@ export default function Session__Preview___Settings({
 				<span className='text-lg font-bold'>{t('edit')}</span>
 
 				<Button
-					variant='outline'
 					onClick={() => navigate(`/session/${session?.id}`)}
+					variant='outline'
 				>
-					<Dices/>
 					{t('session')}
+					<Dices/>
 				</Button>
 				
 				<Button
 					variant='outline'
 					onClick={() => navigate(`/session/${session?.id}/players`)}
 				>
-					<Users/>
 					{t('players')}
+					<Users/>
 				</Button>
 
 			</PopoverContent>

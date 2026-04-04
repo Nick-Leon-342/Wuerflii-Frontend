@@ -225,8 +225,6 @@ export default function Session__Select() {
 
 
 
-		{/* __________________________________________________ Page __________________________________________________ */}
-
 		<div className='session__select flex flex-col w-9/10 lg:w-4xl gap-4'>
 			
 			<header className='flex flex-row justify-between'>
@@ -239,30 +237,32 @@ export default function Session__Select() {
 						><SortDesc className='w-8! h-8!'/></Button>
 					</PopoverTrigger>
 
+
+
 					<PopoverContent align='start'>
 
 						{/* ____________________ Names ____________________ */}
 						<Button
 							onClick={() => mutate__show_session_names.mutate()}
-							className='flex flex-row justify-baseline h-fit'
+							className='flex flex-row justify-between h-fit'
 							disabled={mutate__show_session_names.isPending}
 							variant='ghost'
 						>
+							<span>{t('show_session_name')}</span>
 							{mutate__show_session_names.isPending && <Spinner/>}
 							{!mutate__show_session_names.isPending && (user?.Show__Session_Names ? <SquareCheck/> : <Square/>)}
-							<span>{t('show_session_name')}</span>
 						</Button>
 
 						{/* ____________________ Dates ____________________ */}
 						<Button
 							onClick={() => mutate__show_session_date.mutate()}
-							className='flex flex-row justify-baseline h-fit'
+							className='flex flex-row justify-between h-fit'
 							disabled={mutate__show_session_date.isPending}
 							variant='ghost'
 						>
+							<span>{t('show_date')}</span>
 							{mutate__show_session_date.isPending && <Spinner/>}
 							{!mutate__show_session_date.isPending && (user?.Show__Session_Date ? <SquareCheck/> : <Square/>)}
-							<span>{t('show_date')}</span>
 						</Button>
 
 						<Separator/>

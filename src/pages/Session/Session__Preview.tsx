@@ -153,7 +153,7 @@ export default function Session__Preview() {
 
 
 
-			<div className='flex flex-col min-w-100 overflow-x-scroll'>
+			<div className='flex flex-col min-w-100 overflow-x-auto'>
 				
 				{/* ____________________ Table ____________________ */}
 

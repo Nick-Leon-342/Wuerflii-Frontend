@@ -83,7 +83,7 @@ export default function Table_Player({
 			{/* __________________________________________________ Scores __________________________________________________ */}
 
 			{session.Show_Scores && <>
-				<section className={`flex flex-row justify-between${disabled ? ' border-b-2': ' border-b'}`}>
+				<section className={`flex flex-row justify-between${disabled ? '': ' border-b'}`}>
 
 					<div className='min-w-[240px]! max-w-[240px]! w-[240px]!'><span>{t('score')}</span></div>
 
