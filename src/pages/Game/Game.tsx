@@ -2,10 +2,9 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 
-import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
 import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
 
 import useErrorHandling from '@/hooks/useErrorHandling'
@@ -33,8 +32,6 @@ export default function Game() {
 	const query_client 	= useQueryClient()
 	const handle_error 	= useErrorHandling()
 
-	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
-
 	const location = useLocation()
 	const session_id = new URLSearchParams(location.search).get('session_id')
 
@@ -50,7 +47,7 @@ export default function Game() {
 		
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+	const { data: user, error: error__user } = useQuery({
 		queryKey: [ 'user' ], 
 		queryFn: () => get__user(), 
 	})
@@ -64,7 +61,7 @@ export default function Game() {
 	
 	// ____________________ Session ____________________
 
-	const { data: session, isLoading: isLoading__session, error: error__session } = useQuery({
+	const { data: session, error: error__session } = useQuery({
 		queryKey: [ 'session', +(session_id || -1) ], 
 		queryFn: () => get__session(+(session_id || -1)), 
 	})
@@ -84,7 +81,7 @@ export default function Game() {
 
 	const [ list__player_with_table_columns, 	setList__player_with_table_columns	] = useState<Array<Type__Player_With_Table_Columns>>([])
 
-	const { data: tmp__list__table_columns, isLoading: isLoading___list__player_with_table_columns, error: error__list__table_columns } = useQuery({
+	const { data: tmp__list__table_columns, error: error__list__table_columns } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'table_columns' ], 
 		queryFn: () => get__table_columns(+(session_id || -1)), 
 	})
@@ -109,8 +106,6 @@ export default function Game() {
 
 
 
-
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading___list__player_with_table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading___list__player_with_table_columns ])
 
 	useEffect(() => {
 

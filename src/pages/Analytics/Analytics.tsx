@@ -2,13 +2,12 @@
 
 import './scss/Analytics.scss'
 
-import { useContext, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 
 import type { Type__Server_Response__Analytics__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import { Type__List_Months } from '../../types/Type__List_Months'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { get__analytics } from '../../api/analytics'
@@ -28,8 +27,6 @@ export default function Analytics() {
 	const navigate 		= useNavigate()
 	const { t } 		= useTranslation()
 	const handle_error	= useErrorHandling()
-
-	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 	
 	const [ total, 		setTotal		] = useState<Type__Server_Response__Analytics__GET__Total>()
 	const [ list_years, setList_years	] = useState<Array<number>>([])
@@ -39,7 +36,7 @@ export default function Analytics() {
 
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+	const { data: user, error: error__user } = useQuery({
 		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
@@ -53,7 +50,7 @@ export default function Analytics() {
 
 	// ____________________ Analytics ____________________
 
-	const { data: analytics, isLoading: isLoading__analytics, error: error__analytics, refetch } = useQuery({
+	const { data: analytics, error: error__analytics, refetch } = useQuery({
 		queryFn: () => get__analytics(), 
 		queryKey: [ 'analytics' ], 
 	})
@@ -87,8 +84,6 @@ export default function Analytics() {
 		user?.Statistics__View_Month, 
 		user?.Statistics__View_Year, 
 	])
-
-	useEffect(() => { setLoading__universal_loader(isLoading__user || isLoading__analytics) }, [ isLoading__user, isLoading__analytics ])
 
 
 

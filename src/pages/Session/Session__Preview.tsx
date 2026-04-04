@@ -1,20 +1,17 @@
 
 
 import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
 import {useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-
-import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
-import useErrorHandling from '@/hooks/useErrorHandling'
+import { useEffect, useState } from 'react'
 
 import { get__session_players } from '@/api/session/session_players'
+import type { Type__Final_Score } from '@/types/Type__Final_Score'
+import type { Type__Session } from '@/types/Type__Session'
+import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
 import { get__user } from '@/api/user'
 import { api } from '@/api/axios'
-
-import type { Type__Final_Score } from '@/types/Type__Final_Score'
-import type { Type__Session } from '@/types/Type__Session'
 
 import Session__Preview___Player_Table from '@/components/Session__Preview/Session__Preview___Player_Table'
 import Session__Preview___Final_Scores from '@/components/Session__Preview/Session__Preview___Final_Scores'
@@ -22,6 +19,7 @@ import Session__Preview___Settings from '@/components/Session__Preview/Session__
 import Session__Preview___Edit from '@/components/Session__Preview/Session__Preview___Edit'
 import Popup__Settings from '@/components/misc/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
+import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
@@ -49,7 +47,7 @@ export default function Session__Preview() {
 		
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+	const { data: user, error: error__user } = useQuery({
 		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
@@ -65,7 +63,7 @@ export default function Session__Preview() {
 
 	const [ session, setSession ] = useState<Type__Session>()
 
-	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
+	const { data: tmp__session, error: error__session } = useQuery({
 		queryFn: () => get__session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ], 
 	})
@@ -85,7 +83,7 @@ export default function Session__Preview() {
 
 	// ____________________ List__Players ____________________
 
-	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
+	const { data: list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 		queryFn: () => get__session_players(+(session_id || -1)), 
 	})
@@ -103,11 +101,6 @@ export default function Session__Preview() {
 
 
 
-
-	// __________________________________________________ Universal Loader __________________________________________________
-
-	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players ), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players ])
 
 	const start_game = () => {
 
@@ -131,10 +124,12 @@ export default function Session__Preview() {
 
 
 
-	
+
 	return <>
 
 		<Popup__Settings user={user}/>
+
+
 
 
 
@@ -156,28 +151,36 @@ export default function Session__Preview() {
 
 
 
-			<div className='flex flex-col min-w-100 overflow-x-auto'>
-				
-				{/* ____________________ Table ____________________ */}
-
-				<Session__Preview___Player_Table
-					current_top_row={current_top_row}
-					list__players={list_players}
-					session={session}
-				/>
 
 
+			{(!user || !session || !list_players) && <Spinner/>}
 
-				{/* ____________________ List ____________________ */}
+			{user && session && list_players && <>
+				<div className='flex flex-col min-w-100 overflow-x-auto'>
+					
+					{/* ____________________ Table ____________________ */}
 
-				<Session__Preview___Final_Scores
-					setDo_final_scores_exist={setDo_final_scores_exist}
-					setCurrent_top_row={setCurrent_top_row}
-					list__players={list_players}
-					session={session}
-				/>
+					<Session__Preview___Player_Table
+						current_top_row={current_top_row}
+						list__players={list_players}
+						session={session}
+					/>
 
-			</div>
+
+
+					{/* ____________________ List ____________________ */}
+
+					<Session__Preview___Final_Scores
+						setDo_final_scores_exist={setDo_final_scores_exist}
+						setCurrent_top_row={setCurrent_top_row}
+						list__players={list_players}
+						session={session}
+					/>
+
+				</div>
+			</>}
+
+
 
 
 

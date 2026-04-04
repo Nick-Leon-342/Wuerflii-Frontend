@@ -15,6 +15,7 @@ import type { Type__Session } from '@/types/Type__Session'
 import type { Type__Player } from '@/types/Type__Player'
 
 import { Button } from '../ui/button'
+import { Spinner } from '../ui/spinner'
 
 
 
@@ -23,8 +24,8 @@ import { Button } from '../ui/button'
 interface Props___Session__Preview___Final_Scores {
 	setDo_final_scores_exist:	React.Dispatch<React.SetStateAction<boolean>>
 	setCurrent_top_row:			React.Dispatch<React.SetStateAction<Type__Final_Score | undefined>>
-	list__players?:				Array<Type__Player>
-	session?:					Type__Session
+	list__players:				Array<Type__Player>
+	session:					Type__Session
 }
 
 export default function Session__Preview___Final_Scores({
@@ -41,6 +42,9 @@ export default function Session__Preview___Final_Scores({
 	const height_element = 70
 
 
+
+
+
 	// ____________________ List_FinalScores ____________________
 
 	const [ list__final_scores, setList__final_scores ] = useState<Array<Type__Final_Score__Session_Preview>>([])
@@ -53,11 +57,10 @@ export default function Session__Preview___Final_Scores({
 		isFetchingNextPage, 
 		isLoading: isLoading__list_finalscores, 
 	} = useInfiniteQuery({
-		queryFn: ({ pageParam }) => get__final_scores_page(+(session?.id || -1), pageParam), 
-		queryKey: [ 'session', +(session?.id || -1), 'finalscores' ], 
+		queryFn: ({ pageParam }) => get__final_scores_page(session.id, pageParam), 
+		queryKey: [ 'session', session.id, 'finalscores' ], 
 		getNextPageParam: prevData => prevData.nextPage, 
 		initialPageParam: 1, 
-		enabled: !!session, 
 	})
 
 	useEffect(() => { if(inView) fetchNextPage() }, [ fetchNextPage, inView ])
@@ -69,8 +72,6 @@ export default function Session__Preview___Final_Scores({
 	// __________________________________________________ Scroll __________________________________________________
 
 	const [ rowHeights, setRowHeights ] = useState<Array<number>>([])
-
-	
 	
 	useEffect(() => {
 		
@@ -155,65 +156,69 @@ export default function Session__Preview___Final_Scores({
 
 
 	return <>
-		<ul 
-			onScroll={handle_scroll}
-			className='flex flex-col max-h-100 overflow-y-scroll [&_li]:h-[70px] [scrollbar-gutter:stable_both-edges]'
-		>
-			{list__final_scores?.map((final_score, index_final_score) => {
+		{isLoading__list_finalscores && <Spinner/>}
 
-				const tmp_ref = list__final_scores.length - 1 === index_final_score ? ref : null
+		{!isLoading__list_finalscores && <>
+			<ul 
+				onScroll={handle_scroll}
+				className='flex flex-col max-h-100 overflow-y-scroll [&_li]:h-[70px] [scrollbar-gutter:stable_both-edges]'
+			>
+				{list__final_scores.map((final_score, index_final_score) => {
 
-				if(final_score.Group_Date) {
+					const tmp_ref = list__final_scores.length - 1 === index_final_score ? ref : null
 
-					const date = new Date(final_score.Group_Date)
+					if(final_score.Group_Date) {
 
-					return (
-						<li 
-							ref={tmp_ref}
-							key={index_final_score}
-							className='flex flex-row shrink-0 items-center'
-						>
-							<span className='translate-y-2 text-xl font-bold'>
-								{session?.View === 'SHOW__MONTH' && format(date, 'dd.')}
-								{session?.View === 'SHOW__YEAR' && format(date, 'dd.MM.')}
-								{(session?.View === 'SHOW__CUSTOM_DATE' || session?.View === 'SHOW__ALL') && format(date, 'dd.MM.yyyy')}
-							</span>
-						</li>
-					)
+						const date = new Date(final_score.Group_Date)
 
-				} else {
-
-					return (
-						<li 
-							ref={tmp_ref}
-							key={index_final_score} 
-							className='flex flex-row shrink-0'
-						>
-							<Button 
-								className={`flex flex-row justify-baseline gap-0 p-0 w-full h-full overflow-hidden border border-muted-foreground${!list__final_scores[index_final_score + 1] || list__final_scores[index_final_score + 1]?.Group_Date ? '' : ' border-b-0 rounded-b-none'}${!list__final_scores[index_final_score - 1] || list__final_scores[index_final_score - 1]?.Group_Date ? '' : ' rounded-t-none'}`}
-								onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score.id}`, { replace: false })}
-								variant='ghost'
+						return (
+							<li 
+								ref={tmp_ref}
+								key={index_final_score}
+								className='flex flex-row shrink-0 items-center'
 							>
-								{list__players?.map((player, index_player) => 
-									<div 
-										key={`${index_final_score}.${index_player}`}
-										className='grid place-items-center w-full h-full not-last-of-type:border-r border-muted-foreground min-w-30'
-									>
-										<span>
-											{final_score.PlayerScores[player.id]}
-										</span>
-									</div>
-								)}
-							</Button>
-						</li>
-					)
+								<span className='translate-y-2 text-xl font-bold'>
+									{session.View === 'SHOW__MONTH' && format(date, 'dd.')}
+									{session.View === 'SHOW__YEAR' && format(date, 'dd.MM.')}
+									{(session.View === 'SHOW__CUSTOM_DATE' || session.View === 'SHOW__ALL') && format(date, 'dd.MM.yyyy')}
+								</span>
+							</li>
+						)
 
-				}
-			})}
-			{(isLoading__list_finalscores || isFetchingNextPage) && <>
-				<li>{t('loading')}...</li>
-			</>}
-			{error && <li>{t('error')}...</li>}
-		</ul>
+					} else {
+
+						return (
+							<li 
+								ref={tmp_ref}
+								key={index_final_score} 
+								className='flex flex-row shrink-0'
+							>
+								<Button 
+									className={`flex flex-row justify-baseline gap-0 p-0 w-full h-full overflow-hidden border border-muted-foreground${!list__final_scores[index_final_score + 1] || list__final_scores[index_final_score + 1]?.Group_Date ? '' : ' border-b-0 rounded-b-none'}${!list__final_scores[index_final_score - 1] || list__final_scores[index_final_score - 1]?.Group_Date ? '' : ' rounded-t-none'}`}
+									onClick={() => navigate(`/session/${session.id}/preview/table/${final_score.id}`, { replace: false })}
+									variant='ghost'
+								>
+									{list__players.map((player, index_player) => 
+										<div 
+											key={`${index_final_score}.${index_player}`}
+											className='grid place-items-center w-full h-full not-last-of-type:border-r border-muted-foreground min-w-30'
+										>
+											<span>
+												{final_score.PlayerScores[player.id]}
+											</span>
+										</div>
+									)}
+								</Button>
+							</li>
+						)
+
+					}
+				})}
+				{(isLoading__list_finalscores || isFetchingNextPage) && <>
+					<li>{t('loading')}...</li>
+				</>}
+				{error && <li>{t('error')}...</li>}
+			</ul>
+		</>}
 	</>
 }

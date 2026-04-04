@@ -296,11 +296,13 @@ export default function Session__Select() {
 
 
 
+			{/* ____________________ Loading ____________________ */}
+
+			{isLoading__list_sessions || isLoading__user && <Spinner/>}
+
 			{/* ____________________ No session in list ____________________ */}
 
 			{!isLoading__list_sessions && list_sessions?.length === 0 && <h1 className='flex flex-row justify-center text-xl font-bold'>{t('no_game_yet')}</h1>}
-
-
 
 			{/* ____________________ Session list ____________________ */}
 

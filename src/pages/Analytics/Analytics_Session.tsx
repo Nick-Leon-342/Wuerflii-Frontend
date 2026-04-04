@@ -2,8 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
 
 import useErrorHandling from '../../hooks/useErrorHandling'
 
@@ -17,7 +17,6 @@ import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__C
 import { Type__List_Months } from '../../types/Type__List_Months'
 import type { Type__Session } from '../../types/Type__Session'
 
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
@@ -41,8 +40,6 @@ export default function Analytics_Session() {
 	const query_client 	= useQueryClient()
 	const handle_error	= useErrorHandling()
 
-	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
-
 	const { session_id } = useParams()
 
 	const [ total,			setTotal		] = useState<Type__Server_Response__Analytics_Session__GET__Total | null>(null)
@@ -54,7 +51,7 @@ export default function Analytics_Session() {
 
 	// ____________________ User ____________________
 
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+	const { data: user, error: error__user } = useQuery({
 		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
@@ -68,7 +65,7 @@ export default function Analytics_Session() {
 
 	// ____________________ Session ____________________
 
-	const { data: tmp__session, isLoading: isLoading__session, error: error__session } = useQuery({
+	const { data: tmp__session, error: error__session } = useQuery({
 		queryFn: () => get__session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1) ], 
 	})
@@ -91,7 +88,7 @@ export default function Analytics_Session() {
 
 	// ____________________ List__Players ____________________
 
-	const { data: list_players, isLoading: isLoading__list_players, error: error__list_players } = useQuery({
+	const { data: list_players, error: error__list_players } = useQuery({
 		queryFn: () => get__session_players(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 	})
@@ -109,7 +106,7 @@ export default function Analytics_Session() {
 
 	// ____________________ Analytics ____________________
 
-	const { data: analytics, isLoading: isLoading__analytics, error: error__analytics, refetch } = useQuery({
+	const { data: analytics, error: error__analytics, refetch } = useQuery({
 		queryFn: () => get__analytics_session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'analytics' ], 
 	})
@@ -174,23 +171,6 @@ export default function Analytics_Session() {
 		})
 
 	}
-
-	useEffect(() => { 
-		setLoading__universal_loader(
-			mutate__show_border.isPending ||
-			isLoading__user || 
-			isLoading__session || 
-			isLoading__analytics || 
-			isLoading__list_players
-		)
-	}, [ 
-		setLoading__universal_loader, 
-		mutate__show_border, 
-		isLoading__user, 
-		isLoading__session, 
-		isLoading__analytics, 
-		isLoading__list_players
-	])
 
 
 

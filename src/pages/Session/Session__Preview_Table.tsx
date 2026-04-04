@@ -3,9 +3,8 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
-import Context__Universal_Loader from '@/Provider_And_Context/Provider_And_Context__Universal_Loader'
 import { get__session_players } from '@/api/session/session_players'
 import { get__table_columns_archive } from '@/api/table_columns'
 import useErrorHandling from '@/hooks/useErrorHandling'
@@ -29,8 +28,6 @@ export default function Session__Preview_Table() {
 	const handle_error	= useErrorHandling()
 	
 	const { session_id, finalscore_id } = useParams()
-
-	const { setLoading__universal_loader } = useContext(Context__Universal_Loader)
 
 
 	// __________________________________________________ Queries __________________________________________________
@@ -113,9 +110,6 @@ export default function Session__Preview_Table() {
 		setTimeout(() => window.scrollTo({ top: 1500, left: 1250, behavior: 'smooth' }), 50)
 
 	}, [ session ]) // eslint-disable-line
-
-	// Loading animation
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list__table_columns), [ setLoading__universal_loader, isLoading__user, isLoading__session, isLoading__list_players, isLoading__list__table_columns ])
 
 
 
