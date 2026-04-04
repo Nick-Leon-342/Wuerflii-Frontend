@@ -187,14 +187,14 @@ export default function Session__Preview___Final_Scores({
 							className='flex flex-row shrink-0'
 						>
 							<Button 
-								variant='ghost'
-								className={`flex flex-row gap-0 p-0 w-full h-full border border-muted-foreground${!list__final_scores[index_final_score + 1] || list__final_scores[index_final_score + 1]?.Group_Date ? '' : ' border-b-0 rounded-b-none'}${!list__final_scores[index_final_score - 1] || list__final_scores[index_final_score - 1]?.Group_Date ? '' : ' rounded-t-none'}`}
+								className={`flex flex-row justify-baseline gap-0 p-0 w-full h-full overflow-hidden border border-muted-foreground${!list__final_scores[index_final_score + 1] || list__final_scores[index_final_score + 1]?.Group_Date ? '' : ' border-b-0 rounded-b-none'}${!list__final_scores[index_final_score - 1] || list__final_scores[index_final_score - 1]?.Group_Date ? '' : ' rounded-t-none'}`}
 								onClick={() => navigate(`/session/${session?.id}/preview/table/${final_score.id}`, { replace: false })}
+								variant='ghost'
 							>
 								{list__players?.map((player, index_player) => 
 									<div 
 										key={`${index_final_score}.${index_player}`}
-										className='grid place-items-center w-full h-full not-last-of-type:border-r border-muted-foreground'
+										className='grid place-items-center w-full h-full not-last-of-type:border-r border-muted-foreground min-w-30'
 									>
 										<span>
 											{final_score.PlayerScores[player.id]}

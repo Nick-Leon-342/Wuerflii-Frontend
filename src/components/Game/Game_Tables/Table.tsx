@@ -102,20 +102,20 @@ export default function Table({
 
 
 		<table className='
-				table table_game 
-				[&_td]:border-r [&_td]:border-b [&_td]:border-muted-foreground [&_td]:flex [&_td]:flex-row [&_td]:items-center [&_td]:justify-center [&_td]:w-15 [&_td]:h-15 [&_td]:gap-1 [&_span]:text-center
+				flex w-max border-2 rounded-lg overflow-hidden border-muted-foreground [&_tr]:border-muted-foreground [&_td]:border-muted-foreground
+				[&_td]:flex [&_td]:flex-row [&_td]:items-center [&_td]:justify-center [&_td]:w-[60px] [&_td]:h-[60px] [&_td]:gap-1 [&_span]:text-center
 				[&_td:nth-child(-n+2)]:w-[120px] [&_td:nth-child(-n+2)_path]:fill-foreground! [&_td:nth-child(-n+2)]:font-bold [&_td:nth-child(2)]:border-r-2
 				[&_svg]:w-6
 		'>
-			<tbody className='flex flex-col w-full'>
+			<tbody className='flex flex-col divide-y'>
 				{list_rows.map((row, index_row) => {
 					
-					if(row.Name === 'Blank') return <tr key={index_row} className='h-2'/>
+					if(row.Name === 'Blank') return <tr key={index_row} className='h-2 border-b-2'/>
 
 					return (
 						<tr 
 							key={index_row} 
-							className={`flex flex-row justify-between border-muted-foreground border-l-2 ${row.Border_Bottom ? ' border-b-2' : ''}${row.Border_Top ? ' border-t-2' : ''}`}
+							className={`flex flex-row divide-x${row.Border_Bottom ? ' border-b-2' : ''}`}
 						>
 							
 							{/* First two columns */}
@@ -127,7 +127,7 @@ export default function Table({
 								return <React.Fragment key={`${player_with_table_columns.id}_${index_row}`}>
 									{list_columns.map(column => {
 
-										const className = `${column === session.Columns - 1 ? ' border-r-2!' : ''}`
+										const className = `${column === session.Columns - 1 && index__player_with_table_columns + 1 !== list__player_with_table_columns.length ? ' border-r-2' : ''}`
 										const value = player_with_table_columns.List__Table_Columns[column][row.Name as keyof Type__Table_Columns]
 										const key = `${index__player_with_table_columns}_${column}`
 
@@ -146,8 +146,9 @@ export default function Table({
 
 										return (
 											<td 
-												key={key}	
-												className={className} 
+												key={key}
+												className={className}
+												// className='not-last'
 												style={{ backgroundColor: player_with_table_columns.Color }} 
 											>
 												<Button

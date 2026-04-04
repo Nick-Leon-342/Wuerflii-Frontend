@@ -20,8 +20,8 @@ export default function Session__Preview___Player_Table({
 	session, 
 }: Props___Session__Preview___Player_Table) {
 	return <>
-		<div className='flex flex-col w-full rounded-lg border-2 border-primary overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable_both-edges] bg-green-200'>
-			<table className='flex flex-col w-full [&_tr]:flex [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-12 [&_td]:truncate [&_td]:block [&_td]:text-center text-xl'>
+		<div className='flex flex-col w-full rounded-lg border-2 border-primary overflow-y-auto min-w-max [scrollbar-gutter:stable_both-edges] bg-green-200'>
+			<table className='flex flex-col w-full [&_tr]:flex [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:min-w-30! [&_td]:border-primary [&_td]:h-12 [&_td]:truncate [&_td]:block [&_td]:text-center text-xl'>
 				<tbody>
 					<tr>
 						{list__players?.map(player => (

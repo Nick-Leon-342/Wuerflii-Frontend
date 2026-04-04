@@ -38,6 +38,8 @@ export default function Table_Player({
 
 	const { t } = useTranslation()
 
+	const width_player_column = session.Columns * 60
+
 
 
 
@@ -57,16 +59,19 @@ export default function Table_Player({
 
 
 	return <>
-		<div className='flex flex-col text-lg font-bold [&_section]:h-12 [&_div]:flex [&_div]:items-center [&_div]:min-w-0 [&_div]:px-1 [&_div]:justify-center [&_div]:flex-1 [&_div]:text-center [&_span]:truncate [&_div]:not-last-of-type:border-r-2 [&_div]:border-muted-foreground'>
+		<div className='flex flex-col text-lg font-bold rounded-lg! border-muted-foreground border-2 overflow-hidden [&_section]:border-muted-foreground [&_section]:h-12 [&_div]:flex [&_div]:items-center [&_div]:min-w-0 [&_div]:px-1 [&_div]:justify-center [&_div]:flex-1 [&_div]:text-center [&_span]:truncate [&_div]:not-last-of-type:border-r-2 [&_div]:border-muted-foreground'>
 
 			{/* __________________________________________________ Names __________________________________________________ */}
 
-			<section className='flex flex-row justify-between border-muted-foreground border-2 border-b'>
+			<section className='flex flex-row justify-between border-b'>
 
-				<div className='min-w-[240px] max-w-[240px] w-[240px]'><span>{t('player')}</span></div>
+				<div className='min-w-[240px]! max-w-[240px]! w-[240px]!'><span>{t('player')}</span></div>
 
 				{list__player_with_table_columns?.map((player, index_player) => 
-					<div key={index_player}>
+					<div 
+						key={index_player}
+						style={{ maxWidth: `${width_player_column}px`, minWidth: `${width_player_column}px`, width: `${width_player_column}px` }}
+					>
 						<span>{player.Name}</span>
 					</div>
 				)}
@@ -78,12 +83,15 @@ export default function Table_Player({
 			{/* __________________________________________________ Scores __________________________________________________ */}
 
 			{session.Show_Scores && <>
-				<section className={`flex flex-row justify-between border-muted-foreground border-l-2 border-r-2${disabled ? ' border-b-2': ''}`}>
+				<section className={`flex flex-row justify-between${disabled ? ' border-b-2': ' border-b'}`}>
 
-					<div className='min-w-[240px] max-w-[240px] w-[240px]'><span>{t('score')}</span></div>
+					<div className='min-w-[240px]! max-w-[240px]! w-[240px]!'><span>{t('score')}</span></div>
 
 					{list__player_with_table_columns?.map((_, index_player) => 
-						<div key={index_player}>
+						<div 
+							key={index_player}
+							style={{ maxWidth: `${width_player_column}px`, minWidth: `${width_player_column}px`, width: `${width_player_column}px` }}
+						>
 							<span>{calculateScore(index_player)}</span>
 						</div>
 					)}
@@ -96,12 +104,15 @@ export default function Table_Player({
 			{/* __________________________________________________ Gnadenwurf __________________________________________________ */}
 
 			{!disabled && <>
-				<section className='flex flex-row justify-between border-muted-foreground border-2 border-t'>
+				<section className='flex flex-row justify-between'>
 
-					<div className='min-w-[240px] max-w-[240px] w-[240px]'><span>Gnadenwurf</span></div>
+					<div className='min-w-[240px]! max-w-[240px]! w-[240px]!'><span>Gnadenwurf</span></div>
 
 					{list__player_with_table_columns?.map((_, index_player) => 
-						<div key={index_player}>
+						<div 
+							key={index_player}
+							style={{ maxWidth: `${width_player_column}px`, minWidth: `${width_player_column}px`, width: `${width_player_column}px` }}
+						>
 								<Gnadenwurf
 									setList__player_with_table_columns={setList__player_with_table_columns}
 									list__player_with_table_columns={list__player_with_table_columns}

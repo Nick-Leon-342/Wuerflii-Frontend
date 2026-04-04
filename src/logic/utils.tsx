@@ -41,7 +41,6 @@ export const list_rows: Array<Type__Row> = [
 	{
 		Name: 				'Upper_Table_1', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_1,
-		Border_Top: 		true, 
 		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<Dice_1/>
@@ -97,6 +96,7 @@ export const list_rows: Array<Type__Row> = [
 	}, {
 		Name: 				'Upper_Table_6', 
 		Possible_Entries: 	Possible_Entries__Upper_Table_6,
+		Border_Bottom: true, 
 		renderTd: 			(t: TFunction) => (<>
 			<td>
 				<Dice_6/>
@@ -107,7 +107,6 @@ export const list_rows: Array<Type__Row> = [
 		</>), 
 	}, {
 		Name: 'Upper_Table_Score', 
-		Border_Top: true, 
 		renderTd: 			(t: TFunction) => (<>
 			<TD_Text text={t('game.points')}/>
 			<td><MoveRight/></td>
@@ -141,7 +140,6 @@ export const list_rows: Array<Type__Row> = [
 
 	{
 		Name: 				'Bottom_Table_1', 
-		Border_Top: 		true, 
 		Possible_Entries: 	Possible_Entries__Bottom_Table_1,
 		renderTd: 			(t: TFunction) => (<>
 			<TD_Text text={t('game.three_kind')}/>
@@ -204,7 +202,6 @@ export const list_rows: Array<Type__Row> = [
 		</>), 
 	}, {
 		Name: 'Bottom_Table_TotalScore', 
-		Border_Bottom: true, 
 		renderTd: 			(t: TFunction) => (<>
 			<TD_Text text={t('game.total')}/>
 			<td><MoveRight/></td>

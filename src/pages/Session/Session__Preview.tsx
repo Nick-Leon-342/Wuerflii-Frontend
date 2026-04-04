@@ -136,7 +136,7 @@ export default function Session__Preview() {
 
 
 
-		<div className='session__preview flex flex-col w-9/10 lg:w-4xl gap-4'>
+		<div className='session__preview flex flex-col w-9/10 lg:w-4xl gap-4 overflow-hidden'>
 
 			<header className='flex flex-row justify-between'>
 
@@ -153,7 +153,7 @@ export default function Session__Preview() {
 
 
 
-			<div>
+			<div className='flex flex-col min-w-100 overflow-x-scroll'>
 				
 				{/* ____________________ Table ____________________ */}
 
