@@ -3,7 +3,7 @@
 import { Doughnut } from 'react-chartjs-2'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 
-import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Player'
+import type { Type__Player } from '../../types/Type__Player'
 
 ChartJS.register(
 	ArcElement, 
@@ -17,8 +17,8 @@ ChartJS.register(
 
 interface Props__Chart_Doughnut {
 	IsBorderVisible:	boolean
-	List__Players:		Array<Type__Server_Reponse__Player__Get>
-	Total_Wins:			Record<Type__Server_Reponse__Player__Get['id'], number>
+	List__Players:		Array<Type__Player>
+	Total_Wins:			Record<Type__Player['id'], number>
 }
 
 export default function Chart_Doughnut({ 

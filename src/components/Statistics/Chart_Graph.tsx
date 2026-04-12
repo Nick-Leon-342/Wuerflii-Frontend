@@ -5,8 +5,8 @@ import { Line } from 'react-chartjs-2'
 import { useEffect, useState } from 'react'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 
-import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Player'
 import type { Type__Server_Response__Analytics_Session__GET__Data } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
+import type { Type__Player } from '../../types/Type__Player'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -16,7 +16,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 interface Props__Chart_Graph {
 	IsBorderVisible:	boolean
-	List__Players:		Array<Type__Server_Reponse__Player__Get>
+	List__Players:		Array<Type__Player>
 	labels:				Array<string>
 	Data:				Record<string, Type__Server_Response__Analytics_Session__GET__Data>
 }
@@ -28,7 +28,7 @@ export default function Chart_Graph({
 	Data, 
 }: Props__Chart_Graph) {
 
-	const [ values, setValues ] = useState<Array<Record<Type__Server_Reponse__Player__Get['id'], number>>>([])
+	const [ values, setValues ] = useState<Array<Record<Type__Player['id'], number>>>([])
 
 
 
@@ -62,7 +62,7 @@ export default function Chart_Graph({
 			if(!List__Players || !Data) return
 	
 			const tmp_values = []
-			const incremental_values: Record<Type__Server_Reponse__Player__Get['id'], number> = {}
+			const incremental_values: Record<Type__Player['id'], number> = {}
 			for(const player of List__Players) incremental_values[player.id] = 0
 	
 			for(const key of Object.keys(Data)) {

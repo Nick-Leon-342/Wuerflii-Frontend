@@ -115,7 +115,7 @@ export default function Table({
 					return (
 						<tr 
 							key={index_row} 
-							className={`flex flex-row divide-x${row.Border_Bottom ? ' border-b-2' : ''}`}
+							className={`flex flex-row divide-x ${row.Border_Bottom ? ' border-b-2' : ''}`}
 						>
 							
 							{/* First two columns */}

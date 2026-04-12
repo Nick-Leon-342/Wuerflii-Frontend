@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Player'
+import type { Type__Player } from '../../types/Type__Player'
 
 ChartJS.register(
 	CategoryScale,
@@ -27,8 +27,8 @@ ChartJS.register(
 
 interface Props__Chart_Bar {
 	IsBorderVisible:	boolean
-	List__Players:		Array<Type__Server_Reponse__Player__Get>
-	JSON:				Record<Type__Server_Reponse__Player__Get['id'], number>
+	List__Players:		Array<Type__Player>
+	JSON:				Record<Type__Player['id'], number>
 }
 
 export default function Chart_Bar({

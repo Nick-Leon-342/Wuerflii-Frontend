@@ -1,11 +1,11 @@
 
 
-FROM node:25.5 AS build
+FROM node:25-alpine3.23 AS build
 
 WORKDIR /wuerflii-frontend
 
 COPY package*.json .
-RUN npm install
+RUN npm ci
 
 COPY . .
 RUN npm run build
