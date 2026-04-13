@@ -9,7 +9,7 @@ import { format } from 'date-fns'
 
 import type { Type__Client_To_Server__Session_Date__PATCH } from '@/types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
 import { patch__session_date } from '@/api/session/session'
-import type { Type__Session } from '@/types/Type__Session'
+import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from '../ui/dialog'

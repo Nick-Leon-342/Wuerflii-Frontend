@@ -27,12 +27,55 @@ import { Possible_Entries__Bottom_Table_5 } from './Possible_Entries/Possible_En
 import { Possible_Entries__Bottom_Table_6 } from './Possible_Entries/Possible_Entries__Bottom_Table_6'
 import { Possible_Entries__Bottom_Table_7 } from './Possible_Entries/Possible_Entries__Bottom_Table_7'
 
-export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
 export const darkMode_string = 'Wuerflii_DarkMode'
 
 
 
+// ____________________ ENV-Variables ____________________
 
+export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
+
+export const COLOR__REGEX: RegExp = /^#([0-9A-Fa-f]{3}){1,2}$/
+
+
+// ____________________ User ____________________
+
+export const NAME__MIN_CHARACTER 			: number	= +(import.meta.env.USER_NAME__MIN_CHARACTER || 4)
+export const NAME__MAX_CHARACTER 			: number	= +(import.meta.env.USER_NAME__MAX_CHARACTER || 64)
+
+export const NAME__REGEX					: string	= `^[A-z][A-z0-9-_]{${NAME__MIN_CHARACTER - 1},${NAME__MAX_CHARACTER - 1}}$`
+export const NAME__REGEX_MINMAX 			: string	= `^.{${NAME__MIN_CHARACTER},${NAME__MAX_CHARACTER}}$`
+export const NAME__REGEX_LETTERFIRST 		: string	= '^[A-z]'
+export const NAME__REGEX_ALLOWEDCHARS 		: string	= '^[a-zA-Z0-9_-]+$'
+
+
+export const PASSWORD__MIN_CHARACTER 		: number	= +(import.meta.env.USER_PASSWORD__MIN_CHARACTER || 8)
+export const PASSWORD__MAX_CHARACTER 		: number	= +(import.meta.env.USER_PASSWORD__MAX_CHARACTER || 128)
+
+export const PASSWORD__REGEX 				: string	= `^(?=.*[-_!#%@$])[a-zA-Z0-9-_!#%@$]{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`
+export const PASSWORD__REGEX_MINMAX 		: string	= `^.{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`
+export const PASSWORD__REGEX_ALLOWEDCHARS 	: string	= '[a-zA-Z0-9]+'
+export const PASSWORD__REGEX_ALLOWEDSYMBOLS : string	= '[-_!#%@$]+'
+
+
+// ____________________ Game ____________________
+
+export const MAX_LENGTH_SESSION_NAME 	: number	= +(import.meta.env.VITE__MAX_LENGTH_SESSION_NAME	|| 50)
+export const MAX_LENGTH_PLAYER_NAME 	: number	= +(import.meta.env.VITE__MAX_LENGTH_PLAYER_NAME	|| 50)
+export const MAX_PLAYERS 				: number	= +(import.meta.env.VITE__MAX_PLAYERS				|| 16)
+export const MAX_COLUMNS 				: number	= +(import.meta.env.VITE__MAX_COLUMNS				|| 10)
+export const MAX_FINALSCORES_LIMIT 		: number	= +(import.meta.env.VITE__MAX_FINALSCORES_LIMIT	|| 10)
+
+
+
+
+
+
+
+
+
+
+// __________________________________________________ Possible Entries __________________________________________________
 
 const TD_Text = ({ text }: { text: string }) => { return <td><span dangerouslySetInnerHTML={{ __html: text }}/></td> }
 

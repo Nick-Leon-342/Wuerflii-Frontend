@@ -1,6 +1,6 @@
 
 
-import type { Enum__Month } from './Enum/Enum__Month'
+import type { Enum__Month } from './Enum/Enum__Months'
 import type { Enum__View_Sessions } from './Enum/Enum__View_Sessions'
 import type { Enum__Statistics_View } from './Enum/Enum__Statistics_View'
 

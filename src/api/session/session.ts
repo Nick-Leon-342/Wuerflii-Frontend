@@ -3,10 +3,7 @@
 import { api } from '../axios'
 
 import type { Type__Client_To_Server__Session_Date__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
-import type { Type__Client_To_Server__Session_ENV__GET } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_ENV__GET'
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
-import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Session, Type__Session_PATCH, Type__Session_POST } from '../../types/Zod__Session'
 
 
 
@@ -18,25 +15,39 @@ import type { Type__Session } from '../../types/Type__Session'
 export async function get__session(
 	session_id: number, 
 ): Promise<Type__Session> {
-	return api.get(`/session?session_id=${session_id}`).then(({ data }) => data)
+	return api.get(
+		'/session', 
+		{ params: { session_id } }
+	).then(({ data }) => data)
 }
 
 export async function post__session(
-	json: 	Type__Client_To_Server__Session__POST, 
+	json: 	Type__Session_POST, 
 ): Promise<Type__Session> {
-	return api.post('/session', json).then(({ data }) => data)
+	return api.post(
+		'/session', 
+		json
+	).then(({ data }) => data)
 }
 
 export async function patch__session(
-	json: 	Type__Client_To_Server__Session__PATCH, 
+	session_id: number, 
+	json: 	Type__Session_PATCH, 
 ): Promise<undefined> {
-	return api.patch('/session', json).then(({ data }) => data)
+	return api.patch(
+		'/session', 
+		json, 
+		{ params: { session_id } }
+	).then(({ data }) => data)
 }
 
 export async function delete__session(
 	session_id: number, 
 ): Promise<undefined> {
-	return api.delete(`/session?session_id=${session_id}`).then(({ data }) => data)
+	return api.delete(
+		'/session', 
+		{ params: { session_id } }, 
+	).then(({ data }) => data)
 }
 
 
@@ -49,16 +60,6 @@ export async function patch__session_date(
 	json:	Type__Client_To_Server__Session_Date__PATCH, 
 ): Promise<undefined> {
 	return api.patch('/session/date', json).then(({ data }) => data)
-}
-
-
-
-
-
-// __________________________________________________ Session Env_Variables __________________________________________________
-
-export async function get__session_env_variables(): Promise<Type__Client_To_Server__Session_ENV__GET> {
-	return api.get('/session/env').then(({ data }) => data)
 }
 
 

@@ -3,16 +3,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
-import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import Context__Regex from '../Provider_And_Context/Provider_And_Context__Regex'
-import useErrorHandling from '../hooks/useErrorHandling'
-import { get__user, patch__user } from '../api/user'
-import { api } from '@/api/axios'
+import { Zod__User_PATCH, type Type__User_PATCH } from '@/types/Zod__User'
+import { delete__user, get__user, patch__user } from '@/api/user'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import { delete__logout } from '@/api/auth'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import Form__Username_And_Password from '../components/Username_And_Password/Username_And_Password__Form'
+import Form__Username_And_Password from '@/components/Username_And_Password/Username_And_Password__Form'
 import { ChartNoAxesColumn, LogOut, UserPen, UserX } from 'lucide-react'
 import Popup__Settings from '@/components/misc/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
@@ -35,7 +34,6 @@ export default function Profile() {
 	const [ name, 					setName						] = useState<string>('')
 	const [ password, 				setPassword					] = useState<string>('')
 	const [ password__confirm,		setPassword__confirm		] = useState<string>('')
-	const { NAME__REGEX,			PASSWORD__REGEX				} = useContext(Context__Regex)
 
 	const [ loading_delete_account, setLoading_delete_account	] = useState<boolean>(false)
 
@@ -55,7 +53,7 @@ export default function Profile() {
 	}
 
 	const mutate__user = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(json), 
+		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: () => {
 			navigate(-1)
 		}, 
@@ -73,24 +71,19 @@ export default function Profile() {
 
 	function change_credentials() {
 
-		if((name && !NAME__REGEX.test(name)) || (password && !PASSWORD__REGEX.test(password)) || (!name && !password)) return
+		// Check if name and/or password are valid
+		const zod_result = Zod__User_PATCH.safeParse({ Name: name, Password: password })
+		if(!zod_result.success) return toast.error(t('please_fill_out_registration'))
+		const json_user = zod_result.data
+
+		// Return if nothing changed
+		if(!json_user.Name && !json_user.Password) return
+
+		// Check if passwords match
 		if(password !== password__confirm) return toast.error(t('error.password_confirm_doesnt_match'))
 
-
-		const json: Type__Client_To_Server__User__PATCH = {}
-		if(NAME__REGEX.test(name) && PASSWORD__REGEX.test(password)) {
-			// Name and Password are valid
-			json.Name = name
-			json.Password = password
-		} else if(NAME__REGEX.test(name)) {
-			// Name is valid, password not entered
-			json.Name = name
-		} else {
-			// Password is valid, name not entered
-			json.Password = password
-		}
-
-		mutate__user.mutate(json)
+		// Send user to backend
+		mutate__user.mutate(json_user)
 
 	}
 
@@ -101,7 +94,7 @@ export default function Profile() {
 
 		setLoading_delete_account(true)
 
-		api.delete('/user').then(() => {
+		delete__user().then(() => {
 
 			query_client.clear()
 			navigate('/registration_and_login', { replace: true })
@@ -127,7 +120,7 @@ export default function Profile() {
 
 		setLoading_logout(true)
 
-		api.delete('/auth/logout').then(() => {
+		delete__logout().then(() => {
 			
 			query_client.clear()
 			navigate('/registration_and_login', { replace: true })

@@ -2,13 +2,12 @@
 
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useState, useContext } from 'react'
 import type { AxiosError } from 'axios'
+import { useState } from 'react'
 
+import { post__login, post__registration } from '@/api/auth'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import { api } from '@/api/axios'
-
-import Context__Regex from '@/Provider_And_Context/Provider_And_Context__Regex'
+import { Zod__User_POST } from '@/types/Zod__User'
 
 import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
 import Username_And_Password__Input from '@/components/Username_And_Password/Username_And_Password__Input'
@@ -29,8 +28,6 @@ export default function Registration_And_Login() {
     const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
-	
-	const { NAME__REGEX, PASSWORD__REGEX } = useContext(Context__Regex)
 	
     const [ name, 				setName				] = useState<string>('')
     const [ password, 			setPassword			] = useState<string>('')
@@ -65,20 +62,18 @@ export default function Registration_And_Login() {
 
 	const registration = () => {
 		
-		if(!name || !NAME__REGEX.test(name) || !password || !PASSWORD__REGEX.test(password)) return toast.error(t('please_fill_out_registration'))
+		// Check if name and password are valid
+		const zod_result = Zod__User_POST.safeParse({ Name: name, Password: password })
+		if(!zod_result.success) return toast.error(t('please_fill_out_registration'))
+		const json_user = zod_result.data
+		
+		// Check if passwords match
 		if(password !== password_confirm) return toast.error(t('error.password_confirm_doesnt_match'))
+
 		setLoading(true)
 
 
-		api.post('/auth/registration', 
-			{ 
-				Name: name, 
-				Password: password, 
-			}, {
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
-			}
-		).then(() => {
+		post__registration(json_user).then(() => {
 
 			setName('')
 			setPassword('')
@@ -103,19 +98,16 @@ export default function Registration_And_Login() {
 	}
 
 	const login = () => {
+		
+		// Check if name and password are valid
+		const zod_result = Zod__User_POST.safeParse({ Name: name, Password: password })
+		if(!zod_result.success) return toast.error(t('please_fill_out_registration'))
+		const json_user = zod_result.data
 
 		setLoading(true)
 
 
-		api.post('/auth/login', 
-			{ 
-				Name: name, 
-				Password: password, 
-			}, {
-				headers: { 'Content-Type': 'application/json' },
-				withCredentials: true
-			}
-		).then(() => {
+		post__login(json_user).then(() => {
 
 			setName('')
 			setPassword('')

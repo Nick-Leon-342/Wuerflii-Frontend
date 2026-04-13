@@ -10,7 +10,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 import { delete__session, get__sessions_list } from '../../api/session/session'
 import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
-import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Session } from '../../types/Zod__Session'
 import useRedirectToLogin from '@/hooks/useRedirectToLogin'
 import { get__user, patch__user } from '../../api/user'
 

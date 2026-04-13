@@ -9,7 +9,7 @@ import { Toaster } from './components/ui/sonner'
 
 // ____________________ RegistrationAndLogin ____________________
 
-import Registration_And_Login from './pages/Registration_And_Login/Registration_And_Login'
+import Registration_And_Login from './pages/Registration_And_Login'
 
 import Profile from './pages/Profile'
 

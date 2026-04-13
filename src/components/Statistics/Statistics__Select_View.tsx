@@ -12,13 +12,13 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
 import { patch__user } from '../../api/user'
 
-import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Month'
+import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Months'
 import { Type__List_Months } from '../../types/Type__List_Months'
 
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 import type { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
-import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Session } from '../../types/Zod__Session'
 import type { Type__User } from '../../types/Type__User'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'

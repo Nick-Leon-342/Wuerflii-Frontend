@@ -15,7 +15,7 @@ import { get__user } from '../../api/user'
 import type { Type__Server_Response__Analytics_Session__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
 import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import { Type__List_Months } from '../../types/Type__List_Months'
-import type { Type__Session } from '../../types/Type__Session'
+import type { Type__Session } from '../../types/Zod__Session'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'

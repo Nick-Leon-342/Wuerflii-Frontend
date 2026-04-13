@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 
 import { get__session_players } from '@/api/session/session_players'
 import type { Type__Final_Score } from '@/types/Type__Final_Score'
-import type { Type__Session } from '@/types/Type__Session'
+import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
 import { get__user } from '@/api/user'

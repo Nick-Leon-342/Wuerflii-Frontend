@@ -3,7 +3,7 @@
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import type { Type__Session } from '@/types/Type__Session'
+import type { Type__Session } from '@/types/Zod__Session'
 
 import { ChartNoAxesColumn, Dices, Settings, Users } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'

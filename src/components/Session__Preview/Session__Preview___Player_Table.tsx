@@ -1,7 +1,7 @@
 
 
 import type { Type__Final_Score } from '@/types/Type__Final_Score'
-import type { Type__Session } from '@/types/Type__Session'
+import type { Type__Session } from '@/types/Zod__Session'
 import type { Type__Player } from '@/types/Type__Player'
 
 

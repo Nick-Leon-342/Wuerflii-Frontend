@@ -8,7 +8,7 @@ import useErrorHandling from '@/hooks/useErrorHandling'
 
 import type { Type__Client_To_Server__Gnadenwurf__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Gnadenwurf__PATCH'
 import type { Type__Player_With_Table_Columns } from '../../../types/Type__Player_With_Table_Columns'
-import type { Type__Session } from '../../../types/Type__Session'
+import type { Type__Session } from '../../../types/Zod__Session'
 
 import { patch__gnadenwurf } from '../../../api/gnadenwurf'
 
