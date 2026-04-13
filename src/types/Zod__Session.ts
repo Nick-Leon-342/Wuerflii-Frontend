@@ -14,14 +14,14 @@ import * as z from 'zod'
 
 export const Zod__Session = z.object({
 	id: 							z.number().int, 
-	Name:							z.string()
-										.min(1, 'Session name too short.')
-										.max(MAX_LENGTH_SESSION_NAME, `Max session name length is ${MAX_LENGTH_SESSION_NAME} characters.`),
-	Color:							z.string()
-										.regex(COLOR__REGEX, 'Color invalid.'),
-	Columns:						z.number()
-										.min(1, 'Less than 1 column is not valid.')
-										.max(MAX_COLUMNS, `Max amount of columns is ${MAX_COLUMNS}.`),
+	Name:							z.string('session__name_invalid')
+										.min(1, 'session__name_min')
+										.max(MAX_LENGTH_SESSION_NAME, 'session__name_max'),
+	Color:							z.string('session__color')
+										.regex(COLOR__REGEX, 'session__color'),
+	Columns:						z.number('session__columns_invalid')
+										.min(1, 'session__columns_min')
+										.max(MAX_COLUMNS, 'session__columns_max'),
 
 	View__List_Years:				z.array(z.number().int()), 
 	CurrentGameStart:				z.date().nullable(), 
@@ -62,7 +62,7 @@ export type Type__Session_POST = z.infer<typeof Zod__Session_POST>
 
 
 
-export const Zod__Session_PATCH = Zod__Session.partial({
+export const Zod__Session_PATCH = Zod__Session.pick({
 	Name: true, 
 	Color: true, 
 	Columns: true, 
@@ -78,6 +78,6 @@ export const Zod__Session_PATCH = Zod__Session.partial({
 	Statistics__View_Month: true, 
 	Statistics__View_Year: true, 
 	Statistics__View: true, 
-})
+}).partial()
 
 export type Type__Session_PATCH = z.infer<typeof Zod__Session_PATCH>

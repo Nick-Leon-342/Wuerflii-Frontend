@@ -13,9 +13,7 @@ import { get__analytics_session } from '../../api/analytics'
 import { get__user } from '../../api/user'
 
 import type { Type__Server_Response__Analytics_Session__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import { Type__List_Months } from '../../types/Type__List_Months'
-import type { Type__Session } from '../../types/Zod__Session'
+import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -28,6 +26,7 @@ import { Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { Enum__Months } from '@/types/Enum/Enum__Months'
 
 
 
@@ -143,12 +142,12 @@ export default function Analytics_Session() {
 	])
 
 	const mutate__show_border = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
+		mutationFn: (json: Type__Session_PATCH) => patch__session(+(session_id || -1), json), 
 		onSuccess: (_, json) => {
 			setSession(prev => {
 				if(!prev) return prev
 				const tmp 					= { ...prev }
-				tmp.Statistics__Show_Border 	= Boolean(json.Statistics__Show_Border)
+				tmp.Statistics__Show_Border = Boolean(json.Statistics__Show_Border)
 				query_client.setQueryData([ 'session', prev.id ], tmp)
 				return tmp
 			})
@@ -165,10 +164,7 @@ export default function Analytics_Session() {
 
 		if(!session) return
 		
-		mutate__show_border.mutate({
-			SessionID: 				session.id, 
-			Statistics__Show_Border: !session.Statistics__Show_Border, 
-		})
+		mutate__show_border.mutate({ Statistics__Show_Border: !session.Statistics__Show_Border })
 
 	}
 
@@ -241,7 +237,7 @@ export default function Analytics_Session() {
 
 							
 							<Chart_Graph
-								labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Type__List_Months.map(month => t('months.' + month)) ] : total?.Data ? Object.keys(total?.Data) : []}
+								labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Enum__Months.map(month => t('months.' + month)) ] : total?.Data ? Object.keys(total?.Data) : []}
 								IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
 								List__Players={list_players}
 								Data={total?.Data}

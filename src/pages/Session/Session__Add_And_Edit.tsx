@@ -5,11 +5,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import type { Type__Client_To_Server__Session__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__POST'
-import { get__session, get__session_env_variables, patch__session, post__session } from '../../api/session/session'
-import type { Type__Session } from '../../types/Zod__Session'
+import { get__session, patch__session, post__session } from '../../api/session/session'
+import { Zod__Session_POST, type Type__Session, type Type__Session_PATCH, type Type__Session_POST } from '../../types/Zod__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import { MAX_COLUMNS } from '@/logic/utils'
 import { get__user } from '../../api/user'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -40,7 +39,7 @@ export default function Session__Add_And_Edit() {
 	const [ color,				setColor			] = useState<string>('#00FF00')
 	const [ columns,			setColumns			] = useState<number>(1)
 
-	const [ options_columns,	setOptions_columns	] = useState<Array<number>>([])
+	const options_columns = Array.from({ length: (MAX_COLUMNS || 0) }, (_, index) => index + 1)
 
 
 
@@ -91,29 +90,13 @@ export default function Session__Add_And_Edit() {
 	}, [ session ])
 
 
-	// ____________________ Env_Variables ____________________
-
-	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
-		queryFn: () => get__session_env_variables(), 
-		queryKey: [ 'session', 'env' ], 
-	})
-
-	if(error__env_variables) {
-		handle_error({
-			err: error__env_variables, 
-		})
-	}
-
-	useEffect(() => setOptions_columns(Array.from({ length: (env_variables?.MAX_COLUMNS || 0) }, (_, index) => index + 1)), [ env_variables ]) // eslint-disable-line
-
-
 
 
 
 	// __________________________________________________ Add / Edit __________________________________________________
 
 	const mutate__session_add = useMutation({
-		mutationFn: (session_json: Type__Client_To_Server__Session__POST) => post__session(session_json),
+		mutationFn: (session_json: Type__Session_POST) => post__session(session_json),
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', data.id ], data)
 			navigate(`/session/${data.id}/players`, { replace: false })
@@ -126,9 +109,9 @@ export default function Session__Add_And_Edit() {
 	})
 
 	const mutate__session_edit = useMutation({
-		mutationFn: (session_json: Type__Client_To_Server__Session__PATCH) => patch__session(session_json), 
+		mutationFn: (session_json: Type__Session_PATCH) => patch__session(+(session_id || -1), session_json), 
 		onSuccess: ( _, session_json ) => {
-			query_client.setQueryData([ 'session', session_json.SessionID ], (prev: Type__Session) => ({ ...prev, ...session_json }))
+			query_client.setQueryData([ 'session', session_id ], (prev: Type__Session) => ({ ...prev, ...session_json }))
 			navigate(-1)
 		}, 
 		onError: err => {
@@ -144,26 +127,18 @@ export default function Session__Add_And_Edit() {
 
 	const ok = async () => {
 
-		if(!env_variables) return toast.error(t('error.generic'))
+		const zod_result = Zod__Session_POST.safeParse({
+			Name:		name, 
+			Color:		color, 
+			Columns:	columns, 
+		})
+		if(!zod_result.success) return toast.error(t(`error.${zod_result.error.issues[0].message}`))
 		
-		if(!name)													return toast.error(t('error.name_required'))
-		if(name.length > env_variables?.MAX_LENGTH_SESSION_NAME) 	return toast.error(t('error.name_too_long', { max: env_variables.MAX_LENGTH_SESSION_NAME }))
-		if(!session && !+columns) 									return toast.error(t('error.columns_required'))
-		if(!session && +columns > env_variables?.MAX_COLUMNS) 		return toast.error(t('error.columns_too_many', { max: env_variables.MAX_COLUMNS })) 
 
 		if(session) {
-			mutate__session_edit.mutate({
-				SessionID:	session.id, 
-				Name: 		name, 
-				Color: 		color, 
-				Columns: 	+columns, 
-			})
+			mutate__session_edit.mutate(zod_result.data)
 		} else {
-			mutate__session_add.mutate({
-				Name:		name, 
-				Color:		color, 
-				Columns:	+columns, 
-			})
+			mutate__session_add.mutate(zod_result.data)
 		}
 
 	}
@@ -239,7 +214,7 @@ export default function Session__Add_And_Edit() {
 
 
 			<Custom_Button 
-				loading={isLoading__user || isLoading__session || isLoading__env_variables || mutate__session_add.isPending || mutate__session_edit.isPending}
+				loading={isLoading__user || isLoading__session || mutate__session_add.isPending || mutate__session_edit.isPending}
 				text={session_id ? t('save') : t('create_session')}
 				onClick={ok}
 			/>

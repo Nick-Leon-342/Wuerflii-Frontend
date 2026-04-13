@@ -7,25 +7,19 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
+import { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
+import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
-
 import { patch__session } from '../../api/session/session'
+import type { Type__User, Type__User_PATCH } from '@/types/Zod__User'
 import { patch__user } from '../../api/user'
-
-import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Months'
-import { Type__List_Months } from '../../types/Type__List_Months'
-
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import type { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
-import type { Type__Session } from '../../types/Zod__Session'
-import type { Type__User } from '../../types/Type__User'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from '../ui/popover'
 import { ChartNoAxesColumn } from 'lucide-react'
 import { Button } from '../ui/button'
 import { toast } from 'sonner'
+import { Enum__Months } from '@/types/Enum/Enum__Months'
 
 
 
@@ -50,22 +44,16 @@ export default function Statistics__Select_View({
 	const query_client 	= useQueryClient()
 	const handle_error 	= useErrorHandling()
 
-	const [ view, 		setView 		] = useState<Enum__Statistics_View>('STATISTICS_OVERALL')
-	const [ view_month, setView_month 	] = useState<Enum__Month>('JANUARY')
+	const [ view, 		setView 		] = useState<typeof Enum__Statistics_View[number]>('STATISTICS_OVERALL')
+	const [ view_month, setView_month 	] = useState<typeof Enum__Months[number]>('JANUARY')
 	const [ view_year, 	setView_year 	] = useState<number>(2026)
-
-	const list__view: Array<Enum__Statistics_View> = [
-		'STATISTICS_OVERALL', 
-		'STATISTICS_YEAR', 
-		'STATISTICS_MONTH', 
-	]
 
 
 
 
 
 	const mutate__user = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(json), 
+		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: (_, json) => {
 			query_client.setQueryData([ 'user' ], (prev: Type__User) => {
 				const tmp = { ...prev }
@@ -83,9 +71,9 @@ export default function Statistics__Select_View({
 	})
 
 	const mutate__session = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
+		mutationFn: (json: Type__Session_PATCH) => patch__session(+(session?.id || -1), json), 
 		onSuccess: (_, json) => {
-			query_client.setQueryData([ 'session', json.SessionID ], (prev: Type__Session) => {
+			query_client.setQueryData([ 'session', session?.id ], (prev: Type__Session) => {
 				if(!prev) return prev
 				const tmp = { ...prev }
 				tmp.Statistics__View 		= json.Statistics__View			|| 'STATISTICS_OVERALL'
@@ -122,8 +110,8 @@ export default function Statistics__Select_View({
 	}, [ isSession, session, user ])
 
 	const sync_view = ( 
-		view: 		Enum__Statistics_View, 
-		view_month:	Enum__Month, 
+		view: 		(typeof Enum__Statistics_View)[number], 
+		view_month:	(typeof Enum__Months)[number], 
 		view_year:	number, 
 	) => {
 
@@ -169,7 +157,7 @@ export default function Statistics__Select_View({
 				<div className='flex flex-col gap-4'>
 
 					<Select
-						onValueChange={value => sync_view(value as Enum__Statistics_View, view_month, view_year)}
+						onValueChange={value => sync_view(value as (typeof Enum__Statistics_View)[number], view_month, view_year)}
 						disabled={disabled}
 						value={view}
 					>
@@ -179,7 +167,7 @@ export default function Statistics__Select_View({
 
 						<SelectContent>
 							<SelectGroup>
-								{list__view.map(view => (
+								{Enum__Statistics_View.map(view => (
 									<SelectItem
 										key={view}
 										value={view}
@@ -214,7 +202,7 @@ export default function Statistics__Select_View({
 
 					{view === 'STATISTICS_MONTH' && <>
 						<Select
-							onValueChange={value => sync_view(view, value as Enum__Month, view_year)}
+							onValueChange={value => sync_view(view, value as (typeof Enum__Months)[number], view_year)}
 							disabled={disabled}
 							value={view_month}
 						>
@@ -224,10 +212,10 @@ export default function Statistics__Select_View({
 
 							<SelectContent>
 								<SelectGroup>
-									{Type__List_Months.map((month, index_month) => (
+									{Enum__Months.map(month => (
 										<SelectItem
 											key={month}
-											value={List__Months_Enum[index_month]}
+											value={month}
 										>{t('months.' + month)}</SelectItem>
 									))}
 								</SelectGroup>

@@ -31,11 +31,7 @@
 	"error": {
 		"error": "Fehler", 
 		"client_request_invalid": "Clientanfrage fehlerhaft.", 
-		"columns_required": "Bitte die Spaltenanzahl angeben.",
-		"columns_too_many": "Die maximale Spaltenanzahl ist {{max}}.", 
 		"generic": "Beim Laden der Seite ist etwas schiefgelaufen. Bitte erneut versuchen.",
-		"name_required": "Bitte einen Namen für die Partie eingeben.",
-		"name_too_long": "Der Name der Partie darf nicht länger als {{max}} Zeichen sein.", 
 		"password_confirm_doesnt_match": "Passwörter stimmen nicht überein.", 
 		"player_name_too_long": "Die Spielernamen dürfen nicht länger als {{max}} Zeichen sein.", 
 		"players_already_exist": "Spieler für diese Partie existieren bereits.",
@@ -43,6 +39,16 @@
 		"resource_not_found": "Die Ressource wurde nicht gefunden!", 
 		"session_invalid": "Session abgelaufen.", 
 		"session_not_found": "Partie wurde nicht gefunden.", 
+		"session__columns_required": "Bitte die Spaltenanzahl angeben.",
+		
+		"session__name_invalid": "Der Name ist nich zulässig.", 
+		"session__name_min": "Der Name ist zu kurz.", 
+		"session__name_max": "Der Name ist zu lang.", 
+		"session__color": "Farbe nicht zulässig.", 
+		"session__columns_invalid": "Die Spaltenangabe ist nicht zulässig.", 
+		"session__columns_min": "Zu wenige Spalten.", 
+		"session__columns_max": "Zu viele Spalten.", 
+
 		"server_is_not_responding": "Server is not responding.", 
 		"synchronization_of_gnadenwurf_failed": "Der Server antwortet nicht.\nDer Gnadenwurf für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 
 		"unhandled_error": "Es trat ein unerwarteter Fehler auf.", 

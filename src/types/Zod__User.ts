@@ -63,7 +63,7 @@ export type Type__User_POST = z.infer<typeof Zod__User_POST>
 
 
 
-export const Zod__User_PATCH = Zod__User.partial({
+export const Zod__User_PATCH = Zod__User.pick({
 	Name: true, 
 	Password: true, 
 	DarkMode: true, 
@@ -77,6 +77,6 @@ export const Zod__User_PATCH = Zod__User.partial({
 	Statistics__View: true, 
 	Statistics__View_Month: true, 
 	Statistics__View_Year: true, 
-})
+}).partial()
 
 export type Type__User_PATCH = z.infer<typeof Zod__User_PATCH>

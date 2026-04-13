@@ -1,13 +1,29 @@
 
 
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import Context__Regex from '../../Provider_And_Context/Provider_And_Context__Regex'
 
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '../ui/popover'
 import Username_And_Password__Input from './Username_And_Password__Input'
 import { Check, X } from 'lucide-react'
+
+import { 
+	NAME__MIN_CHARACTER,
+	NAME__MAX_CHARACTER, 
+
+	NAME__REGEX, 
+	NAME__REGEX_MINMAX, 
+	NAME__REGEX_LETTERFIRST, 
+	NAME__REGEX_ALLOWEDCHARS, 
+
+	PASSWORD__MIN_CHARACTER, 
+	PASSWORD__MAX_CHARACTER, 
+
+	PASSWORD__REGEX, 
+	PASSWORD__REGEX_MINMAX, 
+	PASSWORD__REGEX_ALLOWEDCHARS, 
+	PASSWORD__REGEX_ALLOWEDSYMBOLS, 
+} from '@/logic/utils'
 
 
 
@@ -41,26 +57,6 @@ export default function Username_And_Password__Form({
 
 	const [ show__popup_name, 				setShow__popup_name				] = useState<boolean>(false)
 	const [ show__popup_password,			setShow__popup_password			] = useState<boolean>(false)
- 
-	const {
-		requesting_regex, 
-
-		NAME__MIN_CHARACTER, 
-		NAME__MAX_CHARACTER, 
-
-		NAME__REGEX, 
-		NAME__REGEX_MINMAX, 
-		NAME__REGEX_LETTERFIRST, 
-		NAME__REGEX_ALLOWEDCHARS, 
-
-		PASSWORD__MIN_CHARACTER, 
-		PASSWORD__MAX_CHARACTER, 
-
-		PASSWORD__REGEX, 
-		PASSWORD__REGEX_MINMAX, 
-		PASSWORD__REGEX_ALLOWEDCHARS, 
-		PASSWORD__REGEX_ALLOWEDSYMBOLS, 
-	} = useContext(Context__Regex)
 
 
 
@@ -68,17 +64,17 @@ export default function Username_And_Password__Form({
 
 	useEffect(() => {
 		function check_if_name_popup_should_be_shown() {
-			setShow__popup_name(info__name && !requesting_regex && !NAME__REGEX?.test(name))
+			setShow__popup_name(info__name && !NAME__REGEX.test(name))
 		}
 		check_if_name_popup_should_be_shown()
-	}, [ info__name, requesting_regex, NAME__REGEX, name ])
+	}, [ info__name, NAME__REGEX, name ])
 
 	useEffect(() => {
 		function check_if_password_popup_should_be_shown() {
-			setShow__popup_password(info__password && !requesting_regex && !PASSWORD__REGEX?.test(password))
+			setShow__popup_password(info__password && !PASSWORD__REGEX.test(password))
 		}
 		check_if_password_popup_should_be_shown()
-	}, [ info__password, requesting_regex, PASSWORD__REGEX, password ])
+	}, [ info__password, PASSWORD__REGEX, password ])
 
 
 

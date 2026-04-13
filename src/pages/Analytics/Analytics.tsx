@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
 import type { Type__Server_Response__Analytics__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
-import { Type__List_Months } from '../../types/Type__List_Months'
 import useErrorHandling from '../../hooks/useErrorHandling'
+import { Enum__Months } from '@/types/Enum/Enum__Months'
 import { get__analytics } from '../../api/analytics'
 import { get__user } from '../../api/user'
 
@@ -115,7 +115,7 @@ export default function Analytics() {
 
 			{total && <>
 				<Chart_Bar
-					labels={user?.Statistics__View === 'STATISTICS_YEAR' ? Type__List_Months.map(month => t('months.' + month)) : total?.Data ? Object.keys(total?.Data) : []}
+					labels={user?.Statistics__View === 'STATISTICS_YEAR' ? Enum__Months.map(month => t('months.' + month)) : total?.Data ? Object.keys(total?.Data) : []}
 					data={total.Data}
 				/>
 			</>}

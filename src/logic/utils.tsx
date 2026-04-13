@@ -43,19 +43,19 @@ export const COLOR__REGEX: RegExp = /^#([0-9A-Fa-f]{3}){1,2}$/
 export const NAME__MIN_CHARACTER 			: number	= +(import.meta.env.USER_NAME__MIN_CHARACTER || 4)
 export const NAME__MAX_CHARACTER 			: number	= +(import.meta.env.USER_NAME__MAX_CHARACTER || 64)
 
-export const NAME__REGEX					: string	= `^[A-z][A-z0-9-_]{${NAME__MIN_CHARACTER - 1},${NAME__MAX_CHARACTER - 1}}$`
-export const NAME__REGEX_MINMAX 			: string	= `^.{${NAME__MIN_CHARACTER},${NAME__MAX_CHARACTER}}$`
-export const NAME__REGEX_LETTERFIRST 		: string	= '^[A-z]'
-export const NAME__REGEX_ALLOWEDCHARS 		: string	= '^[a-zA-Z0-9_-]+$'
+export const NAME__REGEX					: RegExp	= new RegExp(`^[A-z][A-z0-9-_]{${NAME__MIN_CHARACTER - 1},${NAME__MAX_CHARACTER - 1}}$`)
+export const NAME__REGEX_MINMAX 			: RegExp	= new RegExp(`^.{${NAME__MIN_CHARACTER},${NAME__MAX_CHARACTER}}$`)
+export const NAME__REGEX_LETTERFIRST 		: RegExp	= new RegExp('^[A-z]')
+export const NAME__REGEX_ALLOWEDCHARS 		: RegExp	= new RegExp('^[a-zA-Z0-9_-]+$')
 
 
 export const PASSWORD__MIN_CHARACTER 		: number	= +(import.meta.env.USER_PASSWORD__MIN_CHARACTER || 8)
 export const PASSWORD__MAX_CHARACTER 		: number	= +(import.meta.env.USER_PASSWORD__MAX_CHARACTER || 128)
 
-export const PASSWORD__REGEX 				: string	= `^(?=.*[-_!#%@$])[a-zA-Z0-9-_!#%@$]{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`
-export const PASSWORD__REGEX_MINMAX 		: string	= `^.{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`
-export const PASSWORD__REGEX_ALLOWEDCHARS 	: string	= '[a-zA-Z0-9]+'
-export const PASSWORD__REGEX_ALLOWEDSYMBOLS : string	= '[-_!#%@$]+'
+export const PASSWORD__REGEX 				: RegExp	= new RegExp(`^(?=.*[-_!#%@$])[a-zA-Z0-9-_!#%@$]{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`)
+export const PASSWORD__REGEX_MINMAX 		: RegExp	= new RegExp(`^.{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`)
+export const PASSWORD__REGEX_ALLOWEDCHARS 	: RegExp	= new RegExp('[a-zA-Z0-9]+')
+export const PASSWORD__REGEX_ALLOWEDSYMBOLS : RegExp	= new RegExp('[-_!#%@$]+')
 
 
 // ____________________ Game ____________________

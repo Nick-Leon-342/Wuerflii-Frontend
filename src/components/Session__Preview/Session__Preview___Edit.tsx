@@ -4,12 +4,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Months'
-import type { Type__Session } from '../../types/Zod__Session'
-import type { Enum__View } from '../../types/Enum/Enum__View'
+import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
+import { Enum__Months } from '@/types/Enum/Enum__Months'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
+import { Enum__View } from '@/types/Enum/Enum__View'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -36,31 +35,9 @@ export default function Session__Preview___Edit({
 	const query_client 	= useQueryClient()
 	const handle_error 	= useErrorHandling()
 
-	const [ view,		setView			] = useState<Enum__View>('SHOW__ALL')
-	const [ view_month, setView_month	] = useState<Enum__Month>('JANUARY')
+	const [ view,		setView			] = useState<(typeof Enum__View)[number]>('SHOW__ALL')
+	const [ view_month, setView_month	] = useState<(typeof Enum__Months)[number]>('JANUARY')
 	const [ view_year, 	setView_year	] = useState<number>(0)
-
-	const list_months = [ 
-		'january', 
-		'february', 
-		'march', 
-		'april', 
-		'may', 
-		'june', 
-		'july', 
-		'august', 
-		'september', 
-		'october', 
-		'november', 
-		'december'
-	]
-
-	const list__view_options: Array<Enum__View> = [
-		'SHOW__ALL', 
-		'SHOW__YEAR', 
-		'SHOW__MONTH', 
-		'SHOW__CUSTOM_DATE', 
-	]
 
 	useEffect(() => {
 		function init() {
@@ -77,7 +54,7 @@ export default function Session__Preview___Edit({
 
 
 	const mutate__session = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
+		mutationFn: (json: Type__Session_PATCH) => patch__session(+(session?.id || -1), json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			setSession(prev => {
@@ -102,17 +79,16 @@ export default function Session__Preview___Edit({
 	})
 
 	function update_view(
-		view:		Enum__View, 
-		view_month:	Enum__Month, 
+		view:		(typeof Enum__View)[number], 
+		view_month:	(typeof Enum__Months)[number], 
 		view_year:	number
 	): void {
 
 		if(!session) return
 
 		mutate__session.mutate({
-			SessionID:	session.id, 
-			View:		view, 
-			View__Month: view_month, 
+			View:			view, 
+			View__Month: 	view_month, 
 			View__Year: 	view_year, 
 		})
 
@@ -142,7 +118,7 @@ export default function Session__Preview___Edit({
 					<Select
 						value={view}
 						disabled={mutate__session.isPending}
-						onValueChange={(value) => update_view(value as Enum__View, view_month, view_year)}
+						onValueChange={(value) => update_view(value as (typeof Enum__View)[number], view_month, view_year)}
 					>
 						<SelectTrigger>
 							<SelectValue/>
@@ -151,7 +127,7 @@ export default function Session__Preview___Edit({
 						<SelectContent>
 							<SelectGroup>
 								<SelectLabel>{t('view.label')}</SelectLabel>
-								{list__view_options.map(option => (
+								{Enum__View.map(option => (
 									<SelectItem
 										key={option}
 										value={option}
@@ -199,7 +175,7 @@ export default function Session__Preview___Edit({
 						<Select
 							value={view_month}
 							disabled={mutate__session.isPending}
-							onValueChange={(value) => update_view(view, value as Enum__Month, view_year)}
+							onValueChange={(value) => update_view(view, value as (typeof Enum__Months)[number], view_year)}
 						>
 							<SelectTrigger>
 								<SelectValue/>
@@ -208,10 +184,10 @@ export default function Session__Preview___Edit({
 							<SelectContent>
 								<SelectGroup>
 									<SelectLabel>{t('month')}</SelectLabel>
-									{list_months.map((month, index_month) => (
+									{Enum__Months.map(month => (
 										<SelectItem
 											key={month}
-											value={List__Months_Enum[index_month]}
+											value={month}
 											className='text-lg cursor-pointer'
 										>{t('months.' + month)}</SelectItem>
 									))}

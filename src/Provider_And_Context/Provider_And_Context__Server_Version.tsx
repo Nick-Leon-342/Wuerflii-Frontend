@@ -4,12 +4,10 @@ import { createContext, useEffect, useState, type ReactNode } from 'react'
 
 import { api } from '@/api/axios'
 
-import type { Type__Context__Server_Version } from '../types/Type__Context/Type__Context__Server_Version'
 
 
 
-
-
+interface Type__Context__Server_Version { server_version: number}
 const Context__Server_Version = createContext<Type__Context__Server_Version>({ server_version: 0 })
 export default Context__Server_Version
 
