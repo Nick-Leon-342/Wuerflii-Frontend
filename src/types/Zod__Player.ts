@@ -13,13 +13,16 @@ import {
 
 
 const Zod__Player = z.object({
+	id:		z.number().int(), 
 	Name:	z
 		.string()
 		.min(1, 'Name too short.')
 		.max(MAX_LENGTH_PLAYER_NAME, 'Name too long.'), 
 	Color:	z
 		.string()
-		.regex(COLOR__REGEX, 'Color invalid.')
+		.regex(COLOR__REGEX, 'Color invalid.'), 
+	Order_Index: z.number().int(), 
+	Gnadenwurf_Used: z.boolean(), 
 })
 
 export const Zod__Player_List__Without_PlayerID = z.object({

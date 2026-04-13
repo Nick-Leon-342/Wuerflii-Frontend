@@ -2,8 +2,7 @@
 
 import { api } from './axios'
 
-import type { Type__User_PATCH } from '@/types/Zod__User'
-import type { Type__User } from '../types/Type__User'
+import type { Type__User, Type__User_PATCH } from '@/types/Zod__User'
 
 
 
