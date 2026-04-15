@@ -33,15 +33,22 @@
 		"client_request_invalid": "Clientanfrage fehlerhaft.", 
 		"generic": "Beim Laden der Seite ist etwas schiefgelaufen. Bitte erneut versuchen.",
 		"password_confirm_doesnt_match": "Passwörter stimmen nicht überein.", 
-		"player_name_too_long": "Die Spielernamen dürfen nicht länger als {{max}} Zeichen sein.", 
+
+		"player__name_invalid": "Der Name eines Spielers ist nicht zulässig.", 
+		"player__name_min": "Der Name eines Spielers ist zu kurz.", 
+		"player__name_max": "Der Name eines Spielers ist zu lang.", 
+		"player__color_invalid": "Die Farbe eines Spielers ist nicht zulässig.", 
+		"player__list_min": "Nicht genug Spieler.", 
+		"player__list_max": "Zu viele Spieler.", 
 		"players_already_exist": "Spieler für diese Partie existieren bereits.",
 		"players_too_many": "Es dürfen maximal nur {{max}} Spieler sein.", 
+
 		"resource_not_found": "Die Ressource wurde nicht gefunden!", 
-		"session_invalid": "Session abgelaufen.", 
-		"session_not_found": "Partie wurde nicht gefunden.", 
-		"session__columns_required": "Bitte die Spaltenanzahl angeben.",
+
+		"session_timeout": "Session abgelaufen.", 
 		
-		"session__name_invalid": "Der Name ist nich zulässig.", 
+		"session_not_found": "Partie wurde nicht gefunden.", 
+		"session__name_invalid": "Der Name ist nicht zulässig.", 
 		"session__name_min": "Der Name ist zu kurz.", 
 		"session__name_max": "Der Name ist zu lang.", 
 		"session__color": "Farbe nicht zulässig.", 

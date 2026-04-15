@@ -2,9 +2,9 @@
 
 import { COLOR__REGEX, MAX_COLUMNS, MAX_LENGTH_SESSION_NAME } from '@/logic/utils'
 import { Enum__Statistics_View } from './Enum/Enum__Statistics_View'
-import { Zod__Player_List__With_PlayerID } from './Zod__Player'
 import { Enum__Input_Type } from './Enum/Enum__Input_Type'
 import { Enum__Months } from './Enum/Enum__Months'
+import { Zod__Player_List } from './Zod__Player'
 import { Enum__View } from './Enum/Enum__View'
 import * as z from 'zod'
 
@@ -41,7 +41,7 @@ export const Zod__Session = z.object({
 	Statistics__View: 				z.enum(Enum__Statistics_View), 
 
 	Checkbox_Checked_To_Delete:		z.boolean(), 
-	List__Players:					z.array(Zod__Player_List__With_PlayerID).nullish()
+	List__Players:					z.array(Zod__Player_List).nullish()
 })
 
 export type Type__Session = z.infer<typeof Zod__Session>

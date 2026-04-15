@@ -33,13 +33,20 @@
 		"client_request_invalid": "Client request invalid.", 
 		"generic": "Something went wrong while loading the page. Please try again.",
 		"password_confirm_doesnt_match": "Passwords don't match.", 
-		"player_name_too_long": "Player name should not be longer than {{max}} characters.", 
+		
+		"player__name_invalid": "The name of a player is invalid.", 
+		"player__name_min": "The name of a player is too short.", 
+		"player__name_max": "The name of a player is too long.", 
+		"player__color_invalid": "Color invalid.", 
+		"player__list_min": "Not enough players.", 
+		"player__list_max": "Too many players.", 
 		"players_already_exist": "Players already exist for this session.", 
 		"players_too_many": "Maximum amount of players is {{max}}.", 
+
 		"resource_not_found": "Resource not found!", 
-		"session_invalid": "Session invalid.", 
+		
+		"session_timeout": "Session timeout.", 
 		"session_not_found": "Session not found.", 
-		"session__columns_required": "Please specify the number of columns.",
 		
 		"session__name_invalid": "Name invalid", 
 		"session__name_min": "Name too short.",

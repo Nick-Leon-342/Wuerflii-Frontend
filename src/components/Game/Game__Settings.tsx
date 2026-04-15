@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
 import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
-import type { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
-import type { Type__Session } from '../../types/Zod__Session'
+import { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
+import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
 import { api } from '@/api/axios'
@@ -50,73 +49,31 @@ export default function Game__Settings({
 
 	const [ loading_newGame, setLoading_newGame ] = useState(false)
 
-	const list__input_type: Array<Enum__Input_Type> = [
-		'SELECT', 
-		'SELECT_AND_TYPE', 
-		'TYPE', 
-	]
 
 
 
 
+	// ____________________ Session settings ____________________
 
-	// ____________________ Input Type ____________________
-
-	const mutate__input_type = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
+	const mutate__session = useMutation({
+		mutationFn: (json: Type__Session_PATCH) => patch__session(+(session?.id || -1), json), 
 		onSuccess: (_, json) => {
 			if(!session) return
 			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
 				if(!prev) return prev
-				const tmp = { ...prev }
-				tmp.Input_Type = json.Input_Type || 'SELECT'
+				const tmp = { ...prev, ...json }
 				return tmp
 			})
 		}
 	})
 
-	function change__input_type(input_type: Enum__Input_Type) {
-
-		if(!session) return
-		const json = {
-			SessionID:	session.id, 
-			Input_Type: input_type
-		}
-		mutate__input_type.mutate(json)
-
-	}
-
-
-	// ____________________ Scores Visible ____________________
-
-	const mutate__show_scores = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(json), 
-		onSuccess: (_, json) => {
-			if(!session) return
-			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
-				if(!prev) return prev
-				const tmp = { ...prev }
-				tmp.Show_Scores = Boolean(json.Show_Scores)
-				return tmp
-			})
-		}
-	})
-
-	function change__scores_visible(): void {
-
-		if(!session) return
-		const json = {
-			SessionID:		session.id, 
-			Show_Scores:	!session.Show_Scores
-		}
-		mutate__show_scores.mutate(json)
-
-	}
+	function change__input_type(input_type: (typeof Enum__Input_Type)[number]) { mutate__session.mutate({ Input_Type: input_type }) }
+	function change__scores_visible() { if(session) mutate__session.mutate({ Show_Scores: !session.Show_Scores }) }
 
 
 	// ____________________ New Game ____________________
 
-	function new_game(): void {
+	function new_game() {
 
 		if(!session) return
 		if(!window.confirm(t('sure_you_want_to_delete_this_game'))) return 
@@ -165,8 +122,8 @@ export default function Game__Settings({
 					{/* ____________________ Input_Type ____________________ */}
 
 					<Select
-						onValueChange={(value) => change__input_type(value as Enum__Input_Type)}
-						disabled={mutate__input_type.isPending}
+						onValueChange={(value) => change__input_type(value as (typeof Enum__Input_Type)[number])}
+						disabled={mutate__session.isPending}
 						value={session?.Input_Type}
 					>
 						<SelectTrigger>
@@ -176,7 +133,7 @@ export default function Game__Settings({
 						<SelectContent>
 							<SelectGroup>
 								<SelectLabel>{t('input_type.name')}</SelectLabel>
-								{list__input_type.map(input_type => (
+								{Enum__Input_Type.map(input_type => (
 									<SelectItem
 										key={input_type}
 										value={input_type}
@@ -192,14 +149,14 @@ export default function Game__Settings({
 					{/* ____________________ Show_Scores ____________________ */}
 
 					<Button
-						disabled={mutate__show_scores.isPending}
+						disabled={mutate__session.isPending}
 						onClick={change__scores_visible}
 						className='justify-between'
 						variant='outline'
 					>
 						<span>{t('show_scores')}</span>
-						{mutate__show_scores.isPending && <Spinner/>}
-						{!mutate__show_scores.isPending && (session?.Show_Scores
+						{mutate__session.isPending && <Spinner/>}
+						{!mutate__session.isPending && (session?.Show_Scores
 							? <SquareCheck/>
 							: <Square/>
 						)}

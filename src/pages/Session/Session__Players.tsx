@@ -4,11 +4,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
-import { v4 } from 'uuid'
 
-import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '@/types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
-import { get__session_players, get__session_players_env, patch__session_players, post__session_players } from '@/api/session/session_players'
-import type { Type__Client_To_Server__Player__POST } from '@/types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
+import { Zod__Player_List__PATCH, type Type__Player_List__PATCH, type Type__Player_List__POST, type Type__Player_PATCH } from '@/types/Zod__Player'
+import { get__session_players, patch__session_players, post__session_players } from '@/api/session/session_players'
+import { MAX_LENGTH_PLAYER_NAME, MAX_PLAYERS } from '@/logic/utils'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__user } from '@/api/user'
 
@@ -37,7 +36,7 @@ export default function Session__Players() {
 	// ____________________ Players ____________________
 
 	const [ isInit, 		setIsInit		] = useState<boolean>(false)
-	const [ list_players, 	setList_players	] = useState<Array<Type__Client_To_Server__Player__POST>>([])
+	const [ list_players, 	setList_players	] = useState<Type__Player_List__PATCH>([])
 
 
 
@@ -55,20 +54,6 @@ export default function Session__Players() {
 	if(error__user) {
 		handle_error({
 			err: error__user, 
-		})
-	}
-
-
-	// ____________________ Env_Variables ____________________
-
-	const { data: env_variables, isLoading: isLoading__env_variables, error: error__env_variables } = useQuery({
-		queryKey: [ 'session', 'players', 'env' ], 
-		queryFn: () => get__session_players_env(), 
-	})
-
-	if(error__env_variables) {
-		handle_error({
-			err: error__env_variables, 
 		})
 	}
 
@@ -97,7 +82,7 @@ export default function Session__Players() {
 	// __________________________________________________ Mutations __________________________________________________
 
 	const mutate__players_add = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => post__session_players(json), 
+		mutationFn: (json: Type__Player_List__POST) => post__session_players(+(session_id || -1), json), 
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], data)
 			navigate(`/session/${session_id}/preview`, { replace: true })
@@ -110,7 +95,7 @@ export default function Session__Players() {
 					navigate('/', { replace: true })
 				}, 
 				handle_409: () => {
-					toast.error(t('players_already_exist'))
+					toast.error(t('error.players_already_exist'))
 					navigate(`/session/${session_id}/players`, { replace: true })
 				}
 			})
@@ -118,7 +103,7 @@ export default function Session__Players() {
 	})
 
 	const mutate__players_edit = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Players__POST_And_PATCH) => patch__session_players(json), 
+		mutationFn: (json: Type__Player_List__PATCH) => patch__session_players(+(session_id || -1), json), 
 		onSuccess: () => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], list_players)
 			navigate(-1)
@@ -139,21 +124,21 @@ export default function Session__Players() {
 
 
 
-	function new_player( list: Array<Type__Client_To_Server__Player__POST> ): Type__Client_To_Server__Player__POST { 
+	function new_player( list_length: number ): Type__Player_PATCH { 
 		return {
-			id:		v4(), 
-			Name:	`${t('player')}_${list.length + 1}`, 
-			Color:	list.length % 2 === 0 ? '#ffffff' : '#ADD8E6'
+			id:		Math.floor(Math.random() * 100000), 
+			Name:	`${t('player')}_${list_length + 1}`, 
+			Color:	list_length % 2 === 0 ? '#ffffff' : '#ADD8E6'
 		}
 	}
 
 	function add_player() {
 		
-		if(list_players.length === env_variables?.MAX_PLAYERS) return toast.error(t('error.players_too_many', { max: env_variables?.MAX_PLAYERS }))
+		if(list_players.length === MAX_PLAYERS) return toast.error(t('error.players_too_many', { max: MAX_PLAYERS }))
 
 		setList_players(prev => {
 			const list = [ ...prev ]
-			list.push(new_player(prev))
+			list.push(new_player(prev.length))
 			return list
 		})
 		
@@ -161,7 +146,7 @@ export default function Session__Players() {
 
 	function remove_player() {
 
-		if(list_players.length === 1) return setList_players(() => [ new_player([]) ])
+		if(list_players.length === 1) return setList_players(() => [ new_player(0) ])
 
 		setList_players(prev => {
 			const list = [ ...prev ]
@@ -173,17 +158,14 @@ export default function Session__Players() {
 
 	async function save() {
 
-		if(!list_players || list_players.some(p => p.Name.length > (env_variables?.MAX_LENGTH_PLAYER_NAME || -1))) return toast.error(t('error.player_name_too_long', { max: env_variables?.MAX_LENGTH_PLAYER_NAME }))
-
-		const json: Type__Client_To_Server__Session_Players__POST_And_PATCH = { 
-			SessionID:		+(session_id || -1), 
-			List__Players:	list_players, 
-		}
+		const zod_result = Zod__Player_List__PATCH.safeParse(list_players)
+		if(!zod_result.success) return toast.error(t(`error.${zod_result.error.issues[0].message}`))
+		const parsed_list = zod_result.data
 
 		if(isInit) {
-			mutate__players_add.mutate(json)
+			mutate__players_add.mutate(parsed_list)
 		} else {
-			mutate__players_edit.mutate(json)
+			mutate__players_edit.mutate(parsed_list)
 		}
 
 	}
@@ -192,7 +174,7 @@ export default function Session__Players() {
 		function init() {
 			if(!tmp__list_players) return
 			setIsInit(tmp__list_players.length === 0)
-			setList_players(tmp__list_players.length > 0 ? structuredClone(tmp__list_players) : [ new_player([]) ])
+			setList_players(tmp__list_players.length > 0 ? structuredClone(tmp__list_players) : [ new_player(0) ])
 		}
 		init()
 	}, [ tmp__list_players ])
@@ -227,18 +209,16 @@ export default function Session__Players() {
 
 
 
-			{env_variables && <div>
-				<DragAndDropNameColorList
-					list_edit_players={list_players}
-					setList_edit_players={setList_players}
-					MAX_LENGTH_PLAYER_NAME={env_variables?.MAX_LENGTH_PLAYER_NAME}
-				/>
-			</div>}
+			<DragAndDropNameColorList
+				list_edit_players={list_players}
+				setList_edit_players={setList_players}
+				MAX_LENGTH_PLAYER_NAME={MAX_LENGTH_PLAYER_NAME}
+			/>
 
 
 
 			<Custom_Button 
-				loading={isLoading__user || isLoading__list_players || isLoading__env_variables || mutate__players_add.isPending || mutate__players_edit.isPending}
+				loading={isLoading__user || isLoading__list_players || mutate__players_add.isPending || mutate__players_edit.isPending}
 				text={t('save')}
 				onClick={save}
 			/>

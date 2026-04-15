@@ -23,7 +23,7 @@ export default function Axios_Private_Route() {
 			( response ) => response, 
 			( error ) => {
 				if(error.response && error.response.status === 401) {
-					toast.error(t('error.session_invalid'))
+					toast.error(t('error.session_timeout'))
 					redirect_to_login()
 				}
 				return Promise.reject(error)
