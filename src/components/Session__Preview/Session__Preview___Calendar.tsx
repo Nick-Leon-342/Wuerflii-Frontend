@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { de } from 'date-fns/locale'
 import { format } from 'date-fns' 
 
-import type { Type__Client_To_Server__Session_Date__PATCH } from '@/types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
+import type { Type__Session_Date__PATCH } from '@/types/Zod__Session_Date'
 import { patch__session_date } from '@/api/session/session'
 import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
@@ -55,7 +55,7 @@ export default function Session__Preview___Calendar({
 
 
 	const mutate__custom_date = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session_Date__PATCH) => patch__session_date(json), 
+		mutationFn: (json: Type__Session_Date__PATCH) => patch__session_date(+(session?.id || -1), json), 
 		onSuccess: (_, json) => {
 			
 			setSession(prev => {
@@ -84,10 +84,7 @@ export default function Session__Preview___Calendar({
 
 	const save_customDate = () => {
 
-		mutate__custom_date.mutate({ 
-			View__Custom_Date: 	date || new Date(), 
-			SessionID: 			session?.id || -1, 
-		})
+		mutate__custom_date.mutate({ View__Custom_Date: date || new Date(), })
 
 	}
 

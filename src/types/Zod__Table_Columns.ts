@@ -1,5 +1,7 @@
 
 
+import * as z from 'zod'
+
 import type { Possible_Entries__Upper_Table_1 } from '../logic/Possible_Entries/Possible_Entries__Upper_Table_1'
 import type { Possible_Entries__Upper_Table_2 } from '../logic/Possible_Entries/Possible_Entries__Upper_Table_2'
 import type { Possible_Entries__Upper_Table_3 } from '../logic/Possible_Entries/Possible_Entries__Upper_Table_3'
@@ -48,3 +50,16 @@ export interface Type__Table_Columns {
 
 	TotalScore: 				number
 }
+
+
+
+
+
+export const Zod__Table_Columns__PATCH = z.object({
+	Value:		z.number().int().nullable(), 
+	PlayerID:	z.number().int(), 
+	Column:		z.number().int(),
+	Name:		z.string(), 
+})
+
+export type Type__Table_Columns__PATCH = z.infer<typeof Zod__Table_Columns__PATCH>

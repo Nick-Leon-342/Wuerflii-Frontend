@@ -1,7 +1,7 @@
 
 
 import type { Type__Final_Score } from './Type__Final_Score'
-import type { Type__Player } from './Type__Player'
+import type { Type__Player } from './Zod__Player'
 
 export interface Type__Final_Score__Session_Preview {
 	id:								Type__Final_Score['id']

@@ -1,6 +1,6 @@
 
 
-import type { Type__Player } from './Type__Player'
+import type { Type__Player } from './Zod__Player'
 
 export interface Type__Final_Score {
 		id: 							number

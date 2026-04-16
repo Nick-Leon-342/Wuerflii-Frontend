@@ -2,6 +2,7 @@
 
 import * as z from 'zod'
 
+import type { Type__Table_Columns } from './Zod__Table_Columns'
 import {
 	MAX_PLAYERS, 
 	COLOR__REGEX,
@@ -42,6 +43,14 @@ export const Zod__Player_PATCH = Zod__Player.pick({
 })
 
 export type Type__Player_PATCH = z.infer<typeof Zod__Player_PATCH>
+
+
+
+
+
+export interface Type__Player_With_Table_Columns extends Type__Player {
+	List__Table_Columns:	Array<Type__Table_Columns>
+}
 
 
 

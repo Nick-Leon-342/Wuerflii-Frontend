@@ -4,13 +4,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import useErrorHandling from '@/hooks/useErrorHandling'
-
-import type { Type__Client_To_Server__Gnadenwurf__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Gnadenwurf__PATCH'
-import type { Type__Player_With_Table_Columns } from '../../../types/Type__Player_With_Table_Columns'
+import type { Type__Player_With_Table_Columns } from '../../../types/Zod__Player'
+import type { Type__Gnadenwurf } from '../../../types/Zod__Gnadenwurf'
 import type { Type__Session } from '../../../types/Zod__Session'
-
 import { patch__gnadenwurf } from '../../../api/gnadenwurf'
+import useErrorHandling from '@/hooks/useErrorHandling'
 
 import { Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
@@ -154,8 +152,12 @@ const Gnadenwurf = ({
 	const query_client 	= useQueryClient()
 	const handle_error 	= useErrorHandling()
 
+
+
+
+
 	const mutate__gnadenwurf = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Gnadenwurf__PATCH) => patch__gnadenwurf(json), 
+		mutationFn: (json: Type__Gnadenwurf) => patch__gnadenwurf(+(session.id || 0), list__player_with_table_columns[index_player].id, json), 
 		onSuccess: (_, json) => {
 			setList__player_with_table_columns(prev => {
 				const tmp = [ ...prev ]
@@ -181,19 +183,9 @@ const Gnadenwurf = ({
 		}
 	})
 
-
-
-
-
 	const change = async () => {
 
-		const bool = !list__player_with_table_columns[index_player].Gnadenwurf_Used
-
-		mutate__gnadenwurf.mutate({
-			SessionID: session.id, 
-			PlayerID: list__player_with_table_columns[index_player].id, 
-			Gnadenwurf_Used: bool
-		})
+		mutate__gnadenwurf.mutate({ Gnadenwurf_Used: !list__player_with_table_columns[index_player].Gnadenwurf_Used })
 
 	}
 

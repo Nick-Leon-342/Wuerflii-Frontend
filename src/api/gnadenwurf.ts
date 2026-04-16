@@ -2,14 +2,23 @@
 
 import { api } from './axios'
 
-import type { Type__Client_To_Server__Gnadenwurf__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__Gnadenwurf__PATCH'
+import type { Type__Gnadenwurf } from '../types/Zod__Gnadenwurf'
 
 
 
 
 
 export async function patch__gnadenwurf(
-	json:	Type__Client_To_Server__Gnadenwurf__PATCH, 
+	session_id:	number, 
+	player_id:	number, 
+	json:		Type__Gnadenwurf, 
 ): Promise<undefined> {
-	return api.patch('/game/gnadenwurf', json).then(({ data }) => data)
+	return api.patch(
+		'/game/gnadenwurf', 
+		json, 
+		{ params: { 
+			session_id, 
+			player_id, 
+		} }
+	).then(({ data }) => data)
 }

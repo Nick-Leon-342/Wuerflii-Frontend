@@ -2,8 +2,8 @@
 
 import { api } from '../axios'
 
-import type { Type__Client_To_Server__Session_Date__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Date__PATCH'
 import type { Type__Session, Type__Session_PATCH, Type__Session_POST } from '../../types/Zod__Session'
+import type { Type__Session_Date__PATCH } from '../../types/Zod__Session_Date'
 
 
 
@@ -57,9 +57,14 @@ export async function delete__session(
 // __________________________________________________ Session Custom Date __________________________________________________
 
 export async function patch__session_date(
-	json:	Type__Client_To_Server__Session_Date__PATCH, 
+	session_id:	number, 
+	json:		Type__Session_Date__PATCH, 
 ): Promise<undefined> {
-	return api.patch('/session/date', json).then(({ data }) => data)
+	return api.patch(
+		'/session/date', 
+		json, 
+		{ params: { session_id } }
+	).then(({ data }) => data)
 }
 
 

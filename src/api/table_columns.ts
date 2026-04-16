@@ -2,9 +2,8 @@
 
 import { api } from './axios'
 
-import type { Type__Client_To_Server__Table_Columns__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__Table_Columns__PATCH'
-import type { Type__Player_With_Table_Columns } from '../types/Type__Player_With_Table_Columns'
-import type { Type__Table_Columns } from '../types/Type__Table_Column'
+import type { Type__Table_Columns, Type__Table_Columns__PATCH } from '@/types/Zod__Table_Columns'
+import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 
 
 
@@ -17,9 +16,14 @@ export async function get__table_columns(
 }
 
 export async function patch__table_columns(
-	json:	Type__Client_To_Server__Table_Columns__PATCH, 
+	session_id:	number, 
+	json:	Type__Table_Columns__PATCH, 
 ): Promise<Type__Table_Columns> {
-	return api.patch('/game/table_columns', json).then(({ data }) => data)
+	return api.patch(
+		'/game/table_columns', 
+		json, 
+		{ params: { session_id } }
+	).then(({ data }) => data)
 }
 
 
