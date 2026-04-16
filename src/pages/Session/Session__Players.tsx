@@ -86,6 +86,7 @@ export default function Session__Players() {
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], data)
 			navigate(`/session/${session_id}/preview`, { replace: true })
+			toast.success(t('successfully_created'))
 		}, 
 		onError: err => {
 			handle_error({
@@ -107,6 +108,7 @@ export default function Session__Players() {
 		onSuccess: () => {
 			query_client.setQueryData([ 'session', +(session_id || -1), 'players' ], list_players)
 			navigate(-1)
+			toast.success(t('successfully_saved'))
 		}, 
 		onError: err => {
 			handle_error({

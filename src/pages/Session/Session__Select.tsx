@@ -7,11 +7,11 @@ import { useEffect, useState } from 'react'
 
 import useErrorHandling from '../../hooks/useErrorHandling'
 
-import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
 import { delete__session, get__sessions_list } from '../../api/session/session'
-import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
+import { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 import type { Type__Session } from '../../types/Zod__Session'
 import useRedirectToLogin from '@/hooks/useRedirectToLogin'
+import type { Type__User_PATCH } from '@/types/Zod__User'
 import { get__user, patch__user } from '../../api/user'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -36,16 +36,6 @@ export default function Session__Select() {
 	const redirect_to_login	= useRedirectToLogin()
 
 	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
-
-	interface option {
-		Text: 	string
-		Alias:	Enum__View_Sessions
-	}
-	const list_orderOptions: Array<option> = [
-		{ Text: t('recently_played'), 	Alias: 'LAST_PLAYED'	},
-		{ Text: t('created'), 			Alias: 'CREATED'		},
-		{ Text: t('name'), 				Alias: 'NAME'			},
-	]
 
 
 
@@ -130,7 +120,7 @@ export default function Session__Select() {
 	})
 
 	const mutate__change_order = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(json), 
+		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: ( _, json ) => {
 			query_client.setQueryData([ 'user' ], { ...user, ...json })
 			query_client.invalidateQueries({
@@ -145,11 +135,11 @@ export default function Session__Select() {
 		}
 	})
 
-	function change_order(selected_option: Enum__View_Sessions) {
+	function change_order(selected_option: (typeof Enum__View_Sessions)[number]) {
 
 		mutate__change_order.mutate({
 			View__Sessions: 		selected_option, 
-			View__Sessions_Desc: selected_option === user?.View__Sessions ? !user?.View__Sessions_Desc : true
+			View__Sessions_Desc:	selected_option === user?.View__Sessions ? !user?.View__Sessions_Desc : true
 		})
 
 	}
@@ -164,6 +154,7 @@ export default function Session__Select() {
 		mutationFn: (session_id: number) => delete__session(session_id),
 		onSuccess: ( _, session_id ) => {
 			query_client.setQueryData([ 'session', 'list' ], (list_sessions: Array<Type__Session>) => list_sessions.filter(session => session.id !== session_id))
+			toast.success(t('successfully_deleted'))
 		}, 
 		onError: err => {
 			handle_error({
@@ -261,18 +252,18 @@ export default function Session__Select() {
 
 						{/* ____________________ Order ____________________ */}
 						<div className='flex flex-col'>
-							{list_orderOptions.map(option => {
-								const cs = user?.View__Sessions === option.Alias
+							{Enum__View_Sessions.map(view => {
+								const cs = user?.View__Sessions === view
 								const desc = user?.View__Sessions_Desc
 
 								return (
 									<Button
-										key={option?.Text}
+										key={view}
 										variant='ghost'
-										onClick={() => change_order(option.Alias)}
+										onClick={() => change_order(view)}
 										className={`flex flex-row justify-between h-fit${cs ? ' text-primary' : ' [&_svg]:opacity-0'}`}
 									>
-										{option.Text}
+										{t(`view_sessions.${view}`)}
 										<ChevronUp className={`transition-transform duration-500${desc ? ' rotate-180' : ''}`}/>
 									</Button>
 								)

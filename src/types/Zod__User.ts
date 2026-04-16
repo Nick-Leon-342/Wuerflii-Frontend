@@ -3,8 +3,8 @@
 import * as z from 'zod'
 
 import { Enum__Statistics_View } from './Enum/Enum__Statistics_View.js'
+import { Enum__View_Sessions } from './Enum/Enum__View_Sessions.js'
 import { Enum__Months } from './Enum/Enum__Months.js'
-import { Enum__View } from './Enum/Enum__View.js'
 
 import {
 	NAME__REGEX, 
@@ -38,7 +38,7 @@ export const Zod__User = z.object({
 	Show__Session_Names:		z.boolean(), 
 	Show__Session_Date:			z.boolean(), 
 
-	View__Sessions:				z.enum(Enum__View), 
+	View__Sessions:				z.enum(Enum__View_Sessions), 
 	View__Sessions_Desc:		z.boolean(), 
 
 	Statistics__View:			z.enum(Enum__Statistics_View), 

@@ -13,7 +13,7 @@ import * as z from 'zod'
 
 
 export const Zod__Session = z.object({
-	id: 							z.number().int, 
+	id: 							z.number().int(), 
 	Name:							z.string('session__name_invalid')
 										.min(1, 'session__name_min')
 										.max(MAX_LENGTH_SESSION_NAME, 'session__name_max'),
@@ -41,7 +41,7 @@ export const Zod__Session = z.object({
 	Statistics__View: 				z.enum(Enum__Statistics_View), 
 
 	Checkbox_Checked_To_Delete:		z.boolean(), 
-	List__Players:					z.array(Zod__Player_List).nullish()
+	List__Players:					Zod__Player_List.nullish()
 })
 
 export type Type__Session = z.infer<typeof Zod__Session>

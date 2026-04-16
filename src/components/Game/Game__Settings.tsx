@@ -19,6 +19,7 @@ import Custom_Button from '../misc/Custom_Button'
 import Game__Surrender from './Game__Surrender'
 import { Spinner } from '../ui/spinner'
 import { Button } from '../ui/button'
+import { toast } from 'sonner'
 
 
 
@@ -83,6 +84,7 @@ export default function Game__Settings({
 
 			query_client.removeQueries({ queryKey: [ 'session', session.id, 'table_columns' ] })
 			navigate('/', { replace: true })
+			toast.success(t('successfully_deleted'))
 
 		}).catch((err) => {
 

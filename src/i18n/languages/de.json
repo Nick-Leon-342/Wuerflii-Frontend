@@ -20,7 +20,6 @@
 	"choose_beginning": "Beginn auswählen", 
 	"create_session": "Partie erstellen", 
 	"create_view": "Erstelle Ansicht", 
-	"created": "Erstellt", 
 	"danger_zone": "Danger Zone", 
 	"darkmode": "Dunkler Modus", 
 	"delete_account": "Account löschen", 
@@ -123,7 +122,6 @@
 		"december": 	"Dezember" 
 	}, 
 	"more_statistics": "Mehr Statistiken", 
-	"name": "Name", 
 	"name_of_match": "Name des Spiels", 
 	"no_account_yet": "Noch keinen Account?", 
 	"no_game_yet": "Es gibt noch keine Partie.", 
@@ -137,7 +135,6 @@
 	"points_average": "Durchschnittliche Punktzahlen", 
 	"points_maximum": "Höchste Punktzahlen", 
 	"points_minimum": "Niedrigste Punktzahlen", 
-	"recently_played": "Zuletzt gespielt", 
 	"register": "Registrieren", 
 	"registration_disabled": "Registrierungen wurden abgeschaltet.", 
 	"save": "Speichern", 
@@ -157,6 +154,8 @@
 		"STATISTICS_YEAR":		"Jahr", 
 		"STATISTICS_MONTH":		"Monat" 
 	}, 
+	"successfully_created": "Erfolgreich erstellt!", 
+	"successfully_deleted": "Erfolgreich gelöscht!", 
 	"successfully_saved": "Erfolgreich gespeichert!", 
 	"sure_you_want_to_delete_session": "Bist du sicher, dass du diese Partie löschen möchtest?", 
 	"sure_you_want_to_delete_sessions": "Bist du sicher, dass du diese Partien löschen möchtest?", 
@@ -172,6 +171,11 @@
 		"SHOW__YEAR": 			"Jahr", 
 		"SHOW__MONTH": 			"Monat", 
 		"SHOW__CUSTOM_DATE": 	"Benutzerdefiniert" 
+	}, 
+	"view_sessions": {
+		"CREATED": "Erstellt", 
+		"NAME": "Name", 
+		"LAST_PLAYED": "Zuletzt gespielt" 
 	}, 
 	"view_from": "Ansicht ab", 
 	"wins": "Gewonnen", 

@@ -3,7 +3,7 @@
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
 import type { ChangeEvent } from 'react'
 
-import type { Type__Client_To_Server__Player__POST } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Player__POST'
+import type { Type__Player_PATCH } from '../../types/Zod__Player'
 
 import { GripHorizontal } from 'lucide-react'
 import { Input } from '../ui/input'
@@ -14,8 +14,8 @@ import { Input } from '../ui/input'
 
 interface Props__Drag_And_Drop_Name_Color_List {
 	MAX_LENGTH_PLAYER_NAME:	number
-	setList_edit_players:	React.Dispatch<React.SetStateAction<Array<Type__Client_To_Server__Player__POST>>>
-	list_edit_players:		Array<Type__Client_To_Server__Player__POST>
+	setList_edit_players:	React.Dispatch<React.SetStateAction<Array<Type__Player_PATCH>>>
+	list_edit_players:		Array<Type__Player_PATCH>
 }
 
 export default function Drag_And_Drop_Name_Color_List({ 
@@ -100,14 +100,14 @@ export default function Drag_And_Drop_Name_Color_List({
 											}}
 											value={p.Name}
 											onChange={(e) => change_name(e, index)}
-											className={`h-10${p.Name.length > MAX_LENGTH_PLAYER_NAME ? ' text-destructive' : ''}`}
+											className={`text-lg! h-12${p.Name.length > MAX_LENGTH_PLAYER_NAME ? ' text-destructive' : ''}`}
 										/>
 
 										<Input
 											type='color'
 											value={p.Color}
 											onChange={(e) => change_color(e, index)}
-											className='p-0 border w-10 h-10 bg-transparent cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0  [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none'
+											className='p-0 border w-10 h-12 bg-transparent cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0  [&::-webkit-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none'
 										/>
 
 									</div>
