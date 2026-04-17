@@ -154,9 +154,13 @@
 		"STATISTICS_YEAR":		"Year", 
 		"STATISTICS_MONTH":		"Month" 
 	}, 
-	"successfully_created": "Created successfully!", 
-	"successfully_deleted": "Deleted successfully!", 
-	"successfully_saved": "Saved successfully!", 
+	"successfully": {
+		"created": "Created successfully!", 
+		"deleted": "Deleted successfully!", 
+		"logged_in": "Successfully logged in.", 
+		"registrated": "Successfully registrated.", 
+		"saved": "Saved successfully!" 
+	}, 
 	"sure_you_want_to_delete_session": "Are you sure you want to delete this session?", 
 	"sure_you_want_to_delete_sessions": "Are you sure you want to delete these sessions?", 
 	"sure_you_want_to_delete_this_game": "Are you sure you want to delete this game?", 

@@ -100,7 +100,7 @@ export default function Session__Add_And_Edit() {
 		onSuccess: data => {
 			query_client.setQueryData([ 'session', data.id ], data)
 			navigate(`/session/${data.id}/players`, { replace: false })
-			toast.success(t('successfully_created'))
+			toast.success(t('successfully.created'))
 		}, 
 		onError: err => {
 			handle_error({
@@ -114,7 +114,7 @@ export default function Session__Add_And_Edit() {
 		onSuccess: ( _, session_json ) => {
 			query_client.setQueryData([ 'session', session_id ], (prev: Type__Session) => ({ ...prev, ...session_json }))
 			navigate(-1)
-			toast.success(t('successfully_saved'))
+			toast.success(t('successfully.saved'))
 		}, 
 		onError: err => {
 			handle_error({

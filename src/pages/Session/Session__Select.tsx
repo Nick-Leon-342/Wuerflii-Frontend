@@ -154,7 +154,7 @@ export default function Session__Select() {
 		mutationFn: (session_id: number) => delete__session(session_id),
 		onSuccess: ( _, session_id ) => {
 			query_client.setQueryData([ 'session', 'list' ], (list_sessions: Array<Type__Session>) => list_sessions.filter(session => session.id !== session_id))
-			toast.success(t('successfully_deleted'))
+			toast.success(t('successfully.deleted'))
 		}, 
 		onError: err => {
 			handle_error({

@@ -154,9 +154,13 @@
 		"STATISTICS_YEAR":		"Jahr", 
 		"STATISTICS_MONTH":		"Monat" 
 	}, 
-	"successfully_created": "Erfolgreich erstellt!", 
-	"successfully_deleted": "Erfolgreich gelöscht!", 
-	"successfully_saved": "Erfolgreich gespeichert!", 
+	"successfully": {
+		"created": "Erfolgreich erstellt!", 
+		"deleted": "Erfolgreich gelöscht!", 
+		"logged_in": "Erfolgreich angemeldet.", 
+		"registrated": "Erfolgreich registriert.", 
+		"saved": "Erfolgreich gespeichert!" 
+	}, 
 	"sure_you_want_to_delete_session": "Bist du sicher, dass du diese Partie löschen möchtest?", 
 	"sure_you_want_to_delete_sessions": "Bist du sicher, dass du diese Partien löschen möchtest?", 
 	"sure_you_want_to_delete_this_game": "Bist du sicher, dass du das Spiel löschen möchtest?", 

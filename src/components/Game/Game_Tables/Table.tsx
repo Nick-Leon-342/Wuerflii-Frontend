@@ -220,7 +220,7 @@ const Dialog__Input = ({
 				return tmp 
 			})
 
-			toast.success(t('successfully_saved'))
+			toast.success(t('successfully.saved'))
 			setShow(false)
 
 		}, 

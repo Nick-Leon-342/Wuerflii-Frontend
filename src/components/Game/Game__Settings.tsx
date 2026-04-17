@@ -84,7 +84,7 @@ export default function Game__Settings({
 
 			query_client.removeQueries({ queryKey: [ 'session', session.id, 'table_columns' ] })
 			navigate('/', { replace: true })
-			toast.success(t('successfully_deleted'))
+			toast.success(t('successfully.deleted'))
 
 		}).catch((err) => {
 

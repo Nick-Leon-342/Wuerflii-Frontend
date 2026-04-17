@@ -79,6 +79,7 @@ export default function Registration_And_Login() {
 			setPassword('')
 
 			navigate('/session', { replace: true })
+			toast.success(t('successfully.registrated'))
 
 		}).catch((err: AxiosError) => {
 
@@ -113,6 +114,7 @@ export default function Registration_And_Login() {
 			setPassword('')
 
 			navigate(next || '/', { replace: true })
+			toast.success(t('successfully.logged_in'))
 
 		}).catch((err: AxiosError) => {
 

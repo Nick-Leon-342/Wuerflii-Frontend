@@ -12,7 +12,7 @@ import { patch__session_date } from '@/api/session/session'
 import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from '../ui/dialog'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import Custom_Button from '../misc/Custom_Button'
 import { Calendar } from '../ui/calendar'
 import { Button } from '../ui/button'
@@ -37,18 +37,13 @@ export default function Session__Preview___Calendar({
 	const query_client	= useQueryClient()
 	const handle_error	= useErrorHandling()
 
-	const [ date,				setDate					] = useState<Date | undefined>(new Date())
-	const [ successfully_saved, setSuccessfully_saved	] = useState<boolean>(false)
+	const [ date, 			setDate			] = useState<Date | undefined>(new Date())
+	const [ dialog_open, 	setDialog_open	] = useState<boolean>(false)
 
 	useEffect(() => { 
-		function init() {if(session) setDate(session.View__Custom_Date)} 
+		function init() { if(session) setDate(session.View__Custom_Date) } 
 		init()
 	}, [ session ])
-
-	useEffect(() => { 
-		function reset() { setSuccessfully_saved(false) }
-		reset()
-	}, [ date ])
 
 
 
@@ -65,7 +60,8 @@ export default function Session__Preview___Calendar({
 				query_client.setQueryData([ 'session', session?.id ], tmp)
 				return tmp
 			})
-			setSuccessfully_saved(true)
+			toast.success(t('successfully.saved'))
+			setDialog_open(false)
 			
 			// Invalidate Query so that final_scores are being refetched
 			query_client.invalidateQueries({ queryKey: [ 'session', +(session?.id || -1), 'finalscores' ] })
@@ -93,11 +89,12 @@ export default function Session__Preview___Calendar({
 
 
 	return <>
-		<Dialog>
+		<Dialog open={dialog_open} onOpenChange={setDialog_open}>
 			<DialogTrigger asChild>
 				<Button
 					variant='outline'
-					className='justify-baseline'
+					className='justify-between'
+					onClick={() => setDialog_open(true)}
 				>
 					<span>{t('view_from')}:</span>
 					<span className='text-secondary'>{`${format(new Date(session?.View__Custom_Date || ''), 'dd.MM.yyyy')}` || t('create_view')}</span>
@@ -107,7 +104,7 @@ export default function Session__Preview___Calendar({
 			<DialogContent showCloseButton={false}>
 
 				<DialogHeader>
-					<DialogTrigger>{t('choose_beginning')}</DialogTrigger>
+					<DialogTitle>{t('choose_beginning')}</DialogTitle>
 				</DialogHeader>
 
 				<Calendar
@@ -123,7 +120,6 @@ export default function Session__Preview___Calendar({
 					<Custom_Button
 						loading={mutate__custom_date.isPending}
 						onClick={save_customDate}
-						ok={successfully_saved}
 						text={t('save')}
 					/>
 				</DialogFooter>
