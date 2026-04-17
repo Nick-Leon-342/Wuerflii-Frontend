@@ -44,6 +44,9 @@ export const Zod__User = z.object({
 	Statistics__View:			z.enum(Enum__Statistics_View), 
 	Statistics__View_Month:		z.enum(Enum__Months), 
 	Statistics__View_Year:		z.number().int(), 
+
+	updatedAt:					z.date(), 
+	createdAt:					z.date(), 
 })
 
 export type Type__User = z.infer<typeof Zod__User>

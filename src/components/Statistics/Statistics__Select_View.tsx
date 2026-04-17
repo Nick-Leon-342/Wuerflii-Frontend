@@ -62,6 +62,8 @@ export default function Statistics__Select_View({
 				tmp.Statistics__View_Year 	= json.Statistics__View_Year	|| 2026
 				return tmp
 			})
+
+			query_client.invalidateQueries({ queryKey: [ 'analytics' ]})
 		}, 
 		onError: err => {
 			handle_error({
@@ -171,6 +173,7 @@ export default function Statistics__Select_View({
 									<SelectItem
 										key={view}
 										value={view}
+										className='text-lg'
 									>{t('statistics_view.' + view)}</SelectItem>
 								))}
 							</SelectGroup>
@@ -192,6 +195,7 @@ export default function Statistics__Select_View({
 									{list__years.map(year => (
 										<SelectItem
 											key={year}
+											className='text-lg'
 											value={year.toString()}
 										>{year}</SelectItem>
 									))}
@@ -216,6 +220,7 @@ export default function Statistics__Select_View({
 										<SelectItem
 											key={month}
 											value={month}
+											className='text-lg'
 										>{t('months.' + month)}</SelectItem>
 									))}
 								</SelectGroup>

@@ -5,15 +5,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
-import useErrorHandling from '../../hooks/useErrorHandling'
-
+import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
 import { get__session_players } from '../../api/session/session_players'
 import { get__session, patch__session } from '../../api/session/session'
 import { get__analytics_session } from '../../api/analytics'
+import useErrorHandling from '../../hooks/useErrorHandling'
+import { Enum__Months } from '@/types/Enum/Enum__Months'
 import { get__user } from '../../api/user'
-
-import type { Type__Server_Response__Analytics_Session__GET__Total } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
-import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -26,7 +24,6 @@ import { Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { Enum__Months } from '@/types/Enum/Enum__Months'
 
 
 
@@ -40,9 +37,8 @@ export default function Analytics_Session() {
 	const handle_error	= useErrorHandling()
 
 	const { session_id } = useParams()
-
-	const [ total,			setTotal		] = useState<Type__Server_Response__Analytics_Session__GET__Total | null>(null)
-	const [ session,		setSession		] = useState<Type__Session>()
+	
+	const [ session, setSession ] = useState<Type__Session>()
 
 
 
@@ -105,7 +101,7 @@ export default function Analytics_Session() {
 
 	// ____________________ Analytics ____________________
 
-	const { data: analytics, error: error__analytics, refetch } = useQuery({
+	const { data: total, error: error__analytics, refetch } = useQuery({
 		queryFn: () => get__analytics_session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'analytics' ], 
 	})
@@ -115,15 +111,6 @@ export default function Analytics_Session() {
 			err: error__analytics, 
 		})
 	}
-
-	useEffect(() => {
-		function init() {
-			if(!analytics) return 
-			setTotal(analytics.Total)
-			// setList__years(analytics.List__Years)
-		}
-		init()
-	}, [ analytics ])
 
 
 

@@ -5,7 +5,7 @@ import { Line } from 'react-chartjs-2'
 import { useEffect, useState } from 'react'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 
-import type { Type__Server_Response__Analytics_Session__GET__Data } from '../../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
+import type { Type__Server_Response__Analytics_Session__GET__Data } from '../../types/Type__Analytics_Session'
 import type { Type__Player } from '../../types/Type__Player'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)

@@ -1,6 +1,6 @@
 
 
-import type { Type__Server_Response__Analytics__GET__Data } from '../../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
+import type { Type__Server_Response__Analytics__GET__Data } from '../../types/Type__Analytics'
 import { useTranslation } from 'react-i18next'
 import { Bar } from 'react-chartjs-2'
 import {

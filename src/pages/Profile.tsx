@@ -153,6 +153,8 @@ export default function Profile() {
 			<Previous onClick={() => navigate(-1)}/>
 
 
+
+			{/* ____________________ Change credentials ____________________ */}
 			<Card className='bg-background'>
 				<CardHeader>
 					<CardTitle>{t('account')}</CardTitle>
