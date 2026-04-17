@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Zod__User_PATCH, type Type__User_PATCH } from '@/types/Zod__User'
 import { delete__user, get__user, patch__user } from '@/api/user'
@@ -11,11 +11,11 @@ import useErrorHandling from '@/hooks/useErrorHandling'
 import { delete__logout } from '@/api/auth'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import Form__Username_And_Password from '@/components/Username_And_Password/Username_And_Password__Form'
-import { ChartNoAxesColumn, LogOut, UserPen, UserX } from 'lucide-react'
+import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ChartNoAxesColumn, Edit, LogOut, UserX } from 'lucide-react'
 import Popup__Settings from '@/components/misc/Popup__Settings'
 import Custom_Button from '@/components/misc/Custom_Button'
-import { Spinner } from '@/components/ui/spinner'
 import Previous from '@/components/misc/Previous'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -31,17 +31,20 @@ export default function Profile() {
 	const query_client	= useQueryClient()
 	const handle_error	= useErrorHandling()
 
-	const [ name, 					setName						] = useState<string>('')
+	const [ name, 					setName						] = useState<string>('******')
 	const [ password, 				setPassword					] = useState<string>('')
 	const [ password__confirm,		setPassword__confirm		] = useState<string>('')
 
+	const [ loading_logout, 		setLoading_logout			] = useState(false)
 	const [ loading_delete_account, setLoading_delete_account	] = useState<boolean>(false)
+
+
 
 
 
 	// __________________________________________________ User __________________________________________________
 
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
+	const { data: user, error: error__user } = useQuery({
 		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
@@ -52,10 +55,15 @@ export default function Profile() {
 		})
 	}
 
+	useEffect(() => {
+		function init() { setName(user?.Name || '') }
+		init()
+	}, [ user ])
+
 	const mutate__user = useMutation({
 		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: () => {
-			navigate(-1)
+			toast.success(t('successfully.saved'))
 		}, 
 		onError: err => {
 			handle_error({
@@ -108,22 +116,15 @@ export default function Profile() {
 		}).finally(() => setLoading_delete_account(false))
 	}
 
-
-
-
-
-	// __________________________________________________ Logout __________________________________________________
-
-	const [ loading_logout, setLoading_logout ] = useState(false)
-
-	const logout = () => {
+	function logout() {
 
 		setLoading_logout(true)
 
 		delete__logout().then(() => {
 			
-			query_client.clear()
 			navigate('/registration_and_login', { replace: true })
+			setTimeout(() => query_client.clear(), 0)
+			toast.success(t('successfully.logged_out'))
 				
 		}).catch(err => {
 
@@ -131,7 +132,7 @@ export default function Profile() {
 				err
 			})
 			
-		}).finally(() => setLoading_logout(false))
+		}).finally(() => { setLoading_logout(false) })
 
 	}
 
@@ -152,6 +153,93 @@ export default function Profile() {
 			<Previous onClick={() => navigate(-1)}/>
 
 
+			<Card className='bg-background'>
+				<CardHeader>
+					<CardTitle>{t('account')}</CardTitle>
+				</CardHeader>
+
+				<CardContent>
+
+					{/* __________ Username __________ */}
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button
+								variant='ghost'
+								className='justify-between! w-full items-center'
+							>
+								<span>{t('username')}</span>
+								<div className='flex flex-row items-center gap-2'>
+									<span>{user?.Name}</span>
+									<Edit/>
+								</div>
+							</Button>
+						</DialogTrigger>
+
+						<DialogContent showCloseButton={false}>
+							<DialogHeader>
+								<DialogTitle>{t('username')}</DialogTitle>
+							</DialogHeader>
+
+							<Username_And_Password__Form
+								isRequired={false}
+								name={name}
+								setName={setName}
+							/>
+
+							<DialogFooter>
+								<Custom_Button
+									loading={mutate__user.isPending}
+									onClick={change_credentials}
+									text={t('edit')}
+								/>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
+
+
+
+					{/* __________ Password __________ */}
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button
+								variant='ghost'
+								className='justify-between! w-full items-center'
+							>
+								<span>{t('password')}</span>
+								<div className='flex flex-row items-center gap-2'>
+									<span>******</span>
+									<Edit/>
+								</div>
+							</Button>
+						</DialogTrigger>
+
+						<DialogContent showCloseButton={false}>
+							<DialogHeader>
+								<DialogTitle>{t('password')}</DialogTitle>
+							</DialogHeader>
+
+							<Username_And_Password__Form
+								isRequired={false}
+								password={password}
+								setPassword={setPassword}
+								password_confirm={password__confirm}
+								setPassword_confirm={setPassword__confirm}
+							/>
+
+							<DialogFooter>
+								<Custom_Button
+									loading={mutate__user.isPending}
+									onClick={change_credentials}
+									text={t('edit')}
+								/>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
+
+				</CardContent>
+			</Card>
+
+
 			
 			{/* ____________________ Statistics ____________________ */}
 			<Button 
@@ -161,48 +249,6 @@ export default function Profile() {
 				<ChartNoAxesColumn/>
 				{t('statistics')}
 			</Button>
-
-
-
-			{/* ____________________ Change Credentials ____________________ */}
-			<Dialog>
-				<DialogTrigger asChild>
-					<Button variant='outline'>
-						{isLoading__user ? <Spinner/> : <UserPen/>}
-						{t('change_credentials')}
-					</Button>
-				</DialogTrigger>
-
-
-
-				<DialogContent showCloseButton={false}>
-					<DialogHeader>
-						<DialogTitle>{t('change_credentials')}</DialogTitle>
-					</DialogHeader>
-
-					<Form__Username_And_Password 
-						name={name} 
-						setName={setName} 
-
-						password={password} 
-						setPassword={setPassword} 
-
-						password_confirm={password__confirm} 
-						setPassword_confirm={setPassword__confirm} 
-						
-						isRequired={false}
-					/>
-
-					<DialogFooter>
-						<Custom_Button
-							className='profile--change_credentials'
-							loading={mutate__user.isPending}
-							onClick={change_credentials}
-							text={t('change')}
-						/>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
 			
 
 

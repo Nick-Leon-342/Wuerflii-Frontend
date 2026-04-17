@@ -7,13 +7,13 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import Context__Server_Version from '@/Provider_And_Context/Provider_And_Context__Server_Version'
-import type { Type__User } from '../../types/Type__User'
+import type { Type__User } from '../../types/Zod__User'
 import { darkMode_string } from '@/logic/utils'
 import { patch__user } from '../../api/user'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { Languages, Moon, Settings, Sun } from 'lucide-react'
+import { Languages, Moon, Sun, User } from 'lucide-react'
 import Custom_Button from '../misc/Custom_Button'
 import { Spinner } from '../ui/spinner'
 import { Button } from '../ui/button'
@@ -95,8 +95,8 @@ export default function Popup__Settings({
 			<DialogTrigger asChild>
 				<Button
 					variant='outline'
-					className='fixed p-2 bottom-4 right-4 h-12 w-12 z-41 bg-card!'
-				><Settings className='w-8! h-8!'/></Button>
+					className='fixed p-2 bottom-4 left-4 h-12 w-12 z-41 bg-card!'
+				><User className='w-8! h-8!'/></Button>
 			</DialogTrigger>
 
 			<DialogContent showCloseButton={false}>

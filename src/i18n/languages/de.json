@@ -158,6 +158,7 @@
 		"created": "Erfolgreich erstellt!", 
 		"deleted": "Erfolgreich gelöscht!", 
 		"logged_in": "Erfolgreich angemeldet.", 
+		"logged_out": "Erfolgreich abgemeldet.", 
 		"registrated": "Erfolgreich registriert.", 
 		"saved": "Erfolgreich gespeichert!" 
 	}, 

@@ -158,6 +158,7 @@
 		"created": "Created successfully!", 
 		"deleted": "Deleted successfully!", 
 		"logged_in": "Successfully logged in.", 
+		"logged_out": "Successfully logged out.", 
 		"registrated": "Successfully registrated.", 
 		"saved": "Saved successfully!" 
 	}, 

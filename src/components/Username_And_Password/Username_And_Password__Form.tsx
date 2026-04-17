@@ -31,12 +31,12 @@ import {
 
 interface Props___Username_And_Password__Form {
 	isRequired:				boolean
-	setName:				React.Dispatch<React.SetStateAction<string>>
-	name:					string
-	setPassword:			React.Dispatch<React.SetStateAction<string>>
-	password:				string
-	setPassword_confirm:	React.Dispatch<React.SetStateAction<string>>
-	password_confirm:		string
+	setName?:				React.Dispatch<React.SetStateAction<string>>
+	name?:					string
+	setPassword?:			React.Dispatch<React.SetStateAction<string>>
+	password?:				string
+	setPassword_confirm?:	React.Dispatch<React.SetStateAction<string>>
+	password_confirm?:		string
 }
 
 export default function Username_And_Password__Form({ 
@@ -64,14 +64,14 @@ export default function Username_And_Password__Form({
 
 	useEffect(() => {
 		function check_if_name_popup_should_be_shown() {
-			setShow__popup_name(info__name && !NAME__REGEX.test(name))
+			if(name) setShow__popup_name(info__name && !NAME__REGEX.test(name))
 		}
 		check_if_name_popup_should_be_shown()
 	}, [ info__name, NAME__REGEX, name ])
 
 	useEffect(() => {
 		function check_if_password_popup_should_be_shown() {
-			setShow__popup_password(info__password && !PASSWORD__REGEX.test(password))
+			if(password) setShow__popup_password(info__password && !PASSWORD__REGEX.test(password))
 		}
 		check_if_password_popup_should_be_shown()
 	}, [ info__password, PASSWORD__REGEX, password ])
@@ -84,24 +84,26 @@ export default function Username_And_Password__Form({
 		
 		{/* __________________________________________________ name __________________________________________________ */}
 
-		<Input_With_Popover
-			setShow={setShow__popup_name}
-			show={show__popup_name}
-			placeholder='username'
-			setValue={setName}
-			value={name}
-			type='text'
+		{name !== undefined && setName !== undefined && <>
+			<Input_With_Popover
+				setShow={setShow__popup_name}
+				show={show__popup_name}
+				placeholder='username'
+				setValue={setName}
+				value={name}
+				type='text'
 
-			onFocus={() => setInfo__name(true)}
-			onBlur={() => setInfo__name(false)}
+				onFocus={() => setInfo__name(true)}
+				onBlur={() => setInfo__name(false)}
 
-			is_invalid={Boolean(name && NAME__REGEX && !NAME__REGEX.test(name))}
-			is_valid={Boolean(name && NAME__REGEX && NAME__REGEX.test(name))}
-		>
-			<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} ${t('characters')}`}/>
-			<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={t('begins_with_letter')}/>
-			<ROW REGEX={NAME__REGEX_ALLOWEDCHARS} value={name} text={t('letters_numbers_hyphens_underscores')}/>
-		</Input_With_Popover>
+				is_invalid={Boolean(name && NAME__REGEX && !NAME__REGEX.test(name))}
+				is_valid={Boolean(name && NAME__REGEX && NAME__REGEX.test(name))}
+			>
+				<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} ${t('characters')}`}/>
+				<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={t('begins_with_letter')}/>
+				<ROW REGEX={NAME__REGEX_ALLOWEDCHARS} value={name} text={t('letters_numbers_hyphens_underscores')}/>
+			</Input_With_Popover>
+		</>}
 
 
 
@@ -109,40 +111,42 @@ export default function Username_And_Password__Form({
 
 		{/* __________________________________________________ password __________________________________________________ */}
 
-		<Input_With_Popover
-			setShow={setShow__popup_password}
-			show={show__popup_password}
-			placeholder='password'
-			setValue={setPassword}
-			value={password}
-			type='password'
+		{password !== undefined && setPassword !== undefined && password_confirm !== undefined && setPassword_confirm !== undefined && <>
 
-			onFocus={() => setInfo__password(true)}
-			onBlur={() => setInfo__password(false)}
+			<Input_With_Popover
+				setShow={setShow__popup_password}
+				show={show__popup_password}
+				placeholder='password'
+				setValue={setPassword}
+				value={password}
+				type='password'
 
-			is_invalid={Boolean(password && PASSWORD__REGEX && !PASSWORD__REGEX.test(password))}
-			is_valid={Boolean(password && PASSWORD__REGEX && PASSWORD__REGEX.test(password))}
-		>
-			<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} ${t('characters')}`}/>
-			<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={`${t('characters_special')}: ! @ # $ % - _`}/>
-			<ROW REGEX={PASSWORD__REGEX_ALLOWEDCHARS} value={password} text={t('characters_allowed')}/>
-		</Input_With_Popover>
+				onFocus={() => setInfo__password(true)}
+				onBlur={() => setInfo__password(false)}
+
+				is_invalid={Boolean(password && PASSWORD__REGEX && !PASSWORD__REGEX.test(password))}
+				is_valid={Boolean(password && PASSWORD__REGEX && PASSWORD__REGEX.test(password))}
+			>
+				<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} ${t('characters')}`}/>
+				<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={`${t('characters_special')}: ! @ # $ % - _`}/>
+				<ROW REGEX={PASSWORD__REGEX_ALLOWEDCHARS} value={password} text={t('characters_allowed')}/>
+			</Input_With_Popover>
 
 
 
+			{/* __________ confirm password __________ */}
 
+			<Username_And_Password__Input
+				placeholder='password_confirm'
+				setValue={setPassword_confirm}
+				value={password_confirm}
+				type='password'
 
-		{/* __________________________________________________ confirm password __________________________________________________ */}
+				is_valid={Boolean(password && password === password_confirm)}
+				is_invalid={Boolean(password && password_confirm && password !== password_confirm)}
+			/>
 
-		<Username_And_Password__Input
-			placeholder='password_confirm'
-			setValue={setPassword_confirm}
-			value={password_confirm}
-			type='password'
-
-			is_valid={Boolean(password && password === password_confirm)}
-			is_invalid={Boolean(password && password_confirm && password !== password_confirm)}
-		/>
+		</>}
 
 	</>
 }
