@@ -1,17 +1,16 @@
 
 
-import './scss/Statistics__Select_View.scss'
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
-import { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
 import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
+import { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
+import type { Type__User, Type__User_PATCH } from '@/types/Zod__User'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
-import type { Type__User, Type__User_PATCH } from '@/types/Zod__User'
+import { Enum__Months } from '@/types/Enum/Enum__Months'
 import { patch__user } from '../../api/user'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
@@ -19,7 +18,6 @@ import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } 
 import { ChartNoAxesColumn } from 'lucide-react'
 import { Button } from '../ui/button'
 import { toast } from 'sonner'
-import { Enum__Months } from '@/types/Enum/Enum__Months'
 
 
 
@@ -83,6 +81,8 @@ export default function Statistics__Select_View({
 				tmp.Statistics__View_Year 	= json.Statistics__View_Year	|| 2026
 				return tmp
 			})
+
+			query_client.invalidateQueries({ queryKey: [ 'session', +(session?.id || -1), 'analytics' ]})
 		}, 
 		onError: err => {
 			handle_error({

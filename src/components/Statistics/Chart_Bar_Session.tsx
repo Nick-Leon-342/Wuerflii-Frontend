@@ -1,5 +1,7 @@
 
 
+import type { Type__Player } from '../../types/Zod__Player'
+import { useTranslation } from 'react-i18next'
 import { Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -10,7 +12,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import type { Type__Player } from '../../types/Type__Player'
 
 ChartJS.register(
 	CategoryScale,
@@ -37,11 +38,12 @@ export default function Chart_Bar({
 	JSON, 
 }: Props__Chart_Bar) {
 
-	if(!List__Players) return <></>
+	const { t } = useTranslation()
 
 	return <>
 		<Bar 
 			data={{
+				labels: [t('statistics')], 
 				datasets: List__Players.map(player => ({
 					label: player.Name, 
 					data: [JSON[player.id]], 

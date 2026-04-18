@@ -14,13 +14,13 @@ import { Enum__Months } from '@/types/Enum/Enum__Months'
 import { get__user } from '../../api/user'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
 import Chart_Doughnut from '../../components/Statistics/Chart_Doughnut'
 import Popup__Settings from '../../components/misc/Popup__Settings'
 import Chart_Graph from '../../components/Statistics/Chart_Graph'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Previous from '../../components/misc/Previous'
-import { Square, SquareCheck } from 'lucide-react'
+import { ArrowBigDown, ArrowBigUp, CircleSlash2, Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -83,7 +83,7 @@ export default function Analytics_Session() {
 
 	// ____________________ List__Players ____________________
 
-	const { data: list_players, error: error__list_players } = useQuery({
+	const { data: list_players, error: error__list_players, isLoading: isLoading__list_players } = useQuery({
 		queryFn: () => get__session_players(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'players' ], 
 	})
@@ -101,7 +101,7 @@ export default function Analytics_Session() {
 
 	// ____________________ Analytics ____________________
 
-	const { data: total, error: error__analytics, refetch } = useQuery({
+	const { data: total, error: error__analytics, isLoading: isLoading__analytics } = useQuery({
 		queryFn: () => get__analytics_session(+(session_id || -1)), 
 		queryKey: [ 'session', +(session_id || -1), 'analytics' ], 
 	})
@@ -109,24 +109,15 @@ export default function Analytics_Session() {
 	if(error__analytics) {
 		handle_error({
 			err: error__analytics, 
+			handle_409: () => {
+				toast.error(t('no_data_yet'))
+			},
 		})
 	}
 
 
 
 
-
-	useEffect(() => {
-
-		if(!session_id) navigate(-1)
-
-		refetch()
-
-	}, [ // eslint-disable-line
-		session?.Statistics__View, 
-		session?.Statistics__View_Month, 
-		session?.Statistics__View_Year, 
-	])
 
 	const mutate__show_border = useMutation({
 		mutationFn: (json: Type__Session_PATCH) => patch__session(+(session_id || -1), json), 
@@ -138,7 +129,6 @@ export default function Analytics_Session() {
 				query_client.setQueryData([ 'session', prev.id ], tmp)
 				return tmp
 			})
-			refetch()
 		}, 
 		onError: err => {
 			handle_error({
@@ -165,12 +155,8 @@ export default function Analytics_Session() {
 
 
 
-		<div className='analytics_session flex flex-col items-center bg-gray-100 w-full py-4'>
-			<Card className='flex flex-col w-9/10 gap-4 md:w-250'>
-				<CardHeader>
-					<CardTitle></CardTitle>
-				</CardHeader>
-
+		<div className='analytics_session flex flex-col items-center bg-gray-100 w-full py-4 flex-1!'>
+			<Card className='flex flex-col w-9/10 gap-4 xl:w-250'>
 				<CardContent className='flex flex-col gap-4'>
 
 					<Previous onClick={() => navigate(-1)}>
@@ -186,77 +172,81 @@ export default function Analytics_Session() {
 
 
 
+					{(isLoading__list_players || isLoading__analytics) && <div className='flex flex-row justify-center'><Spinner/></div>}
 
-					{/* __________________________________________________ Charts __________________________________________________ */}
+
+
+
 					{list_players && session && total?.Data && <>
-						<div className='analytics_session--charts box'>
-
-							{/* ____________________ Doughnut ____________________ */}
-
-							<Chart_Doughnut
-								List__Players={list_players}
-								Total_Wins={total?.Total__Wins} 
-								IsBorderVisible={session?.Statistics__Show_Border}
-							/>
 
 
+						{/* ____________________ Doughnut ____________________ */}
 
-							{/* ____________________ Show border ____________________ */}
-
-							<Button
-								variant='outline'
-								onClick={sync__show_border}
-								className='w-full justify-baseline'
-							>
-								{mutate__show_border.isPending && <Spinner/>}
-								{!mutate__show_border.isPending && (session?.Statistics__Show_Border 
-									? <SquareCheck/>
-									: <Square/>
-								)}
-								<span>{t('show_border')}</span>
-							</Button>
+						<Chart_Doughnut
+							List__Players={list_players}
+							Total_Wins={total?.Total__Wins} 
+							IsBorderVisible={session?.Statistics__Show_Border}
+						/>
 
 
 
-							{/* ____________________ Graph ____________________ */}
+						{/* ____________________ Show border ____________________ */}
 
-							<h2>{t('history')}</h2>
-
-							
-							<Chart_Graph
-								labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Enum__Months.map(month => t('months.' + month)) ] : total?.Data ? Object.keys(total?.Data) : []}
-								IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
-								List__Players={list_players}
-								Data={total?.Data}
-							/>
-
-						</div>
-
-
-
-
-
-						{/* __________________________________________________ More statistics __________________________________________________ */}
-
-						<div className='analytics_session--more_statistics box'>
-							
-							<h2>{t('more_statistics')}</h2>
-
-							<div className='analytics_session--more_statistics--statistic'>
-								<span>{t('games_played')}</span>
-								<span>{total.Total__Games_Played}</span>
-							</div>
-
-							<div className='analytics_session--more_statistics--statistic'>
-								<span>{t('draws')}</span>
-								<span>{total.Total__Draws}</span>
-							</div>
+						<Button
+							variant='outline'
+							onClick={sync__show_border}
+							className='w-full justify-baseline'
+						>
+							{mutate__show_border.isPending && <Spinner/>}
+							{!mutate__show_border.isPending && (session?.Statistics__Show_Border 
+								? <SquareCheck/>
+								: <Square/>
+							)}
+							<span>{t('show_border')}</span>
+						</Button>
 
 
 
-							<div className='analytics_session--more_statistics--chart_container'>
+						{/* ____________________ Graph ____________________ */}
+						
+						<Chart_Graph
+							labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Enum__Months.map(month => t('months.' + month)) ] : total?.Data ? Object.keys(total?.Data) : []}
+							IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
+							List__Players={list_players}
+							Data={total?.Data}
+						/>
 
-								<span>{t('points_minimum')}:</span>
+
+
+						{/* ____________________ More statistics ____________________ */}
+
+						<Card>
+							<CardHeader>
+								<CardTitle>{t('more_statistics')}</CardTitle>
+							</CardHeader>
+
+							<CardContent className='text-lg [&_div]:flex [&_div]:justify-between [&_div]:sm:gap-20 sm:w-max'>
+								<div>
+									<span>{t('games_played')}</span>
+									<span>{total.Total__Games_Played}</span>
+								</div>
+
+								<div>
+									<span>{t('draws')}</span>
+									<span>{total.Total__Draws}</span>
+								</div>
+							</CardContent>
+						</Card>
+
+
+
+						{/* ____________________ Points ____________________ */}
+
+						<div className='flex flex-col gap-4 text-lg font-bold [&_div]:mt-4! [&_span]:flex [&_span]:gap-2'>
+
+							<div>
+
+								<span><ArrowBigDown/> {t('points_minimum')}:</span>
 
 								<Chart_Bar_Session
 									IsBorderVisible={session.Statistics__Show_Border}
@@ -268,9 +258,9 @@ export default function Analytics_Session() {
 
 
 
-							<div className='analytics_session--more_statistics--chart_container'>
+							<div>
 
-								<span>{t('points_maximum')}:</span>
+								<span><ArrowBigUp/> {t('points_maximum')}:</span>
 
 								<Chart_Bar_Session
 									IsBorderVisible={session.Statistics__Show_Border}
@@ -282,9 +272,9 @@ export default function Analytics_Session() {
 
 
 
-							<div className='analytics_session--more_statistics--chart_container'>
+							<div>
 
-								<span>⌀ {t('points_average')}:</span>
+								<span><CircleSlash2/> {t('points_average')}:</span>
 
 								<Chart_Bar_Session
 									IsBorderVisible={session.Statistics__Show_Border}
@@ -295,6 +285,7 @@ export default function Analytics_Session() {
 							</div>
 
 						</div>
+
 					</>}
 
 				</CardContent>

@@ -1,6 +1,6 @@
 
 
-import type { Type__Server_Response__Analytics__GET__Data } from '../../types/Type__Analytics'
+import type { Type__Analytics__Data } from '../../types/Type__Analytics'
 import { useTranslation } from 'react-i18next'
 import { Bar } from 'react-chartjs-2'
 import {
@@ -28,7 +28,7 @@ ChartJS.register(
 
 interface Props__Chart_Bar {
 	labels:	Array<string>
-	data:	Type__Server_Response__Analytics__GET__Data
+	data:	Type__Analytics__Data
 }
 
 export default function Chart_Bar({
