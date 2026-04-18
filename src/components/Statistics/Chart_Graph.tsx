@@ -5,8 +5,8 @@ import { Line } from 'react-chartjs-2'
 import { useEffect, useState } from 'react'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 
-import type { Type__Server_Response__Analytics_Session__GET__Data } from '../../types/Type__Analytics_Session'
-import type { Type__Player } from '../../types/Type__Player'
+import type { Type__Analytics_Session__Data } from '../../types/Type__Analytics_Session'
+import type { Type__Player } from '../../types/Zod__Player'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -18,7 +18,7 @@ interface Props__Chart_Graph {
 	IsBorderVisible:	boolean
 	List__Players:		Array<Type__Player>
 	labels:				Array<string>
-	Data:				Record<string, Type__Server_Response__Analytics_Session__GET__Data>
+	Data:				Record<string, Type__Analytics_Session__Data>
 }
 
 export default function Chart_Graph({

@@ -5,11 +5,9 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
-import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
-
-import useErrorHandling from '@/hooks/useErrorHandling'
-
+import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 import { get__table_columns } from '@/api/table_columns'
+import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
 import { get__user } from '@/api/user'
 import { api } from '@/api/axios'

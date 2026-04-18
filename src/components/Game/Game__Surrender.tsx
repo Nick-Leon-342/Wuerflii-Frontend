@@ -2,7 +2,7 @@
 
 import { useTranslation } from 'react-i18next'
 
-import type { Type__Player_With_Table_Columns } from '@/types/Type__Player_With_Table_Columns'
+import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import Custom_Button from '../misc/Custom_Button'

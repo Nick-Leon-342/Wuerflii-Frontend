@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
-import { Zod__User_PATCH, type Type__User_PATCH } from '@/types/Zod__User'
+import { type Type__User, Zod__User_PATCH, type Type__User_PATCH } from '@/types/Zod__User'
 import { delete__user, get__user, patch__user } from '@/api/user'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { delete__logout } from '@/api/auth'
@@ -35,7 +35,8 @@ export default function Profile() {
 	const [ password, 				setPassword					] = useState<string>('')
 	const [ password__confirm,		setPassword__confirm		] = useState<string>('')
 
-	const [ loading_logout, 		setLoading_logout			] = useState(false)
+	const [ successfully_saved, 	setSuccessfully_saved		] = useState<boolean>(false)
+	const [ loading_logout, 		setLoading_logout			] = useState<boolean>(false)
 	const [ loading_delete_account, setLoading_delete_account	] = useState<boolean>(false)
 
 
@@ -44,7 +45,9 @@ export default function Profile() {
 
 	// __________________________________________________ User __________________________________________________
 
-	const { data: user, error: error__user } = useQuery({
+	const [ user, setUser ] = useState<Type__User>()
+
+	const { data: tmp_user, error: error__user } = useQuery({
 		queryFn: () => get__user(), 
 		queryKey: [ 'user' ], 
 	})
@@ -56,14 +59,26 @@ export default function Profile() {
 	}
 
 	useEffect(() => {
-		function init() { setName(user?.Name || '') }
+		function init() { 
+			if(!tmp_user) return
+			setName(tmp_user.Name || '') 
+			setUser(tmp_user)
+		}
 		init()
-	}, [ user ])
+	}, [ tmp_user ])
 
 	const mutate__user = useMutation({
 		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
-		onSuccess: () => {
+		onSuccess: (_, json) => {
+			if(!user) return
+			setUser(prev => {
+				if(!prev || !json.Name) return prev
+				const tmp = { ...prev }
+				if(json.Name) tmp.Name = json.Name
+				return tmp
+			})
 			toast.success(t('successfully.saved'))
+			setSuccessfully_saved(true)
 		}, 
 		onError: err => {
 			handle_error({
@@ -73,14 +88,19 @@ export default function Profile() {
 		}
 	})
 
+	useEffect(() => {
+		function reset() { setSuccessfully_saved(false) }
+		reset()
+	}, [ name, password, password__confirm ])
 
 
 
 
-	function change_credentials() {
+
+	function change_credentials(json: Type__User_PATCH) {
 
 		// Check if name and/or password are valid
-		const zod_result = Zod__User_PATCH.safeParse({ Name: name, Password: password })
+		const zod_result = Zod__User_PATCH.safeParse(json)
 		if(!zod_result.success) return toast.error(t('please_fill_out_registration'))
 		const json_user = zod_result.data
 
@@ -155,6 +175,7 @@ export default function Profile() {
 
 
 			{/* ____________________ Change credentials ____________________ */}
+
 			<Card className='bg-background'>
 				<CardHeader>
 					<CardTitle>{t('account')}</CardTitle>
@@ -190,8 +211,9 @@ export default function Profile() {
 
 							<DialogFooter>
 								<Custom_Button
+									onClick={() => change_credentials({ Name: name })}
 									loading={mutate__user.isPending}
-									onClick={change_credentials}
+									ok={successfully_saved}
 									text={t('edit')}
 								/>
 							</DialogFooter>
@@ -230,8 +252,9 @@ export default function Profile() {
 
 							<DialogFooter>
 								<Custom_Button
+									onClick={() => change_credentials({ Password: password })}
 									loading={mutate__user.isPending}
-									onClick={change_credentials}
+									ok={successfully_saved}
 									text={t('edit')}
 								/>
 							</DialogFooter>
@@ -244,6 +267,7 @@ export default function Profile() {
 
 			
 			{/* ____________________ Statistics ____________________ */}
+
 			<Button 
 				onClick={() => navigate('/analytics', { replace: false })}
 				variant='outline'
@@ -255,6 +279,7 @@ export default function Profile() {
 
 
 			{/* ____________________ Danger Zone ____________________ */}
+
 			<>
 			
 				<hr/>
