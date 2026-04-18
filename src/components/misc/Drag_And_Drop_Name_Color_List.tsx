@@ -100,7 +100,7 @@ export default function Drag_And_Drop_Name_Color_List({
 											}}
 											value={p.Name}
 											onChange={(e) => change_name(e, index)}
-											className={`text-lg! h-12${p.Name.length > MAX_LENGTH_PLAYER_NAME ? ' text-destructive' : ''}`}
+											className={`text-lg! dark:text-background h-12${p.Name.length > MAX_LENGTH_PLAYER_NAME ? ' text-destructive' : ''}`}
 										/>
 
 										<Input

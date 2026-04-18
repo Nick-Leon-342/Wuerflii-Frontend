@@ -10,8 +10,8 @@ import type { Type__Final_Score } from '@/types/Type__Final_Score'
 import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
+import { get__game } from '@/api/game'
 import { get__user } from '@/api/user'
-import { api } from '@/api/axios'
 
 import Session__Preview___Player_Table from '@/components/Session__Preview/Session__Preview___Player_Table'
 import Session__Preview___Final_Scores from '@/components/Session__Preview/Session__Preview___Final_Scores'
@@ -78,7 +78,10 @@ export default function Session__Preview() {
 		})
 	}
 
-	useEffect(() => { setSession(tmp__session) }, [ tmp__session ])
+	useEffect(() => { 
+		function init() {setSession(tmp__session)}
+		init()
+	}, [ tmp__session ])
 
 
 	// ____________________ List__Players ____________________
@@ -107,7 +110,7 @@ export default function Session__Preview() {
 		if(session?.CurrentGameStart) return navigate(`/game?session_id=${session?.id}`, { replace: false })
 
 		setLoading_preparing_game(true)
-		api.get(`/game?session_id=${session?.id}`).then(() => {
+		get__game(+(session?.id || -1)).then(() => {
 
 			navigate(`/game?session_id=${session?.id}`, { replace: false })
 

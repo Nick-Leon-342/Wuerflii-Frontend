@@ -144,7 +144,7 @@ export default function EndScreen() {
 				<table className='flex flex-col w-full [&_tr]:flex [&_tr]:border-primary [&_tr]:not-last-of-type:border-b [&_td]:px-1 [&_td]:place-content-center [&_td]:w-full [&_td]:not-last-of-type:border-r [&_td]:border-primary [&_td]:h-12 [&_td]:truncate [&_td]:block [&_td]:text-center text-xl'>
 					<tbody>
 
-						<tr className='bg-green-200'>
+						<tr className='bg-green-200 dark:bg-green-950'>
 							<td>{t('player')}</td>
 							{list_players?.map(player => (
 								<td key={player.id}><span>{player.Name}</span></td>

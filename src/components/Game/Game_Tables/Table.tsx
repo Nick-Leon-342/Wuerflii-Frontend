@@ -135,7 +135,7 @@ export default function Table({
 													className={className} 
 													style={{ backgroundColor: player_with_table_columns.Color }} 
 												>
-													<span>{disabled ? value || 0 : value}</span>
+													<span className='dark:text-background'>{disabled ? value || 0 : value}</span>
 												</td>
 											)
 										}
@@ -149,8 +149,8 @@ export default function Table({
 											>
 												<Button
 													variant='ghost'
+													className='w-full h-full rounded-none p-0 dark:text-background'
 													onClick={() => onClick(player_with_table_columns, value, column, index_row)}
-													className='w-full h-full rounded-none p-0'
 												>
 													{value === null ? '' : value}
 												</Button>

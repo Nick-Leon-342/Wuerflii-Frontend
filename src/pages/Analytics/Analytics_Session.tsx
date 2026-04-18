@@ -155,7 +155,7 @@ export default function Analytics_Session() {
 
 
 
-		<div className='analytics_session flex flex-col items-center bg-gray-100 w-full py-4 flex-1!'>
+		<div className='analytics_session flex flex-col items-center bg-gray-100 dark:bg-background w-full py-4 flex-1!'>
 			<Card className='flex flex-col w-9/10 gap-4 xl:w-250'>
 				<CardContent className='flex flex-col gap-4'>
 

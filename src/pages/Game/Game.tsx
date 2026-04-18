@@ -9,8 +9,8 @@ import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 import { get__table_columns } from '@/api/table_columns'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
+import { post__game } from '@/api/game'
 import { get__user } from '@/api/user'
-import { api } from '@/api/axios'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -122,10 +122,7 @@ export default function Game() {
 
 		setLoading__finish_game(true)
 
-		api.post('/game', { 
-			SessionID: session.id, 
-			Surrendered_PlayerID: surrender_winner?.id
-		}).then(({ data }) => {
+		post__game(+(session_id || -1), { Surrendered_PlayerID: surrender_winner?.id }).then(data => {
 
 			query_client.removeQueries({
 				queryKey: [ 'session', session.id, 'table_columns' ]

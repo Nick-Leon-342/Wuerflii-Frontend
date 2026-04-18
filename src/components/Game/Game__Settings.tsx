@@ -10,7 +10,7 @@ import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 import { Enum__Input_Type } from '../../types/Enum/Enum__Input_Type'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
-import { api } from '@/api/axios'
+import { delete__game } from '@/api/game'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
@@ -80,7 +80,7 @@ export default function Game__Settings({
 		if(!window.confirm(t('sure_you_want_to_delete_this_game'))) return 
 		setLoading_newGame(true)
 	
-		api.delete(`/game?session_id=${session.id}`).then(() => {
+		delete__game(session.id).then(() => {
 
 			query_client.removeQueries({ queryKey: [ 'session', session.id, 'table_columns' ] })
 			navigate('/', { replace: true })

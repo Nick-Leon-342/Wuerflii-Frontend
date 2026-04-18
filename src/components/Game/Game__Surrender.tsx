@@ -64,11 +64,11 @@ export default function Game__Surrender({
 					
 						{list__player_with_table_columns?.map(player => (
 							<Button 
-								onClick={() => setSurrender_winner(player)}
-								style={{ backgroundColor: player.Color }}
-								className='w-full text-ellipsis overflow-hidden'
-								variant='outline'
 								key={player.id} 
+								variant='outline'
+								style={{ backgroundColor: player.Color }}
+								onClick={() => setSurrender_winner(player)}
+								className='w-full text-ellipsis overflow-hidden dark:text-background'
 							><span className='text-ellipsis overflow-hidden'>{player.Name}</span></Button>
 						))}
 
