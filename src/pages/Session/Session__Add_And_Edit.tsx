@@ -2,13 +2,13 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEffect, useState } from 'react'
 
-import { get__session, patch__session, post__session } from '../../api/session/session'
 import { Zod__Session_POST, type Type__Session, type Type__Session_PATCH, type Type__Session_POST } from '../../types/Zod__Session'
+import Context__ENV_Variables from '@/Provider_And_Context/Provider_And_Context__ENV_Variables'
+import { get__session, patch__session, post__session } from '../../api/session/session'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { MAX_COLUMNS } from '@/logic/utils'
 import { get__user } from '../../api/user'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -24,6 +24,8 @@ import { toast } from 'sonner'
 
 
 export default function Session__Add_And_Edit() {
+
+	const { MAX_COLUMNS } = useContext(Context__ENV_Variables)
 
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()

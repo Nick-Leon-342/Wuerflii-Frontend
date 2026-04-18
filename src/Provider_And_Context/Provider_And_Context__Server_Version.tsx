@@ -7,7 +7,7 @@ import { api } from '@/api/axios'
 
 
 
-interface Type__Context__Server_Version { server_version: number}
+interface Type__Context__Server_Version { server_version: number }
 const Context__Server_Version = createContext<Type__Context__Server_Version>({ server_version: 0 })
 export default Context__Server_Version
 

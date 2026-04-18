@@ -6,32 +6,14 @@ import { Enum__Statistics_View } from './Enum/Enum__Statistics_View.js'
 import { Enum__View_Sessions } from './Enum/Enum__View_Sessions.js'
 import { Enum__Months } from './Enum/Enum__Months.js'
 
-import {
-	NAME__REGEX, 
-	NAME__MIN_CHARACTER, 
-	NAME__MAX_CHARACTER, 	
-
-	PASSWORD__REGEX, 
-	PASSWORD__MIN_CHARACTER, 
-	PASSWORD__MAX_CHARACTER, 
-} from '../logic/utils.js'
-
 
 
 
 
 export const Zod__User = z.object({
 	id:			z.number().int(), 
-	Name:		z
-		.string()
-		.min(NAME__MIN_CHARACTER, 'Name too short.')
-		.max(NAME__MAX_CHARACTER, 'Name too long.')
-		.regex(new RegExp(NAME__REGEX), 'Name invalid.'), 
-	Password:	z
-		.string()
-		.min(PASSWORD__MIN_CHARACTER, 'Password too short.')
-		.max(PASSWORD__MAX_CHARACTER, 'Password too long.')
-		.regex(new RegExp(PASSWORD__REGEX), 'Password invalid.'), 
+	Name:		z.string(), 
+	Password:	z.string(), 
 
 	DarkMode:					z.boolean(), 
 

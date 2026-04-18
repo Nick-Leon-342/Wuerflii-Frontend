@@ -1,6 +1,5 @@
 
 
-import { COLOR__REGEX, MAX_COLUMNS, MAX_LENGTH_SESSION_NAME } from '@/logic/utils'
 import { Enum__Statistics_View } from './Enum/Enum__Statistics_View'
 import { Enum__Input_Type } from './Enum/Enum__Input_Type'
 import { Enum__Months } from './Enum/Enum__Months'
@@ -14,14 +13,9 @@ import * as z from 'zod'
 
 export const Zod__Session = z.object({
 	id: 							z.number().int(), 
-	Name:							z.string('session__name_invalid')
-										.min(1, 'session__name_min')
-										.max(MAX_LENGTH_SESSION_NAME, 'session__name_max'),
-	Color:							z.string('session__color')
-										.regex(COLOR__REGEX, 'session__color'),
-	Columns:						z.number('session__columns_invalid')
-										.min(1, 'session__columns_min')
-										.max(MAX_COLUMNS, 'session__columns_max'),
+	Name:							z.string('session__name_invalid'),
+	Color:							z.string('session__color'),
+	Columns:						z.number('session__columns_invalid'),
 
 	View__List_Years:				z.array(z.number().int()), 
 	CurrentGameStart:				z.date().nullable(), 

@@ -59,7 +59,8 @@
 		"synchronization_of_gnadenwurf_failed": "Der Server antwortet nicht.\nDer Gnadenwurf für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 
 		"unhandled_error": "Es trat ein unerwarteter Fehler auf.", 
 		"username_taken": "Der Benutzername ist vergeben!", 
-		"value_invalid": "Der Eintrag '{{value}}' ist nicht zulässig!"
+		"value_invalid": "Der Eintrag '{{value}}' ist nicht zulässig!", 
+		"variables_not_initialized": "Error while fetching variables. Please reload and try again."
 	}, 
 	"finish_game": "Spiel beenden",
 	"game": {

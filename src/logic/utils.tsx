@@ -35,42 +35,6 @@ export const darkMode_string = 'Wuerflii_DarkMode'
 
 export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
 
-export const COLOR__REGEX: RegExp = /^#([0-9A-Fa-f]{3}){1,2}$/
-
-
-// ____________________ User ____________________
-
-export const NAME__MIN_CHARACTER 			: number	= +(import.meta.env.USER_NAME__MIN_CHARACTER || 4)
-export const NAME__MAX_CHARACTER 			: number	= +(import.meta.env.USER_NAME__MAX_CHARACTER || 64)
-
-export const NAME__REGEX					: RegExp	= new RegExp(`^[A-z][A-z0-9-_]{${NAME__MIN_CHARACTER - 1},${NAME__MAX_CHARACTER - 1}}$`)
-export const NAME__REGEX_MINMAX 			: RegExp	= new RegExp(`^.{${NAME__MIN_CHARACTER},${NAME__MAX_CHARACTER}}$`)
-export const NAME__REGEX_LETTERFIRST 		: RegExp	= new RegExp('^[A-z]')
-export const NAME__REGEX_ALLOWEDCHARS 		: RegExp	= new RegExp('^[a-zA-Z0-9_-]+$')
-
-
-export const PASSWORD__MIN_CHARACTER 		: number	= +(import.meta.env.USER_PASSWORD__MIN_CHARACTER || 8)
-export const PASSWORD__MAX_CHARACTER 		: number	= +(import.meta.env.USER_PASSWORD__MAX_CHARACTER || 128)
-
-export const PASSWORD__REGEX 				: RegExp	= new RegExp(`^(?=.*[-_!#%@$])[a-zA-Z0-9-_!#%@$]{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`)
-export const PASSWORD__REGEX_MINMAX 		: RegExp	= new RegExp(`^.{${PASSWORD__MIN_CHARACTER},${PASSWORD__MAX_CHARACTER}}$`)
-export const PASSWORD__REGEX_ALLOWEDCHARS 	: RegExp	= new RegExp('[a-zA-Z0-9]+')
-export const PASSWORD__REGEX_ALLOWEDSYMBOLS : RegExp	= new RegExp('[-_!#%@$]+')
-
-
-// ____________________ Game ____________________
-
-export const MAX_LENGTH_SESSION_NAME 	: number	= +(import.meta.env.VITE__MAX_LENGTH_SESSION_NAME	|| 50)
-export const MAX_LENGTH_PLAYER_NAME 	: number	= +(import.meta.env.VITE__MAX_LENGTH_PLAYER_NAME	|| 50)
-export const MAX_PLAYERS 				: number	= +(import.meta.env.VITE__MAX_PLAYERS				|| 16)
-export const MAX_COLUMNS 				: number	= +(import.meta.env.VITE__MAX_COLUMNS				|| 10)
-export const MAX_FINALSCORES_LIMIT 		: number	= +(import.meta.env.VITE__MAX_FINALSCORES_LIMIT	|| 10)
-
-
-
-
-
-
 
 
 

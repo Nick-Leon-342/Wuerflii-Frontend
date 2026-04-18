@@ -59,7 +59,8 @@
 		"synchronization_of_gnadenwurf_failed": "Server is not responding.\nGnadenwurf for '{{name}}' couldn't be synchronized.\nTry again?", 
 		"unhandled_error": "Encountered unhandled error.", 
 		"username_taken": "Username already taken.", 
-		"value_invalid": "Value '{{value}}' is invalid!"
+		"value_invalid": "Value '{{value}}' is invalid!", 
+		"variables_not_initialized": "Error while fetching variables. Please reload and try again."
 	}, 
 	"finish_game": "Finish game", 
 	"game": {

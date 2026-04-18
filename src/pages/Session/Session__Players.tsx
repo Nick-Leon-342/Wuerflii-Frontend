@@ -2,12 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEffect, useState } from 'react'
 
 import { Zod__Player_List__PATCH, type Type__Player_List__PATCH, type Type__Player_List__POST, type Type__Player_PATCH } from '@/types/Zod__Player'
 import { get__session_players, patch__session_players, post__session_players } from '@/api/session/session_players'
-import { MAX_LENGTH_PLAYER_NAME, MAX_PLAYERS } from '@/logic/utils'
+import Context__ENV_Variables from '@/Provider_And_Context/Provider_And_Context__ENV_Variables'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__user } from '@/api/user'
 
@@ -24,6 +24,8 @@ import { toast } from 'sonner'
 
 
 export default function Session__Players() {
+
+	const { MAX_LENGTH_PLAYER_NAME, MAX_PLAYERS } = useContext(Context__ENV_Variables)
 
 	const navigate		= useNavigate()
 	const query_client	= useQueryClient()

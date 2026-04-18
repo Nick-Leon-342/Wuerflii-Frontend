@@ -1,29 +1,13 @@
 
 
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import Context__ENV_Variables from '@/Provider_And_Context/Provider_And_Context__ENV_Variables'
 
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '../ui/popover'
 import Username_And_Password__Input from './Username_And_Password__Input'
 import { Check, X } from 'lucide-react'
-
-import { 
-	NAME__MIN_CHARACTER,
-	NAME__MAX_CHARACTER, 
-
-	NAME__REGEX, 
-	NAME__REGEX_MINMAX, 
-	NAME__REGEX_LETTERFIRST, 
-	NAME__REGEX_ALLOWEDCHARS, 
-
-	PASSWORD__MIN_CHARACTER, 
-	PASSWORD__MAX_CHARACTER, 
-
-	PASSWORD__REGEX, 
-	PASSWORD__REGEX_MINMAX, 
-	PASSWORD__REGEX_ALLOWEDCHARS, 
-	PASSWORD__REGEX_ALLOWEDSYMBOLS, 
-} from '@/logic/utils'
 
 
 
@@ -52,6 +36,24 @@ export default function Username_And_Password__Form({
 
 	const { t } = useTranslation()
 
+	const { 
+		NAME__MIN_CHARACTER,
+		NAME__MAX_CHARACTER, 
+
+		NAME__REGEX, 
+		NAME__REGEX_MINMAX, 
+		NAME__REGEX_LETTERFIRST, 
+		NAME__REGEX_ALLOWEDCHARS, 
+
+		PASSWORD__MIN_CHARACTER, 
+		PASSWORD__MAX_CHARACTER, 
+
+		PASSWORD__REGEX, 
+		PASSWORD__REGEX_MINMAX, 
+		PASSWORD__REGEX_ALLOWEDCHARS, 
+		PASSWORD__REGEX_ALLOWEDSYMBOLS, 
+	} = useContext(Context__ENV_Variables)
+
 	const [ info__name, 					setInfo__name					] = useState<boolean>(false)
 	const [ info__password, 				setInfo__password				] = useState<boolean>(false)
 
@@ -64,14 +66,14 @@ export default function Username_And_Password__Form({
 
 	useEffect(() => {
 		function check_if_name_popup_should_be_shown() {
-			if(name) setShow__popup_name(info__name && !NAME__REGEX.test(name))
+			if(name) setShow__popup_name(info__name && !new RegExp(NAME__REGEX).test(name))
 		}
 		check_if_name_popup_should_be_shown()
 	}, [ info__name, NAME__REGEX, name ])
 
 	useEffect(() => {
 		function check_if_password_popup_should_be_shown() {
-			if(password) setShow__popup_password(info__password && !PASSWORD__REGEX.test(password))
+			if(password) setShow__popup_password(info__password && !new RegExp(PASSWORD__REGEX).test(password))
 		}
 		check_if_password_popup_should_be_shown()
 	}, [ info__password, PASSWORD__REGEX, password ])
@@ -96,8 +98,8 @@ export default function Username_And_Password__Form({
 				onFocus={() => setInfo__name(true)}
 				onBlur={() => setInfo__name(false)}
 
-				is_invalid={Boolean(name && NAME__REGEX && !NAME__REGEX.test(name))}
-				is_valid={Boolean(name && NAME__REGEX && NAME__REGEX.test(name))}
+				is_invalid={Boolean(name && NAME__REGEX && !new RegExp(NAME__REGEX).test(name))}
+				is_valid={Boolean(name && NAME__REGEX && new RegExp(NAME__REGEX).test(name))}
 			>
 				<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} ${t('characters')}`}/>
 				<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={t('begins_with_letter')}/>
@@ -124,8 +126,8 @@ export default function Username_And_Password__Form({
 				onFocus={() => setInfo__password(true)}
 				onBlur={() => setInfo__password(false)}
 
-				is_invalid={Boolean(password && PASSWORD__REGEX && !PASSWORD__REGEX.test(password))}
-				is_valid={Boolean(password && PASSWORD__REGEX && PASSWORD__REGEX.test(password))}
+				is_invalid={Boolean(password && PASSWORD__REGEX && !new RegExp(PASSWORD__REGEX).test(password))}
+				is_valid={Boolean(password && PASSWORD__REGEX && new RegExp(PASSWORD__REGEX).test(password))}
 			>
 				<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} ${t('characters')}`}/>
 				<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={`${t('characters_special')}: ! @ # $ % - _`}/>
@@ -156,7 +158,7 @@ export default function Username_And_Password__Form({
 
 
 interface Props__Row {
-	REGEX:	RegExp
+	REGEX:	string
 	value:	string
 	text:	string
 }
@@ -171,7 +173,7 @@ const ROW = ({
 	
 	return (
 		<div className='flex flex-row gap-1 items-center'>
-			{REGEX.test(value) ? <Check className='stroke-primary'/> : <X/>}
+			{new RegExp(REGEX).test(value) ? <Check className='stroke-primary'/> : <X/>}
 			<span className='text-lg'>{text}</span>
 		</div>
 	)
