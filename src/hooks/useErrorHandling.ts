@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 interface Type__Use__Error_Handling {
     err:						AxiosError | Error
     handle_no_server_response?:	() => void
+    handle_400?:				() => void
     handle_401?:				() => void
     handle_403?:				() => void
     handle_404?:				() => void
@@ -58,6 +59,7 @@ export default function useErrorHandling() {
 		err, 
 		handle_no_server_response, 
 
+		handle_400, 
 		handle_401, 
 		handle_403, 
 		handle_404, 
@@ -92,6 +94,7 @@ export default function useErrorHandling() {
 		const status = err?.response?.status
 		switch (status) {
 			case 400:
+				if(handle_400) return handle_400()
 				toast.error(`${t('error.client_request_invalid')}\n${err.response.data}`)
 				break
 

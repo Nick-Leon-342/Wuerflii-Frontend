@@ -60,7 +60,7 @@ export default function Registration_And_Login() {
 
     }
 
-	const registration = () => {
+	function registration() {
 		
 		// Check if name and password are valid
 		const zod_result = Zod__User_POST.safeParse({ Name: name, Password: password })
@@ -85,6 +85,7 @@ export default function Registration_And_Login() {
 
 			handle_error({
 				err, 
+				handle_400: () => { toast.error(t('error.client_request_invalid')) }, 
 				handle_409: () => {
 					if(err.response?.data === 'Username already taken.') {
 						toast.error(t('error.username_taken'))
@@ -98,7 +99,7 @@ export default function Registration_And_Login() {
 
 	}
 
-	const login = () => {
+	function login() {
 		
 		// Check if name and password are valid
 		const zod_result = Zod__User_POST.safeParse({ Name: name, Password: password })
@@ -135,9 +136,9 @@ export default function Registration_And_Login() {
 
     return <>
 
-		<Popup__Settings 
-			user={null}
-		/>
+		<Popup__Settings user={null}/>
+
+
 
 		<div className='registration_and_login flex flex-row items-center justify-center h-dvh w-9/10!'>
 			<div className='flex flex-col lg:flex-row items-center gap-15 lg:gap-10 w-full md:w-fit'>
