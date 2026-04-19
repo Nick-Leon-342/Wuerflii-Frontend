@@ -30,6 +30,7 @@
 	"error": {
 		"error": "Fehler", 
 		"client_request_invalid": "Clientanfrage fehlerhaft.", 
+		"credentials_missing": "Anmeldedaten fehlen.", 
 		"generic": "Beim Laden der Seite ist etwas schiefgelaufen. Bitte erneut versuchen.",
 		"password_confirm_doesnt_match": "Passwörter stimmen nicht überein.", 
 

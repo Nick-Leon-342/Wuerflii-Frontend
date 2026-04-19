@@ -95,9 +95,11 @@ export default function Popup__Settings({
 			<DialogTrigger asChild>
 				<Button
 					variant='outline'
-					className='fixed p-2 bottom-4 right-4 h-12 w-12 z-41 bg-card!'
+					className='fixed p-2 bottom-4 right-4 h-12 w-12 z-41 bg-card! shadow-xl'
 				><User className='w-8! h-8!'/></Button>
 			</DialogTrigger>
+
+
 
 			<DialogContent showCloseButton={false}>
 				<DialogHeader>

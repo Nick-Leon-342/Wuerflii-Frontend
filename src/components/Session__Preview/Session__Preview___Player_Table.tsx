@@ -1,6 +1,6 @@
 
 
-import type { Type__Final_Score } from '@/types/Type__Final_Score'
+import type { Type__Final_Score__Session_Preview } from '@/types/Type__Final_Score__Session_Preview'
 import type { Type__Session } from '@/types/Zod__Session'
 import type { Type__Player } from '@/types/Zod__Player'
 
@@ -9,7 +9,7 @@ import type { Type__Player } from '@/types/Zod__Player'
 
 
 interface Props___Session__Preview___Player_Table {
-	current_top_row?:	Type__Final_Score
+	current_top_row?:	Type__Final_Score__Session_Preview
 	list__players:		Array<Type__Player>
 	session:			Type__Session
 }

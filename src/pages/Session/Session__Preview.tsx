@@ -5,8 +5,8 @@ import {useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
+import type { Type__Final_Score__Session_Preview } from '@/types/Type__Final_Score__Session_Preview'
 import { get__session_players } from '@/api/session/session_players'
-import type { Type__Final_Score } from '@/types/Type__Final_Score'
 import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
@@ -35,7 +35,7 @@ export default function Session__Preview() {
 
 	const { session_id }	= useParams()
 	
-	const [ current_top_row,		setCurrent_top_row			] = useState<Type__Final_Score>()
+	const [ current_top_row,		setCurrent_top_row			] = useState<Type__Final_Score__Session_Preview>()
 	const [ loading_preparing_game, setLoading_preparing_game	] = useState<boolean>(false)
 	const [ do_final_scores_exist, 	setDo_final_scores_exist	] = useState<boolean>(false)
 

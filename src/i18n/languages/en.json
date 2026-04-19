@@ -30,6 +30,7 @@
 	"error": {
 		"error": "Error", 
 		"client_request_invalid": "Client request invalid.", 
+		"credentials_missing": "Credentials missing.", 
 		"generic": "Something went wrong while loading the page. Please try again.",
 		"password_confirm_doesnt_match": "Passwords don't match.", 
 		
