@@ -9,7 +9,6 @@ import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 import { get__table_columns } from '@/api/table_columns'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
-import { useUser } from '@/hooks/useUser'
 import { post__game } from '@/api/game'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
@@ -25,7 +24,6 @@ import { toast } from 'sonner'
 
 export default function Game() {
 
-	const { user }			= useUser()
 	const { session_id } 	= useParams()
 	const navigate 			= useNavigate()
 	const { t } 			= useTranslation()
@@ -131,7 +129,7 @@ export default function Game() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 
 

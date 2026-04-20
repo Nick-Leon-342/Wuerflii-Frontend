@@ -31,10 +31,6 @@ export default function Analytics() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________
-
-	// ____________________ Analytics ____________________
-
 	const { data: total, error: error__analytics } = useQuery({
 		queryFn: () => get__analytics(), 
 		queryKey: [ 'analytics' ], 
@@ -66,7 +62,7 @@ export default function Analytics() {
 
 	return <>
 
-		<Popup_Settings user={user}/>
+		<Popup_Settings/>
 
 
 
@@ -79,7 +75,6 @@ export default function Analytics() {
 					<Statistics__Select_View
 						list__years={get_years_until_now()}
 						isSession={false}
-						user={user}
 					/>
 				</>}
 			</Previous>

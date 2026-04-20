@@ -1,26 +1,12 @@
 
 
-import type { Type__Analytics__Data } from '../../types/Type__Analytics'
 import { useTranslation } from 'react-i18next'
-import { Bar } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js'
 
-ChartJS.register(
-	CategoryScale,
-	LinearScale,
-	BarElement,
-	Title,
-	Tooltip,
-	Legend
-)
+import type { Type__Analytics__Data } from '../../types/Type__Analytics'
+
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { ChartContainer } from '../ui/chart'
 
 
 
@@ -38,20 +24,49 @@ export default function Chart_Bar({
 
 	const { t } = useTranslation()
 
-	if(!JSON) return <></>
+	const chart_data = Object.keys(data).map((key, index) => ({
+		Time:			labels[index], 
+		Games_Played: 	data[key].Games_Played
+	}))
+
+
+
+
+
 	return <>
-		<Bar 
-			data={{
-				labels,
-				datasets: [{
-					label: t('games_played'),
-					data: Object.keys(data).map(key => data[key].Games_Played),
-					backgroundColor: 'rgba(0, 230, 0, 0.3)',
-					borderColor: 'rgba(0, 230, 0, 1)',
-					borderWidth: 2,
-				}]
-			}}
-		/>
+		<Card>
+			<CardHeader>
+				<CardTitle>{t('games_played')}</CardTitle>
+			</CardHeader>
+
+			<CardContent>
+				<ChartContainer config={{ }}>
+					<BarChart
+						accessibilityLayer
+						data={chart_data}
+						margin={{ top: 25 }}
+					>
+						<CartesianGrid vertical={false}/>
+						<XAxis
+							dataKey='Time'
+							tickLine={false}
+							tickMargin={10}
+							axisLine={false}
+						/>
+						<Bar dataKey='Games_Played' fill='var(--primary)' radius={8}>
+							<LabelList
+								position='top'
+								offset={12}
+								className='fill-foreground'
+								fontSize={15}
+								fontWeight={600}
+							/>
+						</Bar>
+					</BarChart>
+				</ChartContainer>
+			</CardContent>
+		</Card>
+
 	</>
 	
 }

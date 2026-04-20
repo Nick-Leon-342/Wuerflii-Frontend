@@ -7,9 +7,9 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import Context__Server_Version from '@/Provider_And_Context/Provider_And_Context__Server_Version'
-import type { Type__User } from '../../types/Zod__User'
 import { darkMode_string } from '@/logic/utils'
 import { patch__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
@@ -17,29 +17,33 @@ import { Languages, Moon, Sun, User } from 'lucide-react'
 import Custom_Button from '../misc/Custom_Button'
 import { Spinner } from '../ui/spinner'
 import { Button } from '../ui/button'
+import type { Type__User_PATCH } from '@/types/Zod__User'
 
 
 
 
 
-interface Props___Popup__Settings {
-	user:	Type__User | undefined | null
-}
+export default function Popup__Settings() {
 
-export default function Popup__Settings({
-	user, 
-}: Props___Popup__Settings) {
+	const {
+		user, 
+		setUser, 
+	} = useUser()
 
-	const navigate 		= useNavigate()
-	const { t, i18n }	= useTranslation()
-	const query_client 	= useQueryClient()
+	const navigate 				= useNavigate()
+	const { t, i18n }			= useTranslation()
+	const query_client 			= useQueryClient()
+	const { server_version }	= useContext(Context__Server_Version)
 
-	const { server_version } = useContext(Context__Server_Version)
 	const [ darkMode, setDarkMode ] = useState(localStorage.getItem(darkMode_string) === 'true')
 
 	const change_dark_mode = useMutation({
-		mutationFn: () => patch__user({ DarkMode: !user?.DarkMode }), 
-		onSuccess: () => {
+		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
+		onSuccess: (_, json) => {
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, ...json }
+			})
 			setDarkMode(!user?.DarkMode)
 			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user?.DarkMode })
 		}
@@ -81,7 +85,7 @@ export default function Popup__Settings({
 		if(user === null) {
 			setDarkMode(prev => !prev)
 		} else {
-			change_dark_mode.mutate()
+			change_dark_mode.mutate({ DarkMode: !user?.DarkMode })
 		}
 
 	}

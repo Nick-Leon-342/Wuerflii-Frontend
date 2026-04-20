@@ -1,24 +1,22 @@
 
 
-import { Line } from 'react-chartjs-2'
-
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
 import { useEffect, useState } from 'react'
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 
 import type { Type__Analytics_Session__Data } from '../../types/Type__Analytics_Session'
 import type { Type__Player } from '../../types/Zod__Player'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart'
 
 
 
 
 
 interface Props__Chart_Graph {
-	IsBorderVisible:	boolean
+	Data:				Record<string, Type__Analytics_Session__Data>
 	List__Players:		Array<Type__Player>
 	labels:				Array<string>
-	Data:				Record<string, Type__Analytics_Session__Data>
+	IsBorderVisible:	boolean
 }
 
 export default function Chart_Graph({
@@ -28,13 +26,41 @@ export default function Chart_Graph({
 	Data, 
 }: Props__Chart_Graph) {
 
-	const [ values, setValues ] = useState<Array<Record<Type__Player['id'], number>>>([])
+	const [ values, setValues ] = useState<Array<Type__Chart_Data>>([])
 
 
 
 
 
-	// Makes extremely light colors black
+	interface Type__Chart_Data {
+		Time:							string
+		[key: Type__Player['Name']]: 	string
+	}
+
+	useEffect(() => {
+		function init() {
+			
+			if(!List__Players || !Data) return
+	
+			const tmp_values = []
+			const incremental_values: Type__Chart_Data = { Time: '' }
+			for(const player of List__Players) incremental_values[player.Name] = '0'
+	
+			const list = Object.keys(Data)
+			for(let i = 0; i < list.length; i++) {
+				incremental_values.Time = labels[i]
+				for(const player of List__Players) {
+					const name = player.Name
+					incremental_values[name] = (parseInt(incremental_values[name]) + (Data[list[i]].Wins[player.id] || 0)).toString()
+				}
+				tmp_values.push(structuredClone(incremental_values))
+			}
+	
+			setValues(tmp_values)
+		}
+		init()
+	}, [ List__Players, Data ])
+
 	const adjustColor = ( hex: string ) => {
 	
 		if (!hex.startsWith("#") || (hex.length !== 4 && hex.length !== 7)) return hex
@@ -56,46 +82,42 @@ export default function Chart_Graph({
 
 	}
 
-	useEffect(() => {
-		function init() {
-			
-			if(!List__Players || !Data) return
-	
-			const tmp_values = []
-			const incremental_values: Record<Type__Player['id'], number> = {}
-			for(const player of List__Players) incremental_values[player.id] = 0
-	
-			for(const key of Object.keys(Data)) {
-				for(const player of List__Players) {
-					const id = player.id
-					incremental_values[id] = incremental_values[id] + (Data[key].Wins[id] || 0)
-				}
-				tmp_values.push(structuredClone(incremental_values))
-			}
-	
-			setValues(tmp_values)
-		}
-		init()
-	}, [ List__Players, Data ])
 
 
 
 
-
-	if(!Data) return <></>
 	return <>
-		<Line
-			data={{
-				labels, 
-				datasets: List__Players?.map(player => ({
-					backgroundColor: IsBorderVisible ? adjustColor(player.Color) : player.Color, 
-					borderColor: IsBorderVisible ? adjustColor(player.Color) : player.Color, 
-					data: values?.map(value => value[player.id]), 
-					label: player.Name, 
-					tension: .2,
-				}))
-			}}
-			options={{ scales: { y: { beginAtZero: true } } }}
-		/>
+		<ChartContainer config={{ }}>
+			<AreaChart
+				accessibilityLayer
+				data={values}
+				margin={{
+					left: 30, 
+					right: 30, 
+				}}
+			>
+				<CartesianGrid vertical={false}/>
+				<XAxis
+					dataKey='Time'
+				/>
+				<ChartTooltip
+					content={<ChartTooltipContent indicator='line'/>}
+				/>
+
+				{List__Players.map(player => (
+					<Area
+						type='monotone'
+						key={player.id}
+						dataKey={player.Name}
+						fillOpacity={0.4}
+						stackId={player.id}
+						// fill={`${player.Color}70`} 
+						fill='none'
+						strokeWidth={5}
+						stroke={IsBorderVisible ? adjustColor(player.Color) : player.Color}
+					/>
+				))}
+			</AreaChart>
+		</ChartContainer>
 	</>
 }

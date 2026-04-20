@@ -12,6 +12,7 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import { patch__session } from '../../api/session/session'
 import { Enum__Months } from '@/types/Enum/Enum__Months'
 import { patch__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from '../ui/popover'
@@ -24,7 +25,6 @@ import { toast } from 'sonner'
 
 
 interface Props__Statistics__Select_View {
-	user:			Type__User | null
 	list__years:	Array<number>
 	session?:		Type__Session
 	isSession:		boolean
@@ -33,9 +33,13 @@ interface Props__Statistics__Select_View {
 export default function Statistics__Select_View({
 	list__years, 
 	session, 
-	user, 
 	isSession, 
 }: Props__Statistics__Select_View) {
+
+	const {
+		user, 
+		setUser, 
+	} = useUser()
 
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
@@ -53,13 +57,11 @@ export default function Statistics__Select_View({
 	const mutate__user = useMutation({
 		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: (_, json) => {
-			query_client.setQueryData([ 'user' ], (prev: Type__User) => {
-				const tmp = { ...prev }
-				tmp.Statistics__View 		= json.Statistics__View			|| 'STATISTICS_OVERALL'
-				tmp.Statistics__View_Month 	= json.Statistics__View_Month	|| 'JANUARY'
-				tmp.Statistics__View_Year 	= json.Statistics__View_Year	|| 2026
-				return tmp
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, ...json }
 			})
+			query_client.setQueryData([ 'user' ], (prev: Type__User) => ({ ...prev, ...json }))
 
 			query_client.invalidateQueries({ queryKey: [ 'analytics' ]})
 		}, 

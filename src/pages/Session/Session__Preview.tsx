@@ -116,7 +116,7 @@ export default function Session__Preview() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 
 

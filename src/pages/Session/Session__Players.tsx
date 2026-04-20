@@ -9,7 +9,6 @@ import { Zod__Player_List__PATCH, type Type__Player_List__PATCH, type Type__Play
 import { get__session_players, patch__session_players, post__session_players } from '@/api/session/session_players'
 import Context__ENV_Variables from '@/Provider_And_Context/Provider_And_Context__ENV_Variables'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import { useUser } from '@/hooks/useUser'
 
 import DragAndDropNameColorList from '@/components/misc/Drag_And_Drop_Name_Color_List'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -30,7 +29,6 @@ export default function Session__Players() {
 		MAX_PLAYERS
 	} = useContext(Context__ENV_Variables)
 
-	const { user }			= useUser()
 	const { session_id }	= useParams()
 	const navigate			= useNavigate()
 	const query_client		= useQueryClient()
@@ -177,7 +175,7 @@ export default function Session__Players() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 
 

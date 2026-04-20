@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react'
 import { get__session_players } from '@/api/session/session_players'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__final_score } from '@/api/final_score'
-import { useUser } from '@/hooks/useUser'
 
 import Popup__Settings from '@/components/misc/Popup__Settings'
 import { Button } from '@/components/ui/button'
@@ -25,7 +24,6 @@ export default function EndScreen() {
 		finalscore_id
 	} 	= useParams()
 
-	const { user }		= useUser()
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
@@ -115,7 +113,7 @@ export default function EndScreen() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 		
 

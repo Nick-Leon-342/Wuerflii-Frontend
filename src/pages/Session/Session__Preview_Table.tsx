@@ -9,7 +9,6 @@ import { get__session_players } from '@/api/session/session_players'
 import { get__table_columns_archive } from '@/api/table_columns'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
-import { useUser } from '@/hooks/useUser'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -28,7 +27,6 @@ export default function Session__Preview_Table() {
 		finalscore_id
 	} = useParams()
 	
-	const { user }		= useUser()
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
@@ -110,7 +108,7 @@ export default function Session__Preview_Table() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 
 

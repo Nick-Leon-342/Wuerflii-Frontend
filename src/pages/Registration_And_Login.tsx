@@ -146,7 +146,7 @@ export default function Registration_And_Login() {
 
     return <>
 
-		<Popup__Settings user={null}/>
+		<Popup__Settings/>
 
 
 

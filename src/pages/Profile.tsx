@@ -129,7 +129,7 @@ export default function Profile() {
 
 	return <>
 	
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 	
 	
 

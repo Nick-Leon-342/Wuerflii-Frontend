@@ -201,7 +201,7 @@ export default function Session__Select() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 
 

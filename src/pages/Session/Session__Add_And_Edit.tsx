@@ -9,7 +9,6 @@ import { Zod__Session_POST, type Type__Session, type Type__Session_PATCH, type T
 import Context__ENV_Variables from '@/Provider_And_Context/Provider_And_Context__ENV_Variables'
 import { get__session, patch__session, post__session } from '../../api/session/session'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { useUser } from '@/hooks/useUser'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -25,7 +24,6 @@ import { toast } from 'sonner'
 
 export default function Session__Add_And_Edit() {
 
-	const { user } 			= useUser()
 	const { session_id } 	= useParams()
 	const navigate			= useNavigate()
 	const { t }				= useTranslation()
@@ -137,7 +135,7 @@ export default function Session__Add_And_Edit() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 
 

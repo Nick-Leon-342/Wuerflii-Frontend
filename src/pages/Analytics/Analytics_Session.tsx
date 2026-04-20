@@ -11,16 +11,14 @@ import { get__session, patch__session } from '../../api/session/session'
 import { get__analytics_session } from '../../api/analytics'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { Enum__Months } from '@/types/Enum/Enum__Months'
-import { useUser } from '@/hooks/useUser'
 
-import { ArrowBigDown, ArrowBigUp, CircleSlash2, Square, SquareCheck } from 'lucide-react'
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
-import Chart_Doughnut from '../../components/Statistics/Chart_Doughnut'
 import Popup__Settings from '../../components/misc/Popup__Settings'
 import Chart_Graph from '../../components/Statistics/Chart_Graph'
 import Previous from '../../components/misc/Previous'
+import { Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -31,7 +29,6 @@ import { toast } from 'sonner'
 
 export default function Analytics_Session() {
 
-	const { user }			= useUser()
 	const { session_id }	= useParams()
 	const navigate 			= useNavigate()
 	const { t } 			= useTranslation()
@@ -137,44 +134,31 @@ export default function Analytics_Session() {
 
 	return <>
 
-		<Popup__Settings user={user}/>
+		<Popup__Settings/>
 
 
 
-		<div className='analytics_session flex flex-col items-center bg-gray-100 dark:bg-background w-full py-4 flex-1!'>
-			<Card className='flex flex-col w-9/10 gap-4 xl:w-250'>
-				<CardContent className='flex flex-col gap-4'>
+		<div className='flex flex-col w-9/10 py-4 gap-4 xl:w-250'>
 
-					<Previous onClick={() => navigate(-1)}>
-						{session?.View__List_Years && <>
-							<Statistics__Select_View
-								list__years={session.View__List_Years}
-								session={session}
-								isSession={true}
-								user={user}
-							/>
-						</>}
-					</Previous>
+			<Previous onClick={() => navigate(-1)}>
+				{session?.View__List_Years && <>
+					<Statistics__Select_View
+						list__years={session.View__List_Years}
+						session={session}
+						isSession={true}
+					/>
+				</>}
+			</Previous>
 
-
-
-					{(isLoading__list_players || isLoading__analytics) && <div className='flex flex-row justify-center'><Spinner/></div>}
+			{(isLoading__list_players || isLoading__analytics) && <div className='flex flex-row justify-center'><Spinner/></div>}
 
 
 
 
-					{list_players && session && total?.Data && <>
+			{list_players && session && total?.Data && <>
 
-
-						{/* ____________________ Doughnut ____________________ */}
-
-						<Chart_Doughnut
-							List__Players={list_players}
-							Total_Wins={total?.Total__Wins} 
-							IsBorderVisible={session?.Statistics__Show_Border}
-						/>
-
-
+				<Card>
+					<CardContent>
 
 						{/* ____________________ Show border ____________________ */}
 
@@ -196,86 +180,56 @@ export default function Analytics_Session() {
 						{/* ____________________ Graph ____________________ */}
 						
 						<Chart_Graph
-							labels={session?.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Enum__Months.map(month => t('months.' + month)) ] : total?.Data ? Object.keys(total?.Data) : []}
-							IsBorderVisible={Boolean(session?.Statistics__Show_Border)}
+							labels={session.Statistics__View === 'STATISTICS_YEAR' ? [ '0', ...Enum__Months.map(month => t('months.' + month)) ] : total.Data ? Object.keys(total?.Data) : []}
+							IsBorderVisible={session.Statistics__Show_Border}
 							List__Players={list_players}
-							Data={total?.Data}
+							Data={total.Data}
 						/>
 
-
-
-						{/* ____________________ More statistics ____________________ */}
-
-						<Card>
-							<CardHeader>
-								<CardTitle>{t('more_statistics')}</CardTitle>
-							</CardHeader>
-
-							<CardContent className='text-lg [&_div]:flex [&_div]:justify-between [&_div]:sm:gap-20 sm:w-max'>
-								<div>
-									<span>{t('games_played')}</span>
-									<span>{total.Total__Games_Played}</span>
-								</div>
-
-								<div>
-									<span>{t('draws')}</span>
-									<span>{total.Total__Draws}</span>
-								</div>
-							</CardContent>
-						</Card>
+					</CardContent>
+				</Card>
 
 
 
-						{/* ____________________ Points ____________________ */}
+				{/* ____________________ More statistics ____________________ */}
 
-						<div className='flex flex-col gap-4 text-lg font-bold [&_div]:mt-4! [&_span]:flex [&_span]:gap-2'>
+				<Card>
+					<CardHeader>
+						<CardTitle>{t('more_statistics')}</CardTitle>
+					</CardHeader>
 
-							<div>
-
-								<span><ArrowBigDown/> {t('points_minimum')}:</span>
-
-								<Chart_Bar_Session
-									IsBorderVisible={session.Statistics__Show_Border}
-									List__Players={list_players}
-									JSON={total.Scores__Lowest}
-								/>
-
-							</div>
-
-
-
-							<div>
-
-								<span><ArrowBigUp/> {t('points_maximum')}:</span>
-
-								<Chart_Bar_Session
-									IsBorderVisible={session.Statistics__Show_Border}
-									List__Players={list_players}
-									JSON={total.Scores__Highest}
-								/>
-								
-							</div>
-
-
-
-							<div>
-
-								<span><CircleSlash2/> {t('points_average')}:</span>
-
-								<Chart_Bar_Session
-									IsBorderVisible={session.Statistics__Show_Border}
-									List__Players={list_players}
-									JSON={total.Scores__Average}
-								/>
-
-							</div>
-
+					<CardContent className='text-lg [&_div]:flex [&_div]:justify-between [&_div]:sm:gap-20 sm:w-max'>
+						<div>
+							<span>{t('games_played')}</span>
+							<span>{total.Total__Games_Played}</span>
 						</div>
 
-					</>}
+						<div>
+							<span>{t('draws')}</span>
+							<span>{total.Total__Draws}</span>
+						</div>
+					</CardContent>
+				</Card>
 
-				</CardContent>
-			</Card>
+
+
+				{/* ____________________ Scores ____________________ */}
+
+				<Card>
+					<CardContent>
+						<Chart_Bar_Session
+							IsBorderVisible={session.Statistics__Show_Border}
+							List__Players={list_players}
+
+							Scores__Lowest={total.Scores__Lowest}
+							Scores__Average={total.Scores__Average}
+							Scores__Highest={total.Scores__Highest}
+						/>
+					</CardContent>
+				</Card>
+
+			</>}
+
 		</div>
 	</>
 }
