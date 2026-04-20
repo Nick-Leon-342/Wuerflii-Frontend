@@ -85,8 +85,8 @@ export default function App() {
 
 						{/* __________ Game __________ */}
 
-						<Route path='/game' element={<Game />} />
-						<Route path='/game/end' element={<End />} />
+						<Route path='/session/:session_id/game' element={<Game />} />
+						<Route path='/session/:session_id/game/end/:finalscore_id' element={<End />} />
 						
 					</Route>
 

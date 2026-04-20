@@ -112,7 +112,7 @@ export default function Game() {
 			query_client.removeQueries({
 				queryKey: [ 'session', session.id, 'table_columns' ]
 			})
-			navigate(`/game/end?session_id=${session.id}&finalscore_id=${data.FinalScoreID}`, { replace: true })
+			navigate(`/session/${session.id}/game/end/${data.FinalScoreID}`, { replace: true })
 
 		}).catch((err) => {
 
@@ -135,7 +135,7 @@ export default function Game() {
 
 
 
-		{/* __________________________________________________ Game __________________________________________________ */}
+
 
 		<div className='absolute top-0 left-0'>
 			<div className='flex flex-col gap-4 m-300'>

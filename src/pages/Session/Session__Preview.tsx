@@ -93,12 +93,12 @@ export default function Session__Preview() {
 
 	const start_game = () => {
 
-		if(session?.CurrentGameStart) return navigate(`/game?session_id=${session?.id}`, { replace: false })
+		if(session?.CurrentGameStart) return navigate(`/session/${session?.id}/game`, { replace: false })
 
 		setLoading_preparing_game(true)
 		get__game(+(session?.id || -1)).then(() => {
 
-			navigate(`/game?session_id=${session?.id}`, { replace: false })
+			navigate(`/session/${session?.id}/game`, { replace: false })
 
 		}).catch(err => {
 
