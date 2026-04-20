@@ -22,6 +22,7 @@ import Custom_Button from '@/components/misc/Custom_Button'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 
 
@@ -145,28 +146,32 @@ export default function Session__Preview() {
 			{(!user || !session || !list_players) && <Spinner/>}
 
 			{user && session && list_players && <>
-				<div className='flex flex-col min-w-100 overflow-x-auto'>
-					
-					{/* ____________________ Table ____________________ */}
+				<ScrollArea >
+					<div className='flex flex-col min-w-max'>
+						
+						{/* ____________________ Table ____________________ */}
 
-					<Session__Preview___Player_Table
-						current_top_row={current_top_row}
-						list__players={list_players}
-						session={session}
-					/>
+						<Session__Preview___Player_Table
+							current_top_row={current_top_row}
+							list__players={list_players}
+							session={session}
+						/>
 
 
 
-					{/* ____________________ List ____________________ */}
+						{/* ____________________ List ____________________ */}
 
-					<Session__Preview___Final_Scores
-						setDo_final_scores_exist={setDo_final_scores_exist}
-						setCurrent_top_row={setCurrent_top_row}
-						list__players={list_players}
-						session={session}
-					/>
+						<Session__Preview___Final_Scores
+							setDo_final_scores_exist={setDo_final_scores_exist}
+							setCurrent_top_row={setCurrent_top_row}
+							list__players={list_players}
+							session={session}
+						/>
 
-				</div>
+					</div>
+
+					<ScrollBar orientation='horizontal'/>
+				</ScrollArea>
 			</>}
 
 

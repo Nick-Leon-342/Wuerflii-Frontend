@@ -200,7 +200,7 @@ export default function Session__Preview___Final_Scores({
 									{list__players.map((player, index_player) => 
 										<div 
 											key={`${index_final_score}.${index_player}`}
-											className='grid place-items-center w-full h-full not-last-of-type:border-r border-muted-foreground min-w-30'
+											className='grid place-items-center w-full h-full not-last-of-type:border-r border-muted-foreground min-w-20!'
 										>
 											<span>
 												{final_score.PlayerScores[player.id]}
