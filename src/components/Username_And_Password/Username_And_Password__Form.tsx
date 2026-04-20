@@ -172,7 +172,7 @@ const ROW = ({
 	if(!REGEX) return 
 	
 	return (
-		<div className='flex flex-row gap-1 items-center'>
+		<div className='flex flex-row gap-1 items-center [&_svg]:shrink-0'>
 			{new RegExp(REGEX).test(value) ? <Check className='stroke-primary'/> : <X/>}
 			<span className='text-lg'>{text}</span>
 		</div>
