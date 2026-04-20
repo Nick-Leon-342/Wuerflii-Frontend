@@ -9,7 +9,7 @@ import { Zod__Session_POST, type Type__Session, type Type__Session_PATCH, type T
 import Context__ENV_Variables from '@/Provider_And_Context/Provider_And_Context__ENV_Variables'
 import { get__session, patch__session, post__session } from '../../api/session/session'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import { get__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -25,16 +25,14 @@ import { toast } from 'sonner'
 
 export default function Session__Add_And_Edit() {
 
-	const { MAX_COLUMNS } = useContext(Context__ENV_Variables)
-
-	const navigate		= useNavigate()
-	const { t }			= useTranslation()
-	const query_client	= useQueryClient()
-	const handle_error	= useErrorHandling()
-
-	const { session_id } = useParams()
-
-	
+	const { user } 			= useUser()
+	const { session_id } 	= useParams()
+	const navigate			= useNavigate()
+	const { t }				= useTranslation()
+	const query_client		= useQueryClient()
+	const handle_error		= useErrorHandling()
+	const { MAX_COLUMNS }	= useContext(Context__ENV_Variables)
+		
 	// ____________________ Session ____________________
 
 	const [ name,				setName				] = useState<string>(t('session'))
@@ -48,20 +46,6 @@ export default function Session__Add_And_Edit() {
 
 
 	// __________________________________________________ Queries __________________________________________________
-
-	// ____________________ User ____________________
-
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryKey: [ 'user' ], 
-		queryFn: () => get__user(), 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-
 
 	// ____________________ Session ____________________
 
@@ -218,7 +202,7 @@ export default function Session__Add_And_Edit() {
 
 
 			<Custom_Button 
-				loading={isLoading__user || isLoading__session || mutate__session_add.isPending || mutate__session_edit.isPending}
+				loading={isLoading__session || mutate__session_add.isPending || mutate__session_edit.isPending}
 				text={session_id ? t('save') : t('create_session')}
 				onClick={ok}
 			/>

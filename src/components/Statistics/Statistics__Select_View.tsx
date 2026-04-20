@@ -24,9 +24,9 @@ import { toast } from 'sonner'
 
 
 interface Props__Statistics__Select_View {
+	user:			Type__User | null
 	list__years:	Array<number>
 	session?:		Type__Session
-	user?:			Type__User
 	isSession:		boolean
 }
 

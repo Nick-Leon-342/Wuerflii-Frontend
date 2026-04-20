@@ -34,12 +34,14 @@ import Session__Select from './pages/Session/Session__Select'
 
 import End from './pages/Game/End'
 import Game from './pages/Game/Game'
+import Public_Route from './logic/Public_Route'
 
 
 
 
 
 export default function App() {
+	
 	
 	return <>
 		<div className='App' id='App'>
@@ -48,7 +50,12 @@ export default function App() {
 				<Routes>
 
 					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/registration_and_login' element={<Registration_And_Login />} />
+					<Route element={<Public_Route/>}>
+						<Route path='/registration_and_login' element={<Registration_And_Login />} />
+					</Route>
+
+
+
 
 
 					{/* 

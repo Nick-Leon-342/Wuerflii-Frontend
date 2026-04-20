@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { Enum__Months } from '@/types/Enum/Enum__Months'
 import { get__analytics } from '../../api/analytics'
-import { get__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -22,6 +22,7 @@ import { Spinner } from '@/components/ui/spinner'
 
 export default function Analytics() {
 
+	const { user }		= useUser()
 	const navigate 		= useNavigate()
 	const { t } 		= useTranslation()
 	const handle_error	= useErrorHandling()
@@ -31,20 +32,6 @@ export default function Analytics() {
 
 
 	// __________________________________________________ Queries __________________________________________________
-
-	// ____________________ User ____________________
-
-	const { data: user, error: error__user } = useQuery({
-		queryFn: () => get__user(), 
-		queryKey: [ 'user' ], 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-
 
 	// ____________________ Analytics ____________________
 

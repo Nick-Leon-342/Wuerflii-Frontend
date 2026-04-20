@@ -10,8 +10,8 @@ import { get__session_players } from '@/api/session/session_players'
 import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
+import { useUser } from '@/hooks/useUser'
 import { get__game } from '@/api/game'
-import { get__user } from '@/api/user'
 
 import Session__Preview___Player_Table from '@/components/Session__Preview/Session__Preview___Player_Table'
 import Session__Preview___Final_Scores from '@/components/Session__Preview/Session__Preview___Final_Scores'
@@ -29,11 +29,11 @@ import { toast } from 'sonner'
 
 export default function Session__Preview() {
 
-	const navigate		= useNavigate()
-	const { t }			= useTranslation()
-	const handle_error	= useErrorHandling()
-
+	const { user }			= useUser()
 	const { session_id }	= useParams()
+	const navigate			= useNavigate()
+	const { t }				= useTranslation()
+	const handle_error		= useErrorHandling()
 	
 	const [ current_top_row,		setCurrent_top_row			] = useState<Type__Final_Score__Session_Preview>()
 	const [ loading_preparing_game, setLoading_preparing_game	] = useState<boolean>(false)
@@ -43,21 +43,7 @@ export default function Session__Preview() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________
-		
-	// ____________________ User ____________________
-
-	const { data: user, error: error__user } = useQuery({
-		queryFn: () => get__user(), 
-		queryKey: [ 'user' ], 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-	
+	// __________________________________________________ Queries __________________________________________________	
 	
 	// ____________________ Session ____________________
 
@@ -79,7 +65,7 @@ export default function Session__Preview() {
 	}
 
 	useEffect(() => { 
-		function init() {setSession(tmp__session)}
+		function init() { setSession(tmp__session) }
 		init()
 	}, [ tmp__session ])
 

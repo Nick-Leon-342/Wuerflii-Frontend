@@ -9,6 +9,7 @@ import App from './App'
 
 import { Provider_And_Context__Server_Version } from './Provider_And_Context/Provider_And_Context__Server_Version'
 import { Provider_And_Context__ENV_Variables } from './Provider_And_Context/Provider_And_Context__ENV_Variables'
+import { Provider_And_Context__User } from './Provider_And_Context/Provider_And_Context__User'
 
 import './i18n/i18n'
 
@@ -18,12 +19,14 @@ const query_client = new QueryClient()
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<QueryClientProvider client={query_client}>
-			<Provider_And_Context__Server_Version>
-				<Provider_And_Context__ENV_Variables>
-					<App />
-					<ReactQueryDevtools/>
-				</Provider_And_Context__ENV_Variables>
-			</Provider_And_Context__Server_Version>
+			<Provider_And_Context__User>
+				<Provider_And_Context__Server_Version>
+					<Provider_And_Context__ENV_Variables>
+						<App />
+						<ReactQueryDevtools/>
+					</Provider_And_Context__ENV_Variables>
+				</Provider_And_Context__Server_Version>
+			</Provider_And_Context__User>
 		</QueryClientProvider>
 	</StrictMode>,
 )

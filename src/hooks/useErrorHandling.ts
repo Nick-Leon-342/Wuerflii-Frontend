@@ -1,14 +1,12 @@
 
 
+import { useTranslation } from 'react-i18next'
 import { format } from 'date-fns'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import type { AxiosError } from 'axios'
 
-import useRedirectToLogin from './useRedirectToLogin'
 import axios from 'axios'
-import { toast } from 'sonner'
-import { useTranslation } from 'react-i18next'
 
 
 
@@ -46,10 +44,7 @@ interface Type__Use__Error_Handling {
 
 export default function useErrorHandling() {
 
-	const navigate 			= useNavigate()
-	const location 			= useLocation()
 	const { t }				= useTranslation()
-	const redirect_to_login = useRedirectToLogin()
 
 
 
@@ -61,7 +56,6 @@ export default function useErrorHandling() {
 
 		handle_400, 
 		handle_401, 
-		handle_403, 
 		handle_404, 
 		handle_409, 
 
@@ -86,10 +80,6 @@ export default function useErrorHandling() {
 		} 
 
 
-		// Redirect to login if user wasn't found
-		if(err?.response?.data === 'User not found.') return redirect_to_login()
-
-
 		// Check status
 		const status = err?.response?.status
 		switch (status) {
@@ -100,12 +90,6 @@ export default function useErrorHandling() {
 
 			case 401:
 				if(handle_401) return handle_401()
-				navigate(`/?next=${location.pathname}${location.search}`, { replace: true })
-				break
-
-			case 403:
-				if(handle_403) return handle_403()
-				navigate(`/?next=${location.pathname}${location.search}`, { replace: true })
 				break
 
 			case 404:

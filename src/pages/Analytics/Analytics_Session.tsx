@@ -11,16 +11,16 @@ import { get__session, patch__session } from '../../api/session/session'
 import { get__analytics_session } from '../../api/analytics'
 import useErrorHandling from '../../hooks/useErrorHandling'
 import { Enum__Months } from '@/types/Enum/Enum__Months'
-import { get__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
+import { ArrowBigDown, ArrowBigUp, CircleSlash2, Square, SquareCheck } from 'lucide-react'
 import Statistics__Select_View from '../../components/Statistics/Statistics__Select_View'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Chart_Bar_Session from '../../components/Statistics/Chart_Bar_Session'
 import Chart_Doughnut from '../../components/Statistics/Chart_Doughnut'
 import Popup__Settings from '../../components/misc/Popup__Settings'
 import Chart_Graph from '../../components/Statistics/Chart_Graph'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Previous from '../../components/misc/Previous'
-import { ArrowBigDown, ArrowBigUp, CircleSlash2, Square, SquareCheck } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -31,32 +31,18 @@ import { toast } from 'sonner'
 
 export default function Analytics_Session() {
 
-	const navigate 		= useNavigate()
-	const { t } 		= useTranslation()
-	const query_client 	= useQueryClient()
-	const handle_error	= useErrorHandling()
-
-	const { session_id } = useParams()
+	const { user }			= useUser()
+	const { session_id }	= useParams()
+	const navigate 			= useNavigate()
+	const { t } 			= useTranslation()
+	const query_client 		= useQueryClient()
+	const handle_error		= useErrorHandling()
 	
 	const [ session, setSession ] = useState<Type__Session>()
 
 
 
 	// __________________________________________________ Queries __________________________________________________
-
-	// ____________________ User ____________________
-
-	const { data: user, error: error__user } = useQuery({
-		queryFn: () => get__user(), 
-		queryKey: [ 'user' ], 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-
 
 	// ____________________ Session ____________________
 

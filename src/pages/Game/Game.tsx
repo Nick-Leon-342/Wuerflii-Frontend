@@ -1,7 +1,7 @@
 
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
@@ -9,8 +9,8 @@ import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 import { get__table_columns } from '@/api/table_columns'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
+import { useUser } from '@/hooks/useUser'
 import { post__game } from '@/api/game'
-import { get__user } from '@/api/user'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -25,13 +25,12 @@ import { toast } from 'sonner'
 
 export default function Game() {
 
-	const navigate 		= useNavigate()
-	const { t } 		= useTranslation()
-	const query_client 	= useQueryClient()
-	const handle_error 	= useErrorHandling()
-
-	const location = useLocation()
-	const session_id = new URLSearchParams(location.search).get('session_id')
+	const { user }			= useUser()
+	const { session_id } 	= useParams()
+	const navigate 			= useNavigate()
+	const { t } 			= useTranslation()
+	const query_client 		= useQueryClient()
+	const handle_error 		= useErrorHandling()
 
 	const [ loading__finish_game, 	setLoading__finish_game	] = useState<boolean>(false)
 
@@ -41,21 +40,7 @@ export default function Game() {
 
 
 
-	// __________________________________________________ Queries __________________________________________________
-		
-	// ____________________ User ____________________
-
-	const { data: user, error: error__user } = useQuery({
-		queryKey: [ 'user' ], 
-		queryFn: () => get__user(), 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-	
+	// __________________________________________________ Queries __________________________________________________	
 	
 	// ____________________ Session ____________________
 

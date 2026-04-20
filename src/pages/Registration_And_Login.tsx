@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { post__login, post__registration } from '@/api/auth'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { Zod__User_POST } from '@/types/Zod__User'
+import { useUser } from '@/hooks/useUser'
 
 import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
 import Username_And_Password__Input from '@/components/Username_And_Password/Username_And_Password__Input'
@@ -23,6 +24,10 @@ import { toast } from 'sonner'
 
 
 export default function Registration_And_Login() {
+
+	const {
+		setUser, 
+	} = useUser()
 
 	const location		= useLocation()
     const navigate		= useNavigate()
@@ -73,8 +78,9 @@ export default function Registration_And_Login() {
 		setLoading(true)
 
 
-		post__registration(json_user).then(() => {
+		post__registration(json_user).then(user => {
 
+			setUser(user)
 			setName('')
 			setPassword('')
 
@@ -109,8 +115,9 @@ export default function Registration_And_Login() {
 		setLoading(true)
 
 
-		post__login(json_user).then(() => {
+		post__login(json_user).then(user => {
 
+			setUser(user)
 			setName('')
 			setPassword('')
 

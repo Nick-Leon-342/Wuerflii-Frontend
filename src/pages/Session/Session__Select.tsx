@@ -12,7 +12,8 @@ import { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 import type { Type__Session } from '../../types/Zod__Session'
 import useRedirectToLogin from '@/hooks/useRedirectToLogin'
 import type { Type__User_PATCH } from '@/types/Zod__User'
-import { get__user, patch__user } from '../../api/user'
+import { patch__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ChevronUp, SortDesc, Square, SquareCheck, Trash2 } from 'lucide-react'
@@ -29,6 +30,7 @@ import { toast } from 'sonner'
 
 export default function Session__Select() {
 
+	const { user, setUser }	= useUser()
 	const navigate			= useNavigate()
 	const { t }				= useTranslation()
 	const query_client		= useQueryClient()
@@ -40,21 +42,6 @@ export default function Session__Select() {
 
 
 	// ________________________________________ Queries __________________________________________________
-
-	// ____________________ User ____________________
-
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryKey: [ 'user' ], 
-		queryFn: () => get__user(), 
-		
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user
-		})
-	}
-
 
 	// ____________________ List_Sessions ____________________
 
@@ -98,6 +85,10 @@ export default function Session__Select() {
 	const mutate__show_session_date = useMutation({
 		mutationFn: () => patch__user({ Show__Session_Date: !user?.Show__Session_Date }), 
 		onSuccess: () => {
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, Show__Session_Date: !user?.Show__Session_Date }
+			})
 			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Date: !user?.Show__Session_Date })
 		}, 
 		onError: err => {
@@ -110,6 +101,10 @@ export default function Session__Select() {
 	const mutate__show_session_names = useMutation({
 		mutationFn: () => patch__user({ Show__Session_Names: !user?.Show__Session_Names }), 
 		onSuccess: () => {
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, Show__Session_Names: !user?.Show__Session_Names }
+			})
 			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Names: !user?.Show__Session_Names })
 		}, 
 		onError: err => {
@@ -122,6 +117,10 @@ export default function Session__Select() {
 	const mutate__change_order = useMutation({
 		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: ( _, json ) => {
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, ...json }
+			})
 			query_client.setQueryData([ 'user' ], { ...user, ...json })
 			query_client.invalidateQueries({
 				queryKey: [ 'session', 'list' ], 
@@ -289,7 +288,7 @@ export default function Session__Select() {
 
 			{/* ____________________ Loading ____________________ */}
 
-			{isLoading__list_sessions || isLoading__user && <Spinner/>}
+			{isLoading__list_sessions && <Spinner/>}
 
 			{/* ____________________ No session in list ____________________ */}
 

@@ -9,7 +9,7 @@ import { get__session_players } from '@/api/session/session_players'
 import { get__table_columns_archive } from '@/api/table_columns'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
-import { get__user } from '@/api/user'
+import { useUser } from '@/hooks/useUser'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -23,28 +23,21 @@ import { toast } from 'sonner'
 
 export default function Session__Preview_Table() {
 
+	const { 
+		session_id, 
+		finalscore_id
+	} = useParams()
+	
+	const { user }		= useUser()
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
+
+
+
+
 	
-	const { session_id, finalscore_id } = useParams()
-
-
 	// __________________________________________________ Queries __________________________________________________
-
-	// ____________________ User ____________________
-
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryFn: () => get__user(), 
-		queryKey: [ 'user' ], 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-
 
 	// ____________________ Session ____________________
 
@@ -124,7 +117,7 @@ export default function Session__Preview_Table() {
 		<div className='absolute top-0 left-0'>
 			<div className='flex flex-col gap-4 m-300'>
 
-				{!(isLoading__user || isLoading__session || isLoading__list_players || isLoading__list__table_columns) && session && list_players && list__table_columns && list__table_columns?.length !== 0 && <>
+				{!(isLoading__session || isLoading__list_players || isLoading__list__table_columns) && session && list_players && list__table_columns && list__table_columns?.length !== 0 && <>
 
 					<Table_Player 
 						list__player_with_table_columns={list__table_columns}

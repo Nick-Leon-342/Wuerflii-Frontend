@@ -1,6 +1,6 @@
 
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { get__session_players } from '@/api/session/session_players'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__final_score } from '@/api/final_score'
-import { get__user } from '@/api/user'
+import { useUser } from '@/hooks/useUser'
 
 import Popup__Settings from '@/components/misc/Popup__Settings'
 import { Button } from '@/components/ui/button'
@@ -20,14 +20,15 @@ import { toast } from 'sonner'
 
 export default function EndScreen() {
 
+	const { 
+		session_id, 
+		finalscore_id
+	} 	= useParams()
+
+	const { user }		= useUser()
 	const navigate		= useNavigate()
-	const location 		= useLocation()
 	const { t }			= useTranslation()
 	const handle_error	= useErrorHandling()
-	
-	const urlParams 	= new URLSearchParams(location.search)
-	const session_id 	= +(urlParams.get('session_id') || -1)
-	const finalscore_id = +(urlParams.get('finalscore_id') || -1)
 
 	const [ header, setHeader ] = useState('')
 
@@ -38,25 +39,11 @@ export default function EndScreen() {
 
 	// __________________________________________________ Queries __________________________________________________ 
 
-	// ____________________ User ____________________
-
-	const { data: user, error: error__user } = useQuery({
-		queryFn: () => get__user(), 
-		queryKey: [ 'user' ], 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-
-
 	// ____________________ List__Players ____________________
 
 	const { data: list_players, error: error__list_players } = useQuery({
 		queryKey: [ 'session', session_id, 'players' ], 
-		queryFn: () => get__session_players(session_id), 
+		queryFn: () => get__session_players(+(session_id || -1)), 
 	})
 
 	if(error__list_players) {
@@ -74,7 +61,7 @@ export default function EndScreen() {
 
 	const { data: final_score, error: error__final_score } = useQuery({
 		queryKey: [ 'session', session_id, 'finalscore', finalscore_id ], 
-		queryFn: () => get__final_score(session_id, finalscore_id), 
+		queryFn: () => get__final_score(+(session_id || -1), +(finalscore_id || -1)), 
 	})
 
 	if(error__final_score) {

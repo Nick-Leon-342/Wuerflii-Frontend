@@ -1,14 +1,14 @@
 
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 
-import { type Type__User, Zod__User_PATCH, type Type__User_PATCH } from '@/types/Zod__User'
-import { delete__user, get__user, patch__user } from '@/api/user'
+import { Zod__User_PATCH, type Type__User_PATCH } from '@/types/Zod__User'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import { delete__logout } from '@/api/auth'
+import { delete__user, patch__user } from '@/api/user'
+import { useUser } from '@/hooks/useUser'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import Username_And_Password__Form from '@/components/Username_And_Password/Username_And_Password__Form'
@@ -26,6 +26,13 @@ import { toast } from 'sonner'
 
 export default function Profile() {
 
+	const {
+		user, 
+		logout, 
+		setUser, 
+		loading_logout, 
+	} = useUser()
+
 	const navigate		= useNavigate()
 	const { t }			= useTranslation()
 	const query_client	= useQueryClient()
@@ -36,36 +43,16 @@ export default function Profile() {
 	const [ password__confirm,		setPassword__confirm		] = useState<string>('')
 
 	const [ successfully_saved, 	setSuccessfully_saved		] = useState<boolean>(false)
-	const [ loading_logout, 		setLoading_logout			] = useState<boolean>(false)
 	const [ loading_delete_account, setLoading_delete_account	] = useState<boolean>(false)
 
 
 
 
 
-	// __________________________________________________ User __________________________________________________
-
-	const [ user, setUser ] = useState<Type__User>()
-
-	const { data: tmp_user, error: error__user } = useQuery({
-		queryFn: () => get__user(), 
-		queryKey: [ 'user' ], 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-
 	useEffect(() => {
-		function init() { 
-			if(!tmp_user) return
-			setName(tmp_user.Name || '') 
-			setUser(tmp_user)
-		}
+		function init() { setName(user?.Name || '') }
 		init()
-	}, [ tmp_user ])
+	}, [ user ])
 
 	const mutate__user = useMutation({
 		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
@@ -134,26 +121,6 @@ export default function Profile() {
 			})
 
 		}).finally(() => setLoading_delete_account(false))
-	}
-
-	function logout() {
-
-		setLoading_logout(true)
-
-		delete__logout().then(() => {
-			
-			navigate('/registration_and_login', { replace: true })
-			setTimeout(() => query_client.clear(), 0)
-			toast.success(t('successfully.logged_out'))
-				
-		}).catch(err => {
-
-			handle_error({
-				err
-			})
-			
-		}).finally(() => { setLoading_logout(false) })
-
 	}
 
 

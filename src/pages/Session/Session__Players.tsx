@@ -9,7 +9,7 @@ import { Zod__Player_List__PATCH, type Type__Player_List__PATCH, type Type__Play
 import { get__session_players, patch__session_players, post__session_players } from '@/api/session/session_players'
 import Context__ENV_Variables from '@/Provider_And_Context/Provider_And_Context__ENV_Variables'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import { get__user } from '@/api/user'
+import { useUser } from '@/hooks/useUser'
 
 import DragAndDropNameColorList from '@/components/misc/Drag_And_Drop_Name_Color_List'
 import Popup__Settings from '@/components/misc/Popup__Settings'
@@ -25,15 +25,17 @@ import { toast } from 'sonner'
 
 export default function Session__Players() {
 
-	const { MAX_LENGTH_PLAYER_NAME, MAX_PLAYERS } = useContext(Context__ENV_Variables)
+	const { 
+		MAX_LENGTH_PLAYER_NAME, 
+		MAX_PLAYERS
+	} = useContext(Context__ENV_Variables)
 
-	const navigate		= useNavigate()
-	const query_client	= useQueryClient()
-	const { t }			= useTranslation()
-	const handle_error	= useErrorHandling()
-
-	const { session_id } = useParams()
-
+	const { user }			= useUser()
+	const { session_id }	= useParams()
+	const navigate			= useNavigate()
+	const query_client		= useQueryClient()
+	const { t }				= useTranslation()
+	const handle_error		= useErrorHandling()
 
 	// ____________________ Players ____________________
 
@@ -45,20 +47,6 @@ export default function Session__Players() {
 
 
 	// __________________________________________________ Queries __________________________________________________
-
-	// ____________________ User ____________________
-
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryKey: [ 'user' ], 
-		queryFn: () => get__user(), 
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user, 
-		})
-	}
-
 
 	// ____________________ List__Players ____________________
 
@@ -222,7 +210,7 @@ export default function Session__Players() {
 
 
 			<Custom_Button 
-				loading={isLoading__user || isLoading__list_players || mutate__players_add.isPending || mutate__players_edit.isPending}
+				loading={isLoading__list_players || mutate__players_add.isPending || mutate__players_edit.isPending}
 				text={t('save')}
 				onClick={save}
 			/>
