@@ -1,41 +1,40 @@
 
 
-import type { Axios } from 'axios'
-import type { Type__Server_Reponse__Player__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player__GET'
-import type { Type__Client_To_Server__Session_Players__POST_And_PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session_Players__POST_And_PATCH'
-import type { Type__Server_Response__Player_Env__Get } from '../../types/Type__Server_Response/Type__Server_Response__Player_Env__Get'
+import { api } from '../axios'
+
+import type { Type__Player_List, Type__Player_List__PATCH, Type__Player_List__POST } from '@/types/Zod__Player'
 
 
 
 
 
 export async function get__session_players(
-	axiosPrivate:	Axios, 
-	session_id:		number,
-): Promise<Array<Type__Server_Reponse__Player__Get>> {
-	return axiosPrivate.get(`/session/players?session_id=${session_id}`).then(({ data }) => data)
+	session_id:	number,
+): Promise<Type__Player_List> {
+	return api.get(
+		'/session/players', 
+		{ params: { session_id } }
+	).then(({ data }) => data)
 }
 
 export async function post__session_players(
-	axiosPrivate:	Axios, 
-	json:			Type__Client_To_Server__Session_Players__POST_And_PATCH, 
-): Promise<Array<Type__Server_Reponse__Player__Get>> {
-	return axiosPrivate.post('/session/players', json).then(({ data }) => data)
+	session_id:		number, 
+	List__Players:	Type__Player_List__POST, 
+): Promise<Type__Player_List> {
+	return api.post(
+		'/session/players', 
+		{ List__Players }, 
+		{ params: { session_id } }, 
+	).then(({ data }) => data)
 }
 
 export async function patch__session_players(
-	axiosPrivate:	Axios, 
-	json:			Type__Client_To_Server__Session_Players__POST_And_PATCH, 
+	session_id:		number, 
+	List__Players:	Type__Player_List__PATCH, 
 ): Promise<null> {
-	return axiosPrivate.patch('/session/players', json).then(({ data }) => data)
-}
-
-
-
-
-
-export async function get__session_players_env(
-	axiosPrivate:	Axios, 
-): Promise<Type__Server_Response__Player_Env__Get> {
-	return axiosPrivate.get(`/session/players/env`).then(({ data }) => data)
+	return api.patch(
+		'/session/players', 
+		{ List__Players }, 
+		{ params: { session_id } }, 
+	).then(({ data }) => data)
 }

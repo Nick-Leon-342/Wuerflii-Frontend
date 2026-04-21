@@ -1,42 +1,55 @@
 
 
-import './scss/Custom_Button.scss'
-
-import Loader from '../Loader/Loader'
+import { Spinner } from '../ui/spinner'
+import { Button } from '../ui/button'
+import { Check } from 'lucide-react'
 
 
 
 
 
 interface Props__Custom_Button {
-	text: 		string
-	onClick?:	() => void
-	loading?:	boolean
-	ok?:		boolean
-	className?:	string
-	type?:		'button' | 'submit'
+	text?: 				string
+	onClick?:			() => void
+
+	svg_after_text?:	boolean
+	SVG?:				React.ReactNode
+
+	disabled?:			boolean
+	loading?:			boolean
+	ok?:				boolean
+	
+	className?:			string
+	variant?:			'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
 }
 
 export default function Custom_Button({ 
+	svg_after_text, 
 	className, 
+	disabled, 
+	variant, 
 	onClick, 
 	loading, 
 	text, 
+	SVG, 
 	ok
 }: Props__Custom_Button) {
 
     return <>
-        <button
+        <Button
 			onClick={onClick}
-			disabled={loading || ok}
-			className={`button button_scale_0${className ? ` ${className}` : ''}`}
+			variant={variant}
+			disabled={loading || ok || disabled}
+			className={className ? className : ''}
         >
             
-			{loading && <Loader loading={true} className='custom_button_loader'/>}
-			{ok && <svg className='custom_button_ok' viewBox='0 -960 960 960'><path d='M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z'/></svg>}
+			{loading && <Spinner/>}
+			{!loading && !ok && !svg_after_text && SVG}
 			{!loading && !ok && text}
+			{!loading && !ok && svg_after_text && SVG}
+			{ok && <Check/>}
 
-        </button>
+        </Button>
 	</>
 
 }

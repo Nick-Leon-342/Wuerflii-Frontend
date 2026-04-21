@@ -1,18 +1,23 @@
 
 
-import type { Axios } from 'axios'
-import type { Type__User } from '../types/Type__User'
-import type { Type__Client_To_Server__User__PATCH } from '../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
+import { api } from './axios'
 
-export async function get__user(
-	axiosPrivate:	Axios, 
-): Promise<Type__User> {
-	return axiosPrivate.get('/user').then(({ data }) => data)
+import type { Type__User, Type__User_PATCH } from '@/types/Zod__User'
+
+
+
+
+
+export async function get__user(): Promise<Type__User> {
+	return api.get('/user').then(({ data }) => data)
 }
 
 export async function patch__user(
-	axiosPrivate:	Axios,
-	json:			Type__Client_To_Server__User__PATCH, 
+	json:	Type__User_PATCH, 
 ): Promise<undefined> {
-	return axiosPrivate.patch('/user', json).then(({ data }) => data)
+	return api.patch('/user', json).then(({ data }) => data)
+}
+
+export async function delete__user() {
+	return api.delete('/user')
 }

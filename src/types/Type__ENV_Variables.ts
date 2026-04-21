@@ -1,0 +1,27 @@
+
+
+export interface Type__ENV_Variables {
+	NAME__MIN_CHARACTER:			number
+	NAME__MAX_CHARACTER:			number
+
+	NAME__REGEX:					string
+	NAME__REGEX_MINMAX:				string
+	NAME__REGEX_LETTERFIRST:		string
+	NAME__REGEX_ALLOWEDCHARS:		string
+
+
+	PASSWORD__MIN_CHARACTER:		number
+	PASSWORD__MAX_CHARACTER:		number
+
+	PASSWORD__REGEX:				string
+	PASSWORD__REGEX_MINMAX:			string
+	PASSWORD__REGEX_ALLOWEDCHARS:	string
+	PASSWORD__REGEX_ALLOWEDSYMBOLS:	string
+
+
+	MAX_LENGTH_SESSION_NAME:		number
+	MAX_PLAYERS:					number
+	MAX_LENGTH_PLAYER_NAME:			number
+	MAX_COLUMNS:					number
+	MAX_FINALSCORES_LIMIT:			number
+}

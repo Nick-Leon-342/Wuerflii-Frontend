@@ -1,67 +1,69 @@
 
 
-import './scss/Statistics__Select_View.scss'
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
+import type { Type__Session, Type__Session_PATCH } from '../../types/Zod__Session'
+import { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
+import type { Type__User, Type__User_PATCH } from '@/types/Zod__User'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-
-import LoaderBox from '../Loader/Loader_Box'
-
 import { patch__session } from '../../api/session/session'
+import { Enum__Months } from '@/types/Enum/Enum__Months'
 import { patch__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
-import { List__Months_Enum, type Enum__Month } from '../../types/Enum/Enum__Month'
-import { Type__List_Months } from '../../types/Type__List_Months'
-
-import type { Type__Client_To_Server__Session__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__Session__PATCH'
-import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import type { Enum__Statistics_View } from '../../types/Enum/Enum__Statistics_View'
-import type { Type__Session } from '../../types/Type__Session'
-import type { Type__User } from '../../types/Type__User'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from '../ui/popover'
+import { ChartNoAxesColumn } from 'lucide-react'
+import { Button } from '../ui/button'
+import { toast } from 'sonner'
 
 
 
 
 
 interface Props__Statistics__Select_View {
-	list__years:		Array<number>
+	list__years:	Array<number>
 	session?:		Type__Session
-	user?:			Type__User
 	isSession:		boolean
 }
 
 export default function Statistics__Select_View({
 	list__years, 
 	session, 
-	user, 
 	isSession, 
 }: Props__Statistics__Select_View) {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	const {
+		user, 
+		setUser, 
+	} = useUser()
 
-	const [ view, 		setView 		] = useState<Enum__Statistics_View>('STATISTICS_OVERALL')
-	const [ view_month, setView_month 	] = useState<Enum__Month>('JANUARY')
+	const navigate		= useNavigate()
+	const { t }			= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
+
+	const [ view, 		setView 		] = useState<typeof Enum__Statistics_View[number]>('STATISTICS_OVERALL')
+	const [ view_month, setView_month 	] = useState<typeof Enum__Months[number]>('JANUARY')
 	const [ view_year, 	setView_year 	] = useState<number>(2026)
 
+
+
+
+
 	const mutate__user = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(axiosPrivate, json), 
+		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: (_, json) => {
-			query_client.setQueryData([ 'user' ], (prev: Type__User) => {
-				const tmp = { ...prev }
-				tmp.Statistics__View 		= json.Statistics__View			|| 'STATISTICS_OVERALL'
-				tmp.Statistics__View_Month 	= json.Statistics__View_Month	|| 'JANUARY'
-				tmp.Statistics__View_Year 	= json.Statistics__View_Year	|| 2026
-				return tmp
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, ...json }
 			})
+			query_client.setQueryData([ 'user' ], (prev: Type__User) => ({ ...prev, ...json }))
+
+			query_client.invalidateQueries({ queryKey: [ 'analytics' ]})
 		}, 
 		onError: err => {
 			handle_error({
@@ -71,9 +73,9 @@ export default function Statistics__Select_View({
 	})
 
 	const mutate__session = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Session__PATCH) => patch__session(axiosPrivate, json), 
+		mutationFn: (json: Type__Session_PATCH) => patch__session(+(session?.id || -1), json), 
 		onSuccess: (_, json) => {
-			query_client.setQueryData([ 'session', json.SessionID ], (prev: Type__Session) => {
+			query_client.setQueryData([ 'session', session?.id ], (prev: Type__Session) => {
 				if(!prev) return prev
 				const tmp = { ...prev }
 				tmp.Statistics__View 		= json.Statistics__View			|| 'STATISTICS_OVERALL'
@@ -81,12 +83,14 @@ export default function Statistics__Select_View({
 				tmp.Statistics__View_Year 	= json.Statistics__View_Year	|| 2026
 				return tmp
 			})
+
+			query_client.invalidateQueries({ queryKey: [ 'session', +(session?.id || -1), 'analytics' ]})
 		}, 
 		onError: err => {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('session_not_found'))
+					toast.error(t('session_not_found'))
 					navigate('/', { replace: true })
 				}
 			})
@@ -110,8 +114,8 @@ export default function Statistics__Select_View({
 	}, [ isSession, session, user ])
 
 	const sync_view = ( 
-		view: 		Enum__Statistics_View, 
-		view_month:	Enum__Month, 
+		view: 		(typeof Enum__Statistics_View)[number], 
+		view_month:	(typeof Enum__Months)[number], 
 		view_year:	number, 
 	) => {
 
@@ -132,53 +136,102 @@ export default function Statistics__Select_View({
 
 	}
 
+	const disabled = mutate__session.isPending || mutate__user.isPending
+
 
 
 
 
 	return <>
-		<div className='statistics__select_view'>
+		<Popover>
+			<PopoverTrigger asChild>
+				<Button
+					variant='outline'
+					className='w-10 h-10'
+				><ChartNoAxesColumn className='w-8! h-8!'/></Button>
+			</PopoverTrigger>
 
-			{(mutate__session.isPending || mutate__user.isPending) && <>
-				<LoaderBox
-					dark={true}
-					className='statistics__select_view--loader'
-				/>
-			</>}
 
-			{!mutate__session.isPending && !mutate__user.isPending && <>
 
-				<select
-					value={view}
-					onChange={({ target }) => sync_view(target.value as Enum__Statistics_View, view_month, view_year)}
-				>
-					<option key={0} value='STATISTICS_OVERALL'>{t('statistics_view.overall')}</option>
-					<option key={1} value='STATISTICS_YEAR'>{t('statistics_view.year')}</option>
-					<option key={2} value='STATISTICS_MONTH'>{t('statistics_view.month')}</option>
-				</select>
+			<PopoverContent align='end'>
+				<PopoverHeader>
+					<PopoverTitle></PopoverTitle>
+				</PopoverHeader>
 
-				{view === 'STATISTICS_MONTH' && <>
-					<select
-						value={view_month}
-						onChange={({ target }) => sync_view(view, target.value as Enum__Month, view_year)}
+				<div className='flex flex-col gap-4'>
+
+					<Select
+						onValueChange={value => sync_view(value as (typeof Enum__Statistics_View)[number], view_month, view_year)}
+						disabled={disabled}
+						value={view}
 					>
-						{Type__List_Months.map((month, index_month) => <>
-							<option key={month} value={List__Months_Enum[index_month]}>{t('months.' + month)}</option>
-						</>)}
-					</select>
-				</>}
+						<SelectTrigger>
+							<SelectValue/>
+						</SelectTrigger>
 
-				{(view === 'STATISTICS_YEAR' || view === 'STATISTICS_MONTH') && <>
-					<select
-						value={view_year}
-						onChange={({ target }) => sync_view(view, view_month, +target.value)}
-					>
-						{list__years.map(year => <option key={year} value={year}>{year}</option>)}
-					</select>
-				</>}
-			
-			</>}
+						<SelectContent>
+							<SelectGroup>
+								{Enum__Statistics_View.map(view => (
+									<SelectItem
+										key={view}
+										value={view}
+										className='text-lg'
+									>{t('statistics_view.' + view)}</SelectItem>
+								))}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
 
-		</div>
+					{(view === 'STATISTICS_YEAR' || view === 'STATISTICS_MONTH') && <>
+						<Select
+							onValueChange={value => sync_view(view, view_month, +value)}
+							value={view_year.toString()}
+							disabled={disabled}
+						>
+							<SelectTrigger>
+								<SelectValue/>
+							</SelectTrigger>
+
+							<SelectContent>
+								<SelectGroup>
+									{list__years.map(year => (
+										<SelectItem
+											key={year}
+											className='text-lg'
+											value={year.toString()}
+										>{year}</SelectItem>
+									))}
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</>}
+
+					{view === 'STATISTICS_MONTH' && <>
+						<Select
+							onValueChange={value => sync_view(view, value as (typeof Enum__Months)[number], view_year)}
+							disabled={disabled}
+							value={view_month}
+						>
+							<SelectTrigger>
+								<SelectValue/>
+							</SelectTrigger>
+
+							<SelectContent>
+								<SelectGroup>
+									{Enum__Months.map(month => (
+										<SelectItem
+											key={month}
+											value={month}
+											className='text-lg'
+										>{t('months.' + month)}</SelectItem>
+									))}
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</>}
+
+				</div>
+			</PopoverContent>
+		</Popover>
 	</>
 }
