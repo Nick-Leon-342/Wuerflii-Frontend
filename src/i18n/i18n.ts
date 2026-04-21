@@ -7,12 +7,17 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import English from './languages/en.json'
 import German from './languages/de.json'
 
-i18n.use(LanguageDetector).use(initReactI18next).init({
-	fallbackLng: 'de', 
-	resources: {
-		en : { translation: English },
-		de : { translation: German }
+i18n
+	.use(LanguageDetector)
+	.use(initReactI18next)
+	.init({
+		fallbackLng: 'de', 
+		load: 'languageOnly', 
+		resources: {
+			en : { translation: English },
+			de : { translation: German }
+		}
 	}
-})
+)
 
 export default i18n

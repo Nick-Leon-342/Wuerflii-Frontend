@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import Context__Server_Version from '@/Provider_And_Context/Provider_And_Context__Server_Version'
+import type { Type__User_PATCH } from '@/types/Zod__User'
 import { darkMode_string } from '@/logic/utils'
 import { patch__user } from '../../api/user'
 import { useUser } from '@/hooks/useUser'
@@ -17,7 +18,6 @@ import { Languages, Moon, Sun, User } from 'lucide-react'
 import Custom_Button from '../misc/Custom_Button'
 import { Spinner } from '../ui/spinner'
 import { Button } from '../ui/button'
-import type { Type__User_PATCH } from '@/types/Zod__User'
 
 
 
@@ -130,7 +130,7 @@ export default function Popup__Settings() {
 					{/* ____________________ Languages ____________________ */}
 
 					<Select
-						value={i18n.language}
+						value={i18n.language?.split('-')[0] || 'de'}
 						onValueChange={(value) => i18n.changeLanguage(value)}
 					>
 						<SelectTrigger className='pl-8'>
