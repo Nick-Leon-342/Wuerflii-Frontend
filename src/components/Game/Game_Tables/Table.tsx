@@ -13,9 +13,10 @@ import useErrorHandling from '../../../hooks/useErrorHandling'
 import { list_rows } from '../../../logic/utils'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@/components/ui/dialog'
 import Custom_Button from '@/components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
+import { ZoomIn, ZoomOut } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 
@@ -39,8 +40,8 @@ export default function Table({
 
 	const { t } = useTranslation()
 
-	const [ show, setShow ] = useState<boolean>(false)
-	const [ list_columns, setList_columns ] = useState<Array<number>>([])
+	const [ show, 				setShow				] = useState<boolean>(false)
+	const [ list_columns, 		setList_columns		] = useState<Array<number>>([])
 
 	const [ clicked__player, 	setClicked__player	] = useState<Type__Player>()
 	const [ clicked__row, 		setClicked__row		] = useState<number>()
@@ -203,7 +204,8 @@ const Dialog__Input = ({
 	const query_client 	= useQueryClient()
 	const handle_error 	= useErrorHandling()
 
-	const [ input_value,		setInput_value			] = useState<string | 'none'>('none')
+	const [ input_value,	setInput_value	] = useState<string | 'none'>('none')
+	const [ zoom, 			setZoom			] = useState<number>(3)
 
 	const mutate__table_columns = useMutation({
 		mutationFn: (json: Type__Table_Columns__PATCH) => patch__table_columns(+(session.id || -1), json), 
@@ -236,6 +238,16 @@ const Dialog__Input = ({
 			})
 		}
 	})
+
+	const list_zoom = [
+		'text-sm! h-10!', 
+		'text-md! h-10!', 
+		'text-lg! h-13!', 
+		'text-xl! h-13!', 
+		'text-2xl! h-15!', 
+		'text-3xl! h-15!', 
+		'text-4xl! h-15!', 
+	]
 
 
 
@@ -270,8 +282,15 @@ const Dialog__Input = ({
 		<Dialog open={show} onOpenChange={setShow}>
 			<DialogContent showCloseButton={false}>
 
-				<DialogHeader>
-					<DialogTitle></DialogTitle>
+				<DialogHeader className='flex flex-row'>
+					<Button
+						onClick={() => setZoom(prev => prev + 1 === list_zoom.length ? prev : prev + 1)}
+						variant='outline'
+					><ZoomIn/></Button>
+					<Button
+						onClick={() => setZoom(prev => prev === 0 ? prev : prev - 1)}
+						variant='outline'
+					><ZoomOut/></Button>
 				</DialogHeader>
 
 
@@ -281,7 +300,7 @@ const Dialog__Input = ({
 					{session?.Input_Type === 'TYPE' && <>
 						<Input 
 							tabIndex={0}
-							className='h-12 text-lg!'
+							className={list_zoom[zoom]}
 							value={input_value === 'none' ? '' : input_value}
 							onKeyDown={e => { if(e.code === 'Enter') save() }}
 							onChange={({ target }) => setInput_value(target.value === '' ? 'none' : target.value)}
@@ -293,18 +312,20 @@ const Dialog__Input = ({
 							onValueChange={value => setInput_value(value)}
 							value={input_value}
 						>
-							<SelectTrigger className='h-full w-full'>
-								<SelectValue/>
+							{/* <SelectTrigger className='h-full w-full'> */}
+							<SelectTrigger className={list_zoom[zoom]}>
+								<SelectValue className='h-20'/>
 							</SelectTrigger>
 
 							<SelectContent>
 								<SelectGroup>									
-									<SelectItem className='h-6' value='none'> </SelectItem>
+									<SelectItem className={list_zoom[zoom]} value='none'> </SelectItem>
 									{list_rows[clicked__row].Possible_Entries?.map(value => (
 										<SelectItem
 											key={value}
+											// className='text-lg'
+											className={list_zoom[zoom]}
 											value={value.toString()}
-											className='text-lg'
 										>{value.toString()}</SelectItem>
 									))}
 								</SelectGroup>
@@ -316,7 +337,7 @@ const Dialog__Input = ({
 						<Input 
 							list={'1'} 
 							tabIndex={0}
-							className='h-12 text-lg!'
+							className={list_zoom[zoom]}
 							value={input_value === 'none' ? '' : input_value}
 							onKeyDown={e => { if(e.code === 'Enter') save() }}
 							onChange={({ target }) => setInput_value(target.value === '' ? 'none' : target.value)}
