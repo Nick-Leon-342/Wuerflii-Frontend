@@ -1,11 +1,11 @@
 
 
+import { useTranslation } from 'react-i18next'
 import { format } from 'date-fns'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import type { AxiosError } from 'axios'
 
-import useRedirectToLogin from './useRedirectToLogin'
 import axios from 'axios'
 
 
@@ -15,6 +15,7 @@ import axios from 'axios'
 interface Type__Use__Error_Handling {
     err:						AxiosError | Error
     handle_no_server_response?:	() => void
+    handle_400?:				() => void
     handle_401?:				() => void
     handle_403?:				() => void
     handle_404?:				() => void
@@ -43,9 +44,7 @@ interface Type__Use__Error_Handling {
 
 export default function useErrorHandling() {
 
-	const navigate = useNavigate()
-	const location = useLocation()
-	const redirect_to_login = useRedirectToLogin()
+	const { t }				= useTranslation()
 
 
 
@@ -55,8 +54,8 @@ export default function useErrorHandling() {
 		err, 
 		handle_no_server_response, 
 
+		handle_400, 
 		handle_401, 
-		handle_403, 
 		handle_404, 
 		handle_409, 
 
@@ -67,46 +66,37 @@ export default function useErrorHandling() {
 		
 		if(!axios.isAxiosError(err)) {
 			if(handle_default) return handle_default()
-			console.error(format(new Date(), 'HH:mm.ss:'), err)
-			return window.alert(`Ein unerwarteter Fehler ist aufgetreten: ${err?.message || 'Unbekannt'}`)
+			console.error(format(new Date(), 'dd.MM.yyyy - HH:mm.ss:'), err)
+			return toast.error(`${t('error.unhandled_error')} ${err?.message || ''}`)
 		}
 
 		// Server doesn't respond
 		if(!err?.response) {
 	
 			if(handle_no_server_response) return handle_no_server_response()
-			console.error(format(new Date(), 'HH:mm.ss:'), err)
-			return window.alert('Server antwortet nicht!')
+			console.error(format(new Date(), 'dd.MM.yyyy - HH:mm.ss:'), err)
+			return toast.error(t('error.server_is_not_responding'))
 	
 		} 
-
-
-		// Redirect to login if user wasn't found
-		if(err?.response?.data === 'User not found.') return redirect_to_login()
 
 
 		// Check status
 		const status = err?.response?.status
 		switch (status) {
 			case 400:
-				window.alert(`Clientanfrage fehlerhaft!\n${err.response.data}`)
+				if(handle_400) return handle_400()
+				toast.error(`${t('error.client_request_invalid')}\n${err.response.data}`)
 				break
 
 			case 401:
 				if(handle_401) return handle_401()
-				navigate(`/?next=${location.pathname}${location.search}`, { replace: true })
-				break
-
-			case 403:
-				if(handle_403) return handle_403()
-				navigate(`/?next=${location.pathname}${location.search}`, { replace: true })
 				break
 
 			case 404:
 				if(handle_404) {
 					handle_404()
 				} else {
-					alert(err.response.data)
+					toast.error(err.response.data)
 				}
 				break
 
@@ -114,7 +104,7 @@ export default function useErrorHandling() {
 				if(handle_409) {
 					handle_409()
 				} else {
-					alert(err.response.data)
+					toast.error(err.response.data)
 				}
 				break
 
@@ -122,7 +112,7 @@ export default function useErrorHandling() {
 				if(handle_500) {
 					handle_500()
 				} else {
-					window.alert('Beim Server trat ein unerwarteter Fehler auf!')
+					toast.error(t('error.server_is_not_responding'))
 				}
 				break
 
@@ -131,7 +121,7 @@ export default function useErrorHandling() {
 					handle_default()
 				} else {
 					console.error(err)
-					window.alert(`Ein unbehandelter Fehler trat auf: ${status}`)
+					toast.error(`${t('error.unhandled_error')} ${status}`)
 				}
 				break
 		}

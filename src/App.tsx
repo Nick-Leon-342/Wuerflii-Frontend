@@ -1,14 +1,15 @@
 
 
-import './App.scss'
+import './App.css'
 
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Axios_Private_Route from './logic/Axios_Private_Route'
+import { Toaster } from './components/ui/sonner'
 
 
 // ____________________ RegistrationAndLogin ____________________
 
-import Registration_And_Login from './pages/Registration_And_Login/Registration_And_Login'
-import PersistLogin from './logic/PersistLogin'
+import Registration_And_Login from './pages/Registration_And_Login'
 
 import Profile from './pages/Profile'
 
@@ -33,6 +34,7 @@ import Session__Select from './pages/Session/Session__Select'
 
 import End from './pages/Game/End'
 import Game from './pages/Game/Game'
+import Public_Route from './logic/Public_Route'
 
 
 
@@ -40,20 +42,27 @@ import Game from './pages/Game/Game'
 
 export default function App() {
 	
+	
 	return <>
 		<div className='App' id='App'>
+			<Toaster/>
 			<Router>
 				<Routes>
 
 					{/* 'Public' routes --> routes that can be accessed without token */}
-					<Route path='/registration_and_login' element={<Registration_And_Login />} />
+					<Route element={<Public_Route/>}>
+						<Route path='/registration_and_login' element={<Registration_And_Login />} />
+					</Route>
+
+
+
 
 
 					{/* 
 						Routes that are protected by a token
 						PersistLogin is needed, so that the user doesn't have to login after page refresh
 					*/}
-					<Route element={<PersistLogin />}>
+					<Route element={<Axios_Private_Route />}>
 
 						<Route path='/profile' element={<Profile />} />
 
@@ -76,8 +85,8 @@ export default function App() {
 
 						{/* __________ Game __________ */}
 
-						<Route path='/game' element={<Game />} />
-						<Route path='/game/end' element={<End />} />
+						<Route path='/session/:session_id/game' element={<Game />} />
+						<Route path='/session/:session_id/game/end/:finalscore_id' element={<End />} />
 						
 					</Route>
 

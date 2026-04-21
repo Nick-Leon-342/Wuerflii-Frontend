@@ -1,3 +1,3 @@
 
 
-export type Enum__View = 'SHOW__MONTH'| 'SHOW__YEAR' | 'SHOW__CUSTOM_DATE' | 'SHOW__ALL'
+export const Enum__View = [ 'SHOW__ALL', 'SHOW__YEAR', 'SHOW__MONTH', 'SHOW__CUSTOM_DATE' ] as const

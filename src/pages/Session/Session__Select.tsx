@@ -1,33 +1,28 @@
 
 
-import './scss/Session__Select.scss'
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { formatDate } from '../../logic/utils'
+import { useEffect, useState } from 'react'
 
-import Context__Universal_Loader from '../../Provider_And_Context/Provider_And_Context__Universal_Loader'
 import useErrorHandling from '../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-
-import Custom_Link from '../../components/NavigationElements/Custom_Link'
-import Popup__Dropdown from '../../components/Popup/Popup__Dropdown'
-import OptionsDialog from '../../components/Popup/Popup__Options'
-import LoaderBox from '../../components/Loader/Loader_Box'
-
-import ArrowDown from '../../svg/Arrow_Down.svg?react'
-import ListSort from '../../svg/List_Sort.svg?react'
-import Trashcan from '../../svg/Trashcan.svg?react'
 
 import { delete__session, get__sessions_list } from '../../api/session/session'
-import { get__user, patch__user } from '../../api/user'
+import { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
+import type { Type__Session } from '../../types/Zod__Session'
+import useRedirectToLogin from '@/hooks/useRedirectToLogin'
+import type { Type__User_PATCH } from '@/types/Zod__User'
+import { patch__user } from '../../api/user'
+import { useUser } from '@/hooks/useUser'
 
-import type { Type__Client_To_Server__User__PATCH } from '../../types/Type__Client_To_Server/Type__Client_To_Server__User__PATCH'
-import type { Type__Context__Universal_Loader } from '../../types/Type__Context/Type__Context__Universal_Loader'
-import type { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
-import type { Type__Session } from '../../types/Type__Session'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { ChevronUp, SortDesc, Square, SquareCheck, Trash2 } from 'lucide-react'
+import Popup__Settings from '@/components/misc/Popup__Settings'
+import { Separator } from '@/components/ui/separator'
+import { Spinner } from '@/components/ui/spinner'
+import { Button } from '@/components/ui/button'
+import { format } from 'date-fns'
+import { toast } from 'sonner'
 
 
 
@@ -35,53 +30,23 @@ import type { Type__Session } from '../../types/Type__Session'
 
 export default function Session__Select() {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
-
-	const ref = useRef<HTMLButtonElement>(null)
-	const ref___show__session_date = useRef<HTMLInputElement>(null)
-	const ref___show__session_names = useRef<HTMLInputElement>(null)
+	const { user, setUser }	= useUser()
+	const navigate			= useNavigate()
+	const { t }				= useTranslation()
+	const query_client		= useQueryClient()
+	const handle_error		= useErrorHandling()
+	const redirect_to_login	= useRedirectToLogin()
 
 	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
-
-	const [ show_settings, setShow_settings ] = useState<boolean>(false)
-
-	interface option {
-		Text: 	string
-		Alias:	Enum__View_Sessions
-	}
-	const list_orderOptions: Array<option> = [
-		{ Text: t('recently_played'), 	Alias: 'LAST_PLAYED'	},
-		{ Text: t('created'), 			Alias: 'CREATED'		},
-		{ Text: t('name'), 				Alias: 'NAME'			},
-	]
 
 
 
 	// ________________________________________ Queries __________________________________________________
 
-	// ____________________ User ____________________
-
-	const { data: user, isLoading: isLoading__user, error: error__user } = useQuery({
-		queryKey: [ 'user' ], 
-		queryFn: () => get__user(axiosPrivate), 
-		
-	})
-
-	if(error__user) {
-		handle_error({
-			err: error__user
-		})
-	}
-
-
 	// ____________________ List_Sessions ____________________
 
 	const { data: tmp_list_sessions, isLoading: isLoading__list_sessions, error: error__list_sessions } = useQuery({
-		queryFn: () => get__sessions_list(axiosPrivate), 
+		queryFn: () => get__sessions_list(), 
 		queryKey: [ 'session', 'list' ], 
 	})
 
@@ -118,8 +83,12 @@ export default function Session__Select() {
 	// __________________________________________________ Change List __________________________________________________
 
 	const mutate__show_session_date = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Date: !user?.Show__Session_Date }), 
+		mutationFn: () => patch__user({ Show__Session_Date: !user?.Show__Session_Date }), 
 		onSuccess: () => {
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, Show__Session_Date: !user?.Show__Session_Date }
+			})
 			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Date: !user?.Show__Session_Date })
 		}, 
 		onError: err => {
@@ -130,8 +99,12 @@ export default function Session__Select() {
 	})
 
 	const mutate__show_session_names = useMutation({
-		mutationFn: () => patch__user(axiosPrivate, { Show__Session_Names: !user?.Show__Session_Names }), 
+		mutationFn: () => patch__user({ Show__Session_Names: !user?.Show__Session_Names }), 
 		onSuccess: () => {
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, Show__Session_Names: !user?.Show__Session_Names }
+			})
 			query_client.setQueryData([ 'user' ], { ...user, Show__Session_Names: !user?.Show__Session_Names })
 		}, 
 		onError: err => {
@@ -142,8 +115,12 @@ export default function Session__Select() {
 	})
 
 	const mutate__change_order = useMutation({
-		mutationFn: (json: Type__Client_To_Server__User__PATCH) => patch__user(axiosPrivate, json), 
+		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
 		onSuccess: ( _, json ) => {
+			setUser(prev => {
+				if(!prev) return prev
+				return { ...prev, ...json }
+			})
 			query_client.setQueryData([ 'user' ], { ...user, ...json })
 			query_client.invalidateQueries({
 				queryKey: [ 'session', 'list' ], 
@@ -157,11 +134,11 @@ export default function Session__Select() {
 		}
 	})
 
-	function change_order(selected_option: Enum__View_Sessions) {
+	function change_order(selected_option: (typeof Enum__View_Sessions)[number]) {
 
 		mutate__change_order.mutate({
 			View__Sessions: 		selected_option, 
-			View__Sessions_Desc: selected_option === user?.View__Sessions ? !user?.View__Sessions_Desc : true
+			View__Sessions_Desc:	selected_option === user?.View__Sessions ? !user?.View__Sessions_Desc : true
 		})
 
 	}
@@ -173,16 +150,17 @@ export default function Session__Select() {
 	// __________________________________________________ Delete __________________________________________________
 
 	const mutate__delete = useMutation({
-		mutationFn: (session_id: number) => delete__session(axiosPrivate, session_id),
+		mutationFn: (session_id: number) => delete__session(session_id),
 		onSuccess: ( _, session_id ) => {
 			query_client.setQueryData([ 'session', 'list' ], (list_sessions: Array<Type__Session>) => list_sessions.filter(session => session.id !== session_id))
+			toast.success(t('successfully.deleted'))
 		}, 
 		onError: err => {
 			handle_error({
 				err, 
 				handle_404: () => {
-					alert(t('session_not_found'))
-					window.location.reload()
+					toast.error(t('session_not_found'))
+					redirect_to_login()
 				}
 			})
 		}
@@ -207,11 +185,11 @@ export default function Session__Select() {
 
 	// __________________________________________________ Select Checkbox __________________________________________________
 
-	const checkbox_click = ( index: number, checked: boolean ) => {
+	const checkbox_click = ( index: number, clicked: boolean ) => {
 
 		setList_sessions(prev => {
 			const tmp = [ ...prev ]
-			tmp[index].Checkbox_Checked_To_Delete = checked
+			tmp[index].Checkbox_Checked_To_Delete = clicked
 			return tmp
 		})
 
@@ -221,39 +199,86 @@ export default function Session__Select() {
 
 
 
-	// __________________________________________________ Universal Loader __________________________________________________
-
-	const { setLoading__universal_loader } = useContext<Type__Context__Universal_Loader>(Context__Universal_Loader)
-	useEffect(() => setLoading__universal_loader(isLoading__user || isLoading__list_sessions || mutate__change_order?.isPending), [ setLoading__universal_loader, isLoading__user, isLoading__list_sessions, mutate__change_order?.isPending ])
-
-
-
-
-
 	return <>
 
-		<OptionsDialog user={user}/>
+		<Popup__Settings/>
 
 
 
 
 
-		{/* __________________________________________________ Page __________________________________________________ */}
-
-		<div className='session__select'>
+		<div className='session__select flex flex-col w-9/10 lg:w-4xl gap-4'>
 			
-			<header>
+			<header className='flex flex-row justify-between'>
 
-				<button 
-					ref={ref}
-					className='button button_reverse button_scale_3'
-					onClick={() => setShow_settings(true)}
-				><ListSort/></button>
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button
+							variant='ghost'
+							className='w-10! h-10!'
+						><SortDesc className='w-8! h-8!'/></Button>
+					</PopoverTrigger>
 
-				<button
-					className={`button button_reverse trashcan${list_sessions?.length === 0 ? ' notvisible' : (!mutate__delete.isPending && list_sessions.some?.(session => session.Checkbox_Checked_To_Delete) ? ' button_scale_3 button_reverse_red' : ' disabled')}`}
+
+
+					<PopoverContent align='start'>
+
+						{/* ____________________ Names ____________________ */}
+						<Button
+							onClick={() => mutate__show_session_names.mutate()}
+							className='flex flex-row justify-between h-fit'
+							disabled={mutate__show_session_names.isPending}
+							variant='ghost'
+						>
+							<span>{t('show_session_name')}</span>
+							{mutate__show_session_names.isPending && <Spinner/>}
+							{!mutate__show_session_names.isPending && (user?.Show__Session_Names ? <SquareCheck/> : <Square/>)}
+						</Button>
+
+						{/* ____________________ Dates ____________________ */}
+						<Button
+							onClick={() => mutate__show_session_date.mutate()}
+							className='flex flex-row justify-between h-fit'
+							disabled={mutate__show_session_date.isPending}
+							variant='ghost'
+						>
+							<span>{t('show_date')}</span>
+							{mutate__show_session_date.isPending && <Spinner/>}
+							{!mutate__show_session_date.isPending && (user?.Show__Session_Date ? <SquareCheck/> : <Square/>)}
+						</Button>
+
+						<Separator/>
+
+						{/* ____________________ Order ____________________ */}
+						<div className='flex flex-col'>
+							{Enum__View_Sessions.map(view => {
+								const cs = user?.View__Sessions === view
+								const desc = user?.View__Sessions_Desc
+
+								return (
+									<Button
+										key={view}
+										variant='ghost'
+										onClick={() => change_order(view)}
+										className={`flex flex-row justify-between h-fit${cs ? ' text-primary' : ' [&_svg]:opacity-0'}`}
+									>
+										{t(`view_sessions.${view}`)}
+										<ChevronUp className={`transition-transform duration-500${desc ? ' rotate-180' : ''}`}/>
+									</Button>
+								)
+								
+							})}
+						</div>
+
+					</PopoverContent>
+				</Popover>
+
+				<Button
+					className={`w-10! h-10!${list_sessions?.length === 0 ? ' opacity-0' : ''}`}
+					disabled={mutate__delete.isPending || list_sessions.every(session => !session.Checkbox_Checked_To_Delete)}
 					onClick={handle_delete} 
-				><Trashcan/></button>
+					variant={!mutate__delete.isPending && list_sessions.some(session => session.Checkbox_Checked_To_Delete) ? 'destructive' : 'ghost'}
+				><Trash2 className='w-8! h-8!'/></Button>
 
 			</header>
 
@@ -261,50 +286,56 @@ export default function Session__Select() {
 
 
 
-			{/* __________________________________________________ No session in list __________________________________________________ */}
+			{/* ____________________ Loading ____________________ */}
 
-			{!isLoading__list_sessions && list_sessions?.length === 0 && <h1 className='no-game'>Es gibt noch keine Partie!</h1>}
+			{isLoading__list_sessions && <Spinner/>}
 
+			{/* ____________________ No session in list ____________________ */}
 
+			{!isLoading__list_sessions && list_sessions?.length === 0 && <h1 className='flex flex-row justify-center text-xl font-bold'>{t('no_game_yet')}</h1>}
 
-			{/* __________________________________________________ Session list __________________________________________________ */}
+			{/* ____________________ Session list ____________________ */}
 
 			{!isLoading__list_sessions && list_sessions?.length !== 0 && <>
 
-				<dl>
+				<div className='flex flex-col gap-2'>
 					{list_sessions.map?.((session, index_session) => (
-						<dt 
+						<Button 
 							key={index_session}
 							style={{ 
 								backgroundColor: session.Color + '70', 
-								border: '2px solid', 
-								borderColor: session.Color + '90', 
+								border: '2px solid' + session.Color + '90', 
 							}}
+							className='flex flex-row justify-baseline items-center gap-2 h-12 text-foreground'
+							onClick={() => navigate(`/session/${session.id}/${session.List__Players?.length === 0 ? 'players' : 'preview'}`)}
 						>
 
 							<input 
-								className='button-responsive'
 								type='checkbox' 
+								onClick={e => e.stopPropagation()}
+								className='h-4 w-4 cursor-pointer shrink-0'
 								checked={session.Checkbox_Checked_To_Delete}
 								onChange={({ target }) => !mutate__delete.isPending && checkbox_click(index_session, target.checked)} 
 							/>
 
 							{session.List__Players && <>
-								<Link to={`/session/${session.id}/${session.List__Players.length === 0 ? 'players' : 'preview'}`}>
+								<div className='flex flex-col w-full md:items-center md:flex-row md:justify-between overflow-hidden md:gap-2'>
 
-									<label className='names'>
+									<span className='block text-start w-full truncate'>
 										{(user?.Show__Session_Names || session.List__Players.length === 0) && session.Name}
 										{!user?.Show__Session_Names && session.List__Players.length > 0 && session.List__Players.map(p => p.Name).join(' vs ')}
-									</label>
+									</span>
 
-									{user?.Show__Session_Date && <label className='date'>{formatDate(session?.LastPlayed || new Date())}</label>}
+									<span className='flex text-sm text-muted-foreground shrink-0'>
+										{user?.Show__Session_Date && <label className='date'>{format(new Date(session?.LastPlayed || new Date()), 'dd.MM.yyyy')}</label>}
+									</span>
 
-								</Link>
+								</div>
 							</>}
 
-						</dt>
+						</Button>
 					))}
-				</dl>
+				</div>
 
 			</>}
 
@@ -312,69 +343,13 @@ export default function Session__Select() {
 
 
 
-			<Custom_Link 
+			<Button
+				variant='link'
+				className='p-0 w-fit h-fit text-md'
 				onClick={() => navigate('/session', { replace: false })}
-				text={t('create_session')}
-			/>
+			>{t('create_session')}</Button>
 
 		</div>
-		
-
-
-
-
-		<Popup__Dropdown
-			target_ref={ref}
-			show_popup={show_settings}
-			setShow_popup={setShow_settings}
-			className='session__select--popup--settings'
-			alignLeft={true}
-		>
-			
-			<div className='session__select--popup--settings--show'>
-				{mutate__show_session_names.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_names.isPending && <>
-					<input 
-						onChange={() => mutate__show_session_names.mutate()}
-						checked={user?.Show__Session_Names} 
-						ref={ref___show__session_names}
-						type='checkbox' 
-
-					/>
-				</>}
-				<span onClick={() => ref___show__session_names.current?.click()}>{t('show_session_name')}</span>
-			</div>
-			<div className='session__select--popup--settings--show'>
-				{mutate__show_session_date.isPending && <LoaderBox dark={true} className='session__select--popup--settings--show--loader'/>}
-				{!mutate__show_session_date.isPending && <>
-					<input 
-						onChange={() => mutate__show_session_date.mutate()}
-						checked={user?.Show__Session_Date} 
-						ref={ref___show__session_date}
-						type='checkbox' 
-					/>
-				</>}
-				<span onClick={() => ref___show__session_date.current?.click()}>{t('show_date')}</span>
-			</div>
-
-			{list_orderOptions.map(option => {
-				const cs = user?.View__Sessions === option.Alias
-				const desc = user?.View__Sessions_Desc
-
-				return (
-					<button 
-						key={option?.Text}
-						onClick={() => change_order(option.Alias)}
-						className={`button button_reverse${cs ? ' session__select--popup--settings--currently_selected' : ''}${desc ? ' session__select--popup--settings--desc' : ''}`}
-					>
-						{option.Text}
-						<ArrowDown/>
-					</button>
-				)
-				
-			})}
-
-		</Popup__Dropdown>
 
 	</>
 }

@@ -1,18 +1,23 @@
 
 
-import type { Axios } from 'axios'
-import type { Type__Server_Response__Analytics__GET } from '../types/Type__Server_Response/Type__Server_Response__Analytics__GET'
-import type { Type__Server_Response__Analytics_Session__GET } from '../types/Type__Server_Response/Type__Server_Response__Analytics_Session__GET'
+import { api } from './axios'
 
-export function get__analytics(
-	axiosPrivate:	Axios, 
-): Promise<Type__Server_Response__Analytics__GET> {
-	return axiosPrivate.get('/analytics').then(({ data }) => data)
+import type { Type__Analytics_Session } from '../types/Type__Analytics_Session'
+import type { Type__Analytics } from '../types/Type__Analytics'
+
+
+
+
+
+export async function get__analytics(): Promise<Type__Analytics> {
+	return api.get('/analytics').then(({ data }) => data)
 }
 
-export function get__analytics_session(
-	axiosPrivate:	Axios, 
-	session_id:		number, 
-): Promise<Type__Server_Response__Analytics_Session__GET> {
-	return axiosPrivate.get(`/analytics/session?session_id=${session_id}`).then(({ data }) => data)
+export async function get__analytics_session(
+	session_id:	number, 
+): Promise<Type__Analytics_Session> {
+	return api.get(
+		'/analytics/session', 
+		{ params: { session_id } }
+	).then(({ data }) => data)
 }

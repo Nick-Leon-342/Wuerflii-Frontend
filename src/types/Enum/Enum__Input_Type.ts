@@ -1,3 +1,3 @@
 
 
-export type Enum__Input_Type = 'SELECT' | 'SELECT_AND_TYPE' | 'TYPE'
+export const Enum__Input_Type = [ 'SELECT', 'SELECT_AND_TYPE', 'TYPE' ] as const

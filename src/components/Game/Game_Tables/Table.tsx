@@ -1,48 +1,52 @@
 
 
-import './scss/Table.scss'
-
-import React, { useEffect, useState, type ChangeEvent, type FocusEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
+import type { Type__Player, Type__Player_With_Table_Columns } from '@/types/Zod__Player'
+import type { Type__Table_Columns, Type__Table_Columns__PATCH } from '@/types/Zod__Table_Columns'
+import { patch__table_columns } from '../../../api/table_columns'
+import type { Type__Session } from '../../../types/Zod__Session'
 import useErrorHandling from '../../../hooks/useErrorHandling'
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { list_rows } from '../../../logic/utils'
 
-import LoaderBox from '../../Loader/Loader_Box'
-
-import { patch__table_columns } from '../../../api/table_columns'
-
-import type { Type__Client_To_Server__Table_Columns__PATCH } from '../../../types/Type__Client_To_Server/Type__Client_To_Server__Table_Columns__PATCH'
-import type { Type__Server_Response__Table_Columns__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Table_Columns__GET'
-import type { Type__Server_Reponse__Player__Get } from '../../../types/Type__Server_Response/Type__Server_Response__Player__GET'
-import type { Type__Table_Columns } from '../../../types/Type__Table_Column'
-import type { Type__Session } from '../../../types/Type__Session'
-import { useTranslation } from 'react-i18next'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@/components/ui/dialog'
+import Custom_Button from '@/components/misc/Custom_Button'
+import { Button } from '@/components/ui/button'
+import { ZoomIn, ZoomOut } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
 
 
 
 
 
 interface Props__Table {
-	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
-	list__table_columns:		Array<Type__Server_Response__Table_Columns__Get>
-	list_players:			Array<Type__Server_Reponse__Player__Get>
-	disabled:				boolean
-	session:				Type__Session | undefined
+	setList__player_with_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Player_With_Table_Columns>>>
+	list__player_with_table_columns:	Array<Type__Player_With_Table_Columns>
+	disabled:							boolean
+	session:							Type__Session | undefined
 }
 
 export default function Table({ 
-	setList_table_columns, 
-	list__table_columns, 
-	list_players, 
+	setList__player_with_table_columns, 
+	list__player_with_table_columns, 
 	disabled, 
 	session, 
 }: Props__Table) {
 
 	const { t } = useTranslation()
-	const [ list_columns, setList_columns ] = useState<Array<number>>([])
+
+	const [ show, 				setShow				] = useState<boolean>(false)
+	const [ list_columns, 		setList_columns		] = useState<Array<number>>([])
+
+	const [ clicked__player, 	setClicked__player	] = useState<Type__Player>()
+	const [ clicked__row, 		setClicked__row		] = useState<number>()
+	const [ clicked__column, 	setClicked__column	] = useState<number>()
+	const [ clicked__value, 	setClicked__value	] = useState<number | null>(null)
 
 
 
@@ -56,23 +60,59 @@ export default function Table({
 		init()
 	}, [ session ])
 
+	function onClick(
+		player:	Type__Player, 
+		value:	number, 
+		column:	number, 
+		row:	number, 
+	) {
+		
+		setClicked__player(player)
+		setClicked__value(value)
+		setClicked__column(column)
+		setClicked__row(row)
+		setShow(true)
+
+	}
 
 
 
 
-	if(!session || list__table_columns.length === 0) return 
+
+	if(!session || list__player_with_table_columns.length === 0) return 
 
 	return <>
-		<table className='table table_game'>
-			<tbody>
+		{clicked__player && typeof clicked__column === 'number' && typeof clicked__row === 'number' && <>
+			<Dialog__Input
+				setList__player_with_table_columns={setList__player_with_table_columns}
+				clicked__player={clicked__player}
+				clicked__column={clicked__column}
+				clicked__value={clicked__value}
+				clicked__row={clicked__row}
+				session={session}
+					
+				setShow={setShow}
+				show={show}
+			/>
+		</>}
+
+
+
+		<table className='
+				flex w-max border-2 rounded-lg overflow-hidden border-muted-foreground [&_tr]:border-muted-foreground [&_td]:border-muted-foreground
+				[&_td]:flex [&_td]:flex-row [&_td]:items-center [&_td]:justify-center [&_td]:w-[60px] [&_td]:h-[60px] [&_td]:gap-1 [&_span]:text-center
+				[&_td:nth-child(-n+2)]:w-[120px] [&_td:nth-child(-n+2)_path]:fill-foreground! [&_td:nth-child(-n+2)]:font-bold [&_td:nth-child(2)]:border-r-2
+				[&_svg]:w-6
+		'>
+			<tbody className='flex flex-col divide-y'>
 				{list_rows.map((row, index_row) => {
 					
-					if(row.Name === 'Blank') return <tr key={index_row} className='blank'/>
+					if(row.Name === 'Blank') return <tr key={index_row} className='h-2 border-b-2'/>
 
 					return (
 						<tr 
 							key={index_row} 
-							className={`${row.Border_Bottom ? 'border_bottom' : ''}${row.Border_Top ? 'border_top' : ''}`}
+							className={`flex flex-row divide-x ${row.Border_Bottom ? ' border-b-2' : ''}`}
 						>
 							
 							{/* First two columns */}
@@ -80,42 +120,41 @@ export default function Table({
 
 
 
-							{list_players?.map((player, index_player) => {
-								return <React.Fragment key={`${player.id}_${index_row}`}>
+							{list__player_with_table_columns?.map((player_with_table_columns, index__player_with_table_columns) => {
+								return <React.Fragment key={`${player_with_table_columns.id}_${index_row}`}>
 									{list_columns.map(column => {
 
-										const className = `${column === session.Columns - 1 ? 'border-right' : ''}`
-										const key = `${index_player}_${column}`
+										const className = `${column === session.Columns - 1 && index__player_with_table_columns + 1 !== list__player_with_table_columns.length ? ' border-r-2' : ''}`
+										const value = player_with_table_columns.List__Table_Columns[column][row.Name as keyof Type__Table_Columns]
+										const key = `${index__player_with_table_columns}_${column}`
 
 										if(!row.Possible_Entries || disabled) {
-											if(!list__table_columns[index_player].List__Table_Columns[column]) return <div key={key}></div>
-											const value = list__table_columns[index_player].List__Table_Columns[column][row.Name as keyof Type__Table_Columns]
+											if(!player_with_table_columns.List__Table_Columns[column]) return <div key={key}></div>
 											return (
 												<td 
 													key={key}
 													className={className} 
-													style={{ backgroundColor: player.Color }} 
+													style={{ backgroundColor: player_with_table_columns.Color }} 
 												>
-													<span>{disabled ? value || 0 : value}</span>
+													<span className='dark:text-background'>{disabled ? value || 0 : value}</span>
 												</td>
 											)
 										}
 
 										return (
 											<td 
-												key={key}	
-												className={className} 
-												style={{ backgroundColor: player.Color }} 
+												key={key}
+												className={className}
+												// className='not-last'
+												style={{ backgroundColor: player_with_table_columns.Color }} 
 											>
-												<Input_Element
-													setList_table_columns={setList_table_columns}
-													list__table_columns={list__table_columns}
-													list_players={list_players}
-													index_player={index_player}
-													index_row={index_row}
-													session={session}
-													column={column}
-												/>
+												<Button
+													variant='ghost'
+													className='w-full h-full rounded-none p-0 dark:text-background'
+													onClick={() => onClick(player_with_table_columns, value, column, index_row)}
+												>
+													{value === null ? '' : value}
+												</Button>
 											</td>
 										)
 									})}
@@ -134,186 +173,196 @@ export default function Table({
 
 
 
+interface Props___Dialog__Input {
+	setList__player_with_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Player_With_Table_Columns>>>
 
-interface Props__Input_Element {
-	setList_table_columns:	React.Dispatch<React.SetStateAction<Array<Type__Server_Response__Table_Columns__Get>>>
-	list__table_columns:		Array<Type__Server_Response__Table_Columns__Get>
-	list_players:			Array<Type__Server_Reponse__Player__Get>
-	index_player:			number
-	index_row:				number
-	session:				Type__Session
-	column:					number
+	clicked__player:	Type__Player
+	clicked__column:	number
+	clicked__value:		number | null
+	clicked__row:		number
+	session:			Type__Session
+
+	setShow:		React.Dispatch<React.SetStateAction<boolean>>
+	show:			boolean
 }
 
-const Input_Element = ({
-	setList_table_columns, 
-	list__table_columns, 
-	list_players, 
-	index_player, 
-	index_row, 
+const Dialog__Input = ({
+	setList__player_with_table_columns, 
+
+	clicked__player, 
+	clicked__column, 
+	clicked__value, 
+	clicked__row, 
 	session, 
-	column, 
-}: Props__Input_Element) => {
 
-	const navigate = useNavigate()
-	const { t } = useTranslation()
-	const query_client = useQueryClient()
-	const axiosPrivate = useAxiosPrivate()
-	const handle_error = useErrorHandling()
+	setShow, 
+	show, 
+}: Props___Dialog__Input) => {
 
-	const [ id,				setId			] = useState<string>('')
-	const [ input_value,	setInput_value	] = useState<number | null>(null)
+	const navigate		= useNavigate()
+	const { t } 		= useTranslation()
+	const query_client 	= useQueryClient()
+	const handle_error 	= useErrorHandling()
 
-	function init_value() {
-
-		const tmp = list__table_columns[index_player].List__Table_Columns[column][list_rows[index_row].Name as keyof Type__Table_Columns]
-		const value = tmp === null ? null : tmp
-		setInput_value(value)
-
-	}
+	const [ input_value,	setInput_value	] = useState<string | 'none'>('none')
+	const [ zoom, 			setZoom			] = useState<number>(3)
 
 	const mutate__table_columns = useMutation({
-		mutationFn: (json: Type__Client_To_Server__Table_Columns__PATCH) => patch__table_columns(axiosPrivate, json), 
+		mutationFn: (json: Type__Table_Columns__PATCH) => patch__table_columns(+(session.id || -1), json), 
 		onSuccess: data => {
-			setList_table_columns(prev => {
-				if(!prev) return prev
+
+			setList__player_with_table_columns(prev => {
+				if(prev === undefined) return prev
 				const tmp = [ ...prev ]
-				tmp[index_player].List__Table_Columns[column] = data
+
+				const index__player = tmp.findIndex(player => player.id === clicked__player.id)
+				tmp[index__player].List__Table_Columns[clicked__column] = data
+
 				query_client.setQueryData([ 'session', session?.id, 'table_columns' ], tmp)
 				return tmp 
 			})
+
+			toast.success(t('successfully.saved'))
+			setShow(false)
+
 		}, 
 		onError: ( err, json ) => {
 			const value = json.Value
 			handle_error({
 				err, 
-				handle_no_server_response: () => {
-					if(window.confirm(t('error.synchronization_of_input_failed', { value: value, column: column + 1, name: list_players[index_player].Name }))) {
-						mutate__table_columns.mutate(json)
-					} else {
-						init_value()
-					}
-				}, 
 				handle_404: () => {
-					alert(t('error.resource_not_found'))
+					toast.error(t('error.resource_not_found'))
 					navigate(`/`)
 				}, 
-				handle_409: () => {
-					alert(t('error.value_invalid', { value: value }))
-					init_value()
-				}, 
-				handle_500: () => {
-					if(window.confirm(t('error.synchronization_of_input_failed', { value: value, column: column + 1, name: list_players[index_player].Name }))) {
-						mutate__table_columns.mutate(json)
-					} else {
-						init_value()
-					}
-				}
+				handle_409: () => { toast.error(t('error.value_invalid', { value: value })) }, 
 			})
 		}
 	})
 
+	const list_zoom = [
+		'text-sm! h-10!', 
+		'text-md! h-10!', 
+		'text-lg! h-13!', 
+		'text-xl! h-13!', 
+		'text-2xl! h-15!', 
+		'text-3xl! h-15!', 
+		'text-4xl! h-15!', 
+	]
 
 
 
 
-	function onBlur(event: FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
 
-		const input = event.target.value
-		const new_value = input === '' ? null : +input
+	function init_value() { setInput_value(clicked__value === null ? 'none' : clicked__value.toString()) }
 
-		// Check if value is the same as before
-		const tmp = list__table_columns[index_player].List__Table_Columns[column][list_rows[index_row].Name as keyof Type__Table_Columns]
-		const value = tmp === null ? null : tmp
-		if(new_value === value) return
+	function save() {
 
+		const new_value = input_value === 'none' ? null : +input_value
+		if(new_value === clicked__value) return
 
 		mutate__table_columns.mutate({
-			SessionID: session.id, 
-			PlayerID: list_players[index_player].id, 
-			Column: column, 
-			Name: list_rows[index_row].Name, 
-			Value: new_value, 
+			PlayerID:	clicked__player.id, 
+			Column:		clicked__column, 
+			Name: 		list_rows[clicked__row].Name, 
+			Value:		new_value, 
 		})
 
 	}
 
-	function onChange(input: string): void { 
-
-		const input__number = parseInt(input)
-		setInput_value(Number.isNaN(input__number) ? null : input__number) 
-	}
-
-	function isIOS() {
-
-		return (
-            ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform) ||
-            (navigator.userAgent.includes("Mac") && "ontouchend" in document)
-        )
-	
-	}
-
-	useEffect(() => { setId(index_player + '.' + index_row + '.' + column) }, [ index_player, index_row, column ])
-
-	useEffect(() => { init_value() }, [ list_players ]) // eslint-disable-line
-
-	useEffect(() => {
-		if(!session || !list__table_columns || !list__table_columns[index_player].List__Table_Columns[column]) return
-		init_value()
-	}, []) // eslint-disable-line
+	useEffect(() => { 
+		function init () { init_value() }
+		init()
+	}, [ show ])
 
 
 
 
 
 	return <>
+		<Dialog open={show} onOpenChange={setShow}>
+			<DialogContent showCloseButton={false}>
 
-		{mutate__table_columns.isPending && <>
-			<div className='table_loader-container'>
-				<LoaderBox className='table_loader' dark={true}/>
-			</div>
-		</>}
+				<DialogHeader className='flex flex-row'>
+					<Button
+						onClick={() => setZoom(prev => prev + 1 === list_zoom.length ? prev : prev + 1)}
+						variant='outline'
+					><ZoomIn/></Button>
+					<Button
+						onClick={() => setZoom(prev => prev === 0 ? prev : prev - 1)}
+						variant='outline'
+					><ZoomOut/></Button>
+				</DialogHeader>
 
-		{!mutate__table_columns.isPending && session?.Input_Type === 'TYPE' && <>
-			<input 
-				tabIndex={0}
-				onBlur={onBlur}
-				value={input_value === null ? '' : input_value}
-				onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
-			/>
-		</>}
 
-		{!mutate__table_columns.isPending && session?.Input_Type === 'SELECT' && <>
-			<select 
-				tabIndex={0}
-				className={`${isIOS() ? 'isios' : ''}`}
-				value={input_value === null ? '' : input_value}
-				onChange={(event: FocusEvent<HTMLSelectElement>) => { 
-					onBlur(event)
-					onChange(event.target.value)
-				}}
-			>
-				<option></option>
-				{list_rows[index_row].Possible_Entries?.map((v) => (
-					<option key={v} value={v}>{v}</option>
-				))}
-			</select>
-		</>}
 
-		{!mutate__table_columns.isPending && session?.Input_Type === 'SELECT_AND_TYPE' && <>
-			<input 
-				list={id} 
-				tabIndex={0}
-				onBlur={onBlur}
-				className={`${isIOS() ? 'isios' : ''}`}
-				value={input_value === null ? '' : input_value}
-				onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
-			/>
-			<datalist id={id}>
-				{list_rows[index_row].Possible_Entries?.map((v) => {
-					return <option key={v} value={v}/>
-				})}
-			</datalist>
-		</>}
+				<div>
+
+					{session?.Input_Type === 'TYPE' && <>
+						<Input 
+							tabIndex={0}
+							className={list_zoom[zoom]}
+							value={input_value === 'none' ? '' : input_value}
+							onKeyDown={e => { if(e.code === 'Enter') save() }}
+							onChange={({ target }) => setInput_value(target.value === '' ? 'none' : target.value)}
+						/>
+					</>}
+
+					{session?.Input_Type === 'SELECT' && <>
+						<Select
+							onValueChange={value => setInput_value(value)}
+							value={input_value}
+						>
+							{/* <SelectTrigger className='h-full w-full'> */}
+							<SelectTrigger className={list_zoom[zoom]}>
+								<SelectValue className='h-20'/>
+							</SelectTrigger>
+
+							<SelectContent>
+								<SelectGroup>									
+									<SelectItem className={list_zoom[zoom]} value='none'> </SelectItem>
+									{list_rows[clicked__row].Possible_Entries?.map(value => (
+										<SelectItem
+											key={value}
+											// className='text-lg'
+											className={list_zoom[zoom]}
+											value={value.toString()}
+										>{value.toString()}</SelectItem>
+									))}
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</>}
+
+					{session?.Input_Type === 'SELECT_AND_TYPE' && <>
+						<Input 
+							list={'1'} 
+							tabIndex={0}
+							className={list_zoom[zoom]}
+							value={input_value === 'none' ? '' : input_value}
+							onKeyDown={e => { if(e.code === 'Enter') save() }}
+							onChange={({ target }) => setInput_value(target.value === '' ? 'none' : target.value)}
+						/>
+						<datalist id={'1'}>
+							{list_rows[clicked__row].Possible_Entries?.map((v) => {
+								return <option key={v} value={v}/>
+							})}
+						</datalist>
+					</>}
+
+				</div>
+
+
+
+				<DialogFooter>
+					<Custom_Button
+						ok={(clicked__value === (input_value === 'none' ? null : input_value))}
+						loading={mutate__table_columns.isPending}
+						text={t('save')}
+						onClick={save}
+					/>
+				</DialogFooter>
+
+			</DialogContent>
+		</Dialog>
 	</>
 }
