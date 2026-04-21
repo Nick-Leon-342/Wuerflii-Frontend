@@ -9,6 +9,7 @@ import type { Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 import { get__table_columns } from '@/api/table_columns'
 import useErrorHandling from '@/hooks/useErrorHandling'
 import { get__session } from '@/api/session/session'
+import { type Type__Session } from '@/types/Zod__Session'
 import { post__game } from '@/api/game'
 
 import Table_Player from '@/components/Game/Game_Tables/Table_Player'
@@ -42,7 +43,9 @@ export default function Game() {
 	
 	// ____________________ Session ____________________
 
-	const { data: session, error: error__session } = useQuery({
+	const [ session, setSession ] = useState<Type__Session>()
+
+	const { data: tmp_session, error: error__session } = useQuery({
 		queryKey: [ 'session', +(session_id || -1) ], 
 		queryFn: () => get__session(+(session_id || -1)), 
 	})
@@ -56,6 +59,11 @@ export default function Game() {
 			}
 		})
 	}
+
+	useEffect(() => {
+		function init() { if(tmp_session) setSession(tmp_session) }
+		init()
+	}, [ tmp_session ])
 	
 
 	// ____________________ List__Table_Columns ____________________	
@@ -162,6 +170,7 @@ export default function Game() {
 						setSurrender_winner={setSurrender_winner}
 						surrender_winner={surrender_winner}
 						finish_game={finish_game}
+						setSession={setSession}
 						session={session}
 					/>
 

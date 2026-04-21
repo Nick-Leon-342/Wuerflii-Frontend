@@ -31,6 +31,7 @@ interface Props___Game__Settings {
 	setSurrender_winner:				React.Dispatch<React.SetStateAction<Type__Player_With_Table_Columns | undefined>>
 	surrender_winner?:					Type__Player_With_Table_Columns
 	finish_game:						() => void
+	setSession:							React.Dispatch<React.SetStateAction<Type__Session | undefined>>
 	session?:							Type__Session
 }
 
@@ -40,6 +41,7 @@ export default function Game__Settings({
 	setSurrender_winner, 
 	surrender_winner, 
 	finish_game, 
+	setSession, 
 	session, 
 }: Props___Game__Settings) {
 
@@ -60,11 +62,11 @@ export default function Game__Settings({
 		mutationFn: (json: Type__Session_PATCH) => patch__session(+(session?.id || -1), json), 
 		onSuccess: (_, json) => {
 			if(!session) return
-			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => {
+			setSession(prev => {
 				if(!prev) return prev
-				const tmp = { ...prev, ...json }
-				return tmp
+				return { ...prev, ...json }
 			})
+			query_client.setQueryData([ 'session', session.id ], (prev: Type__Session) => ({ ...prev, ...json }))
 		}
 	})
 
