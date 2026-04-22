@@ -111,8 +111,9 @@ export default function Profile() {
 
 		delete__user().then(() => {
 
+			setUser(null)
 			query_client.clear()
-			navigate('/registration_and_login', { replace: true })
+			toast.success(t('successfully.deleted'))
 
 		}).catch(err => {
 

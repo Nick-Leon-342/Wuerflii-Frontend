@@ -165,7 +165,7 @@ export default function Popup__Settings() {
 
 				</div>
 
-				<DialogFooter >
+				<DialogFooter>
 					<div className='flex flex-col [&_div]:flex [&_div]:flex-row [&_div]:justify-between [&_div]:gap-1'>
 						<div>
 							<span>{t('version_app')}:</span>

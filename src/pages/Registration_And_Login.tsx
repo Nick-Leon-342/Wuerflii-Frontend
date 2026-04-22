@@ -132,7 +132,7 @@ export default function Registration_And_Login() {
 					toast.error(t('error.credentials_missing'))
 				}, 
 				handle_409: () => {
-					toast.error(t('wrong_username_or_password'))
+					toast.error(t('error.wrong_username_or_password'))
 				}
 			})
 

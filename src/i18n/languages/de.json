@@ -56,12 +56,13 @@
 		"session__columns_min": "Zu wenige Spalten.", 
 		"session__columns_max": "Zu viele Spalten.", 
 
-		"server_is_not_responding": "Server is not responding.", 
+		"server_is_not_responding": "Server antwortet nicht.", 
 		"synchronization_of_gnadenwurf_failed": "Der Server antwortet nicht.\nDer Gnadenwurf für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 
 		"unhandled_error": "Es trat ein unerwarteter Fehler auf.", 
 		"username_taken": "Der Benutzername ist vergeben!", 
 		"value_invalid": "Der Eintrag '{{value}}' ist nicht zulässig!", 
-		"variables_not_initialized": "Error while fetching variables. Please reload and try again."
+		"variables_not_initialized": "Variablen konnten nicht geladen werden. Bitte lade die Seite neu und versuche es erneut.", 
+		"wrong_username_or_password": "Falscher Benutzername oder falsches Passwort!"
 	}, 
 	"finish_game": "Spiel beenden",
 	"game": {
@@ -187,7 +188,6 @@
 	}, 
 	"view_from": "Ansicht ab", 
 	"wins": "Gewonnen", 
-	"wrong_username_or_password": "Falscher Benutzername oder falsches Passwort!", 
 	"year": "Jahr", 
 	"yes": "Ja"
 }

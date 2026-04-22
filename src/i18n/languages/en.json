@@ -46,8 +46,8 @@
 		"resource_not_found": "Resource not found!", 
 		
 		"session_timeout": "Session timeout.", 
-		"session_not_found": "Session not found.", 
 		
+		"session_not_found": "Session not found.", 
 		"session__name_invalid": "Name invalid", 
 		"session__name_min": "Name too short.",
 		"session__name_max": "Name too long.",
@@ -61,7 +61,8 @@
 		"unhandled_error": "Encountered unhandled error.", 
 		"username_taken": "Username already taken.", 
 		"value_invalid": "Value '{{value}}' is invalid!", 
-		"variables_not_initialized": "Error while fetching variables. Please reload and try again."
+		"variables_not_initialized": "Error while fetching variables. Please reload and try again.", 
+		"wrong_username_or_password": "Wrong username or password!" 
 	}, 
 	"finish_game": "Finish game", 
 	"game": {
@@ -187,7 +188,6 @@
 	}, 
 	"view_from": "View from", 
 	"wins": "Wins", 
-	"wrong_username_or_password": "Wrong username or password!", 
 	"year": "Year", 
 	"yes": "Yes"
 }

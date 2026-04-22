@@ -5,6 +5,7 @@ import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Axios_Private_Route from './logic/Axios_Private_Route'
 import { Toaster } from './components/ui/sonner'
+import Public_Route from './logic/Public_Route'
 
 
 // ____________________ RegistrationAndLogin ____________________
@@ -34,7 +35,6 @@ import Session__Select from './pages/Session/Session__Select'
 
 import End from './pages/Game/End'
 import Game from './pages/Game/Game'
-import Public_Route from './logic/Public_Route'
 
 
 
