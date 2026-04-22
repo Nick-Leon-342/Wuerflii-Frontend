@@ -1,7 +1,6 @@
 
 
 {
-	"account": "Account", 
 	"action": {
 		"back": "Back", 
 		"cancel": "Cancel", 
@@ -148,6 +147,14 @@
 	"points_average": "Average amount of points", 
 	"points_maximum": "Highest amount of points", 
 	"points_minimum": "Minimum amount of points", 
+	"profile": {
+		"account": "Account", 
+		"confirm_user_deletion": "Are you sure you want to delete your account?\nThis cannot be undone!", 
+		"confirm_user_deletion_confirm": "Are you really sure?", 
+		"danger_zone": "Danger zone", 
+		"logout": "Logout", 
+		"delete": "Delete account" 
+	}, 
 	"score": "Score", 
 	"select_winner": "Select the winner", 
 	"session": "Session", 

@@ -3,7 +3,7 @@
 {
 	"action": {
 		"back": "Zurück", 
-		"change": "Ändern", 
+		"cancel": "Abbrechen", 
 		"edit": "Bearbeiten", 
 		"lets_go": "Los geht's", 
 		"ok": "Ok", 
@@ -42,8 +42,6 @@
 	"amount_of_games": "Anzahl von Spielen", 
 	"color": "Farbe", 
 	"columns": "Spalten", 
-	"confirm_user_deletion": "Bist du sicher, dass du deinen Account löschen willst?\nDas kann man nicht rückgängig machen!", 
-	"confirm_user_deletion_confirm": "Bist du wirklich ganz sicher?", 
 	"choose_beginning": "Beginn auswählen", 
 	"create_session": "Partie erstellen", 
 	"create_view": "Erstelle Ansicht", 
