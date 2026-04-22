@@ -70,7 +70,7 @@ export default function Profile() {
 		onError: err => {
 			handle_error({
 				err,
-				handle_409: () => toast.error(t('error.username_taken'))
+				handle_409: () => toast.error(t('auth.username_taken'))
 			})
 		}
 	})
@@ -88,7 +88,7 @@ export default function Profile() {
 
 		// Check if name and/or password are valid
 		const zod_result = Zod__User_PATCH.safeParse(json)
-		if(!zod_result.success) return toast.error(t('please_fill_out_registration'))
+		if(!zod_result.success) return toast.error(t('auth.please_fill_out_registration'))
 		const json_user = zod_result.data
 
 		// Return if nothing changed
@@ -104,8 +104,8 @@ export default function Profile() {
 
 	function delete_account() {
 
-		if(!window.confirm(t('confirm_user_deletion'))) return
-		if(!window.confirm(t('confirm_user_deletion_confirm'))) return
+		if(!window.confirm(t('profile.confirm_user_deletion'))) return
+		if(!window.confirm(t('profile.confirm_user_deletion_confirm'))) return
 
 		setLoading_delete_account(true)
 
@@ -146,19 +146,20 @@ export default function Profile() {
 
 			<Card className='bg-background'>
 				<CardHeader>
-					<CardTitle>{t('account')}</CardTitle>
+					<CardTitle>{t('profile.account')}</CardTitle>
 				</CardHeader>
 
 				<CardContent>
 
 					{/* __________ Username __________ */}
+					
 					<Dialog>
 						<DialogTrigger asChild>
 							<Button
 								variant='ghost'
 								className='justify-between! w-full items-center'
 							>
-								<span>{t('username')}</span>
+								<span>{t('auth.username')}</span>
 								<div className='flex flex-row items-center gap-2'>
 									<span>{user?.Name}</span>
 									<Edit/>
@@ -168,7 +169,7 @@ export default function Profile() {
 
 						<DialogContent showCloseButton={false}>
 							<DialogHeader>
-								<DialogTitle>{t('username')}</DialogTitle>
+								<DialogTitle>{t('auth.username')}</DialogTitle>
 							</DialogHeader>
 
 							<Username_And_Password__Form
@@ -182,7 +183,7 @@ export default function Profile() {
 									onClick={() => change_credentials({ Name: name })}
 									loading={mutate__user.isPending}
 									ok={successfully_saved}
-									text={t('edit')}
+									text={t('action.edit')}
 								/>
 							</DialogFooter>
 						</DialogContent>
@@ -191,13 +192,14 @@ export default function Profile() {
 
 
 					{/* __________ Password __________ */}
+
 					<Dialog>
 						<DialogTrigger asChild>
 							<Button
 								variant='ghost'
 								className='justify-between! w-full items-center'
 							>
-								<span>{t('password')}</span>
+								<span>{t('auth.password')}</span>
 								<div className='flex flex-row items-center gap-2'>
 									<span>******</span>
 									<Edit/>
@@ -207,7 +209,7 @@ export default function Profile() {
 
 						<DialogContent showCloseButton={false}>
 							<DialogHeader>
-								<DialogTitle>{t('password')}</DialogTitle>
+								<DialogTitle>{t('auth.password')}</DialogTitle>
 							</DialogHeader>
 
 							<Username_And_Password__Form
@@ -223,7 +225,7 @@ export default function Profile() {
 									onClick={() => change_credentials({ Password: password })}
 									loading={mutate__user.isPending}
 									ok={successfully_saved}
-									text={t('edit')}
+									text={t('action.edit')}
 								/>
 							</DialogFooter>
 						</DialogContent>
@@ -252,12 +254,12 @@ export default function Profile() {
 			
 				<hr/>
 
-				<h1 className='text-xl'>{t('danger_zone')}</h1>
+				<h1 className='text-xl'>{t('profile.danger_zone')}</h1>
 			
 				<Custom_Button
 					SVG={<LogOut/>}
 					onClick={logout}
-					text={t('logout')}
+					text={t('profile.logout')}
 					variant='destructive'
 					loading={loading_logout}
 				/>
@@ -266,7 +268,7 @@ export default function Profile() {
 					SVG={<UserX/>}
 					variant='destructive'
 					onClick={delete_account}
-					text={t('delete_account')}
+					text={t('profile.delete')}
 					loading={loading_delete_account}
 				/>
 			</>

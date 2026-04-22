@@ -160,7 +160,7 @@ export default function EndScreen() {
 				variant='default'
 				onClick={() => navigate(`/session/${session_id}/preview`)}
 			>
-				{t('ok')}
+				{t('action.ok')}
 			</Button>
 
 		</div>

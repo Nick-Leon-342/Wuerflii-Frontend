@@ -1,38 +1,59 @@
 
 
 {
-	"account": "Account", 
-	"already_have_an_account": "Bereits einen Account?", 
+	"action": {
+		"back": "Zurück", 
+		"change": "Ändern", 
+		"edit": "Bearbeiten", 
+		"lets_go": "Los geht's", 
+		"ok": "Ok", 
+		"save": "Speichern", 
+		"yes": "Ja"
+	}, 
+	"auth": {
+		"already_have_an_account": "Bereits einen Account?", 
+		
+		"begins_with_letter": "Angefangen mit Buchstaben", 
+
+		"characters": "Zeichen", 
+		"characters_special": "Spezielle Zeichen", 
+		"characters_allowed": "Kleinbuchstaben, Großuchstaben und Zahlen", 
+		"credentials_missing": "Anmeldedaten fehlen.", 
+		
+		"letters_numbers_hyphens_underscores": "Buchstaben, Zahlen, Binde- oder Unterstriche", 
+		"login": "Anmelden", 
+		
+		"no_account_yet": "Noch keinen Account?", 
+		
+		"password": "Passwort", 
+		"password_confirm": "Passwort bestätigen", 
+		"password_confirm_doesnt_match": "Passwörter stimmen nicht überein.", 		
+		"please_fill_out_registration": "Bitte alles richtig ausfüllen.", 
+
+		"register": "Registrieren", 
+		"registration_disabled": "Registrierungen wurden abgeschaltet.", 
+
+		"username_taken": "Der Benutzername ist vergeben!", 
+		"username": "Benutzername", 
+
+		"wrong_username_or_password": "Falscher Benutzername oder falsches Passwort!" 
+	}, 
 	"amount_of_different_sessions": "Anzahl unterschiedlicher Partien", 
 	"amount_of_games": "Anzahl von Spielen", 
-	"back": "Zurück", 
-	"begins_with_letter": "Angefangen mit Buchstaben", 
-	"cancel": "Abbrechen", 
-	"change": "Ändern", 
-	"characters": "Zeichen", 
-	"characters_special": "Spezielle Zeichen", 
-	"characters_allowed": "Kleinbuchstaben, Großuchstaben und Zahlen", 
 	"color": "Farbe", 
 	"columns": "Spalten", 
 	"confirm_user_deletion": "Bist du sicher, dass du deinen Account löschen willst?\nDas kann man nicht rückgängig machen!", 
 	"confirm_user_deletion_confirm": "Bist du wirklich ganz sicher?", 
-	"change_credentials": "Anmeldedaten ändern", 
 	"choose_beginning": "Beginn auswählen", 
 	"create_session": "Partie erstellen", 
 	"create_view": "Erstelle Ansicht", 
-	"danger_zone": "Danger Zone", 
-	"darkmode": "Dunkler Modus", 
-	"delete_account": "Account löschen", 
 	"discard_game": "Spiel verwerfen", 
 	"draws": "Davon unentschieden", 
-	"edit": "Bearbeiten", 
 	"edit_players": "Spieler bearbeiten", 
 	"error": {
 		"error": "Fehler", 
 		"client_request_invalid": "Clientanfrage fehlerhaft.", 
-		"credentials_missing": "Anmeldedaten fehlen.", 
 		"generic": "Beim Laden der Seite ist etwas schiefgelaufen. Bitte erneut versuchen.",
-		"password_confirm_doesnt_match": "Passwörter stimmen nicht überein.", 
 
 		"player__name_invalid": "Der Name eines Spielers ist nicht zulässig.", 
 		"player__name_min": "Der Name eines Spielers ist zu kurz.", 
@@ -59,10 +80,8 @@
 		"server_is_not_responding": "Server antwortet nicht.", 
 		"synchronization_of_gnadenwurf_failed": "Der Server antwortet nicht.\nDer Gnadenwurf für '{{name}}' wurde nicht synchronisiert.\nErneut versuchen?", 
 		"unhandled_error": "Es trat ein unerwarteter Fehler auf.", 
-		"username_taken": "Der Benutzername ist vergeben!", 
 		"value_invalid": "Der Eintrag '{{value}}' ist nicht zulässig!", 
-		"variables_not_initialized": "Variablen konnten nicht geladen werden. Bitte lade die Seite neu und versuche es erneut.", 
-		"wrong_username_or_password": "Falscher Benutzername oder falsches Passwort!"
+		"variables_not_initialized": "Variablen konnten nicht geladen werden. Bitte lade die Seite neu und versuche es erneut." 
 	}, 
 	"finish_game": "Spiel beenden",
 	"game": {
@@ -101,14 +120,10 @@
 		"TYPE": 			"Eingabe" 
 	}, 
 	"language": "Sprache", 
-	"lets_go": "Los geht's", 
 	"letters_numbers_hyphens_underscores": "Buchstaben, Zahlen, Binde- oder Unterstriche", 
-	"lightmode": "Heller modus", 
 	"list": "Liste", 
 	"load_session": "Partie laden", 
 	"loading": "Wird geladen", 
-	"logout": "Ausloggen", 
-	"login": "Anmelden", 
 	"month": "Monat", 
 	"months": {
 		"JANUARY": 		"Januar", 
@@ -126,22 +141,22 @@
 	}, 
 	"more_statistics": "Mehr Statistiken", 
 	"name_of_match": "Name des Spiels", 
-	"no_account_yet": "Noch keinen Account?", 
 	"no_game_yet": "Es gibt noch keine Partie.",  
 	"no_data_yet": "Es gibt noch keine Daten.", 
-	"ok": "Ok", 
-	"password": "Passwort", 
-	"password_confirm": "Passwort bestätigen", 
 	"player": "Spieler", 
 	"players": "Spieler", 
-	"please_fill_out_registration": "Bitte alles richtig ausfüllen.", 
 	"please_enter_all_values": "Bitte alle Werte eingeben.", 
 	"points_average": "Durchschnittliche Punktzahlen", 
 	"points_maximum": "Höchste Punktzahlen", 
 	"points_minimum": "Niedrigste Punktzahlen", 
-	"register": "Registrieren", 
-	"registration_disabled": "Registrierungen wurden abgeschaltet.", 
-	"save": "Speichern", 
+	"profile": {
+		"account": "Account", 
+		"confirm_user_deletion": "Bist du sicher, dass du deinen Account löschen willst?\nDas kann man nicht rückgängig machen!", 
+		"confirm_user_deletion_confirm": "Bist du wirklich ganz sicher?", 
+		"danger_zone": "Danger Zone", 
+		"logout": "Abmelden", 
+		"delete": "Account löschen" 
+	}, 
 	"score": "Punktzahl", 
 	"select_winner": "Gewinner auswählen", 
 	"session": "Partie", 
@@ -151,7 +166,6 @@
 	"show_date": "Datum anzeigen", 
 	"show_scores": "Punktzahl anzeigen", 
 	"show_session_name": "Partienamen anzeigen", 
-	"select": "Auswählen", 
 	"statistics": "Statistiken", 
 	"statistics_view": {
 		"STATISTICS_OVERALL":	"Gesamt", 
@@ -171,9 +185,14 @@
 	"sure_you_want_to_delete_this_game": "Bist du sicher, dass du das Spiel löschen möchtest?", 
 	"sure_that_this_player_is_the_winner": "Bist du sicher, dass <br> <span>{{name}}</span> <br> gewinnen soll?", 
 	"surrender": "Aufgeben", 
-	"username": "Benutzername", 
-	"version_app": "App Version", 
-	"version_server": "Server Version", 
+	"ui_mode": {
+		"dark": "Dunkler Modus", 
+		"light": "Heller modus" 
+	}, 
+	"version": {
+		"app": "App Version", 
+		"server": "Server Version" 
+	}, 
 	"view": {
 		"label":				"Ansicht", 
 		"SHOW__ALL": 			"Gesamt", 
@@ -188,6 +207,5 @@
 	}, 
 	"view_from": "Ansicht ab", 
 	"wins": "Gewonnen", 
-	"year": "Jahr", 
-	"yes": "Ja"
+	"year": "Jahr" 
 }

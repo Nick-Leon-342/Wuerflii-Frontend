@@ -57,7 +57,7 @@ export default function Game__Surrender({
 						<Custom_Button
 							loading={loading__finish_game}
 							onClick={finish_game}
-							text={t('yes')}
+							text={t('action.yes')}
 						/>
 
 					</>:<>
@@ -81,7 +81,7 @@ export default function Game__Surrender({
 						<Button 
 							variant='outline'
 							onClick={() => setSurrender_winner(undefined)}
-						>{t('cancel')}</Button>
+						>{t('action.cancel')}</Button>
 					</DialogFooter>
 				</>}
 			</DialogContent>

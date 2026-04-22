@@ -138,7 +138,7 @@ export default function Session__Preview_Table() {
 				<Button
 					onClick={() => navigate(-1)}
 				>
-					{t('back')}
+					{t('action.back')}
 				</Button>
 				
 			</div>

@@ -120,7 +120,7 @@ export default function Session__Preview___Calendar({
 					<Custom_Button
 						loading={mutate__custom_date.isPending}
 						onClick={save_customDate}
-						text={t('save')}
+						text={t('action.save')}
 					/>
 				</DialogFooter>
 
