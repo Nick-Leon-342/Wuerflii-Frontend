@@ -172,7 +172,7 @@ export default function Registration_And_Login() {
 						{show_login && <>
 
 							<Username_And_Password__Input
-								placeholder='username'
+								placeholder='auth.username'
 								setValue={setName}
 								value={name}
 								type='text'

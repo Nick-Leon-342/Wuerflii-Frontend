@@ -90,7 +90,7 @@ export default function Username_And_Password__Form({
 			<Input_With_Popover
 				setShow={setShow__popup_name}
 				show={show__popup_name}
-				placeholder='username'
+				placeholder='auth.username'
 				setValue={setName}
 				value={name}
 				type='text'
