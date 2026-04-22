@@ -69,11 +69,11 @@ export default function Registration_And_Login() {
 		
 		// Check if name and password are valid
 		const zod_result = Zod__User_POST.safeParse({ Name: name, Password: password })
-		if(!zod_result.success) return toast.error(t('please_fill_out_registration'))
+		if(!zod_result.success) return toast.error(t('auth.please_fill_out_registration'))
 		const json_user = zod_result.data
 		
 		// Check if passwords match
-		if(password !== password_confirm) return toast.error(t('error.password_confirm_doesnt_match'))
+		if(password !== password_confirm) return toast.error(t('auth.password_confirm_doesnt_match'))
 
 		setLoading(true)
 
@@ -94,9 +94,9 @@ export default function Registration_And_Login() {
 				handle_400: () => { toast.error(t('error.client_request_invalid')) }, 
 				handle_409: () => {
 					if(err.response?.data === 'Username already taken.') {
-						toast.error(t('error.username_taken'))
+						toast.error(t('auth.username_taken'))
 					} else if(err.response?.data === 'User registration is disabled.') {
-						toast.error(t('registration_disabled'))
+						toast.error(t('auth.registration_disabled'))
 					}
 				}
 			})
@@ -109,7 +109,7 @@ export default function Registration_And_Login() {
 		
 		// Check if name and password are valid
 		const zod_result = Zod__User_POST.safeParse({ Name: name, Password: password })
-		if(!zod_result.success) return toast.error(t('please_fill_out_registration'))
+		if(!zod_result.success) return toast.error(t('auth.please_fill_out_registration'))
 		const json_user = zod_result.data
 
 		setLoading(true)
@@ -129,10 +129,10 @@ export default function Registration_And_Login() {
 			handle_error({
 				err, 
 				handle_400: () => { 
-					toast.error(t('error.credentials_missing'))
+					toast.error(t('auth.credentials_missing'))
 				}, 
 				handle_409: () => {
-					toast.error(t('wrong_username_or_password'))
+					toast.error(t('auth.wrong_username_or_password'))
 				}
 			})
 
@@ -172,14 +172,14 @@ export default function Registration_And_Login() {
 						{show_login && <>
 
 							<Username_And_Password__Input
-								placeholder='username'
+								placeholder='auth.username'
 								setValue={setName}
 								value={name}
 								type='text'
 							/>
 
 							<Username_And_Password__Input
-								placeholder='password'
+								placeholder='auth.password'
 								setValue={setPassword}
 								value={password}
 								type='password'
@@ -209,7 +209,7 @@ export default function Registration_And_Login() {
 
 
 						<Custom_Button 
-							text={show_login ? t('login') : t('register')}
+							text={show_login ? t('auth.login') : t('auth.register')}
 							SVG={show_login ? <LogIn/> : <FileUser/>}
 							className='justify-baseline'
 							loading={loading}
@@ -220,12 +220,12 @@ export default function Registration_And_Login() {
 
 
 					<div className='flex flex-row items-center justify-end gap-2'>
-						<span className='text-sm'>{show_login ? t('no_account_yet') : t('already_have_an_account')}</span>
+						<span className='text-sm'>{show_login ? t('auth.no_account_yet') : t('auth.already_have_an_account')}</span>
 						<Button
 							variant='link'
 							className='text-secondary p-0'
 							onClick={switch_between_registration_and_login}
-						>{show_login ? t('register') : t('login')}</Button>
+						>{show_login ? t('auth.register') : t('auth.login')}</Button>
 					</div>
 					
 				</div>

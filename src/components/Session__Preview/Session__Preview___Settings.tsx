@@ -55,7 +55,7 @@ export default function Session__Preview___Settings({
 					
 				</>}
 
-				<span className='text-lg font-bold'>{t('edit')}</span>
+				<span className='text-lg font-bold'>{t('action.edit')}</span>
 
 				<Button
 					onClick={() => navigate(`/session/${session?.id}`)}

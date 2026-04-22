@@ -1,8 +1,8 @@
 
 
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 
 import { useUser } from '@/hooks/useUser'

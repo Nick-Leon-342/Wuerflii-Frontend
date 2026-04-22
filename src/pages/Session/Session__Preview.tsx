@@ -179,7 +179,7 @@ export default function Session__Preview() {
 
 
 			<Custom_Button
-				text={t('lets_go')}
+				text={t('action.lets_go')}
 				onClick={start_game}
 				loading={loading_preparing_game}
 			/>
@@ -188,7 +188,7 @@ export default function Session__Preview() {
 				variant='link'
 				className='p-0 w-fit h-fit text-md'
 				onClick={() => navigate('/', { replace: false })}
-			>{t('back')}</Button>
+			>{t('action.back')}</Button>
 
 		</div>
 

@@ -77,11 +77,7 @@ export default function Statistics__Select_View({
 		onSuccess: (_, json) => {
 			query_client.setQueryData([ 'session', session?.id ], (prev: Type__Session) => {
 				if(!prev) return prev
-				const tmp = { ...prev }
-				tmp.Statistics__View 		= json.Statistics__View			|| 'STATISTICS_OVERALL'
-				tmp.Statistics__View_Month 	= json.Statistics__View_Month	|| 'JANUARY'
-				tmp.Statistics__View_Year 	= json.Statistics__View_Year	|| 2026
-				return tmp
+				return { ...prev, ...json }
 			})
 
 			query_client.invalidateQueries({ queryKey: [ 'session', +(session?.id || -1), 'analytics' ]})

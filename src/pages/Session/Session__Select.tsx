@@ -10,7 +10,6 @@ import useErrorHandling from '../../hooks/useErrorHandling'
 import { delete__session, get__sessions_list } from '../../api/session/session'
 import { Enum__View_Sessions } from '../../types/Enum/Enum__View_Sessions'
 import type { Type__Session } from '../../types/Zod__Session'
-import useRedirectToLogin from '@/hooks/useRedirectToLogin'
 import type { Type__User_PATCH } from '@/types/Zod__User'
 import { patch__user } from '../../api/user'
 import { useUser } from '@/hooks/useUser'
@@ -35,7 +34,6 @@ export default function Session__Select() {
 	const { t }				= useTranslation()
 	const query_client		= useQueryClient()
 	const handle_error		= useErrorHandling()
-	const redirect_to_login	= useRedirectToLogin()
 
 	const [ list_sessions, setList_sessions ] = useState<Array<Type__Session>>([]) 
 
@@ -160,7 +158,6 @@ export default function Session__Select() {
 				err, 
 				handle_404: () => {
 					toast.error(t('session_not_found'))
-					redirect_to_login()
 				}
 			})
 		}

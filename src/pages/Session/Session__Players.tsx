@@ -209,7 +209,7 @@ export default function Session__Players() {
 
 			<Custom_Button 
 				loading={isLoading__list_players || mutate__players_add.isPending || mutate__players_edit.isPending}
-				text={t('save')}
+				text={t('action.save')}
 				onClick={save}
 			/>
 

@@ -1,38 +1,57 @@
 
 
 {
-	"account": "Account", 
-	"already_have_an_account": "Already have an account?", 
+	"action": {
+		"back": "Back", 
+		"cancel": "Cancel", 
+		"edit": "Edit", 
+		"lets_go": "Let's go", 
+		"ok": "Ok", 
+		"save": "Save", 
+		"yes": "Yes"
+	}, 
+	"auth": {
+		"already_have_an_account": "Already have an account?", 
+
+		"begins_with_letter": "Begins with a letter", 
+
+		"characters": "characters", 
+		"characters_special": "Special characters", 
+		"characters_allowed": "Lowercases, uppercases and numbers", 
+		"credentials_missing": "Credentials missing.", 
+		
+		"letters_numbers_hyphens_underscores": "Letters, numbers, hyphens and underscores", 
+		"login": "Login", 
+
+		"no_account_yet": "No account yet?", 
+
+		"password": "Password", 
+		"password_confirm": "Confirm password", 
+		"password_confirm_doesnt_match": "Passwords don't match.", 
+		"please_fill_out_registration": "Please enter everything correctly.", 
+
+		"register": "Register", 
+		"registration_disabled": "Registration is disabled.", 
+		
+		"username": "Username" , 
+		"username_taken": "Username already taken.", 
+
+		"wrong_username_or_password": "Wrong username or password!" 
+	}, 
 	"amount_of_different_sessions": "Amount of different sessions", 
 	"amount_of_games": "Amount of games", 
-	"back": "Back", 
-	"begins_with_letter": "Begins with a letter", 
-	"cancel": "Cancel", 
-	"change": "Change", 
-	"characters": "characters", 
-	"characters_special": "Special characters", 
-	"characters_allowed": "Lowercases, uppercases and numbers", 
 	"color": "Color", 
 	"columns": "Columns", 
-	"confirm_user_deletion": "Are you sure you want to delete your account?\nThis cannot be undone!", 
-	"confirm_user_deletion_confirm": "Are you really sure?", 
-	"change_credentials": "Change credentials", 
 	"choose_beginning": "Choose beginning", 
 	"create_session": "Create session", 
 	"create_view": "Create view", 
-	"danger_zone": "Danger zone", 
-	"darkmode": "Dark mode", 
-	"delete_account": "Delete account", 
 	"discard_game": "Discard game", 
 	"draws": "Draws", 
-	"edit": "Edit", 
 	"edit_players": "Edit players", 
 	"error": {
 		"error": "Error", 
 		"client_request_invalid": "Client request invalid.", 
-		"credentials_missing": "Credentials missing.", 
 		"generic": "Something went wrong while loading the page. Please try again.",
-		"password_confirm_doesnt_match": "Passwords don't match.", 
 		
 		"player__name_invalid": "The name of a player is invalid.", 
 		"player__name_min": "The name of a player is too short.", 
@@ -46,8 +65,8 @@
 		"resource_not_found": "Resource not found!", 
 		
 		"session_timeout": "Session timeout.", 
-		"session_not_found": "Session not found.", 
 		
+		"session_not_found": "Session not found.", 
 		"session__name_invalid": "Name invalid", 
 		"session__name_min": "Name too short.",
 		"session__name_max": "Name too long.",
@@ -59,9 +78,8 @@
 		"server_is_not_responding": "Server is not responding.", 
 		"synchronization_of_gnadenwurf_failed": "Server is not responding.\nGnadenwurf for '{{name}}' couldn't be synchronized.\nTry again?", 
 		"unhandled_error": "Encountered unhandled error.", 
-		"username_taken": "Username already taken.", 
 		"value_invalid": "Value '{{value}}' is invalid!", 
-		"variables_not_initialized": "Error while fetching variables. Please reload and try again."
+		"variables_not_initialized": "Error while fetching variables. Please reload and try again." 
 	}, 
 	"finish_game": "Finish game", 
 	"game": {
@@ -100,14 +118,10 @@
 		"TYPE": 			"Type" 
 	}, 
 	"language": "Language", 
-	"lets_go": "Let's go", 
 	"letters_numbers_hyphens_underscores": "Letters, numbers, hyphens and underscores", 
-	"lightmode": "Light mode", 
 	"list": "List", 
 	"load_session": "Load session", 
 	"loading": "Loading", 
-	"logout": "Logout", 
-	"login": "Login", 
 	"month": "Month", 
 	"months": {
 		"JANUARY": 		"January", 
@@ -125,22 +139,22 @@
 	}, 
 	"more_statistics": "Mehr Statistiken", 
 	"name_of_match": "Name of match", 
-	"no_account_yet": "No account yet?", 
 	"no_game_yet": "No game yet.", 
 	"no_data_yet": "No data yet.", 
-	"ok": "Ok", 
-	"password": "Password", 
-	"password_confirm": "Confirm password", 
 	"player": "Player", 
 	"players": "Players", 
-	"please_fill_out_registration": "Please enter everything correctly.", 
 	"please_enter_all_values": "Please enter all values.", 
 	"points_average": "Average amount of points", 
 	"points_maximum": "Highest amount of points", 
 	"points_minimum": "Minimum amount of points", 
-	"register": "Register", 
-	"registration_disabled": "Registration is disabled.", 
-	"save": "Save", 
+	"profile": {
+		"account": "Account", 
+		"confirm_user_deletion": "Are you sure you want to delete your account?\nThis cannot be undone!", 
+		"confirm_user_deletion_confirm": "Are you really sure?", 
+		"danger_zone": "Danger zone", 
+		"logout": "Logout", 
+		"delete": "Delete account" 
+	}, 
 	"score": "Score", 
 	"select_winner": "Select the winner", 
 	"session": "Session", 
@@ -150,7 +164,6 @@
 	"show_date": "Show date", 
 	"show_scores": "Show scores", 
 	"show_session_name": "Show session name", 
-	"select": "Select", 
 	"statistics": "Statistics", 
 	"statistics_view": {
 		"STATISTICS_OVERALL":	"Overall", 
@@ -170,9 +183,14 @@
 	"sure_you_want_to_delete_this_game": "Are you sure you want to delete this game?", 
 	"sure_that_this_player_is_the_winner": "Are you sure that <br> <span>{{name}}</span> <br> should be the winner?", 
 	"surrender": "Surrender", 
-	"username": "Username", 
-	"version_app": "App version", 
-	"version_server": "Server version", 
+	"ui_mode": {
+		"dark": "Dark mode", 
+		"light": "Light mode" 
+	}, 
+	"version": {
+		"app": "App version", 
+		"server": "Server version" 
+	}, 
 	"view": {
 		"label":				"View", 
 		"SHOW__ALL": 			"All", 
@@ -187,7 +205,5 @@
 	}, 
 	"view_from": "View from", 
 	"wins": "Wins", 
-	"wrong_username_or_password": "Wrong username or password!", 
-	"year": "Year", 
-	"yes": "Yes"
+	"year": "Year" 
 }

@@ -201,7 +201,7 @@ export default function Session__Add_And_Edit() {
 
 			<Custom_Button 
 				loading={isLoading__session || mutate__session_add.isPending || mutate__session_edit.isPending}
-				text={session_id ? t('save') : t('create_session')}
+				text={session_id ? t('action.save') : t('create_session')}
 				onClick={ok}
 			/>
 

@@ -121,7 +121,7 @@ export default function Popup__Settings() {
 								? <Spinner/>
 								: (darkMode ? <Moon/> : <Sun/>)
 						}
-						text={darkMode ? t('darkmode') : t('lightmode')}
+						text={darkMode ? t('ui_mode.dark') : t('ui_mode.light')}
 						className='flex flex-row h-12 justify-baseline w-full text-lg'
 					/>
 
@@ -160,19 +160,19 @@ export default function Popup__Settings() {
 							variant='link'
 							onClick={() => navigate('/profile')}
 							className='text-lg w-full h-fit'
-						>{t('account')}</Button>
+						>{t('profile.account')}</Button>
 					</>}
 
 				</div>
 
-				<DialogFooter >
+				<DialogFooter>
 					<div className='flex flex-col [&_div]:flex [&_div]:flex-row [&_div]:justify-between [&_div]:gap-1'>
 						<div>
-							<span>{t('version_app')}:</span>
+							<span>{t('version.app')}:</span>
 							<span>{packageJson.version}</span>
 						</div>
 						<div>
-							<span>{t('version_server')}:</span>
+							<span>{t('version.server')}:</span>
 							<span>{server_version}</span>
 						</div>
 					</div>

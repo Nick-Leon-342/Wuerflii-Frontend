@@ -357,7 +357,7 @@ const Dialog__Input = ({
 					<Custom_Button
 						ok={(clicked__value === (input_value === 'none' ? null : input_value))}
 						loading={mutate__table_columns.isPending}
-						text={t('save')}
+						text={t('action.save')}
 						onClick={save}
 					/>
 				</DialogFooter>

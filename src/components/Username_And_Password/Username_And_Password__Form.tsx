@@ -90,7 +90,7 @@ export default function Username_And_Password__Form({
 			<Input_With_Popover
 				setShow={setShow__popup_name}
 				show={show__popup_name}
-				placeholder='username'
+				placeholder='auth.username'
 				setValue={setName}
 				value={name}
 				type='text'
@@ -101,9 +101,9 @@ export default function Username_And_Password__Form({
 				is_invalid={Boolean(name && NAME__REGEX && !new RegExp(NAME__REGEX).test(name))}
 				is_valid={Boolean(name && NAME__REGEX && new RegExp(NAME__REGEX).test(name))}
 			>
-				<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} ${t('characters')}`}/>
-				<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={t('begins_with_letter')}/>
-				<ROW REGEX={NAME__REGEX_ALLOWEDCHARS} value={name} text={t('letters_numbers_hyphens_underscores')}/>
+				<ROW REGEX={NAME__REGEX_MINMAX} value={name} text={`${NAME__MIN_CHARACTER} - ${NAME__MAX_CHARACTER} ${t('auth.characters')}`}/>
+				<ROW REGEX={NAME__REGEX_LETTERFIRST} value={name} text={t('auth.begins_with_letter')}/>
+				<ROW REGEX={NAME__REGEX_ALLOWEDCHARS} value={name} text={t('auth.letters_numbers_hyphens_underscores')}/>
 			</Input_With_Popover>
 		</>}
 
@@ -118,7 +118,7 @@ export default function Username_And_Password__Form({
 			<Input_With_Popover
 				setShow={setShow__popup_password}
 				show={show__popup_password}
-				placeholder='password'
+				placeholder='auth.password'
 				setValue={setPassword}
 				value={password}
 				type='password'
@@ -129,9 +129,9 @@ export default function Username_And_Password__Form({
 				is_invalid={Boolean(password && PASSWORD__REGEX && !new RegExp(PASSWORD__REGEX).test(password))}
 				is_valid={Boolean(password && PASSWORD__REGEX && new RegExp(PASSWORD__REGEX).test(password))}
 			>
-				<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} ${t('characters')}`}/>
-				<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={`${t('characters_special')}: ! @ # $ % - _`}/>
-				<ROW REGEX={PASSWORD__REGEX_ALLOWEDCHARS} value={password} text={t('characters_allowed')}/>
+				<ROW REGEX={PASSWORD__REGEX_MINMAX} value={password} text={`${PASSWORD__MIN_CHARACTER} - ${PASSWORD__MAX_CHARACTER} ${t('auth.characters')}`}/>
+				<ROW REGEX={PASSWORD__REGEX_ALLOWEDSYMBOLS} value={password} text={`${t('auth.characters_special')}: ! @ # $ % - _`}/>
+				<ROW REGEX={PASSWORD__REGEX_ALLOWEDCHARS} value={password} text={t('auth.characters_allowed')}/>
 			</Input_With_Popover>
 
 
@@ -139,7 +139,7 @@ export default function Username_And_Password__Form({
 			{/* __________ confirm password __________ */}
 
 			<Username_And_Password__Input
-				placeholder='password_confirm'
+				placeholder='auth.password_confirm'
 				setValue={setPassword_confirm}
 				value={password_confirm}
 				type='password'
