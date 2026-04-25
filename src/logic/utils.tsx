@@ -28,6 +28,7 @@ import { Possible_Entries__Bottom_Table_6 } from './Possible_Entries/Possible_En
 import { Possible_Entries__Bottom_Table_7 } from './Possible_Entries/Possible_Entries__Bottom_Table_7'
 
 export const darkMode_string = 'Wuerflii_DarkMode'
+export const zoom_string = 'Wuerflii_Zoom'
 
 
 

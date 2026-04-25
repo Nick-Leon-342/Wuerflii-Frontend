@@ -7,10 +7,10 @@ import { useTranslation } from 'react-i18next'
 
 import type { Type__Player, Type__Player_With_Table_Columns } from '@/types/Zod__Player'
 import type { Type__Table_Columns, Type__Table_Columns__PATCH } from '@/types/Zod__Table_Columns'
-import { patch__table_columns } from '../../../api/table_columns'
-import type { Type__Session } from '../../../types/Zod__Session'
-import useErrorHandling from '../../../hooks/useErrorHandling'
-import { list_rows } from '../../../logic/utils'
+import { patch__table_columns } from '@/api/table_columns'
+import type { Type__Session } from '@/types/Zod__Session'
+import useErrorHandling from '@/hooks/useErrorHandling'
+import { list_rows, zoom_string } from '@/logic/utils'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@/components/ui/dialog'
@@ -205,7 +205,10 @@ const Dialog__Input = ({
 	const handle_error 	= useErrorHandling()
 
 	const [ input_value,	setInput_value	] = useState<string | 'none'>('none')
-	const [ zoom, 			setZoom			] = useState<number>(3)
+	const [ zoom, 			setZoom			] = useState<number>(() => {
+		const save_zoom = localStorage.getItem(zoom_string)
+		return save_zoom ? parseFloat(save_zoom) : 3
+	})
 
 	const mutate__table_columns = useMutation({
 		mutationFn: (json: Type__Table_Columns__PATCH) => patch__table_columns(+(session.id || -1), json), 
@@ -274,6 +277,8 @@ const Dialog__Input = ({
 		init()
 	}, [ show ])
 
+	useEffect(() => localStorage.setItem(zoom_string, zoom.toString()), [ zoom ])
+
 
 
 
@@ -311,6 +316,7 @@ const Dialog__Input = ({
 						<Select
 							onValueChange={value => setInput_value(value)}
 							value={input_value}
+							defaultOpen={true}
 						>
 							{/* <SelectTrigger className='h-full w-full'> */}
 							<SelectTrigger className={list_zoom[zoom]}>
