@@ -1,7 +1,7 @@
 
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createRoot } from 'react-dom/client'
 import { StrictMode } from 'react'
 
@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
 				<Provider_And_Context__Server_Version>
 					<Provider_And_Context__ENV_Variables>
 						<App />
-						<ReactQueryDevtools/>
+						{/* <ReactQueryDevtools/> */}
 					</Provider_And_Context__ENV_Variables>
 				</Provider_And_Context__Server_Version>
 			</Provider_And_Context__User>

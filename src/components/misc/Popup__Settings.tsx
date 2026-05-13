@@ -1,23 +1,20 @@
 
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext, useEffect, useState } from 'react'
 import packageJson from '../../../package.json'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import Context__Server_Version from '@/Provider_And_Context/Provider_And_Context__Server_Version'
-import type { Type__User_PATCH } from '@/types/Zod__User'
 import { darkMode_string } from '@/logic/utils'
-import { patch__user } from '../../api/user'
 import { useUser } from '@/hooks/useUser'
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { Languages, Moon, Sun, User } from 'lucide-react'
+import { Languages, Moon, Settings, Sun } from 'lucide-react'
 import Custom_Button from '../misc/Custom_Button'
-import { Spinner } from '../ui/spinner'
 import { Button } from '../ui/button'
+import Profile__Avatar from '../profile/Profile__Avatar'
 
 
 
@@ -25,29 +22,12 @@ import { Button } from '../ui/button'
 
 export default function Popup__Settings() {
 
-	const {
-		user, 
-		setUser, 
-	} = useUser()
-
+	const { user } 				= useUser()
 	const navigate 				= useNavigate()
 	const { t, i18n }			= useTranslation()
-	const query_client 			= useQueryClient()
 	const { server_version }	= useContext(Context__Server_Version)
 
-	const [ darkMode, setDarkMode ] = useState(localStorage.getItem(darkMode_string) === 'true')
-
-	const change_dark_mode = useMutation({
-		mutationFn: (json: Type__User_PATCH) => patch__user(json), 
-		onSuccess: (_, json) => {
-			setUser(prev => {
-				if(!prev) return prev
-				return { ...prev, ...json }
-			})
-			setDarkMode(!user?.DarkMode)
-			query_client.setQueryData([ 'user' ], { ...user, DarkMode: !user?.DarkMode })
-		}
-	})
+	const [ darkmode, setDarkmode ] = useState(localStorage.getItem(darkMode_string) === 'true')
 
 	const list__languages = [
 		{ Name: 'English', 	Code: 'en' }, 
@@ -59,18 +39,8 @@ export default function Popup__Settings() {
 
 
 	useEffect(() => {
-		function configure_darkmode() {
-			
-			if(!user) return
-			setDarkMode(user.DarkMode)
-
-		}
-		configure_darkmode()
-	}, [ user ])
-
-	useEffect(() => {
 		
-		if(darkMode) {
+		if(darkmode) {
 			document.body.classList.add('dark')
 			localStorage.setItem(darkMode_string, 'true')
 		} else {
@@ -78,17 +48,7 @@ export default function Popup__Settings() {
 			localStorage.setItem(darkMode_string, 'false')
 		}
 
-	}, [ darkMode ])
-
-	function change_darkmode() {
-
-		if(user === null) {
-			setDarkMode(prev => !prev)
-		} else {
-			change_dark_mode.mutate({ DarkMode: !user?.DarkMode })
-		}
-
-	}
+	}, [ darkmode ])
 
 
 
@@ -97,10 +57,17 @@ export default function Popup__Settings() {
 	return <>
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button
-					variant='outline'
-					className='fixed p-2 bottom-4 right-4 h-12 w-12 z-41 bg-card! shadow-xl'
-				><User className='w-8! h-8!'/></Button>
+				{user ? (
+					<Button
+						variant='outline'
+						className='fixed bottom-4 right-4 h-12 w-12 z-41 rounded-full shadow-xl'
+					><Profile__Avatar className='w-12 h-12'/></Button>
+				):(
+					<Button
+						variant='outline'
+						className='fixed p-2 bottom-4 right-4 h-12 w-12 z-41 bg-card! shadow-xl'
+					><Settings className='w-8! h-8!'/></Button>
+				)}
 			</DialogTrigger>
 
 
@@ -111,21 +78,6 @@ export default function Popup__Settings() {
 				</DialogHeader>
 
 				<div className='popup__options flex flex-col gap-4'>
-
-					{/* ____________________ DarkMode ____________________ */}
-					
-					<Custom_Button
-						variant='outline'
-						onClick={change_darkmode}
-						SVG={change_dark_mode.isPending 
-								? <Spinner/>
-								: (darkMode ? <Moon/> : <Sun/>)
-						}
-						text={darkMode ? t('ui_mode.dark') : t('ui_mode.light')}
-						className='flex flex-row h-12 justify-baseline w-full text-lg'
-					/>
-
-
 
 					{/* ____________________ Languages ____________________ */}
 
@@ -150,6 +102,18 @@ export default function Popup__Settings() {
 							</SelectGroup>
 						</SelectContent>
 					</Select>
+
+
+
+					{/* ____________________ DarkMode ____________________ */}
+					
+					<Custom_Button
+						variant='outline'
+						SVG={darkmode ? <Moon/> : <Sun/>}
+						onClick={() => setDarkmode(prev => !prev)}
+						text={darkmode ? t('ui_mode.dark') : t('ui_mode.light')}
+						className='flex flex-row h-12 justify-baseline w-full text-lg'
+					/>
 
 
 

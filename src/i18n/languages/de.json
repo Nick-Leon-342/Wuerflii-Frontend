@@ -149,12 +149,15 @@
 	"points_minimum": "Niedrigste Punktzahlen", 
 	"profile": {
 		"account": "Account", 
+		"avatar": "Avatar", 
+		"avatar_too_large": "Avatar zu groß.", 
 		"confirm_user_deletion": "Bist du sicher, dass du deinen Account löschen willst?\nDas kann man nicht rückgängig machen!", 
 		"confirm_user_deletion_confirm": "Bist du wirklich ganz sicher?", 
 		"danger_zone": "Danger Zone", 
+		"error_while_cropping_avatar": "Beim Zuschneiden deines Avatars trat ein Fehler auf.", 
 		"logout": "Abmelden", 
 		"delete": "Account löschen" 
-	}, 
+	},
 	"score": "Punktzahl", 
 	"select_winner": "Gewinner auswählen", 
 	"session": "Partie", 

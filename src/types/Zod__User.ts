@@ -12,10 +12,9 @@ import { Enum__Months } from './Enum/Enum__Months.js'
 
 export const Zod__User = z.object({
 	id:			z.number().int(), 
+	Avatar:		z.string(), 
 	Name:		z.string(), 
 	Password:	z.string(), 
-
-	DarkMode:					z.boolean(), 
 
 	Show__Session_Names:		z.boolean(), 
 	Show__Session_Date:			z.boolean(), 
@@ -51,7 +50,6 @@ export type Type__User_POST = z.infer<typeof Zod__User_POST>
 export const Zod__User_PATCH = Zod__User.pick({
 	Name: true, 
 	Password: true, 
-	DarkMode: true, 
 
 	Show__Session_Names: true, 
 	Show__Session_Date: true, 
