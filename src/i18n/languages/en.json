@@ -40,6 +40,7 @@
 	}, 
 	"amount_of_different_sessions": "Amount of different sessions", 
 	"amount_of_games": "Amount of games", 
+	"auto_save": "Auto save", 
 	"color": "Color", 
 	"columns": "Columns", 
 	"choose_beginning": "Choose beginning", 
@@ -149,9 +150,12 @@
 	"points_minimum": "Minimum amount of points", 
 	"profile": {
 		"account": "Account", 
+		"avatar": "Avatar", 
+		"avatar_too_large": "Avatar too large.", 
 		"confirm_user_deletion": "Are you sure you want to delete your account?\nThis cannot be undone!", 
 		"confirm_user_deletion_confirm": "Are you really sure?", 
 		"danger_zone": "Danger zone", 
+		"error_while_cropping_avatar": "An error occured while cropping your avatar.", 
 		"logout": "Logout", 
 		"delete": "Delete account" 
 	}, 

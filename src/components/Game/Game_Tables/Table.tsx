@@ -10,13 +10,13 @@ import type { Type__Table_Columns, Type__Table_Columns__PATCH } from '@/types/Zo
 import { patch__table_columns } from '@/api/table_columns'
 import type { Type__Session } from '@/types/Zod__Session'
 import useErrorHandling from '@/hooks/useErrorHandling'
-import { list_rows, zoom_string } from '@/logic/utils'
+import { autoSave_string, list_rows, zoom_string } from '@/logic/utils'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@/components/ui/dialog'
 import Custom_Button from '@/components/misc/Custom_Button'
 import { Button } from '@/components/ui/button'
-import { ZoomIn, ZoomOut } from 'lucide-react'
+import { SquareCheck, SquareX, ZoomIn, ZoomOut } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 
@@ -205,6 +205,7 @@ const Dialog__Input = ({
 	const handle_error 	= useErrorHandling()
 
 	const [ input_value,	setInput_value	] = useState<string | 'none'>('none')
+	const [ auto_save, 		setAuto_save	] = useState<boolean>(localStorage.getItem(autoSave_string) === 'true')
 	const [ zoom, 			setZoom			] = useState<number>(() => {
 		const save_zoom = localStorage.getItem(zoom_string)
 		return save_zoom ? parseFloat(save_zoom) : 3
@@ -272,11 +273,16 @@ const Dialog__Input = ({
 
 	}
 
+	useEffect(() => {
+		if(auto_save && input_value !== clicked__value?.toString()) save()
+	}, [ input_value, auto_save ])
+
 	useEffect(() => { 
 		function init () { init_value() }
 		init()
 	}, [ show ])
 
+	useEffect(() => localStorage.setItem(autoSave_string, auto_save.toString()), [ auto_save ])
 	useEffect(() => localStorage.setItem(zoom_string, zoom.toString()), [ zoom ])
 
 
@@ -356,6 +362,21 @@ const Dialog__Input = ({
 					</>}
 
 				</div>
+
+
+
+				<Button
+					variant='ghost'
+					onClick={() => setAuto_save(prev => !prev)}
+					className='flex flex-row justify-baseline h-10 [&_svg]:h-5! [&_svg]:w-5!'
+				>
+					{auto_save ? <>
+						<SquareCheck/>
+					</>:<>
+						<SquareX/>
+					</>}
+					{t('auto_save')}
+				</Button>
 
 
 

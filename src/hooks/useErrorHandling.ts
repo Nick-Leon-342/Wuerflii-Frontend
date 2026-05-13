@@ -15,12 +15,16 @@ import axios from 'axios'
 interface Type__Use__Error_Handling {
     err:						AxiosError | Error
     handle_no_server_response?:	() => void
-    handle_400?:				() => void
+    
+	handle_400?:				() => void
     handle_401?:				() => void
     handle_403?:				() => void
     handle_404?:				() => void
     handle_409?:				() => void
-    handle_500?:				() => void
+    handle_413?:				() => void
+    
+	handle_500?:				() => void
+
     handle_default?:			() => void
 }
 
@@ -58,6 +62,7 @@ export default function useErrorHandling() {
 		handle_401, 
 		handle_404, 
 		handle_409, 
+		handle_413, 
 
 		handle_500, 
 		
@@ -103,6 +108,14 @@ export default function useErrorHandling() {
 			case 409:
 				if(handle_409) {
 					handle_409()
+				} else {
+					toast.error(err.response.data)
+				}
+				break
+
+			case 413:
+				if(handle_413) {
+					handle_413()
 				} else {
 					toast.error(err.response.data)
 				}

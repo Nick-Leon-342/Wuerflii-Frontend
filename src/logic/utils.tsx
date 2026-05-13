@@ -28,6 +28,7 @@ import { Possible_Entries__Bottom_Table_6 } from './Possible_Entries/Possible_En
 import { Possible_Entries__Bottom_Table_7 } from './Possible_Entries/Possible_Entries__Bottom_Table_7'
 
 export const darkMode_string = 'Wuerflii_DarkMode'
+export const autoSave_string = 'Wuerflii_AutoSave'
 export const zoom_string = 'Wuerflii_Zoom'
 
 
@@ -35,6 +36,38 @@ export const zoom_string = 'Wuerflii_Zoom'
 // ____________________ ENV-Variables ____________________
 
 export const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api' // '/api' is for production so that no URL has to be entered and ReactJS resolves the backend URL through nginx.conf
+
+export const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<Blob> => { // eslint-disable-line
+    const image = new Image()
+    image.src = imageSrc
+    await new Promise((resolve) => (image.onload = resolve))
+
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+
+    if (!ctx) throw new Error("No 2d context")
+
+    canvas.width = pixelCrop.width
+    canvas.height = pixelCrop.height
+
+    ctx.drawImage(
+        image,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0,
+        0,
+        pixelCrop.width,
+        pixelCrop.height
+    )
+
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+            if (blob) resolve(blob)
+        }, 'image/jpeg')
+    })
+}
 
 
 
