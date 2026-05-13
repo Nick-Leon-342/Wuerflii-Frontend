@@ -40,6 +40,7 @@
 	}, 
 	"amount_of_different_sessions": "Anzahl unterschiedlicher Partien", 
 	"amount_of_games": "Anzahl von Spielen", 
+	"auto_save": "Automatisch speichern", 
 	"color": "Farbe", 
 	"columns": "Spalten", 
 	"choose_beginning": "Beginn auswählen", 
